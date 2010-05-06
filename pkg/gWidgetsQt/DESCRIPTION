@@ -1,0 +1,12 @@
+Package: gWidgetsQt
+Version: 0.0-1
+Title: Toolkit implementation of gWidgets for qtbase package
+Author: John Verzani
+Maintainer: John Verzani <gwidgetsrgtk@gmail.com>
+Depends: methods, gWidgets(>= 0.0.41), qtbase, digest
+Suggests: 
+Description: Port of gWidgets API to the qtbase package.
+License: GPL (>= 2)
+URL: http://www.math.csi.cuny.edu/pmg
+LazyLoad: yes
+Packaged: 2010-04-17 13:46:16 UTC; verzani
