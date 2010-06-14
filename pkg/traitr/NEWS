@@ -1,0 +1,83 @@
+Dear Emacs, please make this -*-Text-*- mode!
+
+NEWS for traitr
+
+Changes for 0.9:
+----------------
+* added new function dialogMaker to create dialogs from functions. 
+
+* bug fixes
+
+Changes for 0.8:
+----------------
+ 
+* additional argument to to_R, to_string
+
+* new constructor loadingAnimation to display while a long GUI is
+  being drawn
+
+* fixes to how GUI is drawn to make pieces more modular
+
+* new example in vignette
+
+* Can now pass in attributes via attr to the container
+  constructors. These are passed to the gwidgets constructor
+
+Changes for 0.7:
+----------------
+
+* Minor doc fix to keep CRAN happy
+
+Changes for 0.6:
+---------------
+
+* new item itemList for storing a list of items or
+  itemgroups. Requires newer gWidgetsRGtk2.
+
+* added some basic unit tests
+
+Changes for 0.5:
+----------------
+
+* fix to choiceItem when table used. Single click selects.
+
+* bug fix for choiceItem with arguments
+
+
+Changes for 0.4:
+----------------
+
+* bug fixes to choiceItem when multiple=TRUE
+
+* put back in removal of enabled_when, visible_when for items, as
+  otherwise context containers don't work
+
+* put gWidgets, gWidgetsRGtk2 in depends. Want to put in suggests, but
+  will do so when gWIdgetsWWW works with this -- which more or less
+  does, but does have issues with some of the widgets.
+
+Changes for 0.3:
+----------------
+
+* doc fix to avoid warning
+
+* removed update_ui from item. This belonged only in container, itemgroup
+
+Changes for 0.2:
+----------------
+
+* Added copyright info, as suggested on devel mailing list.
+
+* added set_model method for itemgroups. Can be used to swap out
+  model, where the model is just an itemgroup whose itmes are all
+  simple items (no nested itemgroups)
+
+* added base method next_method. Gets the correct next method
+
+* added base methods from mutatr: has_slot, get_slot, set_slot. The first
+  two clean up the code a bit
+
+Changes for 0.1:
+----------------
+
+* New package

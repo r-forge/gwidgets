@@ -1,0 +1,67 @@
+2010-05-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/items.R (expressionItem$coerce_with): removed call to as.character for coerce_with
+
+	* R/dialog.R (dialogMaker): add new function
+
+2010-03-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/editor.R: fix to ObjectWithValuesEditor to work with
+	multiple. Fix to propogate by_index to svalue calls. Wasn't
+	working prior.
+	
+
+2010-03-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/loadanimation.R (loadingAnimation): New function. Icon from http://www.ajaxload.info/
+
+	* R/container.R: added attr argument to containers to specify
+	attributes when container is created
+
+	* R/items.R (.$to_R): added drop=TRUE argument to this call. If
+	FALSE, then return value is nested list
+
+2010-03-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/items.R (.$set_value): fix to add set_value and get_value to
+	call set_name and get_name. Need to figure out for items if
+	appropriate call is get_value or get_name ...
+
+2010-03-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/itemlist.R (itemList): Added new constructor to keep a list of
+	items or itemgroups
+
+2010-03-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/items.R: fix missing @export for expressionItem
+
+2010-02-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/items.R (choiceItem): bug fix
+	(obj$validate): fix to table and handler
+
+2010-02-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/controller.R: put in check for model being set to NULL from widget.
+
+2010-02-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/editor.R: added block/unblock handler to svalue<- call.
+
+	* R/items.R: Put back update_ui/enabled ... into items. Otherwise
+	aContext doesn't have a means to work.
+
+2010-01-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/items.R: moved update_ui/enabled_when/visible_when out of
+	items. They belong in containers, itemgroups.
+
+2010-01-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/base.R (next_method): new method for finding next method in parent environment
+
+	* R/base.R (has_slot): mutatr method replacing exist(keu, envir-.)
+
+	* R/itemgroup.R: added set_model method
+
