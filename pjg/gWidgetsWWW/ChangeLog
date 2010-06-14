@@ -1,0 +1,174 @@
+2010-06-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (mapRenderer): put in sensible column widths. Need
+	API to adjust column width
+
+	* R/gfile.R (gfile): got gfile working for local usage -- not
+	through the web.
+
+2010-06-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (widget$filter): added proto method filter to filter
+	rows. Also stretched last column
+
+2010-06-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcommandline.R (gcommandline): added new method for simple
+	commandline using gWidgets widgets. Uses "notebook" type style,
+	although it isn't very sophisticated.
+
+	* NAMESPACE: bug fix, forgot to export delete method
+
+2010-06-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (processBasehtmlFile): Fixes to make use of
+	dynamicHelp's httpd server, not the Tcl one from Rpad.
+
+2010-01-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (widget$getValue): fix to this method. Was reading in
+	wrong environment.
+	(widget$transportValue): Fix to this method, was old style before
+	JSON use
+
+2010-01-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (w$visible): added method to avoid trying to dispose
+	top-level window, which can't be done.
+
+2010-01-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (blockHandler.gWidget): added methods
+
+2009-10-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (localServerStart): Fix to this, so that
+	matches docs.
+
+2009-08-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (localServerStart): Added local server by
+	copying Rpad approach.
+
+	* R/aaa.R (EXTWidget$getValue): fixed bug with index=TRUE for COmponentWithStore
+
+2009-08-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (w$footer): Fix to how sessionID is made and
+	printed. Now done inside gWindow
+
+	* inst/Examples/brew-gWidgets.brew (clearSession): fix to change
+	in sessions
+
+2009-08-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R (widget$transportValue): fixed this to pass back JSON string
+
+	* inst/Examples/ex-windows.R: fixed to update for ginput chages
+
+	* R/dialogs.R (.gshowdialog): fixed call to runHandler for ginput
+
+	* R/aaa.R (EXTWidget$writeHandlerFunction): fixed how
+	handlerExtraParameters is  handled. This is now a JSON object
+	encoding a list.
+	(EXTWidget$addHandlerMouseclick): fixed handlerExtraParameters for
+	this 
+	(EXTWidget$addHandlerKeystroke): fixed handlerExtraParameters fo rthis
+
+2009-07-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ghtml.R changed to use Ext.form.Label if initial x value is
+	not a url, this way we can update text, unlike with Ext.Panel.
+
+2009-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTWidget$setValue): assign sets in .$toplevel, rather
+	than .GlobalEnv. This way the values get stored in the session environment.
+
+	* R/gcanvas.R Added a new constructor for the canvas device package
+
+2009-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R Major changes so that RApache is used in place of RPad
+
+2009-05-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	*  put in check for internet explorer -- gives warning that
+	gWidgetsWWW does not work in that case.
+
+2009-03-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R ("addHandlerIdle"): added idle handler. (uses
+	setInterval, but no clearInterval method)
+
+2009-02-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (widget$ExtCfgOptions): fix multiple line values
+
+2009-02-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcombobox.R: fixed issues with icons
+
+2009-02-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R (gexpandgroup): fixed visible method
+
+2009-02-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gformlayout.R (.makeForm): added width, height to fieldset
+	(also ggroup, ...)
+
+	* R/gedit.R (widget$ExtCfgOptions): fixed width in gedit
+
+2009-02-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R (tbl$setValues): fix when only one row or only one column
+
+2008-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R ("insert.gWidget"): added insert method for gtext --
+	same as add
+
+2008-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R (widget$writeMenu): can use gseparator() for list(separator=TRUE)
+
+2008-10-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/dialogs.R (galert): fix to get args in right order
+
+	* R/gcheckboxgroup.R (widget$getValue): fixed svalue with no
+	index -- return indices, not values
+
+2008-07-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (w$header): fix to get icons working in toolbar
+	
+
+2008-07-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTWidget$writeTooltip): made tooltip to have
+	possible title and message components (if specified as a list)
+
+2008-07-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* man/gWidgetsWWW-package.Rd: noted ommissions with
+	popupmenus, compound widgets.
+
+2008-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTWidget$writeConstructor): made 'o' widgets
+	global by removing 'var' -- now works with safari.
+
+	* R/dialogs.R (galert): added delay argument to galert
+
+2008-07-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/dialogs.R (.gshowdialog): missing ';' after dialogs made
+	issue wth subsequent commands
+
+2008-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R: put in .. check for setValueJS and setValuesJS, etc
+	so that user can add to method if desired.
+

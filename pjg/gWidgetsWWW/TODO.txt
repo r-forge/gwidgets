@@ -1,0 +1,116 @@
+## TODO for gWidgetsWWW
+* update to ext 3.2
+(A firefox thing) * size of text in gcombobox is too big. How to change?
+* gfile: server version, now its local only
+DONE * gcli for local version
+* spinbutton trigger icons -- need to work with css to get this going. Wait until part of Ext, not Ext.ux
+* menu images (sort out)  makeIconClasses was removed tomake things
+  work with IE. This definitely messes up icons in menus???
+* gsvg -- need to implement adding a handler. Requires hacking into svg code produced by the device
+DONE (local version) * fix ggooglemaps. (integrate RgoogleMaps package)
+* Implement  defaultWidget, 
+* tree widget -- can do with json example in 3.0. Just put file into static dir and load. What about callbacks?
+DONE * createDelegate to pass info to handlers (kye=value) --implement,
+  current one is not very good. Needed for ginput, gconfirm? one
+  implementation in addHandlerKeystroke but not nice.
+DONE * EXT-3.0: install new widgets?
+DONE * gwindow -- render to value configurable?
+FIXED? * issue with database locking, etc. moved to RDS storage (file per session)
+DONE * gcombobox, need to deal with sequencing events -- put each call separate
+DONE * Add in canvas package for drawing -- Jeffrey Horner -- question about ctx name
+* implement tag, id, isExtant 
+* gdf fixes
+* forgot to do a popup: addpopupmenu, add3rdmouse ...
+* drag and drop functions
+* gdf improvements: names<-, row names (EZ), logical, NA values,
+  adding columns, adding rows, dates, ... Much more is possible
+DIDN"T WORK?* Add in codemirror code: http://marijn.haverbeke.nl/codemirror/manual.html for gcommandline
+DONE * fix issue with IE -- CAN'T -- put in alert box to warn
+DONE * addHandlerIdle -- how to repeat call to handler every XXX seconds
+DONE * SAFARI broken? why (svalue(button)<-) (global variables needed,
+  not local)
+DONE * menubar/toolbar icons -- still broken
+DONE * ginput, gmessage -- don't work without cat("alert()") in there?? space oddities
+* format numbers?
+function addCommas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
+}
+DONE * subwindow needs an on-demand scrollbar HOW
+* FOr gcomobox we should allow items to be a) a vector b) a data frame
+  [DONE} c)a EXTStore object (so that we only print these once) d) a
+  URL with some information about how to read it into JSON object
+* resizable -- was working, but didn't go into columns, have props error 
+  * made optional for now.
+
+## TODO version 0.1
+DONE * glaoyt <- character->label, 
+* gdf replace NA with ... (see EDF);
+* comment on toolbar buttons, make method to generate code.
+* documentation
+ONE * border -- blue border is annoying
+DONE * iron out examples: t-test, windows, layout, widgets, combobox
+DONE * gcombo -- check api
+DONE * ggooglemaps: working? document here, give examples
+DONE * check ginput -- passed in h$input
+DONE * gbutton: iconCls vs icon?
+DONE* addSpring, addSpace -- define stubs
+DONE * gtext -- multiline additoins? -- \\\\n
+DONE * label, image code needs to go into display of window -- otherwise
+  can't use in a subwindow
+DONE * gcombob with vector input -- not working?
+DONE * gseparator -- make, but how???
+DONE * icons: need for actions -- will this work
+  button.XXX{background-image:url(YYY)};
+  x = getStockIcons()
+  paste("button.",names(x),"{background-image:url(",x,")};", sep="",
+  collapse="")
+  newN = document.createElement('style')
+  newN.innerHTML = paste....
+  document.body.appendChild(newN)
+
+DONE * gcombobox: wanted hideTrigger=gedit -- work on this, but found issue
+  with values. Should have value, label, icon, tooltip, others
+DONE * .$handlerArgs is signal based and can be overridden by an instance
+DONE * gmenu, gtoolbar
+DONE * gtable: XXX
+DONE * fix gradio
+DONE * gcalendar
+DONE * ggroup layout:"row" is an issue (horizontal=TRUE) -- no layout:row
+DONE * gtext -- no wrap, no enter key binding??
+DONE * combobox -- outo of date. XXX finish Move to new EXTWidget style
+DONE cf. gcombobox * widget with store. If working, move proto stuff to aaa. R
+DONE * shQutoeEsc -- write
+DONE * gstatusbar -- but not perfect
+DONE * ghtml -- long strings of HTML via xtable. uploader issues
+DONE * gimage -- similar to ghtml I  suppose. http://extjs.com/forum/showthread.php?t=13390 
+DONE * glayout -- simple algorithm is implemented
+DONE * ggroup, gframe and gpanedgroup are *all* the same, make it so
+
+
+
+
+FAILED  -------------------------------------
+## This didn't work -- doubles up commands for some reason when called prior to loading page and this is only of value ## if done so
+* Implement js code to parse params:http://javascript.about.com/library/blqs1.htm
+var qsParm = new Array();
+function qs() {
+var query = window.location.search.substring(1);
+var parms = query.split('&');
+for (var i=0; i<parms.length; i++) {
+var pos = parms[i].indexOf('=');
+if (pos > 0) {
+var key = parms[i].substring(0,pos);
+var val = parms[i].substring(pos+1);
+qsParm[key] = val;
+}
+}
+} 

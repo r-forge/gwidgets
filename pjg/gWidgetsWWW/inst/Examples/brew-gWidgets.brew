@@ -1,0 +1,73 @@
+<% 
+## This brew template assumes you are sourcing in a .R file with gWidgetsWWW commands
+## Simply replace the file below and run
+file <- "/var/www/GUI/test.R"
+
+## Adjust this to find extjs libraries (www.extjs.com)
+if(!exists("extjsBaseUrl"))
+  extjsBaseUrl <- "/ext"	
+%>
+
+<%
+## No need to edit below here 
+%>
+
+<% setContentType("text/html") %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<!-- Call in Ext and its style sheet -->
+<script type="text/javascript" src="<%= extjsBaseUrl %>/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="<%= extjsBaseUrl %>/ext-all.js"></script>
+<link rel="stylesheet" type="text/css" href="<%= extjsBaseUrl %>/resources/css/ext-all.css">
+
+
+<script type="text/javascript">
+function evalJSONResponse(response, options) {eval(response.responseText);}
+clearSession = function() {
+   Ext.Ajax.request({url: '<%= gWidgetsWWWAJAXurl %>',
+     success: evalJSONResponse,
+     method: 'POST',params: { type: 'clearSession', sessionID: sessionID}
+    })
+};
+</script>
+
+</head>
+<body  onunload=clearSession()>
+<%
+## We need to store our data in a session, which is implemented as an environment in R
+if(!file.exists(sessionDbFile))
+  dbCreate(sessionDbFile, type=sessionDbType)
+db <- dbInit(sessionDbFile, type=sessionDbType)
+..e <- new.env()
+%>
+
+
+<script type="text/javascript">
+<%
+## This wraps in try and eval so that values are stored in the session
+try(eval(substitute({
+source(file, local=TRUE)
+}), envir=..e))
+%>
+</script>
+
+<%
+## get session id from with ..e -- its in a gWindow object
+vars <- ls(envir=..e)
+gWindows <- vars[ sapply(vars, function(i) inherits(get(i, envir=..e), "gWindow")) ]
+if(length(gWindows))
+  sessionID <- gWindows[1]$sessionID
+else
+  sessionID <- makeSession()
+newSession(db, e=..e, sessionID) ## XXX what is e?
+## This saves the session and disconnects the data base
+saveSession(db, sessionID, ..e)
+dbDisconnect(db)
+%>
+
+</BODY>
+</HTML> 

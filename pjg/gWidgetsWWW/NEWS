@@ -1,0 +1,165 @@
+Dear Emacs, please make this -*-Text-*- mode!
+
+NEWS for gWidgetsWWW
+
+Changes for  0.0-16
+--------------------
+* Changed to use the dynamic help's httpd server -- not the Tcl one
+  from Rpad. This is much better as the Tcl one had size limitations
+  and meant an additional web server.
+* New widget gcommandline. For local use only!
+* new widget gfile. (More like gfilebrowse). For local use only.
+* new demo for local use: ex-simple-gui.R. Call with localServerStart
+  to see.
+* fixes to gtable.
+* numerous minor bug fixes, doc fixes
+
+Changes for  0.0-15
+--------------------
+* added tag, tag<- methods to make work with gWidgets code
+* added stub isExtant method
+* added blockHandler, unblockHandler methods
+* fixed bug with gtable
+* Try to integrate with traitr, but only partially successful.
+
+Changes for  0.0-14
+--------------------
+* doc fix to make vignette with TeXLive
+
+Changes for  0.0-13
+--------------------
+
+* added message when loading javascript files
+
+* noted issue -- still to be fixed -- with local pages that are too
+  big.
+
+* fixed bug with local server -- was calling non-existent package
+
+Changes for  0.0-12
+--------------------
+* fix to localServerStart
+
+Changes for  0.0-11
+--------------------
+
+* fix docs to get no warnings in R-devel.
+
+Changes for  0.0-10
+--------------------
+
+* Added local server to complement RApache configuration. The local
+  server makes development easier as one can see the R process from a
+  command line. Also might be useful for stand-alone use as there are
+  no toolkits to configure or install. The main quirk between the two
+  is how backslashes get escaped in the local server.
+
+* package has copy of extjs libraries (extjs.com)
+
+* addHandlerKeystroke has extra argument key= or charCode= for testing
+  keyup keys before sending handler back into R (slower). The key can
+  be "e.ENTER" or "e.BACKSPACE" using ext key definitions.
+
+* fixed bug with gcombobox and index=TRUE
+
+* fixes to gprocessingjs -- might be useful with local version
+
+* fix to ggoglemaps to make work with local version
+
+Changes for  0.0-9
+--------------------
+
+* make _transportToR use JSON to encode values. This allows one to
+  pass back vectors,...
+
+* reworked runHandler. Instead of munging with a key,value pair, we
+  have new value context which is a list. It is passed into the
+  handler via handlerExtraArguments as in
+  Ext.util.JSON.encode({key:value}). Then in the handler h$key is
+  value. Used to make ginput work and addHandlerKeystroke (this
+  returns key codes though, not characters).
+
+Changes for  0.0-8
+--------------------
+
+* Major changes to implement RApache as the backend, in place of
+  RPad. The Rpad project seems to be abandoned, despite its very
+  interesting core. However, using RApache greatly diminishes the
+  security issues that RPad raises and *hopefully* will make
+  gWidgetsWWW much more stable
+
+ The configuration of RApache is very important. Sample template in
+ templates directory
+
+* requires filehash and digest packages to manage
+  sesssions. Sesssion are used to store state between requests
+
+* AJAX features are implemented through a script gWidgetsWWWAJAX.R
+
+* Added gcanvas widget for using the canvas device package of Jeffrey
+  Horner. This is replacing the gprocessingjs package, which isn't
+  working as of now.
+
+* added gsvg widget which is similar to gcanvas widget. Can be used
+  with SVG devices (RSVGTipsDevice, or SVGAnnotation). 
+
+* added gspinbutton widget, although trigger icons not showing.
+
+* removed some CSS for buttons to make work with Internet Explorer
+
+* added ggplot2 example
+
+* fixed bug when adding widgets to layout after rendering. 
+
+Changes for  0.0-7
+--------------------
+
+* added clt example
+
+
+Changes for  0.0-6
+--------------------
+
+* started a vignette
+
+* fixed some bugs
+
+* improved examples
+
+* added idle handler
+
+* fixed adding/deleting from ggroup after rendering
+
+* added gprocessingjs widget for javascript graphics. Not a real
+  graphics  device, but still useful
+
+Changes for  0.0-5
+--------------------
+
+* better organized examples
+
+* added gformlayout
+
+* bug fixes
+
+Changes for  0.0-3
+--------------------
+
+* gcalendar -- initial value now works for dates. If in format, will
+  pick up
+* fix so that icons in toolbar work
+* changes to gtooltip to allow title and message as per Ext
+
+Changes for  0.0-2
+--------------------
+
+* fixed methods so that .. override by user will get picked up.
+
+* fixes to work with safari
+
+
+
+Changes for  0.0-1
+--------------------
+
+* initial release.

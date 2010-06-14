@@ -1,0 +1,133 @@
+export("runHandler",
+       "escapeHTML","unescapeURL",
+       "asURL","isURL",
+       "shQuoteEsc",
+       "getStaticTmpFile",
+       "convertStaticFileToUrl",
+       "makeSessionID"
+       )
+
+## local server files
+export("localServerStart",
+       "localServerStop",
+       "localServerRestart",
+       "localServerOpen",
+       "gWidgetsWWWIsLocal")
+
+
+export(
+       "galert","gmessage","gconfirm","ginput",
+       "gaction",
+       "gbutton",
+       "gcalendar",
+       "gcanvas",
+       "gcheckboxgroup",
+       "gcheckbox",
+       "gcombobox","gdroplist",
+       "gcodemirror",
+       "gcommandline",
+       "gdf",
+       "gedit",
+       "gfile",
+       "gformlayout",
+       "ggroup","gframe","gexpandgroup",
+       "ggooglemaps",
+       "ggraphics",
+       "ghtml",
+       "gimage",
+       "glabel",
+       "glayout",
+       "gmenu",
+       "gnotebook",
+       "gpanedgroup",
+       "gprocessingjs",
+       "gradio",
+       "gseparator",
+       "gslider","gspinbutton",
+       "gstatusbar",
+       "gsvg",
+       "gtable",
+       "gtext",
+       "gwindow",
+       "getStockIcons",
+       "addStockIcons"
+       )
+## S3 methods
+export(
+       "svalue","svalue<-",
+       "add",
+       "enabled","enabled<-",
+       "delete",
+       "dispose",
+       "focus<-",
+       "tag","tag<-",
+       "visible","visible<-",
+       "size","size<-",
+       "font<-",
+       "tooltip<-",
+       "isExtant",
+       "addSpring", "addSpace",
+       "addDropSource","addDropMotion","addDropTarget",
+       "addHandler",
+       "addHandlerChanged",
+       "addHandlerClicked",
+       "addHandlerDoubleclick",
+       "addHandlerMouseclick",
+       "addHandlerKeystroke",
+       "addHandlerSelect",
+       "addHandlerDestroy",
+       "addHandlerExposed",
+       "addHandlerMouseMotion",
+       "addHandlerBlur",
+       "addHandlerIdle",
+       "blockHandler",
+       "unblockHandler",
+       "String"
+       )
+
+exportS3Classes("gWidget","gWindow","String")
+
+S3method("svalue","gWidget")
+S3method("svalue<-","gWidget")
+S3method("add","gWidget")
+S3method("enabled","gWidget")
+S3method("enabled<-","gWidget")
+S3method("delete","gWidget")
+S3method("dispose","gWidget")
+S3method("focus<-","gWidget")
+S3method("tag","gWidget")
+S3method("tag<-","gWidget")
+S3method("visible","gWidget")
+S3method("visible<-","gWidget")
+S3method("[","gWidget")
+S3method("[<-","gWidget")
+S3method("names","gWidget")
+S3method("names<-","gWidget")
+S3method("size","gWidget")
+S3method("size<-","gWidget")
+S3method("font<-","gWidget")
+S3method("isExtant","gWidget")
+S3method("print","gWindow")             # window -- not widget
+S3method("tooltip<-","gWidget")
+S3method("addHandler","gWidget")
+S3method("addHandlerBlur","gWidget")
+S3method("addHandlerChanged","gWidget")
+S3method("addHandlerClicked","gWidget")
+S3method("addHandlerDoubleclick","gWidget")
+S3method("addHandlerMouseclick","gWidget")
+S3method("addHandlerKeystroke","gWidget")
+S3method("addHandlerSelect","gWidget")
+S3method("addHandlerDestroy","gWidget")
+S3method("addHandlerExposed","gWidget")
+S3method("addHandlerMouseMotion","gWidget")
+S3method("addHandlerIdle","gWidget")
+S3method("addHandler","gWidget")
+S3method("blockHandler","gWidget")
+S3method("unblockHandler","gWidget")
+S3method("addSpring","gWidget")
+S3method("addSpace","gWidget")
+S3method("+","String")
+S3method("print","String")
+S3method("length","String")
+S3method("[","String")
+S3method("[<-","String")

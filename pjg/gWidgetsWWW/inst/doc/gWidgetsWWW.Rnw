@@ -1,0 +1,347 @@
+\documentclass[12pt]{article}
+\newcommand{\VERSION}{0.0-8}
+%\VignetteIndexEntry{gWidgets}
+%\VignettePackage{gWidgets}
+%\VignetteDepends{methods}
+
+\usepackage{times}              % for fonts
+\usepackage[]{geometry}
+\usepackage{mathptm}            % for math fonts type 1
+\usepackage{graphicx}           % for graphics files
+%%\usepackage{floatflt}           % for ``floating boxes''
+%%\usepackage{index}
+\usepackage{relsize}            % for relative size fonts
+\usepackage{amsmath}            % for amslatex stuff
+\usepackage{amsfonts}           % for amsfonts
+\usepackage{url}                % for \url,
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+%%\usepackage{jvfloatstyle}       % redefine float.sty for my style. Hack
+
+
+%% squeeze in stuff
+%%\floatstyle{jvstyle}
+%%\restylefloat{table}
+%%\restylefloat{figure}
+%%\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+
+%% Fill these in
+\pagestyle{fancy}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\code{gWidgets}}
+\fancyhead[C]{}
+\fancyhead[R]{\sectionmark}
+\fancyfoot[L]{}
+\fancyfoot[C]{- page \thepage\/ -}
+\fancyfoot[R]{}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+%% My abbreviations
+\newcommand{\pkg}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\RFunc}[1]{\code{#1}} %% no ()
+\newcommand{\RArg}[1]{\code{#1=}}
+\newcommand{\RListel}[1]{\code{\$#1}}
+\newcommand{\R}{\texttt{R}}
+
+\newenvironment{RArgs}{\begin{list}{}{}}{\end{list}}
+
+
+\begin{document}
+\thispagestyle{plain}
+\title{gWidgetsWWW}
+
+\author{John Verzani, \url{gWidgets@gmail.com}}
+\maketitle
+
+%% Sweave stuff
+\SweaveOpts{keep.source=TRUE}
+
+\section*{Abstract:}
+The \pkg{gWidgets} package provides an API to abstract the interface for a few of the available GUI toolkits avaiilable through R. The \pkg{gWidgetsWWW} package provides an implementation of the \pkg{gWidgets} API for use with through the web. Using just R commands, interactive GUIs can be produced.\\
+
+
+The current status of the project is still experimental. It should
+work with most modern browsers, although some widgets (gcanvas, gsvg)
+are not working equally for all browsers. (Some of these require the
+\code{canvas} tag to be implemented.)
+
+%\setcounter{tocdepth}{3}
+%\tableofcontents
+
+\section{Overview}
+
+To create a web GUI a means first that a web page with controls,
+etc. must be created to layout the GUI. More importantly though, to be
+interactive a means must be provided to callback in to the web
+server when the user initiates an action so that the web server
+can responds with commands to manipulate the user's page.
+
+There are two choices for the webserver:
+\begin{itemize}
+\item For local use (no outside internet access) the dyanmic help web
+  server of R is leveraged. To use this, the function
+  \code{localServerStart} is called to start the server, or
+  \code{localServerOpen} is used to load a file. The command
+\begin{verbatim}
+localServerOpen("/Examples/ex-simple-gui.R", package="gWidgetsWWW")
+\end{verbatim}
+  will open an example page.
+
+\item To allow other computers to run a \pkg{gWidgetsWWW} script the
+  RApache package \url{http://biostat.mc.vanderbilt.edu/rapache/},
+  which embeds an R process within the Apache web server, is
+  used. Both process callbacks from the browser to the web server that
+  can be processed through R.
+\end{itemize}
+
+To return instructions to the page, javascript is used so that the
+entire page need not be reloaded, as javascript can manipulate
+elements on the page. The javascript code is simplified by using the
+extjs javascript libraries, available from \url{www.extjs.com}.
+
+
+
+To make a GUI in \pkg{gWidgets} can be as easy as loading the \pkg{gWidgets} package then calling
+\begin{Sinput}
+w <- gwindow("simple GUI with one button", visible=FALSE)
+g <- ggroup(cont = w)
+b <- gbutton("click me", cont = g, handler = function(h,...) {
+  gmessage("hello world", parent = b)
+})
+visible(w) <- TRUE
+\end{Sinput}
+
+To run the GUI, two ways are possible. This code can be embedded in
+(or \code{source}d from) a \pkg{brew} template and run through the
+combination of \pkg{brew} and \pkg{RApache}. Alternatively, one can
+configure \pkg{gWidgetsWWW} to process specific URLs through this
+template and encode the file name in the URL. With this approach,
+adding a web page is a easy as adding a file to a directory and
+pointing a browser at it.  The main webpage for \pkg{gWidgetsWWW}
+\url{http://www.math.csi.cuny.edu/gWidgetsWWW} contains examples of
+some basic GUIs. These are included in the Examples subdirectory of
+the package once installed.
+
+GUIs made with gWidgetsWWW are not as snappy as other web GUIs. The
+main reason for this is the fact that callbacks to manipulate the page
+are sent back into R (the server) and then returned. In many GUIs,
+this is avoided by using javascript directly on the web page. The
+clear tradeoff is ease of programming for the R user (R not
+javascript) versus speed for the user.
+
+
+\section{Top level windows}
+
+  Web GUIs are different than desktop GUIs. Not only are they slower,
+  as they have lag time between the GUI and the server, there can only
+  be one top-level windows. The \code{gwindow} call above makes such a
+  top-level window (a web page). Subwindows are possible, but all
+  other \code{gwindow} instances should use the \code{parent} argument
+  to specify an object that acts as the parent of a subwindow. (an
+  animation will appear from there, say.)
+
+
+
+\section{The containers}
+\label{sec:containers}
+
+The \pkg{gWidgetsWWW} package has all the following containers:the
+top-level container \code{gwindow}, subwindows also constructed
+through \code{gwindow} (use a parent object); the box
+containers\code{ggroup}, \code{gframe} and \code{gexpandgroup}; the
+tabular layout container \code{glayout}; the notebook container
+\code{gnotebook}, but no \code{gpanedgroup}.
+
+To make a component appear in response to some action -- such as
+happens with gexpandgroup, one can add it to a box container
+dynamically. Or one can put it in a \code{ggroup} instance and toggle
+that containers visibility with the \code{visible} method, in a manner
+identical to how \code{gexpandgroup} is used.
+
+\section{The widgets}
+\label{sec:what-works}
+
+Most -- but not all -- of the standard widgets work as expected. This
+includes labels (\code{glabel}), buttons (\code{gbutton}), radio
+buttons (\code{gradio}), checkboxes (\code{gcheckbox},
+\code{gcheckboxgroup}), comboboxes (\code{gcombobox}), sliders
+(\code{gslider}), spinboxes (well kind of) (\code{gspinbutton}),
+single-line edit boxes (\code{gedit}), multi-line text areas
+(\code{gtext}), dataframe viewers (\code{gtable}) and editors
+(\code{gdf}), images (\code{gimage} -- the image is a url), menu bars
+(\code{gmenu} -- but not toolbars), statusbars (\code{gstatusbar}).
+
+Some of the dialogs work including \code{gcalendar}, \code{galert},
+\code{gmessage}.
+
+The widgets \code{galert}, \code{ghtml} and \code{gaction} are all
+implemented.
+
+The widget \code{gcommandline} is implemented for local versions only
+-- running arbitrary commands is a \textit{huge} security risk.
+
+No attempt has been made to include the compound widgets \code{gvarbrowser}, \code{ggenericwidget}, \code{gdfnotebook}, \code{ggraphicsnotebook}.
+
+
+\subsection{graphics}
+\label{sec:graphics}
+
+There is no plot device avaiable. Rather, one uses the \pkg{png}
+device driver, say, to create graphic files which are then shown using \code{gimage}. 
+The function \code{getStaticTempfile} should be used to produce a file, as this file will sit in a directory that can be accessed through a URL. This URL is returned by \code{convertStaticFileToUrl}. 
+Other drivers may be used, but for server use they shoulds not depend on X11.
+
+
+Two package-specific widgets, \code{gcanvas} and \code{gsvg}, can be
+used for displaying non-interactive graphics files through the
+\pkg{canvas} device or the \code{RSVGTipsDevice} (the
+\code{SVGAnnotation} device should work as well). There are used
+similarly: You create the widget, you create a file. The graphics
+device writes to the file (similar to the \code{png} device driver,
+say). This file can be assigned to the widget at construction time, or
+later through the \code{svalue} method. For \code{gsvg} the file must
+be accessible as a URL, so the \code{getStaticTempfile} function
+should be used. The \pkg{canvas} device uses a newer HTML entity,
+\code{canvas}, which is not supported on all browsers. The \code{gsvg}
+package uses a SVG (scalable vector graphics) format. This format
+again has some issues with browsers, but seemingly fewere. The
+\pkg{RSVTTipsDevice} device has simple features for adding tooltips
+and URLs to mouse events. The \pkg{SVGAnnotation} package allows this
+an much more.
+
+\subsection{Quirks}
+\label{sec:quirks}
+
+A number of little quirks are present, that are not present with other \pkg{gWidgets} implementations:
+\begin{enumerate}
+\item The top level window is not made visible at first. (A good idea
+  in any case, but not the default for \code{gwindow}. To create a
+  window the \code{visible} method, as in \code{visible(w) = TRUE}, is
+  used. (When this is issued the javascript to make the page is
+  generated.)
+\item The handlers are run in an environment that does not remember
+  the loading of any packages beyond the base packages and
+  \pkg{gWidgetsWWW}. So in each handler, any external packages must be
+  loaded.
+\item The use of the options \code{quietly=TRUE} \textit{and}
+  \code{warn=FALSE} should be used with \code{require} when loading in
+  external packages. Otherwise, these messages will be interpreted by
+  the web server and an error will usually occur.
+\item Debugging can be tough as the R session is not readily
+  available. The error messages in the browser are useful. For
+  development of the package the firebug (\url{getfirebug.com}) add on
+  to FireFox has proven very useful.
+% \item The local server needs to have backslashes escaped, thereby doubling up the number of backslashes needed. This means some code may need to be modified to run on the outside server. The check \code{exists(".RpadEnv",envir=.GlobalEnv) \&\& get("RpadLocal", envir=.RpadEnv)} can be used to see if a script is being served locally.
+\end{enumerate}
+
+\subsection{Data persistence}
+\label{sec:data-persistence}
+
+AJAX technologies are use to prevent a page load every time a request is made of the server, but
+Each time a page is loaded a new R session is loaded. Any variables stored in a previous are forgotten. To keep data persistent across pages, one can load and write data to a file or a data base.
+
+
+\subsection{Comboboxes}
+\label{sec:comboboxes}
+
+The \code{gcombobox} example shows how comboboxes can show a vector of items, or a data frame with a column indicating an icon, or even a third icon with a tooltip. As well, the \code{gedit} widget does not have a type-ahead feature, but the combobox can be used for this purpose.
+
+The following will set this up.
+<<echo=FALSE>>=
+library(gWidgetsWWW)
+w <- gwindow("example of combobox")
+@ 
+<<>>=
+cb <- gcombobox(state.name, editable=TRUE, cont = w)
+cb$..hideTrigger <- TRUE ## set property before being rendered
+@ 
+
+This package is implemented independently of the \pkg{gWidgetsWWW} package, and so there may be some unintended inconsistencies in the arguments. The package uses the \pkg{proto} package for object-oriented support, not S3 or S4 classes. There are some advantages to this, and some drawbacks. One advantage is the user can modify objects or call their internal methods.
+
+
+\subsection{ggooglemaps}
+\label{sec:ggooglemaps}
+
+[Currently not quite working]
+The \code{ggooglemaps} widget provides access to a sliver of the google maps API. 
+This sliver could be enlarged quite easily if desired. Using this requires the web server to be registred with google. 
+
+
+\section{Installation}
+The local server is installed with the package. Just type
+\code{localServerStart} to begin, although this won't load a file.
+
+Installation of the outside server requires several steps:
+\begin{enumerate}
+\item Install the \pkg{gWidgetsWWW} package from CRAN
+\item Install the RApache module. The RApache web page has installation information. This APache module is available for UNIX and MAC OS X. Windows users can use the author-provided vmware appliance (\url{www.vmware.com}).
+\item Configure the RApache module. A template is included with the variables that are set in this module. There are several little steps
+  \begin{itemize}
+  \item Specifying the URL for the extjs javascript libraries (below)
+  \item Specifying the script where the session file lives (the script is in the package)
+  \item Specifying where a web-server writable directory is by
+    absolute path and URL for holding the static files created by
+    \pkg{gWidgetsWWW}. (This is needed for creating graphics files.)
+  \item Specifying how files are turned into web pages. The easiest
+    way is the use the gWidgetsWWWrun script to specify directories
+    where the files are held and to use the appropriate URL. (In can
+    be as easy as specifying \code{run} as the script name, then
+    \url{run/file} will find the file \code{file.R} in one of the
+    directories and run that.
+    
+    The other option -- and both can be used -- is to use \pkg{brew},
+    as is described in the RApache manual. This requires using a brew
+    template. One is provided in the Examples directory.
+  \end{itemize}
+
+\item Install the ext javascript libraries so that they have a URL
+  specified above. These libraries are free to use for open-source
+  use (\url{http://www.extjs.com/license}) and can be
+  found at \url{www.extjs.com}. Version 3.0 or higher is needed. A copy of these libraries is included in the \code{basehtml/ext} directory of the package.
+\item Copy the button images from the \pkg{gWidgetsWWW} package to an images
+  URL. These files are in the \code{basehtml/images} directory of the package, once installed.
+\end{enumerate}
+
+
+\section{Security}
+\label{sec:security}
+
+Security -- is a big deal. Web servers can be hacked, and if hacked
+the hacker has full access to the server. This can be scary. The local server blocks all requests that are not to the local IP 127.0.0.1, preventing outside access. As for outside access, although
+it is not believed that RApache is any less secure than other Apache
+modules, you can protect yourself by running the entire setup within a
+virtual machine. There is easy to install, reasonably priced (or free)
+commercial software from VMWare (\url{www.vmware.com}). For
+open-source fans, the VirtualBox project (\url{www.virtualbox.org})
+also has software. One can install this, then run the author provided
+appliance. Or one can install the virtual software, install a host OS
+(ubuntu linux say), then install Apache and R then RApache etc. It
+actually isn't so hard to do.
+
+The call from the web server back into RApache can also be source of
+insecurity. The \pkg{gWidgetsWWW} package allows only a limited number
+of calls back from a web page, which should in theory be secure. But
+if the script is not secure, there is nothing the package can
+do. Scripts must \textit{never} trust that data sent from the web page
+to the server is safe. It should be coerced into any desired format,
+and never evaluated. Using \code{eval} say allows any one to run R
+commands on the server which given the power of R means they have full
+control of the server.
+
+The web server communicates back to the web browser through an AJAX
+call. This is supposed to be secure, as only javascript code that
+originates from the same server as the initial page is executed.
+
+\end{document}
