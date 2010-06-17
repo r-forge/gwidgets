@@ -1,0 +1,355 @@
+2010-06-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.computeWidths): removed autoscroll call - caused
+	issues with initial drawing of screen. Also in gtext.
+
+2010-05-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: svalue(obj, index=TRUE) <- -1 should work now (no
+	value set)
+
+2010-05-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: added visible<- method
+
+2010-05-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fix to dialogs when message includes detail
+	(message has length 2 or more).
+
+	* R/gfile.R: bug fix with hidden argument multiple
+
+2010-05-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R: try to fix issue that handler called before variable
+	is set. (ButtonRelease and tcl("after")). Fix to index=TRUE call
+
+2010-05-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R: fix to svalue<- to collapse with '\n', not
+	" ". Fix to svalue() to respect "\n".
+
+2010-05-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: added multiple=TRUE argument for file selection. Not
+	yet in API, but will be
+
+	* R/gtable.R (.computeWidths): fix to svalue(...,index=TRUE)
+	Thanks Richie
+
+2010-05-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: removed spurious tkgrid call causing issues when
+	combining with othter widgets.
+
+2010-04-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: put in use.table argument, ignored for now
+
+2010-02-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gstatusbar.R: make argument not.toplevel for gstatusbar.
+
+2009-09-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.computeWidths): fix for factor issue
+
+2009-09-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: took out hard coded value of 20 for width in
+	gfilebrowse. Pass in through argument.
+
+2009-08-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R: add [<- method
+
+	* R/gspinbutton.R: added [<- method for gspinbutton. Value must
+	have regular spacing 
+
+2009-06-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: fixes to this for enabled -- and gradio.
+
+	* R/aaaGenerics.R: fix to enabled for nested ggroup objects
+
+2009-06-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.populateTable): error calling with icon.FUN
+	(.computeWidths): initial creation of coercing to data frame to
+	give names.
+
+2009-05-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: rewrote how icons are handled. Easier with findIcon function
+
+	* R/gimage.R: rewrote as we changed the way stockicons are dealt with
+
+	* R/gtable.R (.computeWidths): change to how we deal with column
+	#0: used for icons now, rather than using for optional icon and
+	first text label.
+
+2009-05-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: added typeahead to gedit
+
+2009-05-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R (RightClick): fixed issue with Mac
+
+2009-05-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: removed redundant frame, handlerID
+	
+
+	* R/gdialogs.R: fixed bug in ginput
+
+	* R/gframe.R: passed padding argument (from ggroup) in.
+
+	* R/glabel.R: Removed unnecessary ttkframe
+
+	* R/aaaGenerics.R: fixed addSpring. Fixed anchor argument for add.
+	
+
+2009-04-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gpanedgroup.R: fixed bug in svalue -- coerce to numeric
+
+2009-03-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (ladd): fixed bug with setting of spot when inserting
+	(adding). Now goes to beginning or erd.
+
+2009-02-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdf.R: added new funtion if user has tktable package for Tcl installed.
+
+	* R/gdialogs.R (onCancel): fixes to dialogs using tkmessagebox, ttkframe
+
+2009-01-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R (onCancel): fix to basidcialog, make inherit from
+	window not container (thanks Ben)
+
+2009-01-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: put in tclServiceMode call in lieu of withdrawn, deiconify
+
+2009-01-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to get menu working with gbasicdialog (also other containers)
+
+2009-01-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: put in some padding into contentFrame
+
+	* R/gstatusbar.R: fix to ttklabel
+
+2008-12-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: added gbasicdialog for tcltk
+
+2008-12-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixed enabled method; made enabled inherited
+	from parent in ".add"
+	
+
+2008-12-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: implemented visible<- that wasn't there
+
+2008-12-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R: added use.scrollwindow feature using autoscroll
+
+2008-12-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R: added autoscroll feature,
+	fixed tksee call for where=beginning
+
+	* R/gtable.R: added autoscroll feature
+
+	* R/gtree.R: added autoscroll feature
+
+	* R/gexpandgroup.R: fix to pass along arguments properly
+
+2008-12-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R: fixed expanding of widget
+
+	* R/gwindow.R: added frame instance and redid how toolkbar and
+	statusbars are packed in (uses grid). There was an issue with
+	the standard getBlock(container), that forced change to
+	getWidget(container). (Which  makes sense to me anyways.)
+
+2008-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R: added insert method to replace add method
+
+2008-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixed enabled to recurse into
+	childComponents. Added properties childComponents,
+	parentContainer to widgets through the ".add" methods to keep
+	track of these items. This could allow for container traversal.
+
+2008-11-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fixed bug with selected 
+
+2008-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R (.isgAction): implemente svalue<-
+
+2008-11-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R (ttkscale): changed to use ttk::Scale
+
+	* R/gframe.R: fixed issue with names<-
+
+2008-11-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fixed svalue<- to drop dataframe to vector
+
+2008-11-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: adde gaction to gmenu
+
+2008-11-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: added gaction possibility for compatibility --
+	gaction is limited
+
+	* R/gspinbutton.R: fixed sizem ethod -- no height option
+
+	* R/gbutton.R: added size method here -- no height option
+
+	* R/gspinbutton.R: added enabled method
+
+	* R/ggraphics.R: shorten messge -- still no device
+
+2008-10-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: added width= argument (secrelty for now) to gcombobox.
+
+2008-10-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: fixed handler code to deal with ID as a list.
+
+2008-10-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: fix to addHandlerChanged code,
+
+2008-09-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (icon.FUN): fixed visible<- method
+
+2008-09-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: made svalue return a single string -- not a
+	vector broken by " ".
+
+2008-09-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (svalue): bug with multiple=TRUE, fixed
+
+2008-08-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.populateTable): removed left over debugging
+	symbols.
+	(.populateTable): fixed bug with more than 2 columns and extra
+	column when just 1.
+
+2008-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.computeWidths): fixed error when factors used
+
+2008-08-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R: fixed typo in svalue method
+
+2008-08-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: fix to initialfilename = ""
+
+2008-08-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: Fix to columns when a single one
+
+2008-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/zzz.R (.onLoad): check for version 8.5
+
+2008-07-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gframe.R: fixed type preventing it from working
+
+2008-05-17  jverzani  <verzani@csilaptop.Belkin>
+
+	* man/gWidgetstcltk-undocumented.Rd: fixed undocumented methods
+
+2008-04-23  jverzani  <verzani@csilaptop.Belkin>
+
+f	* R/gdialogs.R: added parent argument to dialogs
+
+	* R/glayout.R: fixed spacing argument
+
+	* R/gwindow.R: fixed svalue/title code 
+
+	* R/gframe.R: put in svalue method to set padding
+
+	* R/gcheckbox.R: fixed leftbracket to be able to retrieve text
+
+2008-04-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gimage.R: addcheck to see if stock is in gWidgetstcltk package
+
+2008-03-31  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added mousemotion handler - mouseover
+
+2008-03-18  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added addHandler with export, fixed
+
+2008-03-16  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: Changed tag to use an environment instead of
+	one big list stored in the namespace. Added e = new.env() to all
+	constructors and replaced tag(), tag<-()
+
+	* R/gfile.R: fixed filebrowse (Gabor G.)
+
+2008-01-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: fixed typo with wrap argument (Ron gui)
+
+2008-01-21  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: fixed bug with svalue(..., drop=TRUE)
+
+2007-12-12  John Verzani  <jverzani@gmail.com>
+
+	* R/gtext.R: added setgrid=FALSE to tktext call to ensure sizing
+		  is done in pixels to be consistent with others.
+
+2007-08-04  John Verzani  <jverzani@gmail.com>
+
+	* R/gtable.R: fixed filtering: keep copy of DF in allItems, update
+		  filter after obj[,] <- DF. Did not implement obj[i,j]<-val.
+
+2007-08-03  John Verzani  <jverzani@gmail.com>
+
+	* R/gcheckboxgroup.R: fixed handlers for glabel (ed), gradio,
+		  gcheckbox, and gcheckboxgroup. The latter need to have
+			  a pause and the scoping wasn't correctly used
+
+2007-08-01  John Verzani  <jverzani@gmail.com>
+
+	* R/gseparator.R: fixed to (not) work with gtable, before it was
+		  messing up with tkpack and tkgrid
+
+2007-07-01  John Verzani  <jverzani@gmail.com>
+
+	* R/gdialogs.R (onCancel): use one function. Add space
+

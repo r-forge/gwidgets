@@ -1,0 +1,162 @@
+## file chooser dialog: creates gfile and gfilebrowser
+setMethod(".gfile",
+          signature(toolkit="guiWidgetsToolkittcltk"),
+          function(toolkit,
+                   text="",
+                   type=c("open","save","selectdir"),
+                   initialfilename = NULL,
+                   filter =  list(
+                     "All files"=list(
+                       patterns=c("*")
+                       ),
+                     "R files"=list(
+                       patterns=c("*.R","*.Rdata")
+                       ),
+                     "text files"=list(
+                       mime.types=c("text/plain")
+                       )
+                     ),
+                   handler = NULL,
+                   action = NULL,                     # 
+                   ...
+                   ) {
+            
+            force(toolkit)
+            
+            args = list(...)
+
+            ## this will be in the API, for now we pass in through ...
+            multiple <- getWithDefault(args$multiple, FALSE)
+
+            
+            type = match.arg(type)
+
+            ## different things depending on type
+            if(type == "open") {
+
+              
+              theFilter = ""
+              if(!is.null(filter)) {
+                for(i in names(filter)) {
+                  pats = filter[[i]]$patterns
+                  if(!is.null(pats)) {
+                    theFilter = paste(theFilter,"{{",
+                      i,"} ",
+                      if(length(pats) > 1)
+                       paste("{",paste(filter[[i]]$patterns,collapse=" "),
+                             "}} ", sep="",collapse="")
+                      else
+                      paste(pats,"} ",sep="",collapse=""),
+                      sep="",collapse="")
+                  }
+                }
+              } else {
+                theFilter = "{{All files} *}"
+              }
+
+              l <- list(title=text, filetypes=theFilter, multiple=multiple)
+              if(!is.null(initialfilename))
+                l$initialfile=initialfilename
+
+              val <- do.call("tkgetOpenFile", l)
+            } else if(type == "save") {
+
+              val = tkgetSaveFile(initialfile=initialfilename, title=text)
+              
+            } else if(type == "selectdir") {
+
+              val = tkchooseDirectory()
+
+            }
+
+#            val = tclvalue(val)
+            val <- as.character(val)    # handler multiple too
+            
+            if (nchar(val) > 0) {
+              ## file selected
+              h = list(ref = NULL, action=action, file=val)
+              if(!is.null(handler)) 
+                handler(h)
+              
+              ## how to return filename?
+              return(val)
+            } else {
+              ## cancel
+              return(NA)
+            }
+            
+            
+          })
+
+
+##################################################
+## gfilebrowser is not modal, like gfile
+setClass("gFilebrowsetcltk",
+         contains="gEdittcltk",
+         prototype=prototype(new("gEdittcltk"))
+         )
+
+
+## create a browse button -- put value into text box
+setMethod(".gfilebrowse",
+          signature(toolkit="guiWidgetsToolkittcltk"),
+          function(toolkit,
+                   text="Select a file...", type="open",  quote=TRUE,
+                   container=NULL, ...) {
+
+            if(is(container,"logical") && container)
+              container = gwindow()
+            if(!is(container,"guiWidget")) {
+              warning("Container is not correct. No NULL containers possible\n" )
+              return()
+            }
+
+
+            
+            group = ggroup(horizontal=TRUE, container=container)
+            entry = gedit(text=text, container=group, ...)
+            browseButton = gbutton("browse",container=group)
+
+            file.cb = function(h,...) {
+              ## called when button is clicked
+              
+              ## in this h is gFile object, not gBrowse object
+              gfile(text=text,
+                    type = type,
+                    handler = function(h,...) svalue(entry) <- h$file,
+                    quote = TRUE
+                    )
+            }
+            addhandlerclicked(browseButton,handler=file.cb)
+
+
+            ## put entry as widget to pick up gEdit methods
+            obj = new("gFilebrowsetcltk",
+#              block=group, widget=entry@widget@widget, toolkit=toolkit,ID=getNewID())
+              block=group, widget=entry@widget,
+              toolkit=toolkit,ID=getNewID(),e = new.env())
+
+            tag(obj,"entry") <- entry
+            
+            invisible(obj)
+          })
+
+
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gFilebrowsetcltk"),
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            
+            entry = tag(obj,"entry")
+            svalue(entry,index,drop,...)
+          })
+
+## svalue<-
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkittcltk",
+                           obj="gFilebrowsetcltk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   entry = tag(obj,"entry")
+                   svalue(entry, index,...) <- value
+                   return(obj)
+          })
+
