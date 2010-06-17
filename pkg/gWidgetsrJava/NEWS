@@ -1,0 +1,49 @@
+Dear Emacs, please make this -*-Text-*- mode!
+
+NEWS for gWidgetsrJava
+
+Changes for  0.0-18, 19
+-----------------------
+
+* stub for use.table in gcheckboxgroup
+
+* bypass font<- method to pass check
+
+Changes for  0.0-14
+--------------------
+
+* added gaction along with fixes for gbutton, menu, toolbar
+
+* fixed gstatusbar to look better
+
+* bug fixes -- thanks codetools, felix!
+
+* added stub for defaultWidget (just calls focus<-), added tooltip<-
+  method
+
+* use gcommandline from gWidgets
+
+Changes for  0.0-13
+--------------------
+
+* doc fixes. 
+
+Changes for  0.0-12
+--------------------
+
+* documentation fixes to get past R CMD check on R-devel
+
+Changes for  0.0-11
+--------------------
+
+* documentation fixes to get past R CMD check
+
+Changes for  0.0-11
+--------------------
+
+* fixed documentation to add methods to undocumented so that R CMD
+  check will pass
+
+* added tests directory to run tests from gWidgets
+
+* added NEWS file

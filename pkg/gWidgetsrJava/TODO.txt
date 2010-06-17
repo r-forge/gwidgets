@@ -1,0 +1,295 @@
+* handler code seems very fragile -- can't run latticist, say
+* ghtml not working
+* gtable/gdf column size -- fix me!!
+* addhandlerkeystrok -- in gedit, gtext -- return a key
+* add in addHandlerMouseMotion
+* add in blockHandler, unblockHandler
+
+DONE * fix gdroplist (Felix)
+PUNT * defaultWidget method
+DONE * add in gaction, gtooltips
+DONE * fix toolbar/content/statusbar ni gwindow
+DONE * add in parent argument to gdialogs
+DONE * check gcheckboxgroup -- errors on mult, none
+
+
+
+
+PUNT * issue with JavaGD as of R 2.7.0 (graphics devices were fixed)
+
+* fix sizing issues -- I set PrefferedSize and do validate when adding
+  a component, but still the top-level window isn't resizing to
+  accomodate the widgets -- wy not?
+ (XXX need to call call pack on window -- how to get JFrame from
+  component??? XXX)
+
+PASS * add setLocation to gwindow API:
+
+moveWindow = function(w,x,y) {
+  jw = getToolkitWidget(w)
+.jcall(.jcast(jw,"java/awt/Component"),"V","setLocation",as.integer(x),as.integer(y))
+}
+w = gwindow("Move me");moveWindow(w, 100,200)
+
+AVOID * Look into:  gd = .jnew("org/rosuda/javaGD/GDCanvas", as.integer(400),as.integer(400))
+
+
+DONE * rJava (new one) allows us to avoid JGR. HOW???
+DONE? * fix bugg with gdf (AsIs ...)
+* size issues with some widgets
+DONE * ggenericwidget should work, doesnt'
+* JavaGD integration -- ggraphics
+--------------------------------------------------
+Next release?
+* add in raise on drag hover -- how to do so?
+* gcommandline flaky
+* look at JGRconsole code to see styled text area--copy
+* gtree -- Skipping for now
+* gnotebook -- tab switching handler, close buttons (can't get addTab
+  to work, this is annoying.)
+* gtext: implement font() functions. Need styled text area
+---------------------------------------------------------------
+## Containers
+
+gimage is flaky!png, jpg too wierd
+gwindow: 
+ggroup: raise on mouse over, DONE layout is too wide sometimes
+gframe: good
+gexpandgroup: 
+  * size is off FIXED
+  * icon funky FIxED
+  * handler on button	   
+gnotebook
+  * close buttons (setTabComponentAt (need 6?))
+  * 
+gpanedgroup
+  check
+glayout
+  check (likely sizing issues)
+
+## widgets
+gbutton
+  * handler only works for one instance (second gets both signals)
+glabel
+  * see gbutton 
+gimage
+  * see gbutton
+  * need quit icon
+gedit
+  * dnd handler (working?)
+  * want to have both keystroke and ENTER handlers
+gtext
+  * check fonts?
+gradio
+  * more than one handler, (but one is working)
+gcheckbox
+  * more than one handler
+gcheckboxgroup
+  * more than one handler
+gspinbutton
+  * more than one handler
+gslider
+  * more than one handler
+gtable
+	DONE  * add double click handler
+	DONE  * merge in column sorting, 
+	* merge in filtering
+	* check API compliance
+gdf
+	DONE  * need to trim, speed up. How to make *just* large enough?
+gtree
+  * WRITE ME
+ghelp
+	DONE  * works, add in HTML pages if present
+ghelpbrowser
+	COPPED OUT  * get this working. Size is messed up, handlers not there
+gdfnotebook
+	* closebuttons
+	* addtabchangehandler 
+gvarbrowser
+  * bypass gtree if need be
+
+
+## Handlers
+addJHandler
+	DONE   * second handler doesn't work! -- loop over ID and type? (not handlerID)
+	DONE idlehander
+  * WRITE ME
+dropsource
+droptarget
+dropmotion
+  * WRITE ME
+
+
+## CLEAN UP
+* document: iplementation notes...
+* tidy up old files
+
+
+
+
+
+
+DONE (UIManager code in gwindow()* size is flaky -- can be big, small, same call. Just odd!
+DONE * gcalendar, add handler to it
+DONE * gtoolbar -- write me
+DONE * gmenu -- separator in list?
+DONE * gedit size --  initially can be just a slant if not enough
+  room--ughh; will expand to fill space, as though setMaximumSize is larlge
+DONE * gradio coerce.with -- isn't there, should be.
+DONE * make a simple varbrowser with one level of recursion (indent with
+  tabs.)
+DONE * default handler for gvarbrowser chokes, this is fixed, but I'm
+  guession it won't wokkr work with R DM check
+DONE * set max size in gTable -- set on scrollpane: fixed column width
+     with hack from JTable FAQ
+DONE * fix handlers to be more granular -- add event argument
+DONE * merge in eclipse icons. gImage (jpg or png?) USED GIF, like eclipse
+*
+* tidy up, package up. I'm not doing tree. Put in not-implemented messages
+DONE * gslider -- in rJava integer only
+DONE * gdf good, gtable broken. Fixed
+DONE * handler (remove handlerID, insert "addActionListener". Would allow
+  for multiplehandlers. Boy did this make a difference
+DONE * ghelp: add html, fix helpbrowser
+DONE * force evalutation to toolkit?  (still buggy?)
+DONE * ggraphics() javaGD for now.
+DONE * gseparator
+DONE * beef up layout: expand, what corner. Goal -- gnotebook closebutton
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## work on handlers: 
+DONE ## need to  gcheckbox, gcheckboxgroup working !!!
+
+* gtree (gvarbrowser)
+* ghelp (use html)
+* notebook close buttons -- not working.
+
+#3 gcalendar
+
+## gtable, gdf
+* write ajve class where a variable name is passed in for initial
+  construction. This could speed the creation up quite a
+  bit. 
+
+##
+DONE * add: invalidate/validate or revalidate the JComponent
+
+## move point to bottom
+Q6.4.1 I append text to a JTextArea. How to ensure the text
+area is always scrolled down to the end of the text?
+textarea.setCaretPosition(textarea.getDocument().getLength());
+
+
+##
+
+DONE gDialogs should have frame argument -- that way dialog can go over the object
+
+##
+DONE (Handler needs work!)
+Q6.5.2 I want to have a hyperlink in a [J]Label. How can I do this?
+
+You probably don't want to have a label, but a button.
+
+Just configure a JButton so it looks like a link. E.g. use HTML to
+format the button's text, and remove the button's border:
+
+b = new JButton("<html<ahttp://java.sun.com</a<html");
+b.setBorderPainted(false);
+
+Provide the button with an ActionListener to handle the ActionEvent
+when the button is clicked. Implement whatever is desired in the event
+handler. E.g. start an external web browser.
+
+b.addActionListener(new ActionListener() {
+actionPerformed(ActionEvent e) {
+// start web browser
+}
+});
+
+## Font stuff can be written (java/awt/Font, see example)
+## Add drop handler, source, hover stuff
+
+## 
+
+==widgets==
+gcheckboxgroup -- done, implement []<- (need better tag)
+
+gtree
+
+gtable
+gfdnotebook - check
+gcommandline
+gfile
+gcalendar
+glabel -- fix editable, handlers
+gimage -- add handler (how??? a button frame?)
+gexpandgroup -- hack with image, label and group
+gseparator
+gstatustbar
+gtoolbar
+gdialogs
+
+handlers
+
+
+
+DND
+
+DONE ** e-mail simon, get the java classes for iWidgets
+** ask him about passing in a data frame
+
+=glabel=
+* fix glabel handlers
+
+=gedit=
+* add completions code if possible
+* fix dnd
+* fix handlers code
+
+=gmenu=
+* implement delete, etc
+* .add to add menu -- how to find top-level frame for a container?
+* addhandler to menuitemb 
+
+=gdroplist=
+* implement editable
+
+=gtext=
+* scrollpane properties
+* add() and markup
+* add() and widgets
+
+=gframe=
+* uses BorderFactory (it appears)
+
+
+=group=
+* FIX pack call to redraw window
+* uses Box
+* createVerticalStrut, createHorizontalStrut
+* addHspace, addVSpace
+* createGlue
+
+
+
+=MISC=
+remove() <- to remove component from Frame (group too?)
+setJMenuBar <- set menubar for a frame
+

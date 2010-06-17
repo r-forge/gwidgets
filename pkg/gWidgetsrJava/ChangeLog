@@ -1,0 +1,78 @@
+2010-05-28  verzani  <verzani@verzani-desktop>
+
+	* R/gfile.R: added multiple= argument
+
+2008-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R: added insert method to replace overused "add"
+
+2008-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fixed return value of ginput
+
+	* R/icons.R: fixed icons: wrong name, look in gWidgets, not gWidgetsrJava
+
+2008-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R (.isgAction): implemented svalue<-
+
+2008-11-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (getTopLevel): added this function to get the
+	top level parent of a widget
+
+	* gcommandline: removed from rJava, use the one in gWidgets --
+	which could be greatly improved.
+
+2008-11-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: fixed issue with handler (wrong object
+	when call gcheckboxes)
+
+2008-11-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fixed parent argument in dialogs
+
+2008-11-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R: implemeted gaction methods
+
+2008-11-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtoolbar.R: put in gaction into gtoolbar
+
+2008-11-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R: added gaction -- methods are not implemented
+
+2008-11-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fixed logic in svalue<-
+
+	* R/ggraphics.R: bypass attempt to do much with this -- just
+	call JavaGD
+
+2008-06-14  jverzani  <verzani@csilaptop.Belkin>
+
+	* man/gWidgetsrJava-undocumented.Rd: added line to pass R CMD check
+
+2008-03-16  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gvariables.R: changed how tag<-, tag is done
+
+2008-01-22  jverzani  <verzani@csilaptop.Belkin>
+
+	* added exact=TRUE to gWidgetsrJavaIcons[[ calls.
+
+2007-09-18  John Verzani  <jverzani@gmail.com>
+
+	* R/gbutton.R: added as.character to text
+
+2007-09-17  John Verzani  <jverzani@gmail.com>
+
+	* R/glabel.R: fixed editable bug
+
+	* R/zzz.R (.onLoad): put in .jpackage and .jengine to bypass JGT
+		  stuff
+	
+

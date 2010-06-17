@@ -1,0 +1,9 @@
+
+(From FCModeler Cytoscape stuff)
+Environment Variables :
+
+    * Users of all operating systems need to set R_HOME to the root directory of your R installation (ie /usr/lib/R).
+    * The JRI library needs to be on your java.library.path. To achieve this, set the following environment variable (depending on your operating system) to the location of JRI.
+          o Linux: LD_LIBRARY_PATH
+          o Windows: PATH
+          o Mac: DYLD_LIBRARY_PATH
