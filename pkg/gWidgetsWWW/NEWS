@@ -2,6 +2,14 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW
 
+Changes for  0.0-18
+--------------------
+
+
+Changes for  0.0-17
+--------------------
+* no change, seemed to have forgotten to upload version 16
+
 Changes for  0.0-16
 --------------------
 * Changed to use the dynamic help's httpd server -- not the Tcl one
