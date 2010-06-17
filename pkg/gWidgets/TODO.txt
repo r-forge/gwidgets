@@ -1,0 +1,40 @@
+* Add multi=FALSE to signature of gfile.
+* integrate in column size into gtable
+* integrate into gtable a checkbox for selection
+DONE * fix ggenericwidget under tcltk -- print twice. gcommandline issue I believe.
+* gcommandline is not very good -- IT IS AWFUL. Do tcltk --- see
+* size argument in gcombobox as formal argument, we have it as ... now.
+* methods in docs -- work on API
+DIBE * fix ghelp to work with windows -- RPAD?
+* visible API (not visible<-) with set is wanky, Should deprecate, but need with gbasicdialog
+* gtable -- help page -- check this
+DONE * Write API for these guys, even if they aren't implemented
+DONE  * gaction (in gWidgetsWWW)
+DONE  * galert -- like gmessage only appears differently (gWidgetsWWW has implementation)
+DONE  * ghtml widget (for RwxWidgets, gWidgetsWWW)
+DONE  * tooltip (in gWidgetsWWW)
+NO * gformlayout -- case to be made that depends on should be done in
+ separate pass
+DONE * add check for toolkit package on startup, if not there pop up GUI based on what exists.
+DONE * Thomas Petzoldt: doc changes to vignetter: Sweave, others. Search email
+DONE * tests directory with run tests in each of the toolkits
+DONE * add addHandlerMouseOver -- for mouseover effects -- different from
+  dropmotion, but similar
+DONE * gwindow -- place near a parent window, place in some place
+  (setLocatino in rJava), see that TODO
+DONE * gwindow -- add in menu, toolbar, contentPane, statusbar
+  area. contentPane a "bin"-like container. Done in RGtk2, rJava okay,
+  others need implementing
+DONE * gframe, gexpandgroup should get a horizontal= argument
+DONE * FIX FONTS!! weight <-> style
+DID getToolkitWidget * export .getWidget, .getBlock, .getParent (Michaels request)
+
+
+
+DONE * pmg -- close buttons in linux -- read e-mail
+DONE? * ggroup == on.dragmotion -- not working under windows, linux OK
+  (my guess is that is liew in getWindow()$Raise()
+
+DONE ***** gdf -- error with editing see 20 vs 22
+
+

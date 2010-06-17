@@ -1,0 +1,178 @@
+2010-05-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* man/gimage.Rd: new help page example contributed by Richie Cotton.
+
+2010-04-29  verzani  <verzani@verzani-desktop>
+
+	* R/aaaGenerics.R (toolkitProvidesWidget): new method to see if widget is provided by toolkit. E.g. is gsvg defined, or ggraphics?
+
+2010-04-18  verzani  <verzani@verzani-desktop>
+
+	* R/gvariables.R: fix fonts -- use c, not list
+
+2010-04-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: removed gWIdgetsWWW from possible choices.
+
+2010-04-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added guiToolkitQt, added generics undo/redo
+
+2009-11-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: add column clicked, doubleclick and rightclick
+	to API for use with gdf gtable.
+
+2009-09-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* inst/tests/ex-gdialogs.R: added interactive() check to this
+	one. Hanging in tcltk?
+
+2009-03-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcommandline.R: fixed little bug with history, redid
+	layout. Still not great
+
+2009-03-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/zzz.R (popup): removed popup when no toolkits are installed so
+	that automatic builds go through.
+
+2009-02-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggenericwidget.R: Fixes to handling of functino
+
+2009-02-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggenericwidget.R: fix to cli call (thanks to Diego Zardetto)
+
+2008-12-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: put in code for gbasicdialog to be able to use
+	arbitrary modal dialogs with tcltk and others. 
+
+2008-12-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ghelp.R: fixes to ghelp for gWidgetstcltk
+
+2008-12-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R (ladd): fixed "add"  to weed out extra
+	arguments based on being container component. 
+
+2008-10-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* man/gtable.Rd: fix to man page for svalue with sorted data frames
+
+2008-10-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gformlayout.R: New constructor for laying out forms
+	(dialogs) using a list to specify widgets.
+
+2008-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* inst/doc/gWidgets.Rnw (section*{Abstract:}): updated
+	vignette: Scode -> <<>>=; = -> <-, minor fixes
+
+2008-05-27  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/ghelp.R: try to fix ghelp to work under windows by putting in
+	chmhelp=FALSE, htmlhelp=FALSE ala Rpad.
+
+2008-05-19  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: changed .svalue  generic 
+
+2008-04-25  jverzani  <verzani@csilaptop.Belkin>
+
+	* inst/tests/test-window.R (f): Added tests to tests director
+
+2008-04-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: changed location argument to parent in gwindow.
+	Added parent argument to gdialogs.
+
+	* R/common.R (gwCat): added function to quiet messages. Set option
+	gWidgetsDebug to non null to hear warning messages
+
+2008-04-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added blockHandler, unblockHandler
+
+2008-04-04  jverzani  <verzani@csilaptop.Belkin>
+
+	* man/ggroup.Rd: names should refer to label for gframe, gexpandgroup
+
+2008-04-02  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R (as.gWidget): added new S3 generic for coercion,
+	mostly with RGtk2 implementation.
+
+2008-03-31  jverzani  <verzani@csilaptop.Belkin>
+
+	* NAMESPACE: added addHandlerMouseMotion
+
+2008-02-14  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: Added defaultWidget method. Implemented in RGtk2.
+
+2008-01-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* man/gWidgets-methods.Rd: fixed entry for font
+
+2008-01-22  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added gcombobox alias for gdroplist
+
+2007-11-03  John Verzani  <jverzani@gmail.com>
+
+	* R/aaaGenerics.R: added location= argument for gwindow to set
+		  initial placement of window
+
+2007-10-23  John Verzani  <jverzani@gmail.com>
+
+	* R/aaaGenerics.R: fixed type with addHandlerChanged
+
+2007-09-18  John Verzani  <jverzani@gmail.com>
+
+	* R/common.R (str2): moved this here to export (was in each
+		  toolkit implementation)
+
+	* R/gvariables.R: added width,height to tbl's in model so that
+		  gWidgetsRwxWidgets is happy.
+
+2007-08-14  John Verzani  <jverzani@gmail.com>
+
+	* R/ggenericwidget.R: fixed missing fileurl.
+
+2007-08-13  John Verzani  <jverzani@gmail.com>
+
+	* R/generics.R: trimmed arguments in ggenericwidget
+
+2007-07-31  John Verzani  <jverzani@gmail.com>
+
+	* R/aaaGenerics.R: gwindow -- added args width height to set
+		  default size at window creation. Different from size<-
+			  which sets the minimum size.
+
+2007-06-26  John Verzani  <jverzani@gmail.com>
+
+	* R/icons.R: Moved icons into gWidgets from tcltk
+
+2007-06-25  John Verzani  <jverzani@gmail.com>
+
+	* R/bbbGenericsANY.R: Added this to handle ANY widgets. Might need
+		  some more work.
+
+	* R/ggenericwidget.R: moved from tcltk into this using gWidgetANY
+		  classes. 
+
+2007-04-27  John Verzani  <jverzani@gmail.com>
+
+	* R/generics.R: names, as of 2.5.0 does not need set generic
+
+2007-04-23  John Verzani  <jverzani@gmail.com>
+
+	* DESCRIPTION (Package): Changed SaveImage: TRUE to LazyLoad: yes
+		  as per suggestion by B. Ripley.
+
