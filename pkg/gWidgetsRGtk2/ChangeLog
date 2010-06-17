@@ -1,0 +1,696 @@
+2010-05-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (.setCompletion): visible(obj)<-FALSE for
+	password entry
+
+2010-05-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R (as.gWidgetsRGtk2.GtkLabel): fix to svalue<-() method
+	when text is character vector with length > 1.
+
+2010-05-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: add multi=TRUE option to constructor for multiple
+	selection of files
+
+2010-05-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R: fix to this when editable=TRUE (was throwing error)
+
+2010-04-20  verzani  <verzani@verzani-desktop>
+
+	* R/gdialogs.R: issue with gbasicdialog with parent object when using as container
+
+2010-04-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: new option use.table implemented
+
+2010-04-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: fixed obj[] error if no selection (Thanks Tom)
+
+2010-03-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addTreeViewColumnNoEdit): fix edit.handler to work
+	with visible rows
+
+	* R/gtext.R (font<-): made change to font<- when no text is
+	selected. Rather than do nothing, it now changes font for entire
+	buffer.
+
+2010-03-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R: Made font.attr argument to constructor apply to
+	entire buffer. To specify font.attr for pieces of text, the add
+	method or the font<- method can be used.
+
+2010-03-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (makePaddedDataFrame): minor fixes to handle 0-length
+	icon specification
+	(make.row.names): fix to setReplaceMethod to work when 0ing out
+	data store
+
+2010-03-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: allow svalue(obj, index=TRUE) <- 0 to clear selection
+
+2010-03-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfnotebook.R: fix to saving empty variable, fix to adding new
+	data frame by variable	
+
+	* R/gedit.R (adddroptarget): Fix to make dnd work as expected when
+	overriding default GTK dnd for gedit widget.
+
+2010-03-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to get images to display for new gtk versions
+
+	* R/gtoolbar.R: minor fix to avoid gtk error when gtkToolButton
+	called with label=NULL
+
+2010-03-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to SetImage that was not working as advertised
+
+2010-02-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: Make "knownTypes" variable, a list with
+	components specifying similar classes, editable by the
+	user. Either pass in argument "knownTypes" to constructor, or set
+	as option.
+
+2010-02-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfedit.R (gdfedit): put in [<- method -- should check for
+	match in column class, rather than wrap in try.
+
+2010-02-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfedit.R (gdfedit): new function for RGtk2DfEdit
+
+	* R/aaaGenerics.R: fixed remove handler for timeout ids.
+
+2010-01-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: Fix to filter and intialfilename (Thanks Felix)
+
+2010-01-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addTreeViewColumnNoEdit): Put in hidden argument diy
+	with values in c("suppress.key", "suppress.popup") to suppress
+	adding motion handlers or popup on column header click. This
+	allows user to define their own.
+
+2010-01-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R: fix to h$pageno -- added 1. Thanks to Y.N.
+
+2010-01-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: change addHandlerChanged signal to "activate". This
+	way when svalue<- is called, the activate signal can be emitted.
+
+2009-12-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix to handler.id to store handlers so that we
+	can block/unblock when using svalue<- for gtable
+
+2009-12-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): fix to font<- method
+	for buttons.
+
+2009-12-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: yet one more change to svalue<-. This time be
+	intelligent when setting by value, not index by ensuring index is
+	only if an integer is passed in unless explicit index=TRUE
+
+2009-12-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R (.as.gWidgetsRGtk2.gdroplist): not handling
+	svalue(.,index=FALSE) <- value properly.
+
+	* R/ggrid.R: fix to selection -- wasn't working with index=FALSE.
+
+2009-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fix to selection -- forgot to clear out old indices
+
+2009-12-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixed passing of action into addHandler after
+	some earlier cleanup
+
+2009-11-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R (as.gWidgetsRGtk2.GtkRadioButton): fix to visible<- method
+
+2009-11-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added ColumnClicked, ColumnRightClick,
+	ColumnDoubleClick handlers for ggrid
+
+2009-11-05  john verzani  <verzani@client-2-2-194.wireless.drew.lan>
+
+	* R/gnotebook.R: added h$pageno to addHandlerChanged to get the
+	current page number. In a handler, GetCurrentPage() is not correct.
+
+2009-09-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added check for ctrl-1 when right button
+	expected (for mac use)
+
+2009-09-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: fix to gfilebrowse on cancel. (Hana S); added
+	expand=TRUE to gedit instance. Set width with width argument
+	passed to gedit, not size. Fixed issue with height of button by
+	nesting ggroup containers (mix horizontal and vertical)
+	
+
+2009-08-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gspinbutton.R (as.gWidgetsRGtk2.GtkSpinButton): added [<-
+	method for this. Need to have regular data
+
+2009-06-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): fix typo (thanks Albert)
+
+2009-06-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): Fix to constructor
+	with action argument
+
+2009-06-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix bug to font with colors
+
+2009-06-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: fixed bug with column types when hasOffpsring given as
+	second column of offspring
+
+2009-06-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (make.row.names): fix to hide error when setting store
+	which doesn't have rownames. (Error in x[[jj]][iseq] <- vjj :)
+
+	* R/gdialogs.R: fixed bug with this under windows/mac that came up
+	for new RGtk2. Also added subtext if length(message) > 1.
+
+2009-05-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: fixed return to NA -- not "" if no file
+
+2009-03-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): put in secret interval argument for
+	gvarbrowser to slow down polling
+
+2009-01-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): fix to gvarbrowser to list
+	knownTypes better using is(), added POSIXt to data types. How to get a list
+	of these.
+
+2008-12-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: added new feature with gbasicdialog
+
+2008-12-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): if inserting at end, moves scrollbar
+	to bottomS
+
+2008-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): added insert method to replace
+	overworked add
+	(.addTags): move to end when adding if at end
+
+2008-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fixed return value of ginput
+
+2008-11-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcalendar.R (lgedit): coerce with failed to be implemented
+
+2008-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: More consistent defn of svalue<-
+
+	* R/gaction.R: implemented svalue<-
+
+2008-10-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): fixed type calling keystroke handler
+
+	* R/gdroplist.R: added width= argument through ... Should make
+	this part of gcombobox API
+
+	* R/gframe.R: fixed expand argument -- was always TRUE
+
+2008-10-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fix to get gtable to work with CO2 data frame
+	(coercion to data.frame, ordered factors)
+
+2008-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): fix to tags to get past strict type checking
+
+2008-10-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: Fixed handler code in gcheckboxgroup to
+	return a vector of IDS, implemented remove, block, unblock
+
+2008-09-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: made wider in windows if small
+
+2008-09-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R (as.gWidgetsRGtk2.GtkLabel): svalue<- will coerce
+	strings with length 2 or greater to single string pasted with "\n"
+
+2008-09-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gframe.R (as.gWidgetsRGtk2.GtkFrame): fixed methods for
+	svalue, names, names<-
+
+	* R/gexpandgroup.R (as.gWidgetsRGtk2.GtkExpander): fixed up
+	svalue method
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): Work on anchor argument
+
+2008-09-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtkStuff.R (setXYalign): rewrote to test class of object,
+	not  use try()
+
+	* R/aaaGenerics.R: fixes to defaultWidget<-; 
+
+	* R/gdialogs.R: fixed processing of response in dialog -- was
+	issue when closing out via window manager. Added focus to
+	input box in ginput.
+
+2008-09-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (.setCompletion): make key-release-event -- not
+	key-press-event for keystroke handler
+
+	* R/ggrid.R: put in doSort=FALSE so that visible<- works
+	except when sorting is explicitly called
+
+2008-09-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): set default for alignment to be
+	RGtk2 default so no setXYalign call if not requested. (Thanks Felix)
+
+	* R/gedit.R (.setCompletion): added this function -- if
+	completion is set via [<-, then this gets added otherwise
+	not. Should speed things up. (Thanks Felix)
+
+2008-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtkStuff.R: no speed up to gtktry? This is slow, but
+	changes didn't make a difference.
+
+	* R/common.R: speed fixes by avoiding %in% when ==+|| will do.
+
+	* R/icons.R: Speed up to getstockicons. Use cache to keep list
+	(avoiding regeneration each time) with flag for when new icons
+	are added. This speeds up gcombobox significantly.
+
+	* R/gtkStuff.R (setXYalign): New function to speed up ggroup,
+	glayout. The lookup of property names via names(gtkobject) was
+	very slow, so instead we just use try to catch errors
+
+2008-08-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R (as.gWidgetsRGtk2.GtkNotebook): fix to event
+	box SetVisibleWindow(FALSE) so that under windows the white
+	background is not covered up.
+
+2008-08-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gframe.R: fixed y align value to be .5, not 0
+
+2008-08-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: fixed width argument
+
+	* R/gframe.R (names<-.GtkFrame): fixed bug in names<-
+	preventing markup from working
+
+2008-08-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): fixed issue with centering as
+	anchor had mistaken default.
+
+2008-07-15  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gvarbrowser.R: update() method extended to gvarbrowser
+
+	* R/gtoolbar.R: fixed expand=TRUE in adding toolbar group to
+	container. This can be passed in via ... if desired.
+
+	* R/gradio.R (as.gWidgetsRGtk2.GtkRadioButton): fixed error with
+	enable<-. Needed to map to all buttons.
+
+	* R/gpanedgroup.R (as.gWidgetsRGtk2.GtkHPaned <-
+	as.gWidgetsRGtk2.GtkVPaned): typo in svalue<-
+
+2008-05-19  jverzani  <verzani@csilaptop.Belkin>
+
+	* NAMESPACE: added addHandlerChanged eg. to fix errors with
+	R-devel check
+
+2008-05-17  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gcheckboxgroup.R: used obj inplace of x in leftbracket
+	def. Made [<- method work to replace values if called
+	obj[]<-newitems.
+	
+	
+
+2008-05-03  jverzani  <verzani@csilaptop.Belkin>
+
+	* DESCRIPTION (Depends): put cairoDevice from extends to suggests
+
+	* man/gWidgetsRGtk2-undocumented.Rd: documentation errors
+
+2008-05-02  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gedit.R: fixed bug in windows with completion. Not all
+	completion properties are available here.
+
+2008-04-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gdialogs.R: added parent argument to dialogs
+
+2008-04-19  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): added anchor arugment to ggroup
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): getBlock, not getWidget
+	for alignment
+
+2008-04-13  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gradio.R: fixed handler to call only select part of toggled.
+	(as.gWidgetsRGtk2.GtkRadioButton): fixed up gradio to be able to
+	use as.gWidgetsRGtk2
+
+2008-04-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added blockHandler, unblockHandler to API as in
+	between of add remove
+
+2008-04-06  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): removed the visible()<-
+	requirement of the old glayout. Now lays ou dynamically
+
+2008-04-01  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: ".add" method works for RGtkObjects too.
+
+	* R/ggrid.R (make.row.names): fixed names() in leftbracket
+	method. (Olivier Nunez)
+
+2008-03-17  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: added addHandlerKeystroke with h$key returning keyvalue
+
+2008-03-11  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: add toolkit=toolkit option in the constructors used
+	within main constructors. This makes toolkit work better.
+
+2008-03-05  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R: Added expand=TRUE/FALSE argument to [<-
+	method. Should work as expected, default is FALSE.
+
+	Fixed so that [<- works with RGtk2Object too. We don't dispatch
+	on "value" so we do this by class of value object within [<- and
+	visible methods.
+	
+
+2008-02-15  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R: put in anchor argument for [i,j,anchor=c(x,y)]<-value
+	
+
+2008-02-14  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: put in defaultWidget method
+
+	* R/gbutton.R: changed clicked siganl to "clicked" from "pressed"
+	as clicked capture keyboard usage too.
+
+2008-02-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gedit.R: fixed completion to popup, not just downarrow
+
+2008-02-07  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/ghelp.R: added expand=TRUE to fix size issue due to changes in
+	gwindow(). 
+
+	* R/aaaGenerics.R: implement size() to return c(width, height)
+
+2008-02-04  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gpanedgroup.R: added svalue, svalue<- for paned groups
+
+2008-01-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: typo in return value from font<-; fixed font so that
+	when changing color attributes all previous *possible* color tags
+	are removed. I don't know how to remove just the ones that were
+	actually applied.
+	
+
+2007-12-05  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: added in ggroup, groups for
+	menu|tool|statusbar. From now on, for consistency, these should be
+	added to the top-level window, although in RGtk2 this won't be
+	deprecated, as it is used in pmg code.
+
+2007-11-03  John Verzani  <jverzani@gmail.com>
+
+	* R/gwindow.R: added location argument to set initial position
+
+	* R/icons.R: read in icon names from images directory. Just drop
+		  new xpm file in images/ directory to add icon
+
+2007-11-01  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: Changed so that items can be two-column
+		  data.frame. If so, then 2nd column specifies icons to
+			  put adjacent to text. For editable they appear
+				  on right, on left otherwise.
+
+2007-10-24  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: fixed filter.fun and [.] <- stuff. Fixed bug with
+		  svalue when filtering
+	
+
+	* R/ghelp.R: trying to fix help under windows issue, fix
+		  filtercolumn not working (why?)
+	
+
+2007-10-23  John Verzani  <jverzani@gmail.com>
+
+	* R/gwindow.R: added addHandlerUnrealize to intercept closing by
+		  window manager.
+
+
+2007-10-21  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: Put back in sort feature. Fixed this up. (Hopefully)
+
+2007-10-20  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: took  out sort feature. Ughh. Need to figure out
+		  sorting in gtree and put this back.
+
+2007-10-11  John Verzani  <jverzani@gmail.com>
+
+	* R/gfile.R: fixed gfilebrowse to get filter passed along via ...
+
+2007-10-09  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: added ... to update method.
+
+2007-09-24  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: fixed sorting (thanks Michael), colors only if gdf, 
+
+2007-09-23  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: fixed coltypes issue that gave issue with
+		  example. Define column types before adding possible icon information.
+
+2007-09-13  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: fixed issue with offspring and icons
+
+2007-08-30  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R (make.row.names): Fixed issue with value being a
+		  vector in svalue<-; coerce to a data frame
+
+	* R/ggroup.R: avoid raise.on.dragmotion uner windows -- was
+		  causing dnd to flutter away
+
+	* R/gcommandline.R: fixed writelines bug with quoted filenames
+
+	* R/gnotebook.R:  fixed "[" with 0-length nbs
+
+2007-08-28  John Verzani  <jverzani@gmail.com>
+
+	* R/gwindow.R: fixed dispose method. Broken somehow?
+
+2007-08-14  John Verzani  <jverzani@gmail.com>
+
+	* R/gfile.R: implemented quote argument (... one called from
+		  gfilebrowse). 
+
+	* R/aaaGenerics.R: fixed dispose -- GetParentWindow (not GetParent)
+
+	* R/ggrid.R put 3rd popup on header (better); offset was
+		  incorrect; fixed double-click. Didn't like handler on
+			  the view.col.
+
+2007-08-13  John Verzani  <jverzani@gmail.com>
+
+	* R/gcommandline.R: fixed @editText -- use tag. THIS COULD BE
+		  REWRITTEN. IT IS UGLY!!
+
+2007-08-12  John Verzani  <jverzani@gmail.com>
+
+	* R/ggroup.R: changed raise.on.dragmotion to use focus, not window
+		  raise. This was giving issues with windows
+
+	* R/ggraphics.R: addHandlerClicked returns usr coordinates, not
+		  NDC. Conversion is not difficult
+
+2007-08-04  John Verzani  <jverzani@gmail.com>
+
+	* R/dnd.R: added override obj to adddropsoruce. This is so glabel
+		  can be a drop source
+
+2007-08-03  John Verzani  <jverzani@gmail.com>
+
+	* R/gcheckboxgroup.R: fixed addhandlerchanged
+
+	* R/gmenu.R (gtkMenuPopupHack): fixed lacking separator in
+		  menu. Use separator=TRUE to add separator.
+
+2007-08-02  John Verzani  <jverzani@gmail.com>
+
+	* R/gradio.R: added length method
+	default handler wasn't right.
+
+2007-07-30  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: coerce.with when editable added
+
+2007-07-29  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: fixed signal handling to depend on gdf or gtable.
+	Fixed addHandlerClicked for gtable to work on change in selection
+
+2007-07-28  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: fixed signal handling -- wasn't right
+
+2007-07-01  John Verzani  <jverzani@gmail.com>
+
+	* R/gdialogs.R: fixed ginput to return proper value
+
+2007-05-30  John Verzani  <jverzani@gmail.com>
+
+	* R/gspinbutton.R: fixed digits=0 to have a better default based
+		  on by
+
+2007-05-13  John Verzani  <jverzani@gmail.com>
+
+	* R/dnd.R: fixed GdkModifierType to use | in stead of vector
+
+2007-05-06  John Verzani  <jverzani@gmail.com>
+
+	* R/gcheckboxgroup.R: added handler to gcheckboxgroup
+
+2007-04-29  John Verzani  <jverzani@gmail.com>
+
+	* R/glayout.R: fixed so gl[i,j] <- "string" adds a label.
+
+	* R/icons.R: fixed so getstockiconname needs exact match, not fuzzy
+
+2007-04-15  John Verzani  <jverzani@gmail.com>
+
+	* R/ggraphics.R: changed asCairoDevice call to accomodate new
+		  cairoDevice. Still not perfect. I connect to the "map"
+			  signal. Likely this will need to change.
+			  Take advantage of ".devnum" data when
+				  asCairoDevice called to retrieve the
+					  device number.
+
+	* R/ggraphicsnotebook.R: Added handler for "switch-page" that
+		  allows device handling to happen at notebook level, not
+			  page level. This also led to simplifying the
+				  addPage code().
+
+2007-04-09  John Verzani  <jverzani@gmail.com>
+
+	* R/gbutton.R: added argument relief="none" to turn off relief of buttons.
+
+	* R/ggroup.R: added argument use.scrollwindow that if TRUE will
+		  put group inside a scroll window
+
+2007-04-02  John Verzani  <jverzani@gmail.com>
+
+	* R/gimage.R: savlue<- with stock icon name should work now
+
+2007-02-25  John Verzani  <jverzani@gmail.com>
+
+	* R/gdialogs.R: Fixed buggy with gmessage
+
+2007-02-13  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: Fixed subsetBy if names had been
+		  changed. gridObj[,name] wasn't working, so made name and
+			  index via which(name == names(gridObj))
+
+	* R/gdfnotebook.R: Fixed save -- names weren't getting applied
+		  properly if they had been changed
+
+2007-02-11  John Verzani  <jverzani@gmail.com>
+
+	* R/gnotebook.R: added destroy widget part to removePage
+		  calls. This might work with plotnotebook, etc.
+
+2007-02-06  John Verzani  <jverzani@gmail.com>
+
+	* R/gvariables.R: added gunivariatetable, and fixed some things to
+		  accomodate this.
+
+2006-09-28    <verzani@math.csi.cuny.edu>
+
+	* R/gnotebook.R: put return(TRUE) into close button handler. Was
+	giving ERROR otherwise regrading conversion of logical
+
