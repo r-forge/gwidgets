@@ -1470,8 +1470,6 @@ addDropTarget <- function(obj, targetType = "text", handler = NULL, action = NUL
 isExtant <- function(x,...) UseMethod("isExtant")
 isExtant.gWidget <- function(x,...) TRUE
 
-logfile <- "/tmp/log.txt"
-cat("", file=logfile)
 
 blockHandler <- function(obj, ID=NULL, ...) UseMethod("blockHandler")
 blockHandler.gWidget <- function(obj, ID=NULL, ...) {
