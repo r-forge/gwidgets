@@ -2,9 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW
 
+Changes for  0.0-19
+-------------------
+* debug removal take II -- r-forge mistake?
+
 Changes for  0.0-18
 --------------------
-
+* removed debugging file that hung windows
 
 Changes for  0.0-17
 --------------------
