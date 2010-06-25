@@ -539,6 +539,7 @@
 \alias{visible<--methods}
 \alias{visible<-,guiWidget-method}
 \alias{visible<-,gWidgettcltk-method} 
+\alias{visible<-,gEdittcltk-method} 
 %%
 %% --  .visible<- --
 %%
