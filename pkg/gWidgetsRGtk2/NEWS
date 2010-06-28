@@ -2,7 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
-Changes for version 0.0-66
+Changes for version 0.0-67
+--------------------------
+ 
+
+Changes for version 0.0-66 (uploaded 6-28-10)
 --------------------------
 * visible<- method for gedit. If FALSE will do password entry characters 
 * bug fix to gtree (Thanks Dieter)
