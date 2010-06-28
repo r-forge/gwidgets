@@ -28,21 +28,30 @@ setMethod(".gtree",
             force(toolkit)
 
             ## do we have first col. for icons?
-            iconFudge = ifelse(is.null(icon.FUN), 0, 1)
+            iconFudge <- ifelse(is.null(icon.FUN), 0, 1)
+            ## is second column for offspring?
+
             
             ## get base offspring
-            children = offspring(c(), offspring.data)
-            
-            lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
+            children <- offspring(c(), offspring.data)
 
+            ## we have some hacks here. First we place icon info into data frame if icon.FUN non NULL
+            ## as well, we also strip out hasOffspring info into doExpand variable. This might be found
+            ## from a function or from the second column -- if logical, or is just FALSE.
+            
+            ## we can have icons, if so we place in column 1
+            ## column 2 can have offspring data!
+            ## put in icons if needed
+            lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
             children <- lst$children
             doExpand <- lst$doExpand
-
-
-            ## ask before we put in icon info if asked
-            if(is.null(col.types))
-              col.types = children[1,]
             
+            ## ask before we put in icon info if asked
+            if(is.null(col.types)) {
+              col.types <- children[1,]
+              if(iconFudge)
+                col.types <- col.types[, -1] # shift out icon info
+            }
             
             ## get GTK types -- force first to be character
             if(length(col.types) > 1) {
@@ -51,20 +60,23 @@ setMethod(".gtree",
               types <- "gchararray"
             }
             if(iconFudge == 1)
-              types = c("gchararray", types)       # stores filename of image
+              types <- c("gchararray", types)       # stores filename of image
+
+ 
 
             
+            
             ## define treestore, sorted, view
-            treestore = gtkTreeStoreNew(types)
-            treestoreModel = gtkTreeModelSortNewWithModel(treestore)
-            view = gtkTreeViewNewWithModel(treestoreModel)
+            treestore <- gtkTreeStoreNew(types)
+            treestoreModel <- gtkTreeModelSortNewWithModel(treestore)
+            view <- gtkTreeViewNewWithModel(treestoreModel)
 
             ##  if(nrow(children) > 15)
             ##    view$SetFixedHeightMode(TRUE)       # speeds up this. FAILED?
             view$SetSearchColumn(iconFudge)         # for CTRL-f
             
             ## define cellrender
-            colHeaders = names(children)
+            colHeaders <- names(children)
             
             for(i in (1+iconFudge):ncol(children)) {
               cellrenderer = gtkCellRendererTextNew()
@@ -123,7 +135,7 @@ setMethod(".gtree",
             tag(obj,"multiple") = multiple
             tag(obj,"ncols") = length(types)
           
-            ## put in children, handler for exapnd-row
+            ## put in children, handler for expand-row
             addChildren(treestore, children, doExpand, iconFudge, parent.iter=NULL)
             
             ## now add a handler to row-exapnd
@@ -138,8 +150,6 @@ setMethod(".gtree",
                          lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
                          children <- lst$children
                          doExpand <- lst$doExpand
-
-                         
                          
                          addChildren(treestore, children, doExpand,
                                      tag(h$obj,"iconFudge"), iter)
@@ -222,15 +232,15 @@ getOffSpringIcons = function(children, hasOffspring, icon.FUN) {
 addChildren = function(treestore, children, doExpand, iconFudge, parent.iter=NULL) {
   if(nrow(children) == 0)
     return(NULL)
+
   ## load row by row, column by column
   for(i in 1:nrow(children)) {
-    iter = treestore$Append(parent=parent.iter)$iter
-    ## set for each column for(j in 1:ncol())...
-    ## write label
+    iter <- treestore$Append(parent=parent.iter)$iter
+    ## no write values for each column
     for(j in 1:ncol(children)) {
       treestore$SetValue(iter,column=j-1, children[i,j])
     }
-    ## add branch
+    ## add branch?
     if(!is.na(doExpand[i]) && doExpand[i]) {
       treestore$Append(parent=iter)
     }

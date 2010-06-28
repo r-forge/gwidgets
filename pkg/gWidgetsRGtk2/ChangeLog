@@ -1,3 +1,11 @@
+2010-06-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: bug fix for gtree when icons not set
+
+2010-06-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: put in check for delete method
+
 2010-05-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R (.setCompletion): visible(obj)<-FALSE for

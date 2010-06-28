@@ -933,7 +933,12 @@ setMethod(".delete",
 setMethod(".delete",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject",widget="RGtkObject"),
           function(obj, toolkit, widget, ...) {
-            obj$Remove(widget)
+            ## Remove after checking
+            if(!inherits(obj, "<invalid>") &&
+               !inherits(widget, "<invalid>") &&
+               widget$getParent() == obj) {
+              obj$Remove(widget)
+            }
             return(TRUE)
           })
 

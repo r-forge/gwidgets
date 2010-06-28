@@ -1,3 +1,4 @@
+* fix height on gcombobox -- sizes to fill in x axis
 * defaultWidget for buttons.
 DONE * index.search in ghelp needs to be replaced to use dynamic
        search (is ghelp even necessary anymore?)

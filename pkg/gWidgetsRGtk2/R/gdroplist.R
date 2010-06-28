@@ -132,7 +132,7 @@ setMethod(".gdroplist",
 
             ## pass in a size via width=
             if(!is.null(theArgs$width)) 
-              size(obj) <- c(width=theArgs$width,height=0)
+              size(obj) <- c(width=theArgs$width, height=0)
             
             if (!is.null(handler)) {
               id <- addhandlerchanged(obj, handler, action)
