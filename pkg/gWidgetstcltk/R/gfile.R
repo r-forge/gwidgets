@@ -27,7 +27,14 @@ setMethod(".gfile",
 
             ## this will be in the API, for now we pass in through ...
             multiple <- getWithDefault(args$multiple, FALSE)
-
+            ## pass in initial dir information, or get from filename, or get from option, or setwd
+            initialdir <- args$initialdir
+            if(is.null(initialdir) && !is.null(initialfilename))
+              initialdir <- dirname(initialfilename)
+            if(is.null(initialdir))
+              initialdir <- getOption("gWidgetstcltk::gfile_initialdir")
+            ## may still be NULL that is okay
+            options("gWidgetstcltk::gfile_initialdir"=initialdir) # store
             
             type = match.arg(type)
 
@@ -57,8 +64,23 @@ setMethod(".gfile",
               l <- list(title=text, filetypes=theFilter, multiple=multiple)
               if(!is.null(initialfilename))
                 l$initialfile=initialfilename
-
+              if(!is.null(initialdir))
+                l$initialdir=initialdir
+              
               val <- do.call("tkgetOpenFile", l)
+              if(multiple) {
+                val <- as.character(val) # empty = character(0)
+                if(length(val) == 0)
+                  val <- NA
+              } else {
+                val <- tclvalue(val)    # empty=""
+                if(val == "")
+                  val <- NA
+              }
+              ## save initialdir information
+              if(!is.na(val[1]) && nchar(val[1]) > 0)
+              options("gWidgetstcltk::gfile_initialdir"=dirname(val[1]))
+
             } else if(type == "save") {
 
               val = tkgetSaveFile(initialfile=initialfilename, title=text)
@@ -66,14 +88,12 @@ setMethod(".gfile",
             } else if(type == "selectdir") {
 
               val = tkchooseDirectory()
-
+              
             }
 
-#            val = tclvalue(val)
-            val <- as.character(val)    # handler multiple too
+
             
-            if (nchar(val) > 0) {
-              ## file selected
+            if (length(val) > 1 || nchar(val) > 0) {
               h = list(ref = NULL, action=action, file=val)
               if(!is.null(handler)) 
                 handler(h)

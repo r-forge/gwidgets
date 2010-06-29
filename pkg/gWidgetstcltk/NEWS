@@ -2,9 +2,15 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetstcltk
 
+Changes for 0.0-37
+-------------------
+* Fixes to gfile (bug fix when spaces are in filename, keeps track in
+"initialdir". This may be passed in, or is remembered between
+invocations through an option. 
+
 Changes for 0.0-36
 -------------------
- * added visible<- method for gedit. If FALSE will mask characters
+* added visible<- method for gedit. If FALSE will mask characters
 
 Changes for 0.0-35
 -------------------
