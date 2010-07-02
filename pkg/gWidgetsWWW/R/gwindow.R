@@ -39,7 +39,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
   ## XXX handle cat to STDOUT
    w$file <- file; unlink(file)
   
-  w$jscriptHandlers = list()        # handlers in parent winoow
+  w$jscriptHandlers <- list()        # handlers in parent winoow
   w$toplevel <- w
   w$..IDS <- c()
   w$..blocked_handlers <- c()           # IDs of handlers not to call
@@ -50,8 +50,10 @@ gwindow <- function(title="title",file="",visible=TRUE,
   assign(w$titlename,w, envir=.GlobalEnv)
   
    
-   ## methods
-
+  #### methods ####
+  ##' run a handler
+  ##' id is id of handler. Can be used for blocked handlers
+  ##' context is named list of values to pass into "h" object
   w$runHandler <- function(., id, context) {
     id <- as.numeric(id)
     if(! (id %in% .$..blocked_handlers)) {
@@ -183,7 +185,6 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
               out <- out +
                 'function clearSession() {' +
-#                  'alert(sessionID);};'
                   "Ext.Ajax.request({" +
                     "url: '" + gWidgetsWWWAJAXurl + "'," +
                       "method: 'POST'," +
@@ -220,7 +221,6 @@ gwindow <- function(title="title",file="",visible=TRUE,
                 out <- out + paste(readLines(f, warn=FALSE), collapse="\n") 
               }
 
-#              out <- "" ## for debug
               return(out)
             })
           )
@@ -241,6 +241,9 @@ gwindow <- function(title="title",file="",visible=TRUE,
    ## code to set up iconclasses for use with buttons, toolbar, menubar
    w$iconDir <- ""
    w$makeIconClasses <- function(.) {
+     ## XXX -- this doesn't work with IE so we cut it out.
+     return("")
+     ## old below
      out <- String()
      x <- getStockIcons();
      nms <- names(x)
@@ -251,15 +254,12 @@ gwindow <- function(title="title",file="",visible=TRUE,
                  collapse="") +
            '");' + '\n'
      }
-     ## XXX -- this doesn't work with IE so we cut it out.
-     out <- ""
-     
+
      return(out)
    }
    
    w$header <- function(.) {
      out <- String() + .$makeIconClasses()
-
      .$Cat(out)
    }
 

@@ -127,6 +127,7 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
   if(exists("..setValue",envir=., inherits=FALSE)) {
     .$..setValue(index=index, ..., value=value)
   } else {
+    
     ## store index
     if(!is.null(index)) {
       items <- .$getValues();  d <- dim(items)

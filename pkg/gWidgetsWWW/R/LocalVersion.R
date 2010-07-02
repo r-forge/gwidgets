@@ -1,13 +1,16 @@
 ##' Environment to hold different sessions
-sessionEnv <- new.env()
+assign("..gWidgets_sessionEnv", new.env(), envir=.GlobalEnv)
 
 ##' remove session form list to free up space
 clearSessionId <- function(ID) {
+  sessionEnv <- get("..gWidgets_sessionEnv",  envir=.GlobalEnv)
   sessionEnv[[ID]] <- NULL
+  assign("..gWidgets_sessionEnv", sessionEnv, envir=.GlobalEnv)
 }
 
 ##' This lists the gwindow objects and matches against ID
 getBaseObjectFromSessionID <- function(sessionID, envir=.GlobalEnv) {
+  sessionEnv <- get("..gWidgets_sessionEnv",  envir=.GlobalEnv)  
   return(sessionEnv[[sessionID]])
   ## XXX delete me
   ## get the gWindow instance matching session ID
@@ -27,8 +30,12 @@ getBaseObjectFromSessionID <- function(sessionID, envir=.GlobalEnv) {
 
 ##' return all gWindow instances
 getBaseObjectsFromEnvironment <- function(envir=.GlobalEnv) {
-  vars <- ls(envir=envir)  
-  gWindowObjects <- vars[ sapply(vars, function(i) inherits(get(i, envir=envir), "gWindow")) ]
+  vars <- ls(envir=envir)
+  ind <- sapply(vars, function(i) inherits(get(i, envir=envir), "gWindow"))
+  if(any(ind))
+    gWindowObjects <- vars[ ind ]
+  else
+    gWindowObjects <- character(0)
   return(gWindowObjects)
 }
   
@@ -136,15 +143,17 @@ processSource <- function(path, mimeType=mime_type(path)) {
   ## OK
   ## scan through e looking for gWindow object
   objs <- getBaseObjectsFromEnvironment(e)
+
   w <- get(objs[1], envir=e)
   ID <- w$sessionID
   ## assign by session ID to some list
+  sessionEnv <- get("..gWidgets_sessionEnv",  envir=.GlobalEnv)
   sessionEnv[[ID]] <- w
-  
+  assign("..gWidgets_sessionEnv", sessionEnv, envir=.GlobalEnv)
   
   ##    results <- capture.output(source(path))
   results <- paste(results, collapse="\n")
-  out <- gWidgetsWWW:::makegWidgetsWWWpage(results, script=TRUE)
+  out <- gWidgetsWWW:::makegWidgetsWWWpage(results, script=TRUE, .=w)
   ret <- list(payload=out,
               "content-type" = mimeType,
               "headers" = NULL,
@@ -491,7 +500,7 @@ mimeTypes <- function(ext) {
          )
 }
 
-makegWidgetsWWWPageHeader <- function() {
+makegWidgetsWWWPageHeader <- function(.) {
   ## XXX This needs work!! The proper combination here could make things work for Chrome, safari, Opera and IE?
   out <- paste(
 #               "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>",
@@ -521,20 +530,34 @@ makegWidgetsWWWPageHeader <- function() {
 
                "<script type='text/javascript' src='/custom/gw/ext/ext-all.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
-
-               "<script type='text/javascript' src='/custom/gw/codemirror/js/codemirror.js'></script>",
+               ## conditional includes -- values set in constructor on toplevel
+               if(exists("do_codemirror", .)) {
+                 "<script type='text/javascript' src='/custom/gw/codemirror/js/codemirror.js'></script>"
+               },
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
                ## google stuff -- move out
-               '<script type="text/javascript" src="http://www.google.com/jsapi?key="ABQIAAAAYpRTbDoR3NFWvhN4JrY1ahS5eHnalTx_x--TpGz1e2ncErJceBS7FrNBqzV5DPxkpbheIzZ9nTJPsQ"></script>',
-               '<script type="text/javascript">  google.load("maps", "2"); </script>',
+               if(exists("ggooglemaps_key", .)) {
+                 paste(
+                       ## sprintf('<script type=\'text/javascript\' src=http://www.google.com/jsapi?key=%s></script>',.$ggooglemaps_key),
+                       ## '<script type="text/javascript">  google.load("maps", "2"); </script>',
+                       "<script type='text/javascript' src='/custom/gw/ggooglemaps/ext.ux.gmappanel.js'></script>" ,
+                       '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />',
+                       '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>',
+                       sep="\n")
+               },
                ## end google
+               ## webvis stuff move out
+               if(exists("do_gwebvis", envir=.)) {
+                 "<script type='text/javascript' src='/custom/gw/protovis/protovis-d3.1.js'></script>"
+               },
+               ##
                "<script type='text/javascript'>Ext.onReady(function(){Ext.get('loading').remove();});</script>",
                sep="\n")
   return(out)
 }
 
-makegWidgetsWWWpage <- function(results, script=TRUE) {
-  out <- makegWidgetsWWWPageHeader()
+makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
+  out <- makegWidgetsWWWPageHeader(.)
   out <-  paste(out,
                if(script) {
                  "<script type='text/javascript'>"

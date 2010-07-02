@@ -12,7 +12,7 @@ gcodemirror <- function(text = NULL, width = NULL, height = 300,
   class(widget) <- c("gText", class(widget))
   
   widget$setValue(value=text)
-  
+  widget$toplevel$do_codemirror <- TRUE
 
   ## CSS
 

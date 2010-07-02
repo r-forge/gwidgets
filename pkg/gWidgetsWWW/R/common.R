@@ -138,6 +138,13 @@ escapeQuotes <- function(x) {
   }
   return(x)
 }
+
+###
+##' are we online?
+gWidgetsWWWIsOnline <- function() FALSE
+##' bypass require so that we can put optional packages in different fields in DESCRIPTION
+bypassRequire <- function(pkg)
+  pkg %in% installed.packages()[,1, drop=TRUE]
 ##################################################
 ## string class
 

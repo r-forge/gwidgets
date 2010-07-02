@@ -55,7 +55,7 @@ gcommandline <- function(container, width=NULL, graphic_size=c(480,480), ...)  {
                  evalCmdLine=function(.) {
                    
                    ## set device and directory for graphics
-
+                   ## requires  RSVGTipsDevice
                    curDevice <- getOption("device")
                    options(device=svg)
                    

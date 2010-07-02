@@ -13,33 +13,38 @@
 ## center and markers set *prior* to rendering. No methods after (possible, not done)
 
 
-
 ggooglemaps <- function(x, title = "",  type = c("map","panorama"),
                         key="ABQIAAAAYpRTbDoR3NFWvhN4JrY1ahS5eHnalTx_x--TpGz1e2ncErJceBS7FrNBqzV5DPxkpbheIzZ9nTJPsQ", # for 127.0.0.1:8079; only for local. For server, set in RApache.conf
                         container, ...) {
+
+  return(glabel("XXX This needs updating to version 3 of ggoglemaps", cont=container))
+
+  
   widget <- EXTComponent$new(toplevel=container$toplevel,
                              ..title = title,
                              ..key = key,
                              ..gmapType = match.arg(type))
   class(widget) <- c("gGoogleMap",class(widget))
+  widget$toplevel$ggooglemaps_key <- key
+  
   widget$setValue(value = x)
   ## default is 0-row set of marks
   widget$setValues(value = data.frame(lat=0,long=0,title="")[0,])
   widget$..runCmds <- c()
   
 
-  widget$scripts <- function(.) {
-    ## we run this on creation. We also set key here:
-    ## works for local
-    ## server has key set in RApache.conf
-    options(gWidgetsWWWGoogleAPI=.$..key)
+  ## widget$scripts <- function(.) {
+  ##   ## we run this on creation. We also set key here:
+  ##   ## works for local
+  ##   ## server has key set in RApache.conf
+  ##   options(gWidgetsWWWGoogleAPI=.$..key)
 
     
-    f <- system.file("javascript","GMapPanel.js", package="gWidgetsWWW")
-    out <- paste(readLines(f), collapse="\n")
+  ##   f <- system.file("javascript","GMapPanel.js", package="gWidgetsWWW")
+  ##   out <- paste(readLines(f), collapse="\n")
     
-    return(out)
-  }
+  ##   return(out)
+  ## }
 
   ## svalue -- location of map
   ## [] -- extra markers specified by lat and long vector. Names of vector gives

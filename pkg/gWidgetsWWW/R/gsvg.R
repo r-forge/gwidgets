@@ -4,6 +4,8 @@ gsvg <- function(f, width=480, height=400,
 
   ## put this into code
   ## require(RSVGTipsDevice, quietly=TRUE, warn=FALSE)
+  if(!bypassRequire("RSVGTipsDevice"))
+    return(glabel(gettext("gsvg needs the RSVGTipsDevice package to be installed"), cont=container))
 
   widget <- EXTComponent$new(toplevel=container$toplevel,
                              ..width=as.numeric(width),
@@ -62,7 +64,7 @@ gsvg <- function(f, width=480, height=400,
             "width=" + .$..width + " " +
               "height=" + .$..height + " " +
                 "type=\"image/svg+xml\">';"
-      return(out)
+      cat(out)
     } else {
       return("")
     }
