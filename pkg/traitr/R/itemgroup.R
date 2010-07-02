@@ -115,7 +115,13 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
                            else
                              lapply(.$get_items(), function(i) i$to_string())
                          },
-
+                         ## are all values valid
+                          .doc_is_valid=paste(
+                            desc("Are all items in the itemgroup valid?")
+                            ),
+                          is_valid=function(.) {
+                            all(sapply(.$get_items_only(), function(i) i$is_valid()))
+                          },
                          ## make_gui constructs the GUI from a specifed layout
                          ## parent, visible ignored
                          gui_layout=NULL, # empty by default

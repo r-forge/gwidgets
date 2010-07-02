@@ -54,7 +54,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                           ## Buttons are OK, Cancel, Help, or any other name. The button handler
                           ## is NAME_handler defined as follows
                           .doc_buttons=paste(
-                            desc("A propoerty listing the buttons to place into dialog.",
+                            desc("A property listing the buttons to place into dialog.",
                                  "A button with name <code>name</code> will call",
                                  "a method <code>name_handler</code>. Default handlers are defined for",
                                  "OK, Cancel, Help, Undo, Redo, but usually the OK handler would be ",
@@ -63,7 +63,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                                  "Use button named <code>SPACE</code> to add 12px space between",
                                  "buttons. Use button named <code>SPRING</code>to add spring between buttons (",
                                  "pushes buttons to left and right.",
-                                 "set the property default_button to make a button the default",
+                                 "set the property default_button to make a button the default"
                                  )
                             ),
                           buttons=c("OK", "Cancel","SPACE", "Help"),#, "Undo","Redo"),
@@ -133,7 +133,14 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                             }
                             widgets <- list() # where widgets are to store
                             ## make window
-                            widgets[['toplevel']] <- (w <- gwindow(.$title, parent=parent, visible=FALSE))
+                            if(.$has_slot("toplevel")) {
+                              w <- .$toplevel
+                              svalue(w) <- .$title
+                              visible(w) <- FALSE
+                            } else {
+                              w <- gwindow(.$title, parent=parent, visible=FALSE)
+                            }
+                            widgets[['toplevel']] <- w
 
                             ## uses gWidgets -- not actionItems 
                             ## menu
