@@ -531,9 +531,6 @@ makegWidgetsWWWPageHeader <- function(.) {
                "<script type='text/javascript' src='/custom/gw/ext/ext-all.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
                ## conditional includes -- values set in constructor on toplevel
-               if(exists("do_codemirror", .)) {
-                 "<script type='text/javascript' src='/custom/gw/codemirror/js/codemirror.js'></script>"
-               },
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
                ## google stuff -- move out
                if(exists("ggooglemaps_key", .)) {

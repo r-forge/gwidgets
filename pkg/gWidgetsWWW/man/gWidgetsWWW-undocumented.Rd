@@ -37,7 +37,6 @@
 \alias{gcalendar}
 \alias{gcheckbox}
 \alias{gcheckboxgroup}
-\alias{gcodemirror}
 \alias{gcombobox}
 \alias{gcommandline}
 \alias{gconfirm}
