@@ -296,7 +296,16 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            .$get_model()$remove_observer(o)
                          },
                          ## defines get/set values for model
-                         getattr=function(., key) .$model$getattr(key),
+                        .doc_getattr=paste(
+                          desc("Get the value stored in model. Coerces with <code>coerce_with</code> first"),
+                          param("key", "key from model")
+                          ),
+                         getattr=function(., key) {
+                           val <- .$model$getattr(key)
+                           if(.$has_slot("coerce_with"))
+                             val <- .$coerce_with(val)
+                           val
+                         },
                          .doc_setattr=paste(
                            desc("After validation, sets model attribute (property) which notifies the observers.",
                                 "Also updates user interface"),
@@ -422,7 +431,8 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            ),
                          to_R = function(., drop=TRUE) {
                            value <- .$do_call(sprintf("get_%s",.$name),list())
-                           if(!is.null(.$coerce_with))
+#                           if(!is.null(.$coerce_with))
+                           if(.$has_slot("coerce_with"))
                              value <- .$coerce_with(value)
                            l <- list(value)
                            if(exists("name", .))

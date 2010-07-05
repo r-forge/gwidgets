@@ -1,3 +1,7 @@
+2010-07-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/itemgroup.R: added method is_valid
+
 2010-05-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/items.R (expressionItem$coerce_with): removed call to as.character for coerce_with

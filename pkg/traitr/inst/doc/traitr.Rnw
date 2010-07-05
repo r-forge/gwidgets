@@ -1247,6 +1247,7 @@ density plot for us, in a manner similar to that of the demo.
     }
     do.call(f,l)
   }
+
 @ 
 Here we define the items and the dialog properties. There are 5 main
 items, including the graphic device. The labels are suppressed, as we

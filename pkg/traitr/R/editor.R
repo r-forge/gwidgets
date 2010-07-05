@@ -463,7 +463,7 @@ GraphEditor <- Editor$proto(class=c("GraphEditor", Editor$class),
                             make_ui=function(., container, attr=.$attr, context, ...) {
                               .$next_method("make_ui")(., container, attr, context, ...)
                               g <- .$get_widget_by_name(.$view_widget_name)
-                              dev.no <- tag(g, "device") # used within fn. scope below
+                              ## dev.no <- tag(g, "device") # used within fn. scope below
 
                               ## get RGtk2 widget now
                               ## This only works with RGtk2
@@ -474,33 +474,33 @@ GraphEditor <- Editor$proto(class=c("GraphEditor", Editor$class),
                               if(!inherits(widget, "GtkDrawingArea"))
                                 return()
                               
-                              require(RGtk2) # must be explicity loaded?
-                              ## we need to wait until the device is drawn here, otherwise we
-                              ## don't have a device number
-                              addHandler(g, "map-event", handler=function(h,...) {
-                                . <- h$action$editor
-                                .$dev_no <- tag(h$obj,"device")
-                              },
-                                         action=list(editor=.))
-                              ## handler for raising device when appropriate
-                              f <- function(., ...) {
-                                dev.no <- .$dev_no
-                                dev.set(dev.no)
-                                return(TRUE)
-                              }
+                              ## require(RGtk2) # must be explicity loaded?
+                              ## ## we need to wait until the device is drawn here, otherwise we
+                              ## ## don't have a device number
+                              ## addHandler(g, "map-event", handler=function(h,...) {
+                              ##   . <- h$action$editor
+                              ##   .$dev_no <- tag(h$obj,"device")
+                              ## },
+                              ##            action=list(editor=.))
+                              ## ## handler for raising device when appropriate
+                              ## f <- function(., ...) {
+                              ##   dev.no <- .$dev_no
+                              ##   dev.set(dev.no)
+                              ##   return(TRUE)
+                              ## }
 
-                              ## raise when click into window
-                              gSignalConnect(widget, "button-press-event", f=f, data=., user.data.first=TRUE)
-                              ## raise when motion over device
-                              widget$addEvents(GdkEventMask['enter-notify-mask'])
-                              gSignalConnect(widget, "enter-notify-event", f=f, data=., user.data.first=TRUE)
-                              ## close device when destroyed
-                              gSignalConnect(widget, "destroy-event", f=function(.,...) {
-                                dev.no <- .$dev_no
-                                dev.off(dev.no)
-                                return(TRUE)
-                              },
-                                             , data=., user.data.first=TRUE)
+                              ## ## raise when click into window
+                              ## gSignalConnect(widget, "button-press-event", f=f, data=., user.data.first=TRUE)
+                              ## ## raise when motion over device
+                              ## widget$addEvents(GdkEventMask['enter-notify-mask'])
+                              ## gSignalConnect(widget, "enter-notify-event", f=f, data=., user.data.first=TRUE)
+                              ## ## close device when destroyed
+                              ## gSignalConnect(widget, "destroy-event", f=function(.,...) {
+                              ##   dev.no <- .$dev_no
+                              ##   dev.off(dev.no)
+                              ##   return(TRUE)
+                              ## },
+                              ##                , data=., user.data.first=TRUE)
 
                               invisible()
                             },

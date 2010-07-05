@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for traitr
 
+Changes for 0.10:
+----------------
+* bug fixes to validation; new method is_valid to see if validate
+throws an error.
+
+
 Changes for 0.9:
 ----------------
 * added new function dialogMaker to create dialogs from functions. 
