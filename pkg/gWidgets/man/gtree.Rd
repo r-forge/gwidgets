@@ -1,3 +1,4 @@
+ffspring
 \name{gtree}
 \alias{gtree}
 \title{Constructor for widget to display heirarchical dta}
@@ -33,7 +34,7 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   \item{hasOffspring}{Whether an entry has an offspring is determined
   by a) if this function is non-\code{NULL} and it returns a
   \code{TRUE} value when called on the offspring data frame for this
-  row, b) if the second column of the offspring data frame is a
+  row, b) if this is NULL and the second column of the offspring data frame is a
   logical vector and for this row is \code{TRUE}. If this function is
   \code{NULL} and the second column is not a logical vector then it is
   assumed that there are no offspring.}
@@ -42,9 +43,9 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   parameterize that function.}
 
   \item{col.types}{Used to determine the type of column, given as a
-  data frame with 1 or more rows. Otherwise it
-  is determined by first row of offspring data frame. If this can
-  return an empty data frame, then this argument should be given.}
+  data frame with 1 or more rows. Otherwise it is determined by first
+  row of offspring data frame. If the offspring function can return an
+  empty data frame, then this argument should be given.}
 
   \item{icon.FUN}{An optional function to determine an icon place into
   the first column. This function gets called with the data in
@@ -64,10 +65,12 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   \item{...}{Passed to \code{add} method of container}
   \item{toolkit}{Which GUI toolkit to use}  
 }
+
 \details{
-	In an abstract sense, these trees are specified by a function
-  which produces the value at a given node from the ancestry of the
-  given node, and a function specifying if a node has offspring.
+
+  In an abstract sense, these trees are specified by a function which
+  produces the value at a given node from the ancestry of the given
+  node, and a function specifying if a node has offspring.
 
   The \code{offspring} function determines the displayed data for a
   certain node. It has signature \code{(path, offspring.data)}, where
@@ -90,10 +93,16 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   The \code{svalue} method returns the current key. If \code{index} is
   set to a column number, that column's value will be returned.
 
-  The \code{"["} method refers to the vector of keys for the selected object.
+  The \code{"["} method refers to the vector of keys for the selected
+  object. That is, svalue gives the current key, and \code{[} returns
+  the path of keys.
   
-  The \code{addhandlerdoubleclick} handler can be set to respond to
-  a double click event.
+  The \code{addHandlerDoubleclick} handler (also
+  \code{addHandlerChanged}) can be set to respond to
+  a double click event. 
+
+  The \code{addHandlerClicked} handler should be called when the
+  selection is changed.
 }
 % \value{}
 % \references{}
@@ -102,17 +111,22 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
 % \seealso{}
 \examples{
 \dontrun{
-  ## function to find offspring
-  offspring <- function(path, user.data=NULL) {
-    if(length(path) > 0) 
-      directory <- paste(getwd(),"/",paste(path,sep="/", collapse=""),sep="",collapse="")
-    else
-      directory <- getwd()
-    files <- file.info(dir(path=directory))[,c(2,1,3)]
-     
-    files <- cbind(rownames(files), files)
-    names(files)[1] <- "filename"
-    return(files)
+ ## function to find offspring
+ offspring <- function(path, user.data=NULL) {
+         if(length(path) > 0) 
+           directory <- paste(getwd(), .Platform$file.sep,
+                              paste(path,collapse=.Platform$file.sep),
+                              sep="")
+         else
+           directory <- getwd()
+
+         files <- file.info(dir(path=directory, full.names=TRUE))[,c(1,2,3)]
+         files <- data.frame(filename=dir(path=directory),
+                             isdir=files[,2],
+                             size=as.integer(files[,1]),
+                             mode=as.character(files[,3]),
+                             stringsAsFactors=FALSE)
+         return(files)
  }
  hasOffspring <- function(children,user.data=NULL, ...) {
    return(children$isdir)
@@ -126,10 +140,47 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   w <- gwindow("test with isdir showing")
   gtree(offspring, hasOffspring, icon.FUN = icon.FUN, container=w)
 
-  		   ## does not show isdir directory, as hasOffspring=NULL and
+  ## does not show isdir directory, as hasOffspring=NULL and
   ## second column is a logical
   w <- gwindow("tree test no dir column")
-  gtree(offspring, hasOffspring=NULL, icon.FUN = icon.FUN, container=w)
+  tr <- gtree(offspring, hasOffspring=NULL, icon.FUN = icon.FUN, container=w)
+
+  ## Show a fixed list using a dynamic tree
+l <- list(a=list(
+            aa=1,
+            ab=2,
+            ac=list(ac1=1)
+            ),
+          b=list(
+            ba=list(
+              baa=1,
+              bab=list(
+                baba=1
+                )
+              )
+            ))
+
+offspring <- function(path, ...) {
+  print(path)
+  ll <- l
+  if(length(path) > 0) {
+    for(i in path)
+      ll <- ll[[i]]
+  }
+  out <- data.frame(name=names(ll),
+                    hasOffspring=!sapply(ll, is.atomic),
+                    value=as.character(sapply(ll, function(i) ifelse(is.atomic(i), i, ""))),
+                    stringsAsFactors=FALSE)
+  out
+}
+
+w <- gwindow("Tree from list")
+tr <- gtree(offspring=offspring, container=w)
+
+addHandlerDoubleclick(tr, handler=function(h,...) {
+  print(svalue(h$obj))		# the key
+  print(h$obj[])		# vector of keys
+})
 }
 }
 
