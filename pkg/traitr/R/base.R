@@ -100,7 +100,8 @@ BaseTrait <- proto(
                      param("inherits","Look into ancestry?")
                    ),
                    has_slot=function(., key) {
-                     exists(as.character(key), envir=.)
+                     key <- as.character(key)
+                     exists(key, envir=.) && !is.null(get(key, envir=.))
                    },
                    .doc_has_local_slot=paste(
                      desc("Same as has_slot, only looks only in present object, not ancestors")

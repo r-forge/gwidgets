@@ -125,7 +125,6 @@ Container <- BaseTrait$proto(class=c("Container", BaseTrait$class),
                                 cont <- .$make_container(container)
                                 
                                 sapply(.$children, function(i) {
-
                                   if(is.null(i))
                                     return()
 
@@ -142,6 +141,7 @@ Container <- BaseTrait$proto(class=c("Container", BaseTrait$class),
                                   }
                                   ## Now dispatch one of several ways.
                                   ## either an Item, ItemGroup or Container
+
                                   
                                   if(is.proto(i) && i$is("Item")) {
                                     i$make_ui(cont)
@@ -490,7 +490,7 @@ aPanedGroup <- function(..., horizontal=TRUE,
 #' @export
 
 aNotebook <- function(..., close_buttons=FALSE, initial_page=1,
-                      context=NULL, attr=list(),  enabled_when, visible_when) {
+                      context=NULL, attr=list(expand=TRUE),  enabled_when, visible_when) {
   obj <- Container$proto(children=list(...),
                          type="gnotebook",
                          initial_page=initial_page,

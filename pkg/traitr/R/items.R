@@ -289,9 +289,17 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            ),
                          get_model=function(.) .$model,
                          ## observers
+                        .doc_add_observer=paste(
+                          desc("Add an observer to this item"),
+                          param("o", "an observer")
+                          ),
                          add_observer = function(., o) {
                            .$get_model()$add_observer(o)
                          },
+                        .doc_remove_observer=paste(
+                          desc("Remove an observer from this item"),
+                          param("o", "an observer")
+                          ),
                          remove_observer = function(., o) {
                            .$get_model()$remove_observer(o)
                          },
@@ -302,7 +310,7 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                           ),
                          getattr=function(., key) {
                            val <- .$model$getattr(key)
-                           if(.$has_slot("coerce_with"))
+                           if(.$has_slot("coerce_with")) # && is.function(.$coerce_with))
                              val <- .$coerce_with(val)
                            val
                          },
@@ -315,7 +323,7 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            ),
                          setattr=function(., key, value, notify_private=TRUE) {
                            ## we validate if key=name
-                           ## or if there is a validate_key method
+                           ## or if there is a validate_KEY method
                            validate_method_name = ""
                            tmp <- sprintf("validate_%s", key)
                            if(key == .$name) {
@@ -505,7 +513,10 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                          },
                          ## instance
                          .doc_instance=paste(
-                           desc("Create a new instance of an object. Shares model, controller, but not view")
+                           desc("Create a new instance of an object. Shares model, controller, but not view"),
+                           "We don't actually have decoupling of item and view, as there is only a single editor",
+                           "per item. However, through <code>instance</code> the model can be shared with a new instance",
+                           "that can have its separate editor."
                            ),
                          instance=function(.) {
                            obj <- .$proto()
@@ -961,7 +972,7 @@ choiceItem <- function(value="",
   obj <- Item$proto(name=name, label=label, help=help,
                     tooltip=tooltip,
                     value=value, values=values,
-                    properties=c("value","values"),
+                    properties=c("values"),
                     add_handler_name="addHandlerChanged",
                     by_index=by_index,
                     ...)
@@ -1697,7 +1708,7 @@ tableItem <- function(value=data.frame(V1="",V2=""),
                       label=name,      # ignored
                       help="",
                       tooltip="",
-                      attr = list(),
+                      attr = list(expand=TRUE),
                       model,  
                       editor,
                       ...

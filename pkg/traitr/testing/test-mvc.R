@@ -141,7 +141,7 @@ if(0) {
 
 ## test of nested containers
 if(0) {
-
+  ##A# XXX  FAILES
   i <- ItemGroup$proto(items=list(
                          string=stringItem(value="test", name="string", label="String"),
                          number=numericItem(value=NA, name="number",  label="number1"),
@@ -479,7 +479,7 @@ i
 ## test notebok
 if(0) {
   dlg <- aDialog(items=list(a=numericItem(0), b=numericItem(0)))
-  view=aNotebook(
+  view=aNotebook(attr=list(expand=TRUE),
     aNotebookPage("a", label="one"),
     aNotebookPage("b", label="two"),
     initial_page=2

@@ -227,14 +227,6 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                             widget <- .$get_widget('toplevel')
                             visible(widget) <- as.logical(value)
                           },
-                          ## Set status bar text if one was added at construction time
-                          .doc_update_status_text=paste(
-                            desc("Method to update text in status bar, if one exists")
-                            ),
-                          update_status_text=function(., value) {
-                            if(.$has_local_slot(".statusbar"))
-                              svalue(.$.statusbar) <- value
-                          },
                           ## add in undo/redo then call for itemGroup
                           update_ui=function(.) {
                             ## undo/redo buttons

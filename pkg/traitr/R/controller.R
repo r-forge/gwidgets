@@ -131,16 +131,31 @@ Controller <- BaseTrait$proto(class=c("Controller", BaseTrait$class),
                                  sapply(nms[grep("property_(.*)_value_changed$", nms)],
                                         function(i) {
                                           prop <-  gsub("property_(.*)_value_changed$","\\1",i)
-                                          .$get_slot(i)(., .$get_model()$getattr(prop),NA)
+##                                          XXX changed so that value is coerced -- didn't work
+                                          meth_name <- sprintf("get_%s",prop)
+                                          if(.$has_slot(meth_name))
+                                            value <- do.call(meth_name,list(.))
+                                          else
+                                            value <- .$get_model()$getattr(prop)
+                                          .$get_slot(i)(., value, NA)
+##                                          .$get_slot(i)(., .$get_model()$getattr(prop),NA)
                                         })
                                  invisible()
                                },
-                               ## when a model changes, this function is called
-                               ## if the controller is an observer
+                              ## when a model changes, this function is called
+                              ## if the controller is an observer
+                              .doc_model_value_changed=paste(
+                                desc("Method called when any item in the model is changed")
+                                ),
                               ## model_value_changed= function(.) {},
 
-                               ## When a property of a model is changed through set_PROPERTYNAME
-                               ## then methods of this type are called
+                              ## When a property of a model is changed through set_PROPERTYNAME
+                              ## then methods of this type are called
+                              .doc_property_PROPERTYNAME_value_changed=paste(
+                                desc("Method called when property <code>PROPERTYNAME</code>is changed"),
+                                param("value","New value (raw value, not coerced)"),
+                                param("old_value", "Old value of property")
+                                ),
                               ## property_PROPERTYNAME_value_changed = function(., value, old_value,...) {},
 
                                ## Private properties
