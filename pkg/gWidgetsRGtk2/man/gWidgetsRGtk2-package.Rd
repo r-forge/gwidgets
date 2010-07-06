@@ -78,8 +78,33 @@ Port of gWidgets API to RGtk2
   should be merged into the gWidgetsAPI, but for now is just here.
 
 
+  \cr
+  The \code{ggraphics} constructor provides a means to embed a graphics
+  window inside a GUI. A few quirks exist.
+  \enumerate{
+    \item Drawing a graphic too soon may result in a message about
+    \code{plot.margins too small}. This comes from trying to draw the
+    first graphic before the window is fully realized. An attempt has been
+    made to clear this up, but so far it isn't perfect.
+    \item When there are multiple
+  devices, the standard means of setting a device via \code{dev.set}
+  are supplemented by mouse handlers. Clicking in the graphics window
+  set the window as the current device. As will mousing over the window
+  (although this may be deprecated, as it isn't the most expected behaviour).
 
+  \item The handler for \code{addHandlerClicked} responds to a  mouse
+  click. The components \code{x} and \code{y} give the coordinates in
+  "usr" coordinates.
 
+  \item The handler for \code{addHandlerChanged} responds to the
+  "rubber-banding" effect that comes from trying to trace out a
+  rectangle in the graphic window. The components \code{x} and \code{y}
+  give the coordinates in "usr" coordinates. (These each have two
+  values.) The functions \code{grconvertX} and \code{grconvertY} can
+  convert to other coordinate systems for you. See the example for how
+  this can be used to update a data frame.
+
+}
 
   \bold{Methods:}\cr
   

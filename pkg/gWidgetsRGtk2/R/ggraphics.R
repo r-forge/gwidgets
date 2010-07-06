@@ -32,8 +32,6 @@ setMethod(".ggraphics",
 #            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
 
 
-##            asCairoDevice(da, pointsize = ps)
-
             ## Woah Nelly! since 2.0.1 the device needs to be realized before we can make it
             ## so we put this in: 
             ## when a device is clicked.
@@ -51,39 +49,96 @@ setMethod(".ggraphics",
 ##                }
                return(TRUE)             # don't propogate
              }, action=da)
-##             addhandler(obj,signal="unmap", handler = function(...) {
-##               print("unmap")
-##               return(TRUE)
-##             })
 
-            ## in the new cairoDevice this gives problems
-            ## close this device when unrealized
-#            addhandlerunrealize(obj,
-#                                handler = function(h,...) {
-#                                  ## if not windows, we shut down device
-#                                  if(.Platform$OS != "windows")
-#                                    try(dev.off(tag(obj,"device")), silent=TRUE)
-#                                  return(TRUE)
-  
-            ## raise this device when clicked
-##            ID = addhandlerclicked(obj,
-##               handler=function(h,...) {
-##                 ### visible(h$obj) <- TRUE
-##                 theDevice = tag(obj,"device")
-##                 dev.set(theDevice)      # working?
-##                 return(TRUE)
-##               })
+            ## handlers to raise device when clicked upon. This seems a natural way to interact with
+            ## the device
+            .getDevNo <- function(da) da$getData(".devnum")
+            .setDevNo <- function(da, ...) {
+              dev.set(.getDevNo(da))
+              ## indicate?
+              
+              FALSE}
+            ## raise when click into window
+            gSignalConnect(da, "button-press-event", f=.setDevNo)
+            ## raise when motion over device
+            da$addEvents(GdkEventMask['enter-notify-mask'])
+            gSignalConnect(da, "enter-notify-event", f=.setDevNo)
+            ## close device when destroyed
+            gSignalConnect(da, "destroy-event", f=function(da, ...) {
+              dev.off(.getDevNo(da))
+              return(FALSE)
+            })
 
-            ## does sleeping for a bit help out with the 
-            ## Error in plot.new() : figure margins too large
-            Sys.sleep(.25)
+
+            ## Add rubber banding
+            ## This code is borrowed from the excellent playwith package by Felix Andrews
+
+            ## add environment and values to da
+            e <- environment()
+            e$dragging <- FALSE
+            e$x0 <- e$y0 <- e$x <- e$y <- 0
+            da$setData("env", e)
+
+            ## need to bind drag actions: click, motion, release
+
+            gSignalConnect(da, "button-press-event", function(w, e) {
+              da <- w
+              daClearRectangle(da)
+              
+              da.w <- da$getAllocation()$width
+              da.h <- da$getAllocation()$height
+              buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
+                                              dest.x=0, dest.y=0, width=da.w, height=da.h)
+              w$setData("buf", buf)
+              env <- w$getData("env")
+              env$x0 <- env$x <- e$x
+              env$y0 <- env$y <- e$y
+              env$dragging <- TRUE
+              return(FALSE)
+            })
             
+            gSignalConnect(da, "motion-notify-event", function(w, e) {
+              env <- w$getData("env")
+              ## are we dragging?
+              if(env$dragging) {
+                daClearRectangle(w)
+                
+                env$x <- e$x
+                env$y <- e$y
+                
+                ## did we move enough? 10 pixels say
+                
+                if(max(abs(env$x - env$x0), abs(env$y - env$y0)) > 10)
+                  daDrawRectangle(w, env$x0, env$x, env$y0, env$y)
+                
+                
+              }
+              return(FALSE)
+            })
+            
+            gSignalConnect(da, "button-release-event", function(w, e) {
+              env <- w$getData("env")
+              ## remove draggin
+              env$dragging <- FALSE
+              return(FALSE)
+            })
+            
+
+
+            ## Add to container if requested
             ## attach?
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow()
               add(container, obj, ...)
             }
+
+            ## after realization, process events
+            ## fixes (sometimes) the issue with plot.new having too small margins --
+            ## got this from playwith
+            gdkWindowProcessAllUpdates()
+            while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
+            
             return(obj)
           })
 
@@ -226,12 +281,102 @@ setMethod(".addhandlerclicked",
 
               
               handler(h,...)
+              return(FALSE)
             }
             
             id = addhandler(obj,signal = "button-press-event",handler=f, action=action)
             invisible(id)
           })
 
+
+##' Changed handler is called after rubber band selection is updated
+##'
+##' Just click and drag out a rubber band
+##' The "h" list has components
+##' h$x for the x values in NDC coordinates
+##' h$y for the y values in NDC coordinates
+##' These can be converted as in grconvertX(h$x, from="ndc", to="user")
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            da <- getWidget(obj)
+            ID <- gSignalConnect(da, "button-release-event", function(w, e) {
+              coords <- drawableToNDC(w)
+              h <- list(obj=obj,
+                        action=action,
+                        x=grconvertX(coords$x, from="ndc", to="user"),
+                        y=grconvertY(coords$y, from="ndc", to="user"))
+              handler(h, ...)
+              return(FALSE)             # propagate
+            })
+          })
+
+##' Draw a rectangle for rubber banding
+daDrawRectangle <- function(da,  x0, x, y0, y) {
+
+  x <- c(x0,x); y <- c(y0, y)
+  x0 <- min(x); x <- max(x)
+  y0 <- min(y); y <- max(y)
+  
+
+  da.w <- da$getAllocation()$width
+  da.h <- da$getAllocation()$height
+
+  ## background style
+  gcb <- gdkGCNew(da$window)
+  gcb$copy(da["style"]$blackGc)
+  gcb$setRgbFgColor(gdkColorParse("gray50")$color)
+  gcb$setLineAttributes(line.width=1, line.style=GdkLineStyle["solid"],
+                        cap.style=GdkCapStyle["butt"], join.style=GdkJoinStyle["miter"])
+  ## foreground style
+  gc <- gdkGCNew(da$window)
+  gc$copy(da["style"]$blackGc)
+  gc$setRgbFgColor(gdkColorParse("black")$color)
+  gc$setRgbBgColor(gdkColorParse("gray50")$color)
+  gc$setLineAttributes(line.width=1, line.style=GdkLineStyle["double-dash"],
+                       cap.style=GdkCapStyle["butt"], join.style=GdkJoinStyle["miter"])
+  gc$setDashes(c(8, 4))
+
+  ## the entire rectangle to clear
+  rect <- as.GdkRectangle(c(x=0, y=0, width=da.w, height=da.h))
+  da$setData("lastRect", rect)
+
+  for (i in 1:2) {
+    ## draw in background color first
+    tmp.gc <- if (i == 1) gcb else gc
+    gdkDrawRectangle(da$window, gc=tmp.gc, filled=FALSE, x=x0, y=y0, width=x-x0, height=y-y0)
+  }
+
+  gdkWindowProcessAllUpdates()
+  while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
+   
+
+}
+
+##' clear all rectangles that came from rubber banding
+daClearRectangle <- function(da) {
+
+  last <- da$getData("lastRect")
+  if(!is.null(last))
+    da$window$invalidateRect(last, FALSE)
+
+  gdkWindowProcessAllUpdates()
+  while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
+}
+
+##' convert rectangle on drawable into NDC coordinates
+drawableToNDC <- function(da) {
+  ## convert to normalized device coordinates
+  e <- da$getData("env")
+  x.pixel <- sort(c(e$x0, e$x))
+  y.pixel <- sort(c(e$y0, e$y))
+  
+  da.w <- da$getAllocation()$width
+  da.h <- da$getAllocation()$height
+
+  ndc <- list(x=x.pixel/da.w, y= 1- rev(y.pixel/da.h))
+  return(ndc)
+}
 ##################################################
 ##
 ## dev.print and dev.copy2eps have a test on the device that needs Cairo added to it

@@ -1,3 +1,17 @@
+2010-07-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R Added rubber-band selection and the method
+	addHandlerChanged to set a callback for when a selection is
+	made. See the ggraphics man page for an example
+
+2010-07-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R (.setDevNo): fix to issue with plot.new before
+	drawing. Took trick from playwith
+	(.setDevNo): Put in code to raise graphic device when mouse clicks
+	or mouses over. Not sure latter is right. Perhaps focus event is
+	more natural?
+
 2010-06-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtree.R: bug fix for gtree when icons not set
