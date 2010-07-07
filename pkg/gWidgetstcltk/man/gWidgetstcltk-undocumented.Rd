@@ -545,6 +545,7 @@
 %%
 \alias{.visible<--methods}
 \alias{.visible<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
+\alias{.visible<-,gEdittcltk,guiWidgetsToolkittcltk-method}
 \alias{.visible<-,gExpandgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.visible<-,gGraphicstcltk,guiWidgetsToolkittcltk-method}
 \alias{.visible<-,gGridtcltk,guiWidgetsToolkittcltk-method}

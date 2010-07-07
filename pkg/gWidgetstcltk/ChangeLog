@@ -1,3 +1,14 @@
+2010-07-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: put in fix to handle NA values -- which were not
+	handled gracefully. Use <NA> string to represent NA
+
+	* R/gframe.R: was using old means to handle expand,
+	... arguments. Changed as this caused issues when using layouts.
+
+	* R/ggroup.R: put default borderwidth to 0 -- was 10 for some
+	reason which was too much space
+
 2010-06-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gfile.R: bug fix; new initialdir argument (hidden) 

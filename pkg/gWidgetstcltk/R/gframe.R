@@ -44,25 +44,25 @@ setMethod(".gframe",
 
             ## put in some padding. Adjust with svalue
             if(!is.null(theArgs$spacing))
-              padding <- theArgs$spacing
+              spacing <- theArgs$spacing
             else
-              padding <- 5
-            tcl(f,"configure","padding"=padding)
+              spacing <- 5
+            tkconfigure(f,"padding"=spacing)
 
+            ## XXX -- not sure this is supposed to be here
+            ## ## handle expand and anchor arguments for packing frame
+            ## argList = list(f)
             
-            ## handle expand and anchor arguments for packing frame
-            argList = list(f)
+            ## if(!is.null(theArgs$expand) && theArgs$expand) {
+            ##   argList$expand = TRUE
+            ##   argList$fill = "both"
+            ## }
+            ## if(is.null(theArgs$anchor))
+            ##   theArgs$anchor= c(-1,1)
             
-            if(!is.null(theArgs$expand) && theArgs$expand) {
-              argList$expand = TRUE
-              argList$fill = "both"
-            }
-            if(is.null(theArgs$anchor))
-              theArgs$anchor= c(-1,1)
-            
-            argList$anchor = xyToAnchor(theArgs$anchor)
+            ## argList$anchor = xyToAnchor(theArgs$anchor)
 
-            do.call("tkpack",argList)
+            ## do.call("tkpack",argList)
 
             
             obj = new("gFrametcltk",
@@ -71,7 +71,12 @@ setMethod(".gframe",
               ID=getNewID(), e = new.env())
 
             tag(obj,"title") <- text
-            
+
+            ## attach to container if there
+            if(!is.null(container)) {
+              add(container, obj,...)
+            }
+
             return(obj)
           })
 

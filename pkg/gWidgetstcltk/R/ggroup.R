@@ -78,7 +78,7 @@ setMethod(".ggroup",
               })
             } else {
               gp <- ttkframe(tt)
-              tkconfigure(gp, borderwidth=10) # XXX
+              tkconfigure(gp, borderwidth=0) # XXX
               block <- gp
               widget <- NULL      # for later
             }
@@ -100,6 +100,7 @@ setMethod(".ggroup",
             ## }
 ##            .tag(obj,toolkit, i="scrollable.widget") <- widget
             obj@e$i <- widget
+
             ## attach to container if there
             if(!is.null(container)) {
               add(container, obj,...)

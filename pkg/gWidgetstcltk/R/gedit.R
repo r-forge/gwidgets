@@ -39,9 +39,9 @@ setMethod(".gedit",
               }
             }
 
-           tt = getWidget(container)
+           tt <- getWidget(container)
 
-           entryValue = tclVar(text)
+           entryValue = tclVar("")
            entry = ttkentry(tt, width=as.character(width),
              textvariable=entryValue)
 
@@ -51,11 +51,14 @@ setMethod(".gedit",
             obj <- new("gEdittcltk",block=entry, widget=entry,
               toolkit=toolkit,ID=getNewID(), e = new.env(),
               coercewith=coerce.with)
-
            tag(obj,"tclVar") <- entryValue
-           tag(obj,"typeAhead") <- c()
+
+           ## set the initial text
+           svalue(obj) <- text
+           
 
            ## type ahead support
+           tag(obj,"typeAhead") <- c()
            tkbind(entry, "<KeyRelease>", function(W, K) {
              if(K == "BackSpace")
                return()
@@ -93,7 +96,8 @@ setMethod(".svalue",
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
 
             val = tclvalue(tag(obj,"tclVar"))
-
+            if(val == "<NA>")
+              val <- NA
             coercewith = obj@coercewith
             if(!is.null(coercewith))
               val = do.call(coercewith, list(val))
@@ -105,6 +109,9 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   if(is.na(value))
+                     value <- "<NA>"
+                   
                    tclvalue(tag(obj, "tclVar")) <- value
                    return(obj)
           })
@@ -163,8 +170,8 @@ setReplaceMethod(".size",
 
 
 ##' visible<- if FALSE, for password usage
-setReplaceMethod("visible",signature(obj="gEdittcltk"),
-          function(obj, ..., value) {
+setReplaceMethod(".visible",signature(toolkit="guiWidgetsToolkittcltk", obj="gEdittcltk"),
+          function(obj, toolkit, ..., value) {
             widget <- getWidget(obj)
             if(as.logical(value))
               tkconfigure(widget, show="")
