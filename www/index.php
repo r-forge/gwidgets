@@ -33,14 +33,56 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <!-- get project title  -->
 <!-- own website starts here, the following may be changed as you like -->
 
-  [THIS SPACE FOR RENT]
+<h3>About</h3>
+  A brief description of the packages available here:
+<ul>
+  <li>gWidgets: an API for writing graphical user interfaces (GUIs)
+  within R. The package is cross-platform (Linux/Mac/Windows) and
+  cross-toolkit (RGtk2, qtbase, tcltk). An RNews article is <a href=www.r-project.org/doc/Rnews/Rnews_2007-3.pdf>here</a>.
+</li>
+  <li>gWidgetsRGtk2: needed to use the RGtk2 package for the graphical toolkit</li>
+  <li>gWidgetstcltk: needed to use the tcltk package for the graphical toolkit</li>
+  <li>gWidgetsQt: needed to use the qtbase package for the graphical toolkit</li>
+  <li>gWidgetsrjava: needed to use the rjava package for the graphical toolkit</li>
+  <li>gWidgetsWWW: A standalone implementation of the gWidgets API that allows one to easily make dynamic web sites, either locally or, with rapache, to be served to a remote user.</li>
+  <li>pmg: This is a GUI for R, primarily aimed around its use in the
+  classroom written using gWidgets. 
+
+    Some screenshots are
+  <a href=http://www.math.csi.cuny.edu/pmg/Screenshots/>here<.a>.
+
+    The package is described <a href=www.amstat.org/publications/jse/v16n1/verzani.pdf>here</a>.
+
+</li>
+  <li>traitr: an alternate interface for programming GUIs which uses
+  gWidgets for the graphical presentation</li>
+</ul>
+
+
+<h3>Examples</h3>
+A basic hello world application can be made as follows:
+<pre>
+library(gWidgets)
+options(guiToolkit="RGtk2")    ## avoid question if more than one is installed
+w <- gwindow("Hello world example")      # top level window
+g <- ggroup(cont=w, horizontal=FALSE)    # a box container, added to w
+b <- gbutton("Click me for a message", cont=g)  # add button to container g
+addHandlerClicked(b, handler=function(h,...) {  # add interactivity through a handler
+  galert("Hello world")
+})
+</pre>
+
+The gWidgets vignette is a source of further examples.
+Addtionally, some more examples may be found <a href=http://www.math.csi.cuny.edu/pmg/gWidgets/Examples/>here</a>.
+
+
 
 
 <!-- end of project description -->
 
-<p> No content added. </p>
 
 <p> The <strong>project summary page</strong> you can find <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>here</strong></a>. </p>
 
+<p>Old web site <a href=http://wiener.math.csi.cuny.edu/pmg/>here</a>.</p>
 </body>
 </html>
