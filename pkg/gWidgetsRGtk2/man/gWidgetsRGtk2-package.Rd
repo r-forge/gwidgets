@@ -80,7 +80,12 @@ Port of gWidgets API to RGtk2
 
   \cr
   The \code{ggraphics} constructor provides a means to embed a graphics
-  window inside a GUI. A few quirks exist.
+  window inside a GUI. A right mouse popup allows one to copy the
+  graphic to the clipboard or save it to a file. The different file
+  types are limited by the function \code{gdkPixbufSave} whose manual page states
+  that jpg, png, ico and bmp are permissable.
+
+  A few quirks exist.
   \enumerate{
     \item Drawing a graphic too soon may result in a message about
     \code{plot.margins too small}. This comes from trying to draw the
@@ -89,8 +94,7 @@ Port of gWidgets API to RGtk2
     \item When there are multiple
   devices, the standard means of setting a device via \code{dev.set}
   are supplemented by mouse handlers. Clicking in the graphics window
-  set the window as the current device. As will mousing over the window
-  (although this may be deprecated, as it isn't the most expected behaviour).
+  sets the window as the current device.
 
   \item The handler for \code{addHandlerClicked} responds to a  mouse
   click. The components \code{x} and \code{y} give the coordinates in

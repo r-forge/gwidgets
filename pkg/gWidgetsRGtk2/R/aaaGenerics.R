@@ -1559,9 +1559,7 @@ setMethod(".addhandlerrightclick",
             gtktry(connectSignal(getWidget(obj),
                               signal = "button-press-event",
                               f = function(h, w, eventButton,...) {
-                                if(eventButton$GetButton() == 3 ||
-                                   (eventButton$GetState() == GdkModifierType['control-mask'] && eventButton$GetButton() == 1)
-                                   ) {
+                                if(isRightMouseClick(eventButton)) {
                                   h$handler(h,...)
                                 }
                                 return(FALSE)         # stop propagation
@@ -1779,9 +1777,7 @@ addPopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="
 add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
   f = function(h, widget, event,...) {
     ## Mac use ctrl - button 1
-    if(event$GetButton() == 3 ||
-       (event$GetState() == GdkModifierType['control-mask'] && event$GetButton() == 1) # for mac, 
-       ) {
+    if(isRightMouseClick(event)) {
       mb = gmenu(h$action$menulist, popup = TRUE, action=h$action$passedaction)
       mb = tag(mb,"mb")                 # actual widget
       gtkMenuPopupHack(mb,button = event$GetButton(),

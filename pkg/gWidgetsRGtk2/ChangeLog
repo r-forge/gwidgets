@@ -1,3 +1,8 @@
+2010-07-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R (.setDevNo): added popupmenu to save graphic to
+	clipboard and to save to a file.
+
 2010-07-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggraphics.R Added rubber-band selection and the method

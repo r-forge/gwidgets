@@ -61,8 +61,8 @@ setMethod(".ggraphics",
             ## raise when click into window
             gSignalConnect(da, "button-press-event", f=.setDevNo)
             ## raise when motion over device
-            da$addEvents(GdkEventMask['enter-notify-mask'])
-            gSignalConnect(da, "enter-notify-event", f=.setDevNo)
+#            da$addEvents(GdkEventMask['enter-notify-mask'])
+#            gSignalConnect(da, "enter-notify-event", f=.setDevNo)
             ## close device when destroyed
             gSignalConnect(da, "destroy-event", f=function(da, ...) {
               dev.off(.getDevNo(da))
@@ -82,6 +82,8 @@ setMethod(".ggraphics",
             ## need to bind drag actions: click, motion, release
 
             gSignalConnect(da, "button-press-event", function(w, e) {
+              if(isRightMouseClick(e))
+                return(FALSE)
               da <- w
               daClearRectangle(da)
               
@@ -117,12 +119,29 @@ setMethod(".ggraphics",
             })
             
             gSignalConnect(da, "button-release-event", function(w, e) {
+              if(isRightMouseClick(e))
+                 return(FALSE)
               env <- w$getData("env")
               ## remove draggin
               env$dragging <- FALSE
               return(FALSE)
             })
             
+            ## Right mouse menu
+            l <- list()
+            l$copyAction <- gaction("Copy", "Copy current graph to clipboard", icon="copy",
+                                  handler=function(h, ...) copyToClipboard(obj))
+            l$printAction <- gaction("Save", "Save current graph", icon="save",
+                                     handler=function(h,...) {
+                                       fname <- gfile(gettext("Filename to save to"), type="save")
+                                       if(nchar(fname)) {
+                                         if(!file.exists(fname) || gconfirm(gettext("Overwrite file?")))
+                                           svalue(obj) <- fname
+                                       }
+                                     })
+
+            .add3rdmousepopupmenu(obj, toolkit, l)
+                                   
 
 
             ## Add to container if requested
@@ -192,7 +211,14 @@ setReplaceMethod(".svalue",
                      file = value$file
                      extension  = value$extension
                    } else {
-                     file = value; extension = ""
+                     file = value;
+                     extension <- strsplit(file, ".", fixed = TRUE)[[1L]]
+                     if(n <- length(extension)) {
+                       extension <- extension[n]
+                     } else {
+                       cat(gettext("No file extension given"))
+                       return()
+                     }
                    }
                    ## check that filename is okay
                    if(!is.null(file) && !is.null(extension)) {
@@ -205,22 +231,18 @@ setReplaceMethod(".svalue",
                    } else {
                      return()
                    }
-                   
-                   drawarea = obj@widget
-                   
-                   parentAllocation = drawarea$GetParent()$GetAllocation()
-                   
-                   pixbuf = gdkPixbufGetFromDrawable(
-                     src=drawarea$GetWindow(),
-                     cmap=drawarea$GetColormap(),
-                     src.x = drawarea$GetAllocation()$x - parentAllocation$x,
-                     src.y = drawarea$GetAllocation()$y - parentAllocation$y,
-                     dest.x = 0,
-                     dest.y = 0,
-                     width = drawarea$GetAllocation()$width,
-                     height = drawarea$GetAllocation()$height
-                     )
-                   pixbuf$Save(filename = filename,type=extension)
+
+                   da <- getWidget(obj)
+                   da.w <- da$getAllocation()$width
+                   da.h <- da$getAllocation()$height
+                   pixbuf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
+                                                   dest.x=0, dest.y=0, width=da.w, height=da.h)
+
+
+                   out <- try(pixbuf$Save(filename = filename,type=extension), silent=TRUE)
+                   if(inherits(out, "try-error")) {
+                     galert(sprintf("Error in saving: %s", out), parent=obj)
+                   }
                    
                    ##   switch(extension,
                    ##          "ps" = dev.copy2eps.hack(file=filename,
@@ -259,15 +281,18 @@ setMethod(".addhandlerclicked",
           function(obj, toolkit, handler, action=NULL, ...) {
             ## handler has $obj for obj clicked on, $x, $y, $action
 
-            ## convert from "plt" coordinates to more familiar "usr"
-            pltToUsr = function(x,y) {
-              plt = par("plt"); usr = par("usr")
-              c( (usr[2]-usr[1])/(plt[2]-plt[1])*(x - plt[1]) + usr[1],
-                (usr[4] - usr[3])/(plt[4] - plt[3])*(y - plt[3]) + usr[3])
-            }
+            ## ## convert from "plt" coordinates to more familiar "usr"
+            ## pltToUsr = function(x,y) {
+            ##   plt = par("plt"); usr = par("usr")
+            ##   c( (usr[2]-usr[1])/(plt[2]-plt[1])*(x - plt[1]) + usr[1],
+            ##     (usr[4] - usr[3])/(plt[4] - plt[3])*(y - plt[3]) + usr[3])
+            ## }
 
 
             f = function(h,w,e,...) {
+              if(!isFirstMouseClick(e))
+                return(FALSE)
+
               allocation = w$GetAllocation()
               xclick = e$GetX()
               yclick = e$GetY()
@@ -275,10 +300,13 @@ setMethod(".addhandlerclicked",
               y = (allocation$height - yclick)/allocation$height
 
               ## put into usr coordinates
-              tmp = pltToUsr(x,y)
-              h$x = tmp[1]
-              h$y = tmp[2]
+#              tmp = pltToUsr(x,y)
+              
+#              h$x = tmp[1]
+#              h$y = tmp[2]
 
+              h$x <- grconvertX(x, from="ndc", to="user")
+              h$y <- grconvertY(y, from="ndc", to="user")
               
               handler(h,...)
               return(FALSE)
@@ -293,14 +321,16 @@ setMethod(".addhandlerclicked",
 ##'
 ##' Just click and drag out a rubber band
 ##' The "h" list has components
-##' h$x for the x values in NDC coordinates
-##' h$y for the y values in NDC coordinates
+##' h$x for the x values in user coordinates
+##' h$y for the y values in user coordinates
 ##' These can be converted as in grconvertX(h$x, from="ndc", to="user")
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             da <- getWidget(obj)
             ID <- gSignalConnect(da, "button-release-event", function(w, e) {
+              if(!isFirstMouseClick(e))
+                return(FALSE)
               coords <- drawableToNDC(w)
               h <- list(obj=obj,
                         action=action,
@@ -377,6 +407,27 @@ drawableToNDC <- function(da) {
   ndc <- list(x=x.pixel/da.w, y= 1- rev(y.pixel/da.h))
   return(ndc)
 }
+          
+
+
+          
+##' copy graphic to clipboard for cut-and-paste
+##'
+##' I can't seem to bind this to ctrl-c (or some such), as I can't get key-press-event
+##' to work on tihs widget. Here as an example:
+##' http://ruby-gnome2.sourceforge.jp/hiki.cgi?tut-gtk2-agtkw-draww
+##' da['can-focus'] <- TRUE; da$addEvents(GdkEventMask["key-press-mask"]) were tried
+## @param da either the drawable object (from a callback say) or the ggraphics object.
+copyToClipboard <- function(da) {
+  if(!is(da, "GtkDrawingArea"))
+    da <- getWidget(da)                 # ggraphics object
+  da.w <- da$getAllocation()$width
+  da.h <- da$getAllocation()$height
+  buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
+                                  dest.x=0, dest.y=0, width=da.w, height=da.h)
+  gtkClipboardGet("CLIPBOARD")$setImage(buf)
+}
+
 ##################################################
 ##
 ## dev.print and dev.copy2eps have a test on the device that needs Cairo added to it
