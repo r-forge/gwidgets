@@ -2,9 +2,14 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetstcltk
 
+Changes for 0.0-39
+-------------------
+
+
 Changes for 0.0-38
 -------------------
 * minor fixes for ggroup, gframe to get traitr to work
+* visible<- method for gedit fixed
 
 Changes for 0.0-37
 -------------------
