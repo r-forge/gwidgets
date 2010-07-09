@@ -866,6 +866,7 @@
 \alias{.addhandlerchanged,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gSubsetbyRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gLabelRGtk,guiWidgetsToolkitRGtk2-method}

@@ -95,11 +95,9 @@ Port of gWidgets API to RGtk2
   devices, the standard means of setting a device via \code{dev.set}
   are supplemented by mouse handlers. Clicking in the graphics window
   sets the window as the current device.
-
   \item The handler for \code{addHandlerClicked} responds to a  mouse
   click. The components \code{x} and \code{y} give the coordinates in
   "usr" coordinates.
-
   \item The handler for \code{addHandlerChanged} responds to the
   "rubber-banding" effect that comes from trying to trace out a
   rectangle in the graphic window. The components \code{x} and \code{y}
@@ -107,8 +105,7 @@ Port of gWidgets API to RGtk2
   values.) The functions \code{grconvertX} and \code{grconvertY} can
   convert to other coordinate systems for you. See the example for how
   this can be used to update a data frame.
-
-}
+}\cr
 
   \bold{Methods:}\cr
   

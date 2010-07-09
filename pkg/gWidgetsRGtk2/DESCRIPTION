@@ -9,6 +9,6 @@ Suggests: cairoDevice (>= 2.3.0)
 Extends: RGtk2DfEdit
 Description: Port of gWidgets API to RGtk2
 License: GPL (>= 2)
-URL: http://www.math.csi.cuny.edu/pmg
+URL: http://gwidgets.r-forge.r-project.org/
 LazyLoad: yes
 

@@ -27,7 +27,8 @@ setMethod(".ggraphics",
             if(!is.null(width) & !is.null(height))
               da$setSizeRequest(width, height)
 
-
+            theArgs <- list(...)
+            
             obj <- as.gWidgetsRGtk2(da)
 #            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
 
@@ -127,23 +128,24 @@ setMethod(".ggraphics",
               return(FALSE)
             })
             
-            ## Right mouse menu
-            l <- list()
-            l$copyAction <- gaction("Copy", "Copy current graph to clipboard", icon="copy",
-                                  handler=function(h, ...) copyToClipboard(obj))
-            l$printAction <- gaction("Save", "Save current graph", icon="save",
-                                     handler=function(h,...) {
-                                       fname <- gfile(gettext("Filename to save to"), type="save")
-                                       if(nchar(fname)) {
-                                         if(!file.exists(fname) || gconfirm(gettext("Overwrite file?")))
-                                           svalue(obj) <- fname
-                                       }
-                                     })
-
-            .add3rdmousepopupmenu(obj, toolkit, l)
-                                   
-
-
+            ## Right mouse menu -- some means to prevent
+            if(is.null(theArgs$no_popup)) {
+              l <- list()
+              l$copyAction <- gaction("Copy", "Copy current graph to clipboard", icon="copy",
+                                      handler=function(h, ...) copyToClipboard(obj))
+              l$printAction <- gaction("Save", "Save current graph", icon="save",
+                                       handler=function(h,...) {
+                                         fname <- gfile(gettext("Filename to save to"), type="save")
+                                         if(nchar(fname)) {
+                                           if(!file.exists(fname) || gconfirm(gettext("Overwrite file?")))
+                                             svalue(obj) <- fname
+                                         }
+                                       })
+              
+              .add3rdmousepopupmenu(obj, toolkit, l)
+            }
+              
+              
             ## Add to container if requested
             ## attach?
             if (!is.null(container)) {
