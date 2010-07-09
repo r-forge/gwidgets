@@ -372,7 +372,11 @@ setMethod(".addhandlerkeystroke",
                                h$key <- key
                                ## for modifiers
                                state <- event$getState()
-                               h$modifier <- names(GdkModifierType)[GdkModifierType == state]
+                               if(state == 0)
+                                 modifier <- NA
+                               else 
+                                 modifier <- gsub("-mask$", "",names(GdkModifierType)[GdkModifierType == state])
+                               h$modifier <- modifier
                                
                                if(!is.null(d$handler) &&
                                   is.function(d$handler))

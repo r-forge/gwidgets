@@ -39,7 +39,7 @@ Port of gWidgets API to RGtk2
   \cr
 
   For the data frame viewer \code{gtable} when no filtering is
-  requested, the default, the column headers can be clicked to sort
+  requested -- the default -- the column headers can be clicked to sort
   the values. Setting the index to 0 will clear the selection.
 
 
@@ -55,7 +55,7 @@ Port of gWidgets API to RGtk2
   \code{enabled<-} method can be used to set their sensitivity. The
   objects can be used with \code{gbutton} through the \code{action}
   argument, and in the lists defining menubars and toolbars. The
-  \code{key.accel} argument of the constructor is ignored for now. The
+  \code{key.accel} argument (for assigning a keyboard accelerator) of the constructor is ignored for now. The
   \code{tooltip} is OS sensitive, as it depends on the event loop
   implementation. \cr
 
@@ -65,20 +65,24 @@ Port of gWidgets API to RGtk2
   the toolbar. The latter is not portable to other gWidgets
   implementations.\cr
   
-  The \code{gvarbrowser} constructor depends on a variable \code{knowTypes}. A default is provided in the package, but this can be overridden by a) providing a hidden argument \code{knownTypes} to the constructor or b) setting an option \code{knownTypes}. In each case this is a named list whose components are character vectors listing classes of a similar nature. For example, the default value for \code{knownTypes} included \code{"data sets"= c("numeric","logical","factor","character","integer",
-  "data.frame","matrix","list",
-  "table","xtabs",
+  The \code{gvarbrowser} constructor depends on a variable
+  \code{knownTypes}. A default is provided in the package, but this can
+  be overridden by a) providing a hidden argument \code{knownTypes} to
+  the constructor or b) setting an option \code{knownTypes}. In each
+  case this is a named list whose components are character vectors
+  listing classes of a similar nature. For example, the default value
+  for \code{knownTypes} included \code{"data sets"=
+  c("numeric","logical","factor","character","integer",
+  "data.frame","matrix","list", "table","xtabs",
   "nfnGroupedData","nffGroupedData","nmGroupedData",
-  "POSIXct","POSIXlt","POSIXt"
-  )}. 
-  \cr
+  "POSIXct","POSIXlt","POSIXt" )}.  \cr
 
   The \code{gfile} constructor has the argument \code{multiple}, which if
   TRUE will allow for multiple selections of files. This feature
-  should be merged into the gWidgetsAPI, but for now is just here.
-
-
+  should be merged into the gWidgets API, but for now is passed in via
+  \code{...}.
   \cr
+
   The \code{ggraphics} constructor provides a means to embed a graphics
   window inside a GUI. A right mouse popup allows one to copy the
   graphic to the clipboard or save it to a file. The different file
@@ -103,9 +107,10 @@ Port of gWidgets API to RGtk2
   rectangle in the graphic window. The components \code{x} and \code{y}
   give the coordinates in "usr" coordinates. (These each have two
   values.) The functions \code{grconvertX} and \code{grconvertY} can
-  convert to other coordinate systems for you. See the example for how
+  convert to other coordinate systems for you. See the \code{ggraphics}
+  help page for an example of how
   this can be used to update a data frame.
-}\cr
+}
 
   \bold{Methods:}\cr
   
@@ -132,7 +137,7 @@ Port of gWidgets API to RGtk2
   \code{getToolkitWidget} method of the object. Again, this should
   work, but if not, the \pkg{gWidgetsRGtk2} can be added to a
   \code{ggroup} container first. In either case, the
-  \pkg{gWidgetsRGtk2} object should not be attached to a container, so
+  \pkg{gWidgetsRGtk2} object should not be previsously attached to a container, so
   in particular the constructor should be called with its
   \code{container} argument as \code{NULL} (the default).
 
