@@ -280,7 +280,6 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 ##' key).  }
 ##' @examples
 ##' ## a Basic example
-##' \dontrun{
 ##' dlg <- aDialog(items=list(
 ##'                  a = numericItem(0),
 ##'                  b = stringItem("a")
@@ -288,9 +287,24 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 ##'                title="The title",
 ##'                help_string="Help on this dialog"
 ##'                )
-##' dlg$make_gui()
-##' }
-##'
+##' \dontrun{dlg$make_gui()}
+##' ## example with model_value_changed
+##' plotIt <- function(n, mean, sd, ...) hist(rnorm(n, mean, sd))
+##' dlg <- aDialog(items=list(
+##'   n = integerItem(10),
+##'   mean = numericItem(0),
+##'   sd = numericItem(1),
+##'   out=graphicDeviceItem()
+##' ),
+##' buttons="Cancel",
+##' model_value_changed=function(.) if(.$is_valid()) do.call("plotIt", .$to_R())
+##' )
+##' ## validation for n, sd
+##' n <- dlg$get_item_by_name("n")
+##' n$validate <- function(., rawvalue) if(rawvalue <= 1) stop("n must be positive integer") else rawvalue
+##' sd <- dlg$get_item_by_name("sd")
+##' sd$validate <- function(., rawvalue) if(rawvalue <- 0) stop("sd must be positive") else rawvalue
+##' \dontrun{dlg$make_gui()}
 ##' @return Returns a proto object. See its \code{show\_help} method for details.
 ##' @export
 
@@ -351,16 +365,7 @@ aDialog <- function(items=list(),
 
 ##' Automatically create a dialog for a function
 ##'
-##' @export
-##' @param f function to make dialog for. Its arguments must be specified in a certain way.
-##' @param title Title for dialog window
-##' @param help_string String for help information
-##' @param make_gui If \code{TRUE} or \code{add\_graphic\_device=TRUE} then call dialogs \code{make\_gui} method
-##' @param add_graphic_device If \code{TRUE} add an graphicDeviceItem to dialog
-##' @param ... passed to \code{make\_gui} when no graphic device asked for
-##' @return Returns the dialog instance
-##' 
-##' @detail Function has a special markup for its argument. A named
+##' Function must have a special markup for its argument. A named
 ##' argument a..b is interpreted with b determining the type of item
 ##' to use. We support numeric, string, choice, range, ???  Within the
 ##' body of the function, the variable a..b should be referred to by
@@ -373,6 +378,15 @@ aDialog <- function(items=list(),
 ##' A choice items should have its default with a vector. The first argument is the selected one
 ##' A range item is specified with values c(from=., to=..., by=..., [value=from]). If value not give, then from is used.
 ##' The OK\_handler will call f.
+##' @export
+##' @param f function to make dialog for. Its arguments must be specified in a certain way.
+##' @param title Title for dialog window
+##' @param help_string String for help information
+##' @param make_gui If \code{TRUE} or \code{add\_graphic\_device=TRUE} then call dialogs \code{make\_gui} method
+##' @param add_graphic_device If \code{TRUE} add an graphicDeviceItem to dialog
+##' @param ... passed to \code{make\_gui} when no graphic device asked for
+##' @return Returns the dialog instance
+##' 
 ##' @returns Returns an instance of \code{aDialog}.
 ##' @examples
 ##' f <- function(x..numeric=1, y..string="a") print(list(x,y))

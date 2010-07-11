@@ -13,15 +13,21 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-#' @include controller.R
+##' @include controller.R
 roxygen()
 
 ## Layouts for specifying how items get put
 
-## Container objects are for layouts.
-#' Base Trait for Container objects.
-#'
-#' Basic container is a glayout object for tabular layout
+##' Base Trait for Container objects. Containers are used to make views.
+##'
+##' Basic container is a glayout object for tabular layout
+##' There are various types of layouts. The most basic, and default view, is simply
+##' \code{aContainer(...names of items...)} which simply uses a table to display the item's label
+##' and editor. Other containers can be used to adjust this.
+##'
+##' Containers have a few methods, notably the \code{is_visible} and
+##' \code{is_enabled} methods which can be used to hide or set
+##' sensitive to  user input the container's components.
 Container <- BaseTrait$proto(class=c("Container", BaseTrait$class),
                               .doc_container=paste(
                                 desc("property to store base gWidgets container")
@@ -245,15 +251,23 @@ Container <- BaseTrait$proto(class=c("Container", BaseTrait$class),
 ## Various container constructors
 
 ## this is technical to give some children a context
-#' A container to give a different context than the default for a set of items
-#'
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A container to give a different context than the default for a set of items
+##'
+##' The basic container uses the calling model (a dialog or
+##' item group) as its context. This allows the context to be
+##' overridden, which might be desirable if the items are in more than
+##' one dialog.
+##'
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' 
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' 
 aContext <- function(..., 
                      context, attr=list(),
                      enabled_when, visible_when) {
@@ -311,22 +325,36 @@ aContext <- function(...,
 }
 
 ## Basic container uses a "1" column table layout
-#' A container to give a different context than the default for a set of items
-#'
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
-
-#' @examples
-#' \dontrun{
-#' i <- anItemGroup(x=numericItem(1), y=stringItem("a"))
-#' lay <- aContainer("x","y")
-#' makeGUI(i, gui_layout=lay)
-#' }
+##' A container to give a different context than the default for a set of items
+##'
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aContainer("x","y")
+##' i$make_gui(gui_layout=lay)
+##' ## how to do enabled when
+##' lay <- aContainer("x",
+##'          aContainer("y", enabled_when=function(.) .$get_x() > 1))
+##' j <- i$instance()
+##' j$make_gui(gui_layout=lay)
+##' ## visible can be used to hide values if not needed
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aContainer("x","y")
+##' i$make_gui(gui_layout=lay)
+##' ## how to do enabled when
+##' lay <- aContainer("x",
+##'          aContainer("y", visible_when=function(.) .$get_x() > 1))
+##' k <- i$instance()
+##' k$make_gui(gui_layout=lay)
+##' }
 
 aContainer <- function(..., context=NULL, attr=list(), enabled_when, visible_when) {
   obj <- Container$proto(children=list(...),
@@ -338,16 +366,27 @@ aContainer <- function(..., context=NULL, attr=list(), enabled_when, visible_whe
 }
 
 ## Same as aContainer, only one can specify the number of columns
-#' A container for tabular layout
-#'
-#' @param no_cols Number of columns. Fills in row by row.
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A container for tabular layout
+##'
+##' The basic container has one column for the item's labels and one
+##' column for the item's editors.
+##' @param no_cols Number of columns. Fills in row by row.
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{aContainer}} constructor, \code{\link{Container}} base trait
+##' @export
+##' @examples
+##' \dontrun{
+##' ## simple example
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aTableLayout("x","y", no_cols=2)
+##' i$make_gui(gui_layout=lay)
+##' 
+##' }
 
 aTableLayout <- function(..., no_cols=1,# no_cols is really 2 * no_cols, we don't count labels here
                          context=NULL, attr=list(), enabled_when, visible_when) { 
@@ -363,17 +402,24 @@ aTableLayout <- function(..., no_cols=1,# no_cols is really 2 * no_cols, we don'
 }
 
 ## a box container
-#' A box container. Packs in items left to right or top to bottom
-#'
-#' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
-#' @param spacing Space in pixels between items
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A box container. Packs in items left to right or top to bottom
+##'
+##' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
+##' @param spacing Space in pixels between items
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(xlong=numericItem(1), y=stringItem("a")))
+##' lay <- aGroup("xlongname","y", horizontal=FALSE)  # not in nice layout
+##' i$make_gui(gui_layout=lay)
+##' }
 
 aGroup <- function(..., horizontal=TRUE, spacing=10,
                    context=NULL, attr=list(), enabled_when, visible_when) {
@@ -389,19 +435,26 @@ aGroup <- function(..., horizontal=TRUE, spacing=10,
   obj
 }
 
-#' Box container with label and visual separator to indicate grouping
-#'
-#' @param label label for frame
-#' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
-#' @param spacing Space in pixels between items
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
-
+##' Box container with label and visual separator to indicate grouping
+##'
+##' @param label label for frame
+##' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
+##' @param spacing Space in pixels between items
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aFrame(label="label frame",
+##'               aContainer("x","y"))
+##' i$make_gui(gui_layout=lay)
+##' }
 aFrame <- function(..., label="frame label", horizontal=FALSE, spacing=10,
                    context=NULL, attr=list(), enabled_when, visible_when) {
   obj <- Container$proto(class=c("Frame",Container$class),
@@ -418,18 +471,26 @@ aFrame <- function(..., label="frame label", horizontal=FALSE, spacing=10,
 
 ## XXX Need to work out how update_ui is done, put in model
 ## An expanding group with a trigger to show/hide its children
-#' Expanding group. Has trigger to show/hide its children
-#'
-#' @param label label for trigger
-#' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
-#' @param expanded Initial state of children. Set to \code{TRUE} to show
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' Expanding group. Has trigger to show/hide its children
+##'
+##' @param label label for trigger
+##' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
+##' @param expanded Initial state of children. Set to \code{TRUE} to show
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aExpandGroup(label="label frame",
+##'                     aContainer("x","y"))
+##' i$make_gui(gui_layout=lay)
+##' }
 
 anExpandGroup <- function(..., label="", horizontal=FALSE, expanded=TRUE,
                           context=NULL, attr=list(), enabled_when, visible_when) {
@@ -448,16 +509,27 @@ anExpandGroup <- function(..., label="", horizontal=FALSE, expanded=TRUE,
   obj
 }                    
 
-#' A two panel paned group container.
-#'
-#' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A two panel paned group container.
+##'
+##' @param horizontal If \code{TRUE} left to right, if \code{FALSE} top to bottom
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aPanedGroup("x","y") ## just two children,
+##' i$make_gui(gui_layout=lay)
+##' ## can put other children into a container to make just two children for aPanedGroup instance
+##' j <- aDialog(items=list(x=numericItem(1), y=stringItem("a"), z=trueFalseItem(TRUE, label="check me")))
+##' lay <- aPanedGroup("x", aContainer("y", "z"))
+##' j$make_gui(gui_layout=lay)
+##' }
 
 aPanedGroup <- function(..., horizontal=TRUE,
                         context=NULL, attr=list(), enabled_when, visible_when) {
@@ -476,18 +548,28 @@ aPanedGroup <- function(..., horizontal=TRUE,
   obj
 }
 
-#' A notebook container.
-#'
-#' Pages of notebook are aNotebookPage container, which in turn can hold other items
-#' @param close_buttons Logical indicating if close buttons should be added (RGtk2 only)
-#' @param initial_page Which page to open on
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A notebook container.
+##'
+##' Pages of notebook are made with aNotebookPage container, which in turn can hold other items.
+##' @param close_buttons Logical indicating if close buttons should be added (RGtk2 only)
+##' @param initial_page Which page to open on
+##' @param context ItemGroup or item to get context from. Typically left as NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Container}}
+##' @export
+##' @examples
+##' \dontrun{
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' lay <- aNotebook(
+##'           aNotebookPage(label="page 1", "x"),
+##'           aNotebookPage(label="page 2", "y")
+##'         )
+##' i$make_gui(gui_layout=lay)
+##' }
 
 aNotebook <- function(..., close_buttons=FALSE, initial_page=1,
                       context=NULL, attr=list(expand=TRUE),  enabled_when, visible_when) {
@@ -516,16 +598,18 @@ aNotebook <- function(..., close_buttons=FALSE, initial_page=1,
   return(obj)
 }
 
-#' A page in a notebook
-#'
-#' @param label Tab label
-#' @param context ItemGroup or item to get context from
-#' @param attr gWidget values passed to constructor
-#' @param enabled_when Method to determine when items in container should be enabled
-#' @param visible_when Method to determine when items in container should be visible
-#' @param ... children items specified by character strings
-#' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-#' @export
+##' A page in a notebook
+##'
+##' Container to hold a page within a notebook container
+##' @param label Tab label for notebook page
+##' @param context ItemGroup or item to get context from. Typically just NULL.
+##' @param attr gWidget values passed to constructor
+##' @param enabled_when Method to determine when items in container should be enabled
+##' @param visible_when Method to determine when items in container should be visible
+##' @param ... children items specified by character strings
+##' @return Returns a \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @rdname aNotebook
+##' @export
 
 aNotebookPage <- function(..., label,
                           context=NULL, attr=list(),

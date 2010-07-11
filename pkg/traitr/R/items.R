@@ -561,6 +561,7 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
 ##' @param editor Specification of editor (a view) to override default
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj\$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
 ##' @examples
 ##' ## basic usage
 ##' a <- stringItem("ac", name="x")
@@ -642,6 +643,7 @@ stringItem <- function(value="",        # initial vlaue
 ##' @param editor Specification of editor (a view) to override default
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
 ##' @examples
 ##' ## basic use
 ##' a <- numericItem(0, name="x")
@@ -851,6 +853,7 @@ expressionItem <- function(value="",
 ##' @param ... Passed to parent proto object during call to proto. The value \code{editor_style="compact"} will pass
 ##'        this information to the editor causing it to render as a checkbox.
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
 ##' @examples
 ##' ## basic usage
 ##' a <- trueFalseItem(TRUE, name="x")
@@ -922,6 +925,7 @@ trueFalseItem <- function(value=TRUE,
 ##'        Must set attr to match desired.
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
 ##' @examples
 ##' ## default is to get/set by value
 ##'          a <- choiceItem("a", letters, name="x")
@@ -1084,7 +1088,7 @@ choiceItem <- function(value="",
 
 ##' A range selection item
 ##'
-##' Editor is a slider (with spinbutton when \code{by} value is an integer.
+##' Editor is a slider (with spinbutton when \code{by} value is an integer).
 ##' @param value Default data frame for the model
 ##' @param from Starting value of range
 ##' @param to Ending value of range
@@ -1099,6 +1103,11 @@ choiceItem <- function(value="",
 ##' @param ... Passed to Item trait
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
 ##' @export
+##' @testing
+##' i <- rangeItem(value=5, from=0, to=10, by=1, name="rng")
+##' i$get_rng()
+##' i$set_rng(10)
+##' i$get_rng()
 rangeItem <- function(value="",
                       from=0,
                       to=10,
@@ -1171,10 +1180,11 @@ rangeItem <- function(value="",
 ##' @param ... Passed to parent proto object during call to proto
 ##' @export
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-## @examples
-##  d <- dateItem(name="d") ## basic usage, no initial date.
-##  ## specify intial date and reformt -- can't start in that format, it is unamibuous
-##  d <- dateItem("2000-12-25", name="d", format_string="%m-%d-%Y")
+##' @seealso \code{\link{Item}}
+##' @examples
+##' d <- dateItem(name="d") ## basic usage, no initial date.
+##' ## specify intial date and reformt -- can't start in that format, it is unamibuous
+##' d <- dateItem("2000-12-25", name="d", format_string="%m-%d-%Y")
 dateItem <- function(value="",
                      format_string,  # for format
                      name,            # for lookup with item group
@@ -1279,8 +1289,9 @@ fileItem <- function(value="",
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
 ##' @export
+##' @seealso \code{\link{Item}}
 ##' @examples
-##' ## basic button
+##' ## basic button. Note extra "." compared to gWidgets handler
 ##' b <- buttonItem("click me", action=function(.,h,...) {
 ##'        print("hi")
 ##'      })
@@ -1338,6 +1349,7 @@ buttonItem <- function(value="button label",
 
 ##' Simple label item
 ##'
+##' Useful to adding text to a dialog. Has no interactivity.
 ##' @param value Default value for the label
 ##' @param name Required name for object. Names should be unique within a group of items
 ##' @param label Same as \code{value}. Here for consistency, but needn't be used
@@ -1392,6 +1404,7 @@ labelItem <-  function(value="label",
 
 ##' Visual separator item
 ##'
+##' Creates a horizontal (or vertical if done through "attr") line to separate GUI elements.
 ##' @param name name of widget
 ##' @param attr passed to widget constructor. Use list(horizontal=FALSE) to get vertical
 ##' @param ... ignored
@@ -1501,7 +1514,7 @@ dataframeItem <- function(value="",     # name of data frame
 
 ##' Item to select a variable (or variables) from a selected data frame
 ##'
-##' This widget checks every second or so for new data frames and updates selection accordingly
+##' Needs to have a dataframeItem specified to be useful. 
 ##' @export
 ##' @param value Default data frame for the model, defaults to .GlobalEnv
 ##' @param multiple Allow multiple selection?
@@ -1514,7 +1527,17 @@ dataframeItem <- function(value="",     # name of data frame
 ##' @param model Optional model. Useful if one wishes to use same model for multiple views
 ##' @param editor Specification of editor (a view) to override default
 ##' @param ... Passed to parent proto object during call to proto
+##' @seealso \code{\link{dataframeItem}}
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
+##' @examples
+##' df <- data.frame(a=1:3, b= letters[1:3], c=rnorm(3)) # make a data frame
+##' dfI <- dataframeItem(value="df", name="dfI")
+##' dlg <- aDialog(items=list(
+##'        dfI,                      ## a bit awkward -- can't define dfI in list of items
+##' variable=variableSelectorItem(dataframeItem=dfI))
+##' )
+##' \dontrun{ dlg$make_gui() }
 variableSelectorItem <- function(value=NA,
                                  multiple=FALSE,
                                  dataframeItem, # necessary
@@ -1604,6 +1627,17 @@ variableSelectorItem <- function(value=NA,
 ##' @param editor ignored
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @note There is some thing odd that causes a display to pop up before the cairo Device if no devices are open.
+##' @seealso \code{\link{Item}}
+##' @examples
+##' graphIt <- function(n, ...) hist(rnorm(n))
+##' dlg <- aDialog(items=list(n=integerItem(10), out=graphicDeviceItem()),
+##' model_value_changed=function(.) do.call("graphIt", .$to_R()) ## ... allows out to pass in unnoticed
+##' )
+##' \dontrun{dlg$make_gui()
+##' graphIt(dlg$get_n()) ## initial graphic
+##' }
+##' 
 graphicDeviceItem <- function(value="", # ignored
                               name,            # for lookup with item group
                               label=name,      # for display
@@ -1644,6 +1678,11 @@ graphicDeviceItem <- function(value="", # ignored
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
 ##' @export
+##' @seealso \code{\link{Item}}
+##' @examples
+##' img <- system.file("images/plot.gif", package="gWidgets")   ## some image
+##' i <- imageItem(img)                                         ## constructor
+##' i$make_ui(container=gwindow("Image"))                       ## show item directly
 imageItem <- function(value="", 
                       name,            # for lookup with item group
                       label=name,      # ignored
@@ -1698,6 +1737,7 @@ imageItem <- function(value="",
 ##' @param editor ignored
 ##' @param ... Passed to parent proto object during call to proto
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
+##' @seealso \code{\link{Item}}
 ##' @examples
 ##' ## to change data frame
 ##' i <- tableItem(mtcars, name="a")
