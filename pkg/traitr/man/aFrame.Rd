@@ -14,9 +14,7 @@
 \item{enabled_when}{Method to determine when items in container should be enabled}
 \item{visible_when}{Method to determine when items in container should be visible}
 \item{...}{children items specified by character strings}}
-\examples{\dontrun{
-i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+\examples{i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 lay <- aFrame(label="label frame",
 aContainer("x","y"))
-i$make_gui(gui_layout=lay)
-}}
+\dontrun{i$make_gui(gui_layout=lay)}}
