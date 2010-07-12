@@ -16,7 +16,8 @@
 \item{model}{Optional model. Useful if one wishes to use same model for multiple views}
 \item{editor}{Specification of editor (a view) to override default}
 \item{...}{Passed to parent proto object during call to proto}}
-\examples{## basic button. Note extra "." compared to gWidgets handler
+\examples{## basic button. Note the extra "." compared to gWidgets handler
 b <- buttonItem("click me", action=function(.,h,...) {
 print("hi")
+## . is the button item -- not the dialog
 })}

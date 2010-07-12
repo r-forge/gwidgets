@@ -18,7 +18,7 @@ through a method call.
 
 The package uses the \pkg{proto} package so at some level, the R
 user must use that OO syntax. In particular, methods calls are
-done with the notation \code{obj\$method_name} and method
+done with the notation \code{obj$method_name} and method
 definitions have an initial argument \code{.} for passing in a
 reference to the \code{proto} object. (The name \code{.} is a
 convention, but can be changed to \code{self} or \code{this}, if

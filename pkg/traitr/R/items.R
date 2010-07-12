@@ -1292,9 +1292,10 @@ fileItem <- function(value="",
 ##' @export
 ##' @seealso \code{\link{Item}}
 ##' @examples
-##' ## basic button. Note extra "." compared to gWidgets handler
+##' ## basic button. Note the extra "." compared to gWidgets handler
 ##' b <- buttonItem("click me", action=function(.,h,...) {
 ##'        print("hi")
+##'        ## . is the button item -- not the dialog
 ##'      })
 
 

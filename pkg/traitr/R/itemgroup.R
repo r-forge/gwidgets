@@ -214,6 +214,9 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
                            ## call init_model for each item
                            sapply(.$items, function(j) j$do_call("init_model"))
 
+                           ## put parent into each item
+                           sapply(.$items, function(j) j$parent <- .)
+                           
                            ## make get_/set_pairs
                            sapply(.$get_items_only(), function(i) {
                              if(i$has_slot("name")) { 
