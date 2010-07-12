@@ -336,25 +336,24 @@ aContext <- function(...,
 ##' @seealso \code{\link{Container}}
 ##' @export
 ##' @examples
-##' \dontrun{
-##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aContainer("x","y")
-##' i$make_gui(gui_layout=lay)
+##' \dontrun{i$make_gui(gui_layout=lay)}
 ##' ## how to do enabled when
 ##' lay <- aContainer("x",
 ##'          aContainer("y", enabled_when=function(.) .$get_x() > 1))
 ##' j <- i$instance()
-##' j$make_gui(gui_layout=lay)
+##' \dontrun{j$make_gui(gui_layout=lay)}
 ##' ## visible can be used to hide values if not needed
 ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aContainer("x","y")
-##' i$make_gui(gui_layout=lay)
+##' \dontrun{i$make_gui(gui_layout=lay)}
 ##' ## how to do enabled when
 ##' lay <- aContainer("x",
 ##'          aContainer("y", visible_when=function(.) .$get_x() > 1))
 ##' k <- i$instance()
-##' k$make_gui(gui_layout=lay)
-##' }
+##' \dontrun{k$make_gui(gui_layout=lay)}
+##' 
 
 aContainer <- function(..., context=NULL, attr=list(), enabled_when, visible_when) {
   obj <- Container$proto(children=list(...),
@@ -380,13 +379,11 @@ aContainer <- function(..., context=NULL, attr=list(), enabled_when, visible_whe
 ##' @seealso \code{\link{aContainer}} constructor, \code{\link{Container}} base trait
 ##' @export
 ##' @examples
-##' \dontrun{
 ##' ## simple example
 ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aTableLayout("x","y", no_cols=2)
-##' i$make_gui(gui_layout=lay)
-##' 
-##' }
+##' \dontrun{i$make_gui(gui_layout=lay)}
+
 
 aTableLayout <- function(..., no_cols=1,# no_cols is really 2 * no_cols, we don't count labels here
                          context=NULL, attr=list(), enabled_when, visible_when) { 
@@ -415,11 +412,10 @@ aTableLayout <- function(..., no_cols=1,# no_cols is really 2 * no_cols, we don'
 ##' @seealso \code{\link{Container}}
 ##' @export
 ##' @examples
-##' \dontrun{
 ##' i <- aDialog(items=list(xlong=numericItem(1), y=stringItem("a")))
 ##' lay <- aGroup("xlongname","y", horizontal=FALSE)  # not in nice layout
-##' i$make_gui(gui_layout=lay)
-##' }
+##' \dontrun{i$make_gui(gui_layout=lay)}
+##' 
 
 aGroup <- function(..., horizontal=TRUE, spacing=10,
                    context=NULL, attr=list(), enabled_when, visible_when) {
@@ -449,12 +445,13 @@ aGroup <- function(..., horizontal=TRUE, spacing=10,
 ##' @seealso \code{\link{Container}}
 ##' @export
 ##' @examples
-##' \dontrun{
+##'
 ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aFrame(label="label frame",
 ##'               aContainer("x","y"))
-##' i$make_gui(gui_layout=lay)
-##' }
+##' \dontrun{i$make_gui(gui_layout=lay)}
+##'
+
 aFrame <- function(..., label="frame label", horizontal=FALSE, spacing=10,
                    context=NULL, attr=list(), enabled_when, visible_when) {
   obj <- Container$proto(class=c("Frame",Container$class),
@@ -485,12 +482,12 @@ aFrame <- function(..., label="frame label", horizontal=FALSE, spacing=10,
 ##' @seealso \code{\link{Container}}
 ##' @export
 ##' @examples
-##' \dontrun{
+##' 
 ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aExpandGroup(label="label frame",
 ##'                     aContainer("x","y"))
-##' i$make_gui(gui_layout=lay)
-##' }
+##' \dontrun{i$make_gui(gui_layout=lay)}
+##' 
 
 anExpandGroup <- function(..., label="", horizontal=FALSE, expanded=TRUE,
                           context=NULL, attr=list(), enabled_when, visible_when) {

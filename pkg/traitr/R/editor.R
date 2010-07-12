@@ -13,15 +13,15 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-#' @include container.R
+##' @include container.R
 roxygen()
 
 ## Basic editor is a view only. The Item is the model and controller
 
-#' Base Trait for Editor.
-#'
-#' An editor is a basic view for a widget, essentially a map from gedit, say, to a view
-#' @export
+##' Base Trait for Editor.
+##'
+##' An editor is a basic view for a widget, essentially a map from gedit, say, to a view. 
+##' @export
 Editor <- View$proto(class=c("Editor", View$class),
                      ## used in make_ui to make widget, or override make_ui ifd esird
                      .doc_editor_name=paste(
@@ -199,8 +199,9 @@ Editor <- View$proto(class=c("Editor", View$class),
 
 
 
-#' A Base Trait for an editor using the entry widget
-#' @export
+##' A Base Trait for an editor using the entry widget
+##'
+##' @rdname Editor
 EntryEditor <- Editor$proto(class=c("EntryEditor", Editor$class),
                             .doc_format_fun=paste(
                               desc("A function to call to coerce the value before displaying in entry",
@@ -249,10 +250,10 @@ EntryEditor <- Editor$proto(class=c("EntryEditor", Editor$class),
                             )
                             
 
-#' Base trait for editor where there are underlying values to choose from
-#'
-#' editor has regular or compact style
-#' @export
+##' Base trait for editor where there are underlying values to choose from
+##'
+##' editor has regular or compact style
+##' @rdname Editor
 ObjectWithValuesEditor <- Editor$proto(class=c("ObjectWithValuesEditor", Editor$class),
                                        editor_name="gradio",
                                        by_index=FALSE, # select, set by index
@@ -366,10 +367,10 @@ ObjectWithValuesEditor <- Editor$proto(class=c("ObjectWithValuesEditor", Editor$
                                        )
 
 
-#' Trait for Editor for TRUE/FALSE selection
-#'
-#' Editor has regular or compact style
-#' @export
+##' Trait for Editor for TRUE/FALSE selection
+##'
+##' Editor has regular or compact style
+##' @rdname Editor
 BooleanEditor <- Editor$proto(class=c("BooleanEditor", Editor$class),
                               editor_name="gcombobox",
                               make_ui=function(., container, attr=.$attr, context, ...) {
@@ -382,8 +383,9 @@ BooleanEditor <- Editor$proto(class=c("BooleanEditor", Editor$class),
                               }
                               )
 
-#' Trait for making a range editor (slider, spinbox)
-#' @export
+##' Trait for making a range editor (slider, spinbox)
+##'
+##' @rdname Editor
 RangeEditor <- Editor$proto(class=c("RangeEditor", Editor$class),
                             view_widget_name="slider",
                             ## makes combo UI. Must also adjust the
@@ -436,8 +438,9 @@ RangeEditor <- Editor$proto(class=c("RangeEditor", Editor$class),
                               )
                             
 
-#' Trait for button editor
-#' @export
+##' Trait for button editor
+##'
+##' @rdname Editor
 ButtonEditor <- Editor$proto(class=c("ButtonEditor", Editor$class),
                              editor_name="gbutton",
                              attr=list(),
@@ -447,38 +450,41 @@ ButtonEditor <- Editor$proto(class=c("ButtonEditor", Editor$class),
                              }
                              )
 
-#' Trait for embedding an image file
-#'
-#' @export
+##' Trait for embedding an image file
+##'
+##' @rdname Editor
 ImageEditor <- Editor$proto(class=c("ImageEditor", Editor$class),
                             editor_name="gimage")
 
 
-#' Trait for embedding graphics (RGtk2 only)
-#'
-#'
-#' @export
+##' Trait for embedding graphics (RGtk2 only)
+##'
+##'
+##' @rdname Editor
 GraphEditor <- Editor$proto(class=c("GraphEditor", Editor$class),
                             editor_name="ggraphics",
                             set_value_in_view = function(.,...) {},
                             get_value_from_view= function(.,...) {}
                             )
 
-#' Trait for making File browser editor
-#' @export
+##' Trait for making File browser editor
+##'
+##' @rdname Editor
 FileBrowseEditor <- Editor$proto(class=c("FileBrowseEditor", Editor$class),
                                  editor_name="gfilebrowse")
 
-#' Trait for data selection editor
-#' @export
+##' Trait for data selection editor
+##'
+##' @rdname Editor
 DateEditor <- Editor$proto(class=c("DateEditor", Editor$class),
                                  editor_name="gcalendar")
 
 
-#' Trait for displaying a table of information 
-#'
-#' No selection, just display. For selection use ChoiceItem
-#' @export
+##' Trait for displaying a table of information 
+##'
+##' No selection, just display. For selection use ChoiceItem
+##'
+##' @rdname Editor
 TableEditor <- Editor$proto(class=c("TableEditor", Editor$class),
                             editor_name="gtable",
                             attr=list(expand=TRUE),
@@ -512,15 +518,17 @@ TableEditor <- Editor$proto(class=c("TableEditor", Editor$class),
                             )
 
                               
-#' Trait for a label
-#' @export
+##' Trait for a label
+##' 
+##' @rdname Editor
 LabelEditor <- Editor$proto(class=c("LabelEditor",Editor$class),
                             editor_name="glabel"
                             )
 
 
-#' Trait for making a visual separator
-#' @export
+##' Trait for making a visual separator
+##'
+##' @rdname Editor
 SeparatorEditor <- Editor$proto(class=c("SeparatorEditor",Editor$class),
                                 editor_name="gseparator",
                                 attr=list(expand=TRUE),

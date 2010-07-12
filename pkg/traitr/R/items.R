@@ -33,10 +33,10 @@ roxygen()
 ##' An Item combines a model, view and controller interface into one convenient package.
 ##' Items may be combined into an ItemGroup or a Dialog to be shown.
 ##'
-##' The \code{make\_ui} method creates the user interface, initializes the model and the controller.
-##' The \code{init\_model}, \code{init\_controller} and \code{init\_ui} do the work.
+##' The \code{make_ui} method creates the user interface, initializes the model and the controller.
+##' The \code{init_model}, \code{init_controller} and \code{init_ui} do the work.
 ##'
-##' The model may be shared with different items. See \code{set\_model\_from\_item} or
+##' The model may be shared with different items. See \code{set_model_from_item} or
 ##' the \code{instance} proto method.
 ##'
 ##' Items implement the observer interface, so one can add observers to listen for changes to
@@ -44,9 +44,9 @@ roxygen()
 ##'
 ##' Items use the Adpater interface to link the model with the view (an Editor). The "\code{properties}"
 ##' property lists the names of model properties. One should use "value" for the special one to be
-##' returned by the method \code{to\_R}. (This method gathers values from the items after coercion)
+##' returned by the method \code{to_R}. (This method gathers values from the items after coercion)
 ##'
-##' When an item's user interface is made, the method \code{on\_realized} is called.
+##' When an item's user interface is made, the method \code{on_realized} is called.
 ##' @export
 Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                          ## item properties
@@ -1103,7 +1103,7 @@ choiceItem <- function(value="",
 ##' @param ... Passed to Item trait
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
 ##' @export
-##' @testing
+##' @examples
 ##' i <- rangeItem(value=5, from=0, to=10, by=1, name="rng")
 ##' i$get_rng()
 ##' i$set_rng(10)
@@ -1168,8 +1168,8 @@ rangeItem <- function(value="",
 ##' A calendar date selection item
 ##'
 ##' @param value Default data frame for the model
-##' @param format\_string String to specify format of date to return. See \code{\link{strftime}} for codes.
-##'        default value is \code{"\%Y-\%m-\%d"}
+##' @param format_string String to specify format of date to return. See \code{\link{strftime}} for codes.
+##'        default value is \code{'\%Y-\%m-\%d'}
 ##' @param name Required name for object. Names should be unique within a group of items
 ##' @param label Optional label, default value is the name
 ##' @param help Optional help string
@@ -1183,8 +1183,9 @@ rangeItem <- function(value="",
 ##' @seealso \code{\link{Item}}
 ##' @examples
 ##' d <- dateItem(name="d") ## basic usage, no initial date.
-##' ## specify intial date and reformt -- can't start in that format, it is unamibuous
-##' d <- dateItem("2000-12-25", name="d", format_string="%m-%d-%Y")
+##' # specify intial date and reformat -- can't start in that format, it is amibiguous
+##' d <- dateItem('2000-12-25', format_string='\%m-\%d-\%Y', name='d')
+##' 
 dateItem <- function(value="",
                      format_string,  # for format
                      name,            # for lookup with item group
@@ -1682,7 +1683,7 @@ graphicDeviceItem <- function(value="", # ignored
 ##' @examples
 ##' img <- system.file("images/plot.gif", package="gWidgets")   ## some image
 ##' i <- imageItem(img)                                         ## constructor
-##' i$make_ui(container=gwindow("Image"))                       ## show item directly
+##' \dontrun{i$make_ui(container=gwindow("Image"))}                       ## show item directly
 imageItem <- function(value="", 
                       name,            # for lookup with item group
                       label=name,      # ignored

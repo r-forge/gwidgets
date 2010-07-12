@@ -34,15 +34,15 @@ roxygen()
 ##' in whenever a property of the model has a new value. The handlers \code{property_NAME_value_changed} is called
 ##' when the main value in item NAME is changed. (An item can have several properties, one of which is the main one.)
 ##'
-##' ItemGroups have a \code{make\_gui} method to make a view of the model. The layout of this GUI can be
-##' specified through its \code{gui\_layout} argument, or by default have a simple table layout. ItemGroup instances
+##' ItemGroups have a \code{make_gui} method to make a view of the model. The layout of this GUI can be
+##' specified through its \code{gui_layout} argument, or by default have a simple table layout. ItemGroup instances
 ##' are meant to be embedded into a GUI, so the \code{cont} argument is needed to pass in the desired container.
 ##'
 ##' @export
 ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
                          ## our properties are instances of Item
                          .doc_items=paste(
-                           desc("property containing items in ItemGroup")
+                           desc("A list containing the items in ItemGroup")
                            ),
                          items=list(),
                          ## methods
@@ -383,7 +383,17 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
 ##'
 ##' An ItemGroup creates a model with properties given by the items
 ##' and a default layout for its items. This can also be specified
-##' when the layout is drawn through \code{make\_gui}.
+##' when the layout is drawn through \code{make_gui}.
+##'
+##' An item group bundles a list of items into a model. When
+##' the model is intialized, constructors to access the model values
+##' are created. These getters/setters use the item names, so that
+##' \code{get_name} will get the main value for the item with name
+##' attribute "name".
+##' 
+##' An item group has the useful methods \code{to_R} to return the
+##' values in the model as a named list and \code{get_item_by_name}
+##' to get the item from the list of items matching the name.
 ##' @param items List of Item instances or ItemGroup instances
 ##' @param name Name of ItemGroup.
 ##' @param ... Passed to ItemGroup proto trait
@@ -391,15 +401,7 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
 #     \code{\link{aDialog}} for an extension to an ItemGroup that creates its own window.
 ##' @export
 ##' @return A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.
-##' @details An item group bundles a list of items into a model. When
-##' the model is intialized, constructors to access the model values
-##' are created. These getters/setters use the item names, so that
-##' \code{get\_name} will get the main value for the item with name
-##' attribute "name".
 ##' 
-##' An item group has the useful methods \code{to\_R} to return the
-##' values in the model as a named list and \code{get\_item\_by\_name}
-##' to get the item from the list of items matching the name.
 ##' @examples
 ##' \dontrun{
 ##' ## make a simple item group, show in non-default layout

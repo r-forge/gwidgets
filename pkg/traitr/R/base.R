@@ -14,15 +14,15 @@
 ##  http://www.r-project.org/Licenses/
 
 
-#' @include helpers.R
+##' @include helpers.R
 roxygen()
 ## to quiet down some errors and notes in R CMD check:
 require(proto)
 assign(".super", NULL)
 
-
-#' Base Trait to place common properties and methods
-#' @export
+##' Base Trait to place common properties and methods
+##'
+##' 
 BaseTrait <- proto(
                     ## we add a class to our objects to mimic class behavior (not dispatch though)
                     .doc_class=paste(

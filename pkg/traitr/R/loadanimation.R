@@ -13,21 +13,22 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-#' @include dialog.R
+##' @include dialog.R
 roxygen()
 
-#' A window to show a loading animation
-#'
-#' @param message A message to display along with graphic while loading. PANGO markup is okay.
-#' @return An item group instance with a \code{close} method to call to dismiss window
-#' @export
-#' @examples
-#' ## we call, something happens, then we close
-#' \dontrun{
-#' w <- loadingAnimation()
-#' ## .... something long, like dlg$make_gui() ...
-#' w$close()
-#' }
+##' A window to show a loading animation
+##'
+##' @param message A message to display along with graphic while loading. PANGO markup is okay.
+##' @return An item group instance with a \code{close} method to call to dismiss window
+##' @export
+##' @rdname misc
+##' @examples
+##' ## we call, something happens, then we close
+##' \dontrun{
+##' w <- loadingAnimation()
+##' ## .... something long, like dlg$make_gui() ...
+##' w$close()
+##' }
 loadingAnimation <- function(message="<b>Loading...</b>") {
   ## image from http://www.ajaxload.info/
   w <- gwindow("Loading", visible=FALSE, width=200, height=100)

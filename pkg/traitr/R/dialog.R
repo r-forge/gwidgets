@@ -106,7 +106,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                           
                           ## This is a list, not named, of Items or ItemLists
                           ## names are found from items.
-                          items=list(),  # Items or ItemList
+                          items=list(),  # Items or ItemGroup
                           widget_list=list(), # where widgets are stored
                           get_widget=function(.,key) .$widget_list[[key]],
                           ## make_gui makes the dialog (make_ui has different arguments)
@@ -243,41 +243,76 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 
 ##' Create a Dialog instance
 ##'
-##' @param items List of item instances to create the model for the dialog object
-##' @param title Title of dialog
-##' @param help_string String for default Help button
-##' @param buttons Character vector of button names. "OK","Cancel","Help","Undo","Redo" are some standard ones.
-##'        "SPACE" and "SPRING" adjust the layout.
-##' @param ... How to pass in other properties and methods of the dialog object. For example \code{OK\_handler}.
-##' @details A dialog is like an item group, in that it combines items
+##' A dialog is like an item group, in that it combines items
 ##' into a model. However, an item group is meant to be incorporated
 ##' into other GUIS, whereas a dialog creates its own window and
 ##' decorations. A dialog has default buttons, and options for adding
 ##' in menubars, toolbars, and statusbars. The choice of buttons can
-##' be specified at construction. The main method that a dialog has is
-##' its \code{OK\_handler} which is a method called with the "OK"
+##' be specified at construction.
+##' \cr
+##' 
+##' Methods:
+##' 
+##' The main method that a dialog has is
+##' its \code{OK_handler} which is a method called with the "OK"
 ##' button is clicked (one of the default buttons). 
 ##'
-##' Other properties that are of interest:
+##' The getters and setters for the main value for an item are
+##' \code{get_NAME} and \code{set_NAME}, where \code{NAME} is the
+##' property name. The name is specified when the item is constructed
+##' (through its \code{name} property) or more conveniently, taken
+##' from the name of the component in the \code{items} list that
+##' defines the items for  dialog or item group.
+##' 
+##' The method \code{to_R} returns the items values as a list (useful in combination with \code{do.call}).
+##'
+##' The method \code{get_item_by_name} returns an item object by its
+##' name. (Names should be unique.) This is useful if more properties
+##' than the main one for an item are needed to be set. (The main
+##' value is set via the setter.) The example shows how the validate
+##' property of some items can be set.
+##' 
+##' The method \code{is_valid} is \code{TRUE} if all items validate and \code{FALSE} otherwise.
+##'
+##' The method \code{model_value_changed(.)} is called whenever an
+##' item property is changed either through the GUI. A dialog observes
+##' itself.
+##'
+##' For each item one can listen for changes with the method \code{property_NAME_value_changed(., value, old_value)}.
+##' 
+##' Properties that are of interest:
 ##' \enumerate{
 ##' 
-##' \item \code{status\_text} If non-NULL, when GUI is drawn, a status bar will be made with this text. The method \code{set\_status\_text} can be used to update the status
+##' \item{\code{status_text}}{ If non-NULL, when GUI is drawn, a status bar will be made with this text. The method \code{set_status_text} can be used to update the status}
 ##' 
-##' \item \code{menu\_list} A menu list to specify a menubar. (See \code{\link{gmenu}}.)
+##' \item{\code{menu_list}}{ A menu list to specify a menubar. (See \code{\link{gmenu}}.)}
 ##' 
-##' \item \code{toolbar\_list} A menu list to specify a toolbar. (See \code{\link{gtoolbar}.)
+##' \item{\code{toolbar_list}}{ A menu list to specify a toolbar. (See \code{\link{gtoolbar}}.)}
 ##' 
-##' \item \code{buttons} A list of buttons names. The default is
+##' \item{\code{buttons}}{ A list of buttons names. The default is
 ##' \code{c("OK", "SPACE", "Cancel", "Help")}. The special names
 ##' \code{SPACE} and \code{SPRING} adjust their positioning, otherwise
 ##' the values are button names. When a button is clicked, the handler
-##' \code{buttonname\_handler} is called, where the buttonname is
+##' \code{buttonname_handler} is called, where the buttonname is
 ##' stripped on non-alphanumeric characters. The basic buttons and
-##' \coe{Redo} and \code{Undo} have default handlers. Likely, only
-##' \code{OK\_handler} will need redefining. The property
-##' \code{default\_button} can be specified to make a button the
+##' \code{Redo} and \code{Undo} have default handlers. Likely, only
+##' \code{OK_handler} will need redefining. The property
+##' \code{default_button} can be specified to make a button the
 ##' default one (so that it is activated when a user presses the enter
-##' key).  }
+##' key).}
+##' }
+##' @param items List of item instances to create the model for the
+##' dialog object. May also be an item group
+##' (\code{\link{anItemGroup}}).
+##' @param title Title of dialog
+##' @param help_string String for default Help button
+##' @param buttons Character vector of button names. "OK","Cancel","Help","Undo","Redo" are some standard ones.
+##'        "SPACE" and "SPRING" adjust the layout.
+##' @param ... How to pass in other properties and methods of the dialog object. For example \code{OK_handler}.
+##' 
+##' 
+##' @return Returns a proto object. See its \code{show_help} method for details.
+##' @export
 ##' @examples
 ##' ## a Basic example
 ##' dlg <- aDialog(items=list(
@@ -305,8 +340,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 ##' sd <- dlg$get_item_by_name("sd")
 ##' sd$validate <- function(., rawvalue) if(rawvalue <- 0) stop("sd must be positive") else rawvalue
 ##' \dontrun{dlg$make_gui()}
-##' @return Returns a proto object. See its \code{show\_help} method for details.
-##' @export
+
 
 
 aDialog <- function(items=list(),
@@ -324,43 +358,6 @@ aDialog <- function(items=list(),
   dlg
 }
 
-## ##' Make GUI.
-## ##'
-## ##' Create a GUI for the items specified to the constructor. The default GUI is basic. Use a Container layout
-## ##' to design a GUI.
-## ##' @param obj A Dialog or ItemGroup instance
-## ##' @param gui.layout A Container instance to specify the layout. Default layout is a table
-## ##' @param parent For a Dialog, an optional window to center dialog on. For ItemGroup the parent container.
-## ##' @param visible For a dialog, do we view the dialog? If not, the visible method is provided
-## ##' @param ...
-## ##' @return Creates a GUI from the items as specified through the layout
-## ##' @export
-## makeGUI <- function(obj, gui.layout=NULL, parent=NULL, visible=TRUE, ...) {
-##   ## check if dialog, or item group
-##   if(!is.proto(obj))
-##     stop("Object must be proto object")
-##   if(!obj$is(c("Dialog","ItemGroup")))
-##     stop("Object must be instance of aDialog or anItemGroup")
-##   if(obj$is("Dialog"))
-##     obj$do_call("make_gui", list(gui_layout=gui.layout, parent=parent, visible=visible))
-##   if(obj$is("ItemGroup")) 
-##     obj$make_gui(gui_layout=gui.layout, cont=parent, ...)
-##   stop(sprintf("makeGUI not defined for object of class %s",obj$class))
-## }
-
-## ##' Get values from model
-## ##'
-## ##' @param obj a Dialog or ItemGroup instance
-## ##' @return A named list with the model values for each item
-## getValues <- function(obj) {
-##   ## check if dialog, or item group
-##   if(!is.proto(obj))
-##     stop("Object must be proto object")
-##   if(!obj$is(c("Dialog","ItemGroup")))
-##     stop("Object must be instance of aDialog or anItemGroup")
-
-##   obj$to_R()
-## }
 
 
 ##' Automatically create a dialog for a function
@@ -377,26 +374,26 @@ aDialog <- function(items=list(),
 ##' All arguments should have a default
 ##' A choice items should have its default with a vector. The first argument is the selected one
 ##' A range item is specified with values c(from=., to=..., by=..., [value=from]). If value not give, then from is used.
-##' The OK\_handler will call f.
-##' @export
+##' The OK_handler will call f.
 ##' @param f function to make dialog for. Its arguments must be specified in a certain way.
 ##' @param title Title for dialog window
 ##' @param help_string String for help information
-##' @param make_gui If \code{TRUE} or \code{add\_graphic\_device=TRUE} then call dialogs \code{make\_gui} method
+##' @param make_gui If \code{TRUE} or \code{add_graphic_device=TRUE} then call dialogs \code{make_gui} method
 ##' @param add_graphic_device If \code{TRUE} add an graphicDeviceItem to dialog
-##' @param ... passed to \code{make\_gui} when no graphic device asked for
+##' @param ... passed to \code{make_gui} when no graphic device asked for
 ##' @return Returns the dialog instance
 ##' 
-##' @returns Returns an instance of \code{aDialog}.
+##' @return Returns an instance of \code{aDialog}.
+##' @export
 ##' @examples
 ##' f <- function(x..numeric=1, y..string="a") print(list(x,y))
-##' dialogMaker(f)
+##' \dontrun{dialogMaker(f)}
 ##' ## can have missing arguments
 ##' f <- function(x, y..numeric=1) print(list(x,y))
-##' dialogMaker(f)
+##' \dontrun{dialogMaker(f)}
 ##' ## a choice item. Sizing is funny for tables
 ##' f <- function(x..choice=letters) print(x)
-##' dialogMaker(f)
+##' \dontrun{dialogMaker(f)}
 ##' ## range items
 ##' f <- function(x..numeric=0, mu..numeric=0,
 ##'               alternative..choice=c("two.sided","less","greater"),
@@ -404,8 +401,8 @@ aDialog <- function(items=list(),
 ##'               out <- capture.output(t.test(x, alt=alternative, conf.level=conf.level))
 ##'               print(out)
 ##' }
-##' dialogMaker(f, title="CI from t.test with summarized values")
-##' @export
+##' \dontrun{dialogMaker(f, title="CI from t.test with summarized values")}
+##' 
 dialogMaker <- function(f, title="Dialog", help_string="",
                         make_gui=TRUE,
                         add_graphic_device=FALSE,
