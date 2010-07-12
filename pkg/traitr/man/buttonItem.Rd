@@ -5,6 +5,7 @@
     tooltip="", attr, model, editor, ...)}
 \description{Button item to initiate an action}
 \value{A \code{proto} object. Call \code{obj$show_help()} to view its methods and properties.}
+\seealso{\code{\link{Item}}}
 \arguments{\item{value}{Default value for the model}
 \item{action}{function to call when clicked. function(., h, ...) {} (like gWidgets with extra .)}
 \item{name}{Required name for object. Names should be unique within a group of items}
@@ -15,7 +16,7 @@
 \item{model}{Optional model. Useful if one wishes to use same model for multiple views}
 \item{editor}{Specification of editor (a view) to override default}
 \item{...}{Passed to parent proto object during call to proto}}
-\examples{## basic button
+\examples{## basic button. Note extra "." compared to gWidgets handler
 b <- buttonItem("click me", action=function(.,h,...) {
 print("hi")
 })}
