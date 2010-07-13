@@ -22,7 +22,7 @@ assign(".super", NULL)
 
 ##' Base Trait to place common properties and methods
 ##'
-##' 
+##' @export
 BaseTrait <- proto(
                     ## we add a class to our objects to mimic class behavior (not dispatch though)
                     .doc_class=paste(

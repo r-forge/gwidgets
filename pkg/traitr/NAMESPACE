@@ -1,3 +1,4 @@
+export(BaseTrait)
 export(aContext)
 export(aContainer)
 export(aTableLayout)

@@ -288,6 +288,7 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
                          instance=function(.) {
                            obj <- .$proto()
                            obj$items <- lapply(obj$items, function(i) i$instance())
+                           sapply(obj$items, function(i) i$parent <- obj) # add parent
                            if(!is.null(obj$gui_layout)) {
                              obj$gui_layout <- obj$gui_layout$instance()
 ##                              ## gui_layout children need to be instances too

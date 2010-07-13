@@ -48,4 +48,7 @@ tb <- choiceItem("a", letters[1:26], name="x", attr=list(size=c(width=300,height
 ## Multiple and size determines widget type
 ## smaller uses checkboxgroup
 cbg <- choiceItem("a", letters[1:5], multiple=TRUE)
-tbl <- choiceItem("a", letters[1:15], multiple=TRUE)}
+## larger uses table
+tbl <- choiceItem("a", letters[1:15], multiple=TRUE)
+## place values in data frame to avoid generic header
+tbl <- choiceItem("a", data.frame("Column header"=letters[1:15]), multiple=TRUE)}

@@ -63,12 +63,13 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                                  "Use button named <code>SPACE</code> to add 12px space between",
                                  "buttons. Use button named <code>SPRING</code>to add spring between buttons (",
                                  "pushes buttons to left and right.",
-                                 "set the property default_button to make a button the default"
+                                 "set the property default_button to make a button the default.",
+                                 "Use character(0) for no default buttons"
                                  )
                             ),
                           buttons=c("OK", "Cancel","SPACE", "Help"),#, "Undo","Redo"),
                           doc_default_button=paste(
-                            desc("Name of default button. Leave empty for none.")
+                            desc("Name of default button. Leave empty (<code>NULL</code>) for none.")
                             ),
                           default_button=NULL,
                           ## Default button handlers. OK_handler needs to be

@@ -336,7 +336,7 @@ aContext <- function(...,
 ##' @seealso \code{\link{Container}}
 ##' @export
 ##' @examples
-##' ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
+##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
 ##' lay <- aContainer("x","y")
 ##' \dontrun{i$make_gui(gui_layout=lay)}
 ##' ## how to do enabled when
@@ -484,7 +484,7 @@ aFrame <- function(..., label="frame label", horizontal=FALSE, spacing=10,
 ##' @examples
 ##' 
 ##' i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
-##' lay <- aExpandGroup(label="label frame",
+##' lay <- anExpandGroup(label="label frame",
 ##'                     aContainer("x","y"))
 ##' \dontrun{i$make_gui(gui_layout=lay)}
 ##' 

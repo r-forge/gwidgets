@@ -84,6 +84,11 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            desc("List of attributes to pass to constructor of editor. Include size=c(x,y) to set size")
                            ),
                          attr=list(),         # for layout of item
+                        ## parent
+                        .doc_parent=paste(
+                          desc("When item is member of itemGroup, this points to itemGroup, otherwise NULL")
+                          ),
+                        parent=NULL,
                         ## on realized method
                          .doc_on_realized=paste(
                            desc("Method called when widget is realized."),
@@ -522,6 +527,7 @@ Item <- BaseTrait$proto(class=c("Item", "Model", BaseTrait$class),
                            obj <- .$proto()
                            if(!is.null(.$editor)) 
                              obj$editor <- .$editor$instance()
+                           obj$parent <- NULL # clear out parent
                            obj
                          },
                          ## used to update UI
@@ -949,9 +955,10 @@ trueFalseItem <- function(value=TRUE,
 ##' ## Multiple and size determines widget type
 ##' ## smaller uses checkboxgroup
 ##'          cbg <- choiceItem("a", letters[1:5], multiple=TRUE)
-#" ## larger uses table
+##' ## larger uses table
 ##'          tbl <- choiceItem("a", letters[1:15], multiple=TRUE)
-
+##' ## place values in data frame to avoid generic header
+##'          tbl <- choiceItem("a", data.frame("Column header"=letters[1:15]), multiple=TRUE)
 choiceItem <- function(value="",
                        values="",       # items to choose from
                        by_index=FALSE,  # set/get by index or value
@@ -1278,13 +1285,24 @@ fileItem <- function(value="",
 
 ##' Button item to initiate an action
 ##'
+##' While dialogs have a \code{buttons} property for the main buttons,
+##' this item allows other buttons to be used within a dialog. One
+##' must define an action (a callback) to call  when the button is
+##' clicked. There are some issues with how this method is defined and
+##' where it is evaluated.
 ##' @param value Default value for the model
-##' @param action function to call when clicked. function(., h, ...) {} (like gWidgets with extra .)
+##' @param action function to call when clicked. Signature is
+##' \code{function(., h, ...)  {}} (like gWidgets with extra leading
+##' \code{.}). The "\code{.}" is the button item, not the itemgroup or
+##' dialog that this item may be a part of. When that is the case,
+##' \code{.$parent} refers to the parent itemgroup or dialog. The
+##' evaluation environment is not that where the action is
+##' defined. This can lead to unexpected sources of error.
 ##' @param name Required name for object. Names should be unique within a group of items
-##' @param label Optional label, default value is the name
+##' @param label Optional label, default value is the name. Use "" to have not label text.
 ##' @param help Optional help string
 ##' @param tooltip Optional tooltip to display
-##' @param attr A list of attributes to pass to widget on construction. Eg. attr=list(size=c(100,200))
+##' @param attr A list of attributes to pass to widget on construction. Eg. \code{attr=list(size=c(100,200))}
 ##' @param model Optional model. Useful if one wishes to use same model for multiple views
 ##' @param editor Specification of editor (a view) to override default
 ##' @param ... Passed to parent proto object during call to proto
@@ -1295,8 +1313,19 @@ fileItem <- function(value="",
 ##' ## basic button. Note the extra "." compared to gWidgets handler
 ##' b <- buttonItem("click me", action=function(.,h,...) {
 ##'        print("hi")
-##'        ## . is the button item -- not the dialog
+##'
 ##'      })
+##' ## An example within a dialog
+##' dlg <- aDialog(items=list(
+##'                 a = stringItem(""),
+##'                 b = buttonItem("Click me", label="", action=function(., h, ...) {
+##'                   galert(sprintf("Item a is \%s\n", .$parent$get_a()))
+##'                 })
+##'                 ),
+##'               title="A dialog with a button item",
+##'               buttons=c()               # no standard buttons
+##'               )
+##'    \dontrun{dlg$make_gui()}
 
 
 buttonItem <- function(value="button label",
@@ -1329,9 +1358,9 @@ buttonItem <- function(value="button label",
     widget <- ed$get_widget_by_name(ed$view_widget_name)
     addHandlerClicked(widget, function(h,...) {
       . <- h$action
-      f <- .$get_action()   # use item$set_action(function(.,h,...) {}) to change
-      if(!is.null(f))
-        f(.,h,...)
+#      f <- .$get_action()   # use item$set_action(function(.,h,...) {}) to change
+      if(.$has_slot("action"))
+        .$get_action()(.,h,...)
     }, action=.)
   }
 

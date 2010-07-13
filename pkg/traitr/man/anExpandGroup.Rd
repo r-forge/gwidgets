@@ -15,6 +15,6 @@
 \item{visible_when}{Method to determine when items in container should be visible}
 \item{...}{children items specified by character strings}}
 \examples{i <- aDialog(items=list(x=numericItem(1), y=stringItem("a")))
-lay <- aExpandGroup(label="label frame",
+lay <- anExpandGroup(label="label frame",
 aContainer("x","y"))
 \dontrun{i$make_gui(gui_layout=lay)}}
