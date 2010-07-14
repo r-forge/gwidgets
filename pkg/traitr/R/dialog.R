@@ -151,7 +151,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                               widgets[['toolbar']] <- gtoolbar(.$toolbar_list, container = w)
                             
                             ## main part
-                            g <- ggroup(horizontal=FALSE, cont=widgets[['toplevel']], spacing=10)
+                            g <- ggroup(horizontal=FALSE, cont=widgets[['toplevel']])
 
 
                             .$next_method("make_gui")(., container=g, gui_layout=gui_layout)

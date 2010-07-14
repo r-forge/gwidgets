@@ -35,7 +35,7 @@ Container <- BaseTrait$proto(class=c("Container", BaseTrait$class),
                               container=NULL,  # stores base container
                               children=list(),     # stores children
                               type="glayout",
-                              attr=list(),
+                              attr=list(spacing=0),
                               .doc_context=paste(
                                 desc("Context for container to look up values, such as whether to draw a label",
                                      "Usually inherited from calling object")
