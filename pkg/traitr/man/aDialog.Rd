@@ -106,10 +106,10 @@ scope_example <- function() {
 a <- function(...) print("hi")
 dlg <- aDialog(items=list(),
 buttons=c("a","b","c"),
-a_handler=function(.) a(),
+a_handler=function(.) a(),   ## like [[<-, not $<-
 title="a, c work; b doesn't"
 )
-dlg$b_handler=function(.) a()
-dlg[['c_handler']]=a
+dlg$b_handler <- function(.) a()  ## $<- has unbound variables found in dlg
+dlg[['c_handler']] <- a           ## [[<- uses lexical scope for unbound variables
 }
 \dontrun{scope_example()}}

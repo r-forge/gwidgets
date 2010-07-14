@@ -944,6 +944,7 @@ The top-level container is constructed by a call to the
 \meth{make\_gui} method. To close the GUI programmatically, the
 \meth{close\_gui} method is available.
 
+
 \subsection{Menubars, toolbars, statusbars}
 \label{sec:menub-toolb-stat}
 
@@ -1005,6 +1006,32 @@ would call the handler \meth{Clickme\_handler}.
 The special button name ``SPACE'' will insert a 10 pixel space. The
 special button name ``SPRING'' will insert a ``spring'' between the buttons.
 
+\subsection{Scope}
+\label{sec:scope}
+
+The underlying \code{proto} package treats methods differently than
+may be expected. In particular, sometimes lookup for a variable
+happens in a different place than expected. For example:
+
+<<>>=
+fun <- function() {
+  a <- 1
+  dlg <- aDialog(items=list(),
+                 a=2,
+                 meth1=function(.) a)
+  dlg$meth2 <- function(.) a
+  dlg[['meth3']] <- function(.) a
+  c("1"=dlg$meth1(), "2"=dlg$meth2(), "3"=dlg$meth3())
+}
+fun()
+@ 
+In \code{meth1} and \code{meth2} the environment of passed in methods is the lexical
+environment, so the unbound variable \code{a} is found from the
+enclosing envrionment of \code{fun}, whereas in \code{meth2} the
+environment is that of the \pkg{proto} object \code{dlg}, which has
+the value of \code{2} defined for \code{a}. the moral here, is you
+likely want to use \verb+[[<-+ for assignment of new methods if
+done after the time of construction.
 
 % http://yuml.me/diagram/scruffy/class/[ItemGroup] -> [Dialog|
 % BUTTONNAME_handler; make_gui; set_status_text; visible; update_ui; close_gui   | title;
