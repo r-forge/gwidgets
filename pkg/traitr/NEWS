@@ -10,7 +10,8 @@ Changes for 0.9:
   throws an error.
 * bug fixes for buttonItem (thanks to J Hallman for pointing out issues)
 * improvements in documentation
-
+* fix issue with scope and dialogs so that user defined methods have
+lexical scope when passing into aDialog.
 
 Changes for 0.8:
 ----------------

@@ -1360,7 +1360,7 @@ buttonItem <- function(value="button label",
       . <- h$action
 #      f <- .$get_action()   # use item$set_action(function(.,h,...) {}) to change
       if(.$has_slot("action"))
-        .$get_action()(.,h,...)
+        .[['action']](.,h,...)
     }, action=.)
   }
 
@@ -1374,6 +1374,9 @@ buttonItem <- function(value="button label",
     obj$editor <- ButtonEditor$proto()
   
   obj$init_model()
+
+  obj[['action']] <- action ## XXX
+  
   return(obj)
   
 }

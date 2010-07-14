@@ -230,8 +230,8 @@ BaseTrait <- proto(
                       ),
                     do_call = function(., fun, lst=list()) {
                       fun <- as.character(fun)
-                      if(.$has_slot(fun) && is.function(FUN <- .$get_slot(fun))) {
-                        do.call(FUN, c(., lst))
+                      if(.$has_slot(fun) && is.function(.$get_slot(fun))) {
+                        do.call(.$get_slot(fun), c(., lst))
                       }
                     },
                     ## doc stuff

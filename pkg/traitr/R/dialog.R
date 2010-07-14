@@ -341,6 +341,24 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 ##' sd <- dlg$get_item_by_name("sd")
 ##' sd$validate <- function(., rawvalue) if(rawvalue <- 0) stop("sd must be positive") else rawvalue
 ##' \dontrun{dlg$make_gui()}
+##' ## subtle point about scope. Proto methods can be defined via $<- or [[<- but there is a difference.
+##' ## $<- does not have lexical scope whereas [[<- does. The $<- might be more natural to type,
+##' ## but [[<- might be more natural to use. In this example, The "b" button does not work, as it can't find the
+##' ## function a -- the frame of evaluation is the environment dlg (not its enclosing frame).
+##' ## Thanks to Gabor for his help with this.
+##' scope_example <- function() {
+##' a <- function(...) print("hi")
+##' dlg <- aDialog(items=list(),
+##'                 buttons=c("a","b","c"),
+##'                 a_handler=function(.) a(),
+##'                 title="a, c work; b doesn't"
+##'                 )
+##'  dlg$b_handler=function(.) a()
+##'  dlg[['c_handler']]=a
+##"  dlg$make_gui()
+##' }
+##' \dontrun{scope_example()}
+  
 
 
 
@@ -354,7 +372,11 @@ aDialog <- function(items=list(),
                       title=title,
                       help_string=help_string,
                       buttons=buttons,
-                      ...)
+                      ...,
+                      funEnvir=FALSE)   # Many thanks to Gabor for
+                                        # pointing out this argument
+                                        # and to J Hallman for finding
+                                        # its necessity.
   dlg$init_model()
   dlg
 }
