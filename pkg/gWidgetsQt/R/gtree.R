@@ -458,6 +458,8 @@ setMethod(".addhandlerchanged",
             .addhandlerdoubleclick(obj, toolkit, handler, action, ...)
           })
 
+
+
 f <- function(item, column, h) {
   tr <- getWidget(h$obj)
   h$column <- column + 1

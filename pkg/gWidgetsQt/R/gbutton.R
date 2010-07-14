@@ -37,6 +37,8 @@ setMethod(".gbutton",
 
 
             button <- Qt$QPushButton()
+            if(!is.null(container) && is(parent <- getWidget(container), "QObject"))
+              button$setParent(parent)
 
             obj <- new("gButtonQt",
               block=button, widget=button, toolkit=toolkit,  e=new.env(), ID=getNewID())

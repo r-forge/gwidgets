@@ -161,7 +161,7 @@ setMethod(".dispose",
           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
           function(obj, toolkit, ...) {
             w <- getBlock(obj)
-            ## Really need to do deleteLater -- but that is a slot
+            ## XXX Really need to do deleteLater -- but that is a slot
             ##get("~QMainWindow", envir=w)()
             w$close()
             return()

@@ -98,8 +98,9 @@ setMethod("removeChild", signature(obj="gContainerQt", child="guiComponent"),
 setMethod("removeChild", signature(obj="gContainerQt", child="gWidgetQt"),
           function(obj, child) {
             l <- tag(obj, "children")
-            ind <- sapply(l, function(i) digest(i) != digest(child))
-            l <- l[ind]
+            ind <- sapply(l, function(i) digest(i) == digest(child))
+            if(any(ind))
+              l[which(ind)] <- NULL
             tag(obj, "children") <- l
           })
           
