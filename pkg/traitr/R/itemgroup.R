@@ -431,7 +431,8 @@ anItemGroup <- function(items=list(),
   
   obj <- ItemGroup$proto(items=items,
                          name=name,
-                         ...)
+                         ...,
+                         funEnvir=FALSE)
   obj$init_model()
   return(obj)
 }
