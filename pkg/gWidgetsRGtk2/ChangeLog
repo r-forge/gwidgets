@@ -1,3 +1,7 @@
+2010-07-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix to font<- (color was using modifyText, not modifyFg)
+
 2010-07-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggraphics.R (.setDevNo): added popupmenu to save graphic to

@@ -151,7 +151,6 @@ setReplaceMethod(".font",
                    widget <- getWidget(obj)[[1]] # label is first child or something
                    if(is(widget, "GtkAlignment"))
                      widget <- widget[[1]][[2]] # a real hacke
-                   print(widget)
                    .font(widget, toolkit, ...) <- value
                    invisible(obj)
                  })
