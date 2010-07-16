@@ -2,5 +2,7 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsQt
 
-CHanges for 0.0-1
+Changes for 0.0-2
 -------------------
+* fixes to how ggroup, glayout handle expand, fill, anchor arguments
+* added [ method to glayout for extraction

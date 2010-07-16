@@ -15,6 +15,7 @@
 \alias{[,gEditRGtk-method}
 \alias{[,GtkTreeView-method}
 \alias{[,gGridRGtk-method}
+\alias{[,gLayoutRGtk-method}
 \alias{[,gMenuRGtk-method}
 \alias{[,gNotebookRGtk-method}
 \alias{[,gRadioRGtk-method}
@@ -378,6 +379,7 @@
 \alias{.leftBracket,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,GtkTreeView,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gLayoutRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gMenuRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gRadioRGtk,guiWidgetsToolkitRGtk2-method}

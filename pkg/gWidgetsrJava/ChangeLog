@@ -1,3 +1,7 @@
+2010-07-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* man/gWidgetsrJava-undocumented.Rd: put in [ method for gLayout
+
 2010-05-28  verzani  <verzani@verzani-desktop>
 
 	* R/gfile.R: added multiple= argument

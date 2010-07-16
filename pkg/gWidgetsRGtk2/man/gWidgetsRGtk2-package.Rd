@@ -17,6 +17,7 @@ Port of gWidgets API to RGtk2
   differences from the API, as defined by the man pages of the
   \pkg{gWidgets} package.
 
+ 
 
 
   \bold{Containers:}\cr

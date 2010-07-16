@@ -43,6 +43,7 @@ setMethod(".glayout",
             obj = new("gLayoutQt",
               block=w, widget=gridlyt,
               toolkit=toolkit, e = new.env(), ID=getNewID())
+            tag(obj, "childlist") <- list()
             
             if(!is.null(container))
               add(container, obj, ...)
@@ -58,6 +59,7 @@ setMethod(".glayout",
             invisible(obj)
           })
 
+
 ## for adding
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitQt", obj="gLayoutQt",
@@ -65,6 +67,25 @@ setMethod(".add",
           function(obj, toolkit, value, ...) {
             ## this is a stub so that we can do
             ## tbl[i,j] <- glabel(i, cont=tbl)
+          })
+
+## retrieve values
+setMethod("[",
+          signature(x="gLayoutQt"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop) 
+          })
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitQt",x="gLayoutQt"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            l <- tag(x, "childlist")
+            ind <- sapply(l, function(comp) {
+              i[1] %in% comp$x && j[1] %in% comp$y
+            })
+            if(any(ind))
+              return(l[ind][[1]]$child) # first
+            else
+              NA
           })
 
 
@@ -128,6 +149,12 @@ setReplaceMethod(".leftBracket",
             setParent(value, x)
             addChild(x, value)
 
+            ## add to list so [ method works
+            l <- tag(x, "childlist")
+            l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)
+            tag(x, "childlist") <- l
+            
+            
             return(x)
           })
 

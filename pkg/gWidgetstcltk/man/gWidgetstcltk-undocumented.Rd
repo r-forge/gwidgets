@@ -13,8 +13,8 @@
 \alias{[,gCommandlinetcltk-method}
 \alias{[,gDroplisttcltk-method}
 \alias{[,gEdittcltk-method}
-\alias{[,GtkTreeView-method}
 \alias{[,gGridtcltk-method}
+\alias{[,gLayouttcltk-method}
 \alias{[,gMenutcltk-method}
 \alias{[,gNotebooktcltk-method}
 \alias{[,gRadiotcltk-method}
@@ -375,9 +375,9 @@
 \alias{.leftBracket,gCommandlinetcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gDroplisttcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gEdittcltk,guiWidgetsToolkittcltk-method}
-\alias{.leftBracket,GtkTreeView,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gGridtcltk,guiWidgetsToolkittcltk-method}
-\alias{.leftBracket,gMenutcltk,guiWidgetsToolkittcltk-method}
+\alias{.leftBracket,gLayouttcltk,guiWidgetsToolkittcltk-method}
+\alias{.leftBracket,gMenutcltk,guiWidgetsToolkittcltk-metho}d
 \alias{.leftBracket,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gRadiotcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,tcltkDataFrame,guiWidgetsToolkittcltk-method}
@@ -1132,6 +1132,7 @@
 \alias{.length,gDroplisttcltk,guiWidgetsToolkittcltk-method} 
 \alias{.length,gGridtcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gHelptcltk,guiWidgetsToolkittcltk-method}
+\alias{.length,gLayouttcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gRadiotcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gTabletcltk,guiWidgetsToolkittcltk-method}

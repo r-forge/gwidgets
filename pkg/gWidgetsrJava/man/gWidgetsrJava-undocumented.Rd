@@ -15,9 +15,9 @@
 \alias{[,gCommandlinerJava-method}
 \alias{[,gDroplistrJava-method}
 \alias{[,gEditrJava-method}
-\alias{[,GtkTreeView-method}
 \alias{[,gGridrJava-method}
 \alias{[,gMenurJava-method}
+\alias{[,gLayoutrJava-method}
 \alias{[,gNotebookrJava-method}
 \alias{[,gRadiorJava-method}
 \alias{[,rJavaDataFrame-method}
@@ -390,9 +390,9 @@
 \alias{.leftBracket,gCommandlinerJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gDroplistrJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gEditrJava,guiWidgetsToolkitrJava-method}
-\alias{.leftBracket,GtkTreeView,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gGridrJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gMenurJava,guiWidgetsToolkitrJava-method}
+\alias{.leftBracket,gLayoutrJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gNotebookrJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,gRadiorJava,guiWidgetsToolkitrJava-method}
 \alias{.leftBracket,rJavaDataFrame,guiWidgetsToolkitrJava-method}

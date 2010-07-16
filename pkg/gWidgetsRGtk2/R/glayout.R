@@ -22,7 +22,8 @@ setMethod(".glayout",
             tbl$SetColSpacings(spacing)
             
             obj <- as.gWidgetsRGtk2(tbl)
-
+            tag(obj, "childlist") <- list()
+            
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow()
@@ -50,6 +51,25 @@ setMethod(".add",
             ## stub
           })
 
+
+## retrieve values
+setMethod("[",
+          signature(x="gLayoutRGtk"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop) 
+          })
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            l <- tag(x, "childlist")
+            ind <- sapply(l, function(comp) {
+              i[1] %in% comp$x && j[1] %in% comp$y
+            })
+            if(any(ind))
+              return(l[ind][[1]]$child) # first
+            else
+              NA
+          })
 
 
 ## how we populate the table
@@ -122,6 +142,12 @@ setReplaceMethod(".leftBracket",
             tbl$Attach(child,
                        min(j)-1, max(j), min(i)-1, max(i),
                        xoptions=opts,yoptions=opts)
+
+            ## store for [ method
+            l <- tag(x, "childlist")
+            l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)
+            tag(x, "childlist") <- l
+            
 
             return(x)
           })

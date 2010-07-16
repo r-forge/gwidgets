@@ -36,6 +36,8 @@ setMethod(".glayout",
               spacing = spacing
               )
 
+            tag(obj, "childlist") <- list()
+            
             ## add to container
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -57,6 +59,27 @@ setMethod(".add",
           })
 
 
+
+
+## retrieve values
+setMethod("[",
+          signature(x="gLayoutrJava"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop) 
+          })
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitrJava",x="gLayoutrJava"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            l <- tag(x, "childlist")
+            ind <- sapply(l, function(comp) {
+              i[1] %in% comp$x && j[1] %in% comp$y
+            })
+            if(any(ind))
+              return(l[ind][[1]]$child) # first
+            else
+              NA
+          })
+
 ## how we populate the table
 setReplaceMethod("[",
                  signature(x="gLayoutrJava"),
@@ -73,7 +96,7 @@ setReplaceMethod(".leftBracket",
 
             ## check that widget is correct
             if(is.character(value)) value = glabel(value)
-            value = try(getWidget(value),silent=TRUE)
+            jvalue = try(getWidget(value),silent=TRUE)
             if(inherits(value,"try-error")) {
               warning("value is not a gwidget or character\n")
               return()
@@ -140,7 +163,7 @@ setReplaceMethod(".leftBracket",
             pane = x@widget
             .jcall(pane,"V",
                    "add",
-                   as.jcomponent(value),
+                   as.jcomponent(jvalue),
                    .jcast(c,"java/lang/Object"))
             .jcall(pane, "V", "validate")
 
@@ -150,6 +173,12 @@ setReplaceMethod(".leftBracket",
               .jcall(getBlock(top), "V", "pack")
             }
 
+
+            ## add to list so [ method works
+            l <- tag(x, "childlist")
+            l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)
+            tag(x, "childlist") <- l
+            
             return(x)
 
           })

@@ -1,3 +1,8 @@
+2010-07-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): Added [ method for
+	extraction of widget
+
 2010-07-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R: fix to font<- (color was using modifyText, not modifyFg)

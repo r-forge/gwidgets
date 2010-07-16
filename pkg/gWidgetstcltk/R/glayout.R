@@ -43,6 +43,7 @@ setMethod(".glayout",
             tag(obj,"homogeneous") <- homogeneous
             tag(obj,"spacing") <- as.numeric(spacing)
             tag(obj,"adjust") <- adjust
+            tag(obj,"childlist") <- list()
             
             invisible(obj)
           })
@@ -66,6 +67,24 @@ setMethod(".add",
 ##            tkpack(getBlock(value), side="left")
           })
 
+## retrieve values
+setMethod("[",
+          signature(x="gLayouttcltk"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop) 
+          })
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gLayouttcltk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            l <- tag(x, "childlist")
+            ind <- sapply(l, function(comp) {
+              i[1] %in% comp$x && j[1] %in% comp$y
+            })
+            if(any(ind))
+              return(l[ind][[1]]$child) # first
+            else
+              NA
+          })
 
 ## how we populate the table
 setReplaceMethod("[",
@@ -109,7 +128,11 @@ setReplaceMethod(".leftBracket",
                    sticky = sticky,
                    padx=spacing, pady=spacing
                    )
-                   
+
+            l <- tag(x, "childlist")
+            l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)
+            tag(x, "childlist") <- l
+            
             return(x)
 
             ##   if(obj$adjust == "right") {

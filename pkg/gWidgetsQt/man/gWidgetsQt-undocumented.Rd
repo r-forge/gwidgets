@@ -15,8 +15,8 @@
 \alias{[,gCommandlineQt-method}
 \alias{[,gDroplistQt-method}
 \alias{[,gEditQt-method}
-\alias{[,GtkTreeView-method}
 \alias{[,gGridQt-method}
+\alias{[,gLayoutQt-method}
 \alias{[,gMenuQt-method}
 \alias{[,gNotebookQt-method}
 \alias{[,gRadioQt-method}
@@ -398,8 +398,8 @@
 \alias{.leftBracket,gCommandlineQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gDroplistQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gEditQt,guiWidgetsToolkitQt-method}
-\alias{.leftBracket,GtkTreeView,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gGridQt,guiWidgetsToolkitQt-method}
+\alias{.leftBracket,gLayoutQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gMenuQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gNotebookQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gRadioQt,guiWidgetsToolkitQt-method}

@@ -2,6 +2,10 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsrJava
 
+Changes for  0.0-19
+-----------------------
+* added [ method for glayout for extraction 
+
 Changes for  0.0-18, 19
 -----------------------
 
