@@ -235,7 +235,7 @@ setMethod(".gtable",
             tkgrid.rowconfigure(gp, 0, weight=1)
 
             ## call in autoscroll
-            do.autoscroll <- getWithDefault(theArgs$do.autoscroll, TRUE)
+            do.autoscroll <- getWithDefault(theArgs$do.autoscroll, FALSE)
             if(do.autoscroll) {
               tcl("autoscroll", xscr)
             ##            tcl("autoscroll", yscr)
@@ -258,19 +258,14 @@ setMethod(".gtable",
               "red"
             tag(obj,"visible") <- NULL
             
-
-       
             
             ## font -- fixed unless overridden
 #            tkconfigure(tr, font="courier") # fixed
-            
             
             ## add handler
             if (!is.null(handler)) {
               id = addhandlerchanged(obj,handler,action)
             }
-
-            
 
             ## load data last to get size after adding
             tag(obj,"items") <- items
@@ -288,8 +283,6 @@ setMethod(".gtable",
             ## add to container -- do after populating so widths are set
             add(container, obj,...)
             
-            
-
 
             return(obj)
             
@@ -319,12 +312,12 @@ setMethod(".svalue",
             
             ## Now a value
             if(missing(drop) || is.null(drop))
-              drop = TRUE               # default is to drop unless asked not to
+              drop <- TRUE               # default is to drop unless asked not to
 
             chosencol <- tag(obj,"chosencol")
 
             if(drop)
-              return(obj[inds, chosencol,drop=drop])
+              return(obj[inds, chosencol, drop=drop])
             else
               return(obj[inds, ])
           })
@@ -343,8 +336,8 @@ setReplaceMethod(".svalue",
                    } else {
                      ## set value if present
                      ## need to update this for our hack to handle data frames
-                     items = tag(obj,"items")
-                     m = match(value,items[,tag(obj,"chosencol"),drop=TRUE])
+                     items <- tag(obj,"items")
+                     m <- match(value,items[,tag(obj,"chosencol"),drop=TRUE])
                      
                      if(!is.na(m)) {    # NA is nomatch
                        tcl(widget,"selection","set",theChildren[m])
@@ -354,7 +347,7 @@ setReplaceMethod(".svalue",
                  })
 
 
-## retrieve values
+## get values
 setMethod("[",
           signature(x="gTabletcltk"),
           function(x, i, j, ..., drop=TRUE) {
@@ -363,8 +356,9 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gTabletcltk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            items = tag(x,"items")
-            if(missing(j)) j = 1:ncol(items)
+            items <- tag(x,"items")
+            if(missing(j))
+              j <- 1:ncol(items)
             return(items[i,j, drop=drop])
           })
             
@@ -399,7 +393,6 @@ setReplaceMethod(".leftBracket",
               items <- as.data.frame(value, stringsAsFactors=FALSE)
               tag(x,"items") <- items
 
-              width <- as.integer(tclvalue(tkwinfo("width",widget)))
               .populateTable(widget, .toCharacter(items), visible(x),
                              icon.FUN(items), names(items),fresh=FALSE, doWidths=FALSE,
                              getSizeFrom=size(x)[1])
@@ -411,13 +404,13 @@ setReplaceMethod(".leftBracket",
             if(missing(i)) {
               if(max(j) > dim(x)[2]) {
                 cat(gettext("Can't add columns. Use [,]<-\n"))
-                return()
+                return(x)
               }
               i <- 1:d[1]
             } else if(missing(j)) {
               if(max(i) > dim(x)[1]) {
                 cat(gettext("Can't add rows. Use [,]<-\n"))
-                return()
+                return(x)
               }
               j <- 1:d[2]
             }
@@ -784,6 +777,7 @@ setReplaceMethod(".size",
 
 ## handlers
 
+## changed is double click event
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gTableWithFiltertcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {

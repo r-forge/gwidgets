@@ -197,27 +197,30 @@ place.
 clicks of the arrows or to the return key in the text area.
 \cr
 
-\code{gstatusbar()} A hack. Just a \code{ggroup()} instance in disguise. By default it must have a gwindow instance for a parent container. If the argument not \code{not.toplevel=TRUE} is specified, a \code{ggroup} container may be used.
-\cr
+\code{gstatusbar()} A hack. Just a \code{ggroup()} instance in
+disguise. By default it must have a gwindow instance for a parent
+container. If the hidden argument  \code{not.toplevel=TRUE} is specified,
+a \code{ggroup} container may be used.  \cr
 
 \code{gtable()} This is built on the underlying tree widget. It is not
 ideal, but avoids needing to have a separate library (eg. Tktable)
-installed.  Sizing is an issue. There may be a bug in the widget
-regarding horizontal scrolling, or more likely something is just code wrong.
-To avoid the bug, we (by default) use some Tk code for "autoscrolling".
-Setting the initial
-size via arguments \code{width} and \code{height} passed to the
-constructor works, but the \code{size<-} method isn't. However, the
-size method can also take a list for value. If so, then the first
-component specifies the widths of each column in character size and
-the second component (if given) the number of rows to be visible.  \cr
+installed.  
+\cr
 
-That's not all. The main odditiy is that using the automatic
-scrollwindow hides any widgets packed in to the right of the table. If
-that layout can't be avoided, use the hidden argument
-\code{do.autoscroll=FALSE}. Howeverm the the size isn't constrained by
-the width, so the widget gets bigger than desired (no scrollbar
-appears).
+Sizing is an issue. There may be a bug in the widget regarding
+horizontal scrolling (for Mac OS X anyways, where this is being
+developed), or more likely something is just coded wrong.  There is some
+Tk code for "autoscrolling" that works (with an idiosyncrasy) so that
+the initial size of the widget is correct, but only when this size is set
+via arguments \code{width} and \code{height} passed to the constructor
+-- not with the \code{size<-} method. This feature is not on by default, as
+when it is used any widgets on the right of the table are not shown in
+the initial window, and are only exposed by resizing the window. If
+you want to try it, pass in the hidden argument \code{do.autoscroll=TRUE}.
+However, the \code{size<-} method has another use. It can also take a
+list for value. If so, then the first component specifies the widths
+of each column in character size and the second component (if given)
+the number of rows to be visible.  \cr
 
 \code{gtext()} The \code{size<-} method can be used to resize the
 widget. This method guesses at the converstion from pixels to characters
@@ -230,7 +233,7 @@ selected text is returned.
 
 
 \code{gtree()} Implemented using ttktreeview. It is slow however, so use
-on smaller trees only.
+on smaller trees only. Has same issues with scrollbars as \code{gtable}.
 \cr
 
 

@@ -24,7 +24,8 @@ setMethod(".gtree",
                    ) {
             
             force(toolkit)
-
+            theArgs <- list(...)
+            
             if(is.null(offspring)) {
               cat(gettext("Need to have specified an offspring function\n"))
               return(NA)
@@ -102,9 +103,11 @@ setMethod(".gtree",
             tkpack(gp, expand=TRUE, fill="both")
 
             
-            ## call in autoscroll
-            tcl("autoscroll", xscr)
-            tcl("autoscroll", yscr)
+            ## call in autoscroll if requested -- has issues with sizing
+            if(getWithDefault(theArgs$do.autoscroll, FALSE)) {
+              tcl("autoscroll", xscr)
+              tcl("autoscroll", yscr)
+            }
 
             ## turn on alternating shading if more than 1 column
             ## XXX 
