@@ -233,7 +233,7 @@ setMethod(".gtable",
             tkgrid(xscr, row=1, column=0, sticky="ew")
             tkgrid.columnconfigure(gp, 0, weight=1)
             tkgrid.rowconfigure(gp, 0, weight=1)
-            tkpack(gp, expand=TRUE, fill="both") #???
+
             ## call in autoscroll
             do.autoscroll <- getWithDefault(theArgs$do.autoscroll, TRUE)
             if(do.autoscroll) {
@@ -279,13 +279,15 @@ setMethod(".gtable",
             else
               icon.FUN(items)
 
-            size(obj) <- c(width, height)
-            
             .populateTable(tr, .toCharacter(items), TRUE, icons,names(items),
                            getSizeFrom=width)
 
+
+            size(obj) <- c(width, height)
+
             ## add to container -- do after populating so widths are set
             add(container, obj,...)
+            
             
 
 
