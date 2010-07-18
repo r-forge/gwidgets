@@ -377,7 +377,7 @@
 \alias{.leftBracket,gEdittcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gGridtcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gLayouttcltk,guiWidgetsToolkittcltk-method}
-\alias{.leftBracket,gMenutcltk,guiWidgetsToolkittcltk-metho}d
+\alias{.leftBracket,gMenutcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gRadiotcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,tcltkDataFrame,guiWidgetsToolkittcltk-method}

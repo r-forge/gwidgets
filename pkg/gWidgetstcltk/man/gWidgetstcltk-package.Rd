@@ -202,16 +202,22 @@ clicks of the arrows or to the return key in the text area.
 
 \code{gtable()} This is built on the underlying tree widget. It is not
 ideal, but avoids needing to have a separate library (eg. Tktable)
-installed. The size is a bit of a hack. The tcl widget wants to specify
-the number of rows to show for the height, but gWidgets specifies the
-height in pixels. We convert by dividing pixels by 16. The width for the
-widget is specified by each column. We proportionally allocate the
-specified width to each column based on the current width of the
-column. As such, there is no guarantee that setting the size, then
-querying for the size will produce the same values.
+installed.  Sizing is an issue. There may be a bug in the widget
+regarding horizontal scrolling, or more likely something is just code wrong.
+To avoid the bug, we (by default) use some Tk code for "autoscrolling".
+Setting the initial
+size via arguments \code{width} and \code{height} passed to the
+constructor works, but the \code{size<-} method isn't. However, the
+size method can also take a list for value. If so, then the first
+component specifies the widths of each column in character size and
+the second component (if given) the number of rows to be visible.  \cr
 
-Unfortunately, the \code{visible} and \code{visible<-} methods do not work.
-\cr
+That's not all. The main odditiy is that using the automatic
+scrollwindow hides any widgets packed in to the right of the table. If
+that layout can't be avoided, use the hidden argument
+\code{do.autoscroll=FALSE}. Howeverm the the size isn't constrained by
+the width, so the widget gets bigger than desired (no scrollbar
+appears).
 
 \code{gtext()} The \code{size<-} method can be used to resize the
 widget. This method guesses at the converstion from pixels to characters

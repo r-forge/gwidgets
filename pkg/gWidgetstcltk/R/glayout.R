@@ -129,6 +129,7 @@ setReplaceMethod(".leftBracket",
                    padx=spacing, pady=spacing
                    )
 
+            ## add to list so [ method works
             l <- tag(x, "childlist")
             l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)
             tag(x, "childlist") <- l
