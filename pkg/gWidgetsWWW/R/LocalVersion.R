@@ -254,7 +254,7 @@ gw.httpd.handler <- function(path, query, ...) {
 
   ## here path is path, query contains query string, ... ???
   path <- ourURLdecode(path)
-
+  print(path)
   ## strip off /custom/url_base/
   path <- gsub(sprintf("^/custom/%s/",url_base), "", path)
   path <- unlist(strsplit(path, "/"))
@@ -294,7 +294,7 @@ gWidgetsWWWStaticDir <- NULL
 ##' @param package If file specified and package given, the file looked up within package through system.file
 ##' 
 ##' @details Starts help server if not already done, then loads custom http handler
-localServerStart <- function(file="", port=8079, package=NULL) {
+localServerStart <- function(file="", port=8079, package=NULL, ...) {
   if(!isServerRunning()) {
     tools:::startDynamicHelp()
   }
@@ -326,7 +326,7 @@ localServerStart <- function(file="", port=8079, package=NULL) {
   
   ## open if called to
   if(!is.null(file) && file != "") {
-    localServerOpen(file, package)
+    localServerOpen(file, package, ...)
   } else {
     if(!is.null(file)) {
       ## make a message
@@ -352,7 +352,7 @@ localServerStart <- function(file="", port=8079, package=NULL) {
 ##' Load a file in gWidgets by calling gWidgetsWWWRun
 ##' @param file filename to open
 ##' @note  XXX Unix only? Test this
-gWloadFile <- function(file) {
+gWloadFile <- function(file, ...) {
   localServerStart(file=NULL)
   .url <- sprintf("http://127.0.0.1:%s/custom/%s/gWidgetsWWWRun/%s",
                   tools:::httpdPort,
@@ -364,13 +364,13 @@ gWloadFile <- function(file) {
 ##' Load file from pacakge
 ##' @param file passed to system.file. If NULL, ignored
 ##' @param package to look for file
-localServerOpen <- function(file, package=NULL) {
+localServerOpen <- function(file, package=NULL, ...) {
   if(is.null(file))
     return()                            # do nothing
   if(!is.null(package))
     file <- system.file(file, package=package)
   if(file.exists(file))
-    gWloadFile(file)
+    gWloadFile(file, ...)
   else
     cat(sprintf("Can't find file %s\n", file))
 }
