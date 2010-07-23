@@ -260,6 +260,14 @@ unblockHandler(obj, ID=NULL, ...)
 		print(svalue(h$action)), action=obj)
 	svalue(obj) <- "2"
 	## Now click and "2" is printed.
+
+      ## remove handler, block handler, unblockhandler (latter two may not be implemented)
+      b <- gbutton("click", cont=gwindow())
+      id <- addHandlerClicked(b, handler=function(h,...) print("ouch"))
+      ## click --> "ouch"
+      blockHandler(b, id) ## now click -- nothing
+      unblockHandler(b, id) ## now click -- "ouch"
+      removeHandler(b, id)  ## all gone now
 }
 }
 \keyword{interface}% at least one, from doc/KEYWORDS

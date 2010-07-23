@@ -24,15 +24,16 @@ glayout(homogeneous = FALSE, spacing = 10, container = NULL, ..., toolkit = guiT
   Widgets are added using matrix notation. A widget can span several
   cells, for instance \code{obj[1:2,2:3] <- widget} would place the
   widget in the first and second rows and second and third columns.  The
-  matrix notation is to specify the space allocated to the widget. There
-  is no corresponding extraction method via \code{[}.
+  matrix notation is to specify the space allocated to the widget. 
 
   For \code{gWidgetstcltk}, it is necessary for a child widget to have the
   layout object as its parent container and to call the \code{[<-}
   method to add the widget. (See the example.)
+
   
   As a convenience, if the value to be assigned is a character it will
   be turned into a \code{glabel} object before being added.
+
 
   Like \code{ggroup}, the extra argument \code{expand} can be used to
   force the widget to expand to fill all the space allocated to it.
@@ -42,6 +43,11 @@ glayout(homogeneous = FALSE, spacing = 10, container = NULL, ..., toolkit = guiT
   than needed by the widget. This is specified as a pair of values from
   -1,0,1 to indicating the x and y positioning of the widget within the
   cell.
+  
+  Like  \code{ggroup}, the extra argument \code{fill} can by used when \code{expand} is given, but not \code{anchor}, to have the widget expand in the \code{x} direction, the \code{y} direction, or \code{both} (the default). (Toolkit specific). 
+
+  The method \code{[} can be used to extract one widget. Pass in values of both \code{i} and \code{j}.
+
 
 }
 	
@@ -60,6 +66,10 @@ glayout(homogeneous = FALSE, spacing = 10, container = NULL, ..., toolkit = guiT
   ## so we always use it.
   tbl[1,2, expand = TRUE] <- gedit("edit here", container=tbl)
   tbl[2,1, anchor = c(-1,-1)] <- glabel("ll", container = tbl)
+
+  ## extraction:
+  tbl[1,1] # glabel instance
+  tbl[1,2] # gedit instance, ...
 }
 }
 \keyword{interface}% at least one, from doc/KEYWORDS
