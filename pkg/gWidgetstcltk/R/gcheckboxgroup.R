@@ -183,7 +183,8 @@ setMethod(".addhandlerchanged",
           function(obj, toolkit, handler, action=NULL, ...) {
             IDs <- lapply(tag(obj,"itemlist"),function(i) {
               ## pass in obj to actualobj
-              addHandlerChanged(i,handler=handler,action=action, actualobj = obj)
+              id <- .addhandlerchanged(i@widget, toolkit, handler=handler, action=action, actualobj = obj)
+              list(obj=i@widget, id=id)
             })
             return(IDs)
           })
@@ -195,33 +196,31 @@ setMethod(".addhandlerclicked",
           })
 
 
+## should have gradio and gcheckboxgroup have same parent class so we can define these together
 setMethod(".removehandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gCheckboxgrouptcltk"),
           function(obj, toolkit, ID=NULL, ...) {
-            tag(obj,"handlerList") <- NULL
-            lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
-                   removehandler(lst[[i]], ID[[i]])
-                 )
+            sapply(tag(obj,"itemlist"), function(i) {
+              .removehandler(i@widget, toolkit, ID, ...)
+            })
+            invisible()
           })
 
 setMethod(".blockhandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gCheckboxgrouptcltk"),
           function(obj, toolkit, ID=NULL, ...) {
-
-            lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
-                   blockhandler(lst[[i]], ID[[i]])
-                   )
+            sapply(tag(obj,"itemlist"), function(i) {
+              .blockhandler(i@widget, toolkit, ID, ...)
+            })
+            invisible()
           })
 
+##' call to unblock a handler by ID. If ID=NULL, all handlers are unblocked
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gCheckboxgrouptcltk"),
           function(obj, toolkit, ID=NULL, ...) {
-
-            lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
-              unblockhandler(lst[[i]], ID[[i]])
-            )
+            sapply(tag(obj,"itemlist"), function(i) {
+              .unblockhandler(i@widget, toolkit, ID, ...)
+            })
+            invisible()
           })
-

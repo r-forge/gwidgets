@@ -245,11 +245,11 @@ setMethod(".addhandlerchanged",
 
             changeHandler <- handler
             theRBs <- tag(obj,"theRBs")
-            IDs <- sapply(theRBs, function(i) {
+            IDs <- lapply(theRBs, function(i) {
               ## need to pause to let the click catch up
               ## we use scope to look up changeHandler and h
               ## added ButtonRelease as Button-1 wasn't enought with windows
-              .addHandler(i,toolkit, signal="<ButtonRelease-1>",
+              id <- .addHandler(i,toolkit, signal="<ButtonRelease-1>",
                          actualobj = obj, 
                          action=action,
                          handler = function(h,...) {
@@ -258,6 +258,7 @@ setMethod(".addhandlerchanged",
                            }
                           )
                          })
+              list(obj=i, id=id)
             })
             return(IDs)
           })

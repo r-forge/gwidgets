@@ -150,7 +150,9 @@ setMethod(".addhandleridle",
 ##' before making the call
 .blockUnblock <- function(obj, ID, block=TRUE, ...) {
   l <- tag(obj, "..handlers")
-  
+
+
+        
   if(is.null(ID)) {
     ## do all IDS
     sapply(names(l), function(signal) {
@@ -161,7 +163,16 @@ setMethod(".addhandleridle",
       }
     })
     return()
+  } else if(is.null(ID$id) && !is.null(ID[[1]]$obj)) {
+    ## might be a list of IDs (gradio, gcheckboxgroup), we check here
+    sapply(ID, function(i) {
+      .blockUnblock(i$obj, i$id, block)
+    })
+    return()
   } else {
+
+
+    
     id <- ID$id
     signal <- ID$signal
     if(is.null(id) || is.null(signal))
@@ -189,13 +200,15 @@ setMethod(".blockhandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ID=NULL, ...) {
             .blockUnblock(obj, ID, block=TRUE)
+            invisible()
           })
 
 ##' call to unblock a handler by ID. If ID=NULL, all handlers are unblocked
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ID=NULL, ...) {
-            .blockUnblock(obj, ID, block=FALSE)            
+            .blockUnblock(obj, ID, block=FALSE)
+            invisible()
           })
 
 ##' method to remove a handler
@@ -213,6 +226,12 @@ setMethod(".removehandler",
                     .removehandler(obj, toolkit, ID=list(id=i$ID, signal=signal))
                 }
               })
+            } else if(is.null(ID$id) && !is.null(ID[[1]]$obj)) {
+              ## might be a list of IDs (gradio, gcheckboxgroup), we check here
+              sapply(ID, function(i) {
+                .removehandler(i$obj, toolkit, ID=i$id)
+              })
+              return()
             } else {
               ## ID here has two components: id, signal
               id <- ID$id
