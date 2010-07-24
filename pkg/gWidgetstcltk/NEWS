@@ -5,6 +5,7 @@ NEWS for gWidgetstcltk
 Changes for 0.0-39
 -------------------
 * added [ method to glayout for extraction
+* fix to handler code to get to work
 
 Changes for 0.0-38
 -------------------

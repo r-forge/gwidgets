@@ -1,3 +1,8 @@
+2010-07-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaHandlers.R: reimplemented this so that block/unblock work;
+	others work as advertised
+
 2010-07-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtable.R (.computeWidths): Trying to fix size of table object

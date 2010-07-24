@@ -1096,17 +1096,17 @@ setMethod("blockhandler", signature("tcltkObject"),
             .blockhandler(obj, guiToolkit("tcltk"), ID, ...)
           })
 
-setMethod(".blockhandler",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
-          function(obj, toolkit, ID=NULL, ...) {
-            .blockhandler(getWidget(obj),toolkit,ID,...)
-          })
+## setMethod(".blockhandler",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
+##           function(obj, toolkit, ID=NULL, ...) {
+##             .blockhandler(getWidget(obj),toolkit,ID,...)
+##           })
 
-setMethod(".blockhandler",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="tcltkObject"),
-          function(obj, toolkit, ID=NULL, ...) {
-            gwCat(gettext("define block handler\n"))
-          })
+## setMethod(".blockhandler",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="tcltkObject"),
+##           function(obj, toolkit, ID=NULL, ...) {
+##             gwCat(gettext("define block handler\n"))
+##           })
 
 ## unblock handler
 setMethod("unblockhandler", signature("gWidgettcltk"),
@@ -1118,17 +1118,17 @@ setMethod("unblockhandler", signature("tcltkObject"),
             .unblockhandler(obj, guiToolkit("tcltk"), ID, ...)
           })
 
-setMethod(".unblockhandler",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
-          function(obj, toolkit, ID=NULL, ...) {
-            .blockhandler(getWidget(obj),toolkit,ID,...)
-          })
+## setMethod(".unblockhandler",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
+##           function(obj, toolkit, ID=NULL, ...) {
+##             .blockhandler(getWidget(obj),toolkit,ID,...)
+##           })
 
-setMethod(".unblockhandler",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="tcltkObject"),
-          function(obj, toolkit, ID=NULL, ...) {
-            cat("define unblock handler\n")
-          })
+## setMethod(".unblockhandler",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="tcltkObject"),
+##           function(obj, toolkit, ID=NULL, ...) {
+##             cat("define unblock handler\n")
+##           })
 
 
 
@@ -1333,11 +1333,13 @@ setMethod("addhandlerblur",signature(obj="tcltkObject"),
             .addhandlerblur(obj,guiToolkit("tcltk"),handler, action, ...)
           })
 
+##' blur is on mouse motion here, not change in focus
 setMethod(".addhandlerblur",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
-            .addHandler(obj, toolkit, signal="<FocusOut>",
+#            .addHandler(obj, toolkit, signal="<FocusOut>",
+            .addHandler(obj, toolkit, signal="<Leave>",
                         handler=handler, action=action, ...)
           })
 
