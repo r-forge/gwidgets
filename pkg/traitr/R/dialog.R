@@ -136,8 +136,8 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                             ## make window
                             if(.$has_slot("toplevel")) {
                               w <- .$toplevel
-                              svalue(w) <- .$title
-                              visible(w) <- FALSE
+#                              svalue(w) <- .$title
+#                              visible(w) <- FALSE
                             } else {
                               w <- gwindow(.$title, parent=parent, visible=FALSE)
                             }
@@ -195,7 +195,8 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
                               }
                             }
                             ## set visible if requested
-                            visible(widgets[['toplevel']]) <- visible
+                            if(visible)
+                              visible(widgets[['toplevel']]) <- visible
 
                             ## set widgets
                             .$widget_list <- widgets
@@ -358,6 +359,7 @@ Dialog <- ItemGroup$proto(class=c("Dialog", ItemGroup$class),
 ##"  dlg$make_gui()
 ##' }
 ##' \dontrun{scope_example()}
+##' ## See ?anItemGroup for an example of a modal dialog
   
 
 
