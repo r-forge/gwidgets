@@ -1323,7 +1323,8 @@ setMethod(".addhandlerfocus",
             .addHandler(obj, toolkit, signal="<FocusIn>",
                         handler=handler, action=action, ...)
           })
-## blur
+
+##' blur: blur should be focus out but is mouse out
 setMethod("addhandlerblur",signature(obj="gWidgettcltk"),
           function(obj, handler=NULL, action=NULL, ...) {
             .addhandlerblur(obj,obj@toolkit,handler, action, ...)
@@ -1333,14 +1334,16 @@ setMethod("addhandlerblur",signature(obj="tcltkObject"),
             .addhandlerblur(obj,guiToolkit("tcltk"),handler, action, ...)
           })
 
-##' blur is on mouse motion here, not change in focus
+##' blur is on mouse motion here and change in focus. Handle is called twice!!!
 setMethod(".addhandlerblur",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
-#            .addHandler(obj, toolkit, signal="<FocusOut>",
-            .addHandler(obj, toolkit, signal="<Leave>",
-                        handler=handler, action=action, ...)
+            IDs <- lapply(c("<FocusOut>", "<Leave"), function(i)
+                          .addHandler(obj, toolkit, signal=i
+                                      handler=handler, action=action, ...)
+                          )
+            IDs
           })
 
 

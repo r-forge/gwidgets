@@ -86,6 +86,7 @@ setMethod(".gradio",
 #            tag(obj,"theLabels") <- theLabels
             tag(obj,"theRBs") <- theRBs
             tag(obj,"tclVar") <- theValue
+            tag(obj, "..handlers") <- list()
             
             ## add to container
             add(container,  obj,...)
@@ -243,7 +244,15 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
 
-            changeHandler <- handler
+            l <- tag(obj, "..handlers")
+            l$blocked <- FALSE
+            if(!is.null(l$handler)) {
+              cat(gettext("Can only have one handler set for gradio. Replacing previous"),"\n")
+            }
+              
+            l$handler <- handler
+            tag(obj, "..handlers") <- l
+            
             theRBs <- tag(obj,"theRBs")
             IDs <- lapply(theRBs, function(i) {
               ## need to pause to let the click catch up
@@ -254,13 +263,15 @@ setMethod(".addhandlerchanged",
                          action=action,
                          handler = function(h,...) {
                            tcl("after",150,function(...) {
-                             changeHandler(h,...)
+                             l <- tag(obj, "..handlers")
+                             if(!getWithDefault(l$blocked, TRUE))
+                               l$handler(h,...)
                            }
                           )
                          })
-              list(obj=i, id=id)
             })
-            return(IDs)
+            id <- list(id=1, signal="changed") # XXX only 1 handler
+            return(id)
           })
 
 ## click and changed the same
@@ -270,3 +281,30 @@ setMethod(".addhandlerclicked",
             .addhandlerchanged(obj,toolkit,handler,action,...)
           })
 
+
+## How to implement these!!!!
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            tag(obj, "..handlers") <- list()
+            invisible()
+          })
+
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            l <- tag(obj, "..handlers")
+            l$blocked <- TRUE
+            tag(obj, "..handlers") <- l
+            invisible()
+          })
+
+##' call to unblock a handler by ID. If ID=NULL, all handlers are unblocked
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            l <- tag(obj, "..handlers")
+            l$blocked <- FALSE
+            tag(obj, "..handlers") <- l
+            invisible()
+          })

@@ -771,7 +771,8 @@
 \alias{.removehandler-methods}
 \alias{.removehandler,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.removehandler,tcltkObject,guiWidgetsToolkittcltk-method}
- \alias{.removehandler,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method} 
+\alias{.removehandler,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method} 
+\alias{.removehandler,gRadiotcltk,guiWidgetsToolkittcltk-method} 
 
 
 %%
@@ -804,6 +805,7 @@
 \alias{.blockhandler,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.blockhandler,tcltkObject,guiWidgetsToolkittcltk-method} 
 \alias{.blockhandler,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method} 
+\alias{.blockhandler,gRadiotcltk,guiWidgetsToolkittcltk-method} 
 
 %% --  unblockhandler --
 %%
@@ -819,6 +821,7 @@
 \alias{.unblockhandler,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.unblockhandler,tcltkObject,guiWidgetsToolkittcltk-method} 
 \alias{.unblockhandler,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method} 
+\alias{.unblockhandler,gRadiotcltk,guiWidgetsToolkittcltk-method} 
 
 %%
 %% --  addhandlerchanged --
