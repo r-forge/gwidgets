@@ -250,11 +250,15 @@ processAJAX <- function(path, query, ...) {
 
 
 ##' basic handler to arrange for dispatch based on URL
+##'
+##' @param path passes in path including custom/gw bit
+##' @param query passes in GET info
+##' @param ... passes in post information (for AJAX calls!)
 gw.httpd.handler <- function(path, query, ...) {
 
   ## here path is path, query contains query string, ... ???
   path <- ourURLdecode(path)
-  print(path)
+
   ## strip off /custom/url_base/
   path <- gsub(sprintf("^/custom/%s/",url_base), "", path)
   path <- unlist(strsplit(path, "/"))
@@ -533,15 +537,15 @@ makegWidgetsWWWPageHeader <- function(.) {
                ## conditional includes -- values set in constructor on toplevel
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
                ## google stuff -- move out
-               ## if(exists("ggooglemaps_key", .)) {
-               ##   paste(
-               ##         ## sprintf('<script type=\'text/javascript\' src=http://www.google.com/jsapi?key=%s></script>',.$ggooglemaps_key),
-               ##         ## '<script type="text/javascript">  google.load("maps", "2"); </script>',
-               ##         "<script type='text/javascript' src='/custom/gw/ggooglemaps/ext.ux.gmappanel.js'></script>" ,
-               ##         '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />',
-               ##         '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>',
-               ##         sep="\n")
-               ## },
+               if(exists("ggooglemaps_key", .) && exists("do_googlemaps", .)) {
+                 paste(
+                       ## sprintf('<script type=\'text/javascript\' src=http://www.google.com/jsapi?key=%s></script>',.$ggooglemaps_key),
+                       ## '<script type="text/javascript">  google.load("maps", "2"); </script>',
+                       "<script type='text/javascript' src='/custom/gw/ggooglemaps/ext.ux.gmappanel.js'></script>" ,
+                       '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />',
+                       '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>',
+                       sep="\n")
+               },
                ## end google
                ## webvis stuff move out
                if(exists("do_gwebvis", envir=.)) {
