@@ -1,7 +1,12 @@
+2010-07-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R: fix so that [ method can be used to retrieve widget
+	at i,j
+
 2010-07-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaHandlers.R: reimplemented this so that block/unblock work;
-	others work as advertised
+	others work as advertised, fix bug along the way
 
 2010-07-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 

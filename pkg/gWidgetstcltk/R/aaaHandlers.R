@@ -56,21 +56,17 @@ setMethod(".addHandler",
             ## theArgs may have an extra with name=key, value
             FUN <- theArgs$FUN
             handler <- force(handler)
-            if(is.null(FUN)) {
-              tkbind(getWidget(obj), signal,
-                     function(...) {
-                       h = list(
-                         obj=actualobj,
-                         action=action)
 
-                       runHandlers(obj, signal, h, ...)
-#                       handler(h,...)
-                     })
-            } else {
-              ## when does this get called?
-              stop("DEBUG: Call addHandler with FUN")
-              tkbind(getWidget(obj), signal,FUN)
+            if(is.null(FUN)) {
+              FUN <- function(...) {
+                h = list(
+                  obj=actualobj,
+                  action=action)
+                
+                runHandlers(obj, signal, h, ...)
+              }
             }
+            tkbind(getWidget(obj), signal, FUN)
 
             ## return id
             invisible(id)
@@ -151,8 +147,6 @@ setMethod(".addhandleridle",
 .blockUnblock <- function(obj, ID, block=TRUE, ...) {
   l <- tag(obj, "..handlers")
 
-
-        
   if(is.null(ID)) {
     ## do all IDS
     sapply(names(l), function(signal) {
@@ -170,9 +164,7 @@ setMethod(".addhandleridle",
     })
     return()
   } else {
-
-
-    
+    ## single ID
     id <- ID$id
     signal <- ID$signal
     if(is.null(id) || is.null(signal))
@@ -217,7 +209,7 @@ setMethod(".removehandler",
           function(obj, toolkit, ID=NULL, ...) {
 
             if(is.null(ID)) {
-              ## remove all handlers. Call this recursively
+              ## remove all handlers. Get id, signal then call this recursively
               l <- tag(obj, "..handlers")
               sapply(names(l), function(signal) {
                 sigList <- l[[signal]]
@@ -233,20 +225,13 @@ setMethod(".removehandler",
               })
               return()
             } else {
+              ## single ID
               ## ID here has two components: id, signal
               id <- ID$id
               signal <- ID$signal
               
               if(is.null(id) || is.null(signal))
                 return()
-              
-              ## ## idle is handled differently, via flag<-FALSE
-              ## ## seee FAQ 3.2 for this
-              ## if(signal == "idle") { 
-              ##   .addhandleridle(obj, toolkit, signal=type, handler = function(...) {}) # blank functin
-              ##   return()
-              ## }
-              
               
               l <- tag(obj, "..handlers")
               if(is.null(l[[signal]]))
@@ -257,9 +242,11 @@ setMethod(".removehandler",
               
               if(!any(ind))
                 return()                  # no match on id
-              
+
+              ## remove list that stores the handler
               for(i in which(ind))
                 l[[signal]][[i]] <- NULL
+              ## now save
               tag(obj, "..handlers") <- l
             }
           })

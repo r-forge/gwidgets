@@ -1235,16 +1235,23 @@ setMethod("addhandlerkeystroke",signature(obj="tcltkObject"),
 ##                         handler=handler, action=action, ...)
 ##           })
 
-## for gedit, gtext
-## %K
-##    The keysym corresponding to the event, substituted as a textual string. Valid only for KeyPress and KeyRelease events. 
+##' for gedit, gtext
+##'
+##' This uses the FUN argument for .addHandler to pass in a special function This way the arguments
+##' that tcltk passes in can be used
+##' 
+##' %K The keysym corresponding to the event, substituted as a textual string. Valid only for
+##'     KeyPress and KeyRelease events.
+##' This handler can not be blocked or removed!
+##' 
 setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj,toolkit, handler=NULL, action=NULL,...) {
             .addHandler(obj,toolkit,"<KeyRelease>",handler,action,
                         FUN = function(K) {
                           h = list(obj = obj, action = action, key=K)
-                          handler(h)
+                          runHandlers(obj, "<KeyRelease>", h, ...)
+                          ## handler(h)
                         })
           })
 
@@ -1324,7 +1331,7 @@ setMethod(".addhandlerfocus",
                         handler=handler, action=action, ...)
           })
 
-##' blur: blur should be focus out but is mouse out
+##' blur: blur should be focus out but is mouse out and focus out, so called twice!
 setMethod("addhandlerblur",signature(obj="gWidgettcltk"),
           function(obj, handler=NULL, action=NULL, ...) {
             .addhandlerblur(obj,obj@toolkit,handler, action, ...)
@@ -1339,8 +1346,8 @@ setMethod(".addhandlerblur",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
-            IDs <- lapply(c("<FocusOut>", "<Leave"), function(i)
-                          .addHandler(obj, toolkit, signal=i
+            IDs <- lapply(c("<FocusOut>", "<Leave>"), function(i)
+                          .addHandler(obj, toolkit, signal=i,
                                       handler=handler, action=action, ...)
                           )
             IDs

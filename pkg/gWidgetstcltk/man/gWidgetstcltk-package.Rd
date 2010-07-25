@@ -286,10 +286,18 @@ when Filter by: value is changed.
 \bold{Handlers:}
 \cr
 
-Currently only one handler (the last one) for a signal is called. That
-is if you try to add to handlers for a click event, only the last will
-be called. As well, the \code{removehandler} function does not work
-except for the idle handler.
+
+Handlers were rewritten so that one can have more than one handler per
+signal (although not with radio buttons and checkboxgroups). The
+\code{blockHandler}, \code{unblockHandler} and \code{removeHandler}
+methods are now working.  \cr
+
+The \code{addHandlerBlur} method should be called when a widget loses
+focuses, but here is called whenever a widget loses focus \emph{and}
+whenever the mouse leaves the widget. This can mean the handler is
+called twice. If you don'l like that, you can add the callback through
+\code{addHandler(obj, signal, handler)} where \code{signal} is
+\code{<FocusOut>} or \code{<Leave>}.
 \cr
 
 \code{adddroptarget()}, \code{adddropsource()}, and \code{adddropmotion}

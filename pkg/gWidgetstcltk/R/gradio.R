@@ -237,9 +237,9 @@ setReplaceMethod(".enabled",
 ## handlers
 
 
-## This handler isn't right. It reacts ta click on the box containing
-## the widget, not the radio buttons
-
+##' only one handler per widget
+##'
+##' This could be changed, but only if asked ...
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {

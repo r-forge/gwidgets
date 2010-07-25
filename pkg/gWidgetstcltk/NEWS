@@ -5,7 +5,9 @@ NEWS for gWidgetstcltk
 Changes for 0.0-39
 -------------------
 * added [ method to glayout for extraction
-* fix to handler code to get to work
+* fix to handler code. Adds blockHandler, unblockHandler and fixes
+bugs. Just gradio and gcheckboxgroup have only 1 handler per widget,
+others can have multiple. Handler code is not as general as tcltk itself.
 
 Changes for 0.0-38
 -------------------

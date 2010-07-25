@@ -1,11 +1,11 @@
 TODO:
 ---------
 ** Bug with gfile being opened from a button -- button stays depressed
-   after gfile is closed
+   after gfile is closed -- THIS IS A TK BUG
 DONE * the addSpring method. (Requires group to be expanded!)
 * move gcalendar into gWidgets as an ANY object?
 * addHandlerColumnClicked use tcl(obj,"heading", colno, command=function(...) {})
-* anchor or expand=TRUE fails with add. -- This needs work!
+FIXED * anchor or expand=TRUE fails with add. -- This needs work!
 * addSpring -- isn't
 * fix sizeing issues: gedit too wide, gtable toowide, gwindow --
   resize natually. Look into using pixels, characters, ...
@@ -15,17 +15,17 @@ DONE* integrate tktable into gdf
 * Fix toolbar button style in mac os x (Style? THeme?...)
 * fix widths in gtree, gtable -- they are awful. Make depend on width
 of widget, put on resize handler
-* block/unblock handler -- not sure this can be done?
-* gvarbrowser-- update needs writing, addHandleIdle
+DONE * block/unblock handler -- not sure this can be done?
+* gvarbrowser-- update needs writing
+DONE * addHandleIdle
 * toolbar delete
-
 DONE * addSpring for ggroup guys
 DONE * I lost bit about visible<- for windows: draw (hide if not requested)
 DONE * spcing issue with gexpandgroup -- this is ugly, the argument passing
-DONE* put frame within gwindow for themes
+DONE * put frame within gwindow for themes
 DONE * implement ggroup use.scrollwindow (failed, see test-scroll.R)
 DONE * enabled -- recurse
-DONE* gaction, gtooltip
+DONE * gaction, gtooltip
 DONE * MANY fixes detailed by Felix.
 DONE * defaultWidget implementation!!
 DONE * addHandlerKeystroke -- set h$key!
@@ -35,11 +35,11 @@ NOT THERE?* gcombobox a[] might give error whereas a[,1] does not -- check type
 * use foreground to set font color in ttk widgets
 
 SOME IT DOES * font isn't working with ttk widgets
-* gbasicdialog -- use as a container? -- on add, make modal
-* gcalendar in ttk?
+DONE * gbasicdialog -- use as a container? -- on add, make modal
+DONE * gcalendar in ttk?
 DONE * gwindow -- add menubar, toolbar, statusbar methods
 DONE * fix toolbar -- missing icons with height -- pack in buttons with
-fill="y"; put about contentpane using pack -- check
+       fill="y"; put about contentpane using pack -- check
 DONE * fix status bar -- not working at all
 DONE * fix man pages. Kurt email:
  generic '.addhandlerunrealize' and siglist
@@ -53,16 +53,10 @@ done * undo support in gtext (control-z,y?)
 done * add in ttk stuff: do 
 done * notebook, 
 done * combobox, 
-done treeview, 
+done * treeview, 
 done * ttkpanedwindow -- bring out sash, etc
-done * ?? ttkseparator, 
-tkimage?, 
-
-DONE ?* fix size issues
-
-* handler code isn't right -- Does add handler refer to hash? remove
-handler removes it, but we bind a handler and removing doesn't seem to affect
-* spruce up dialogs -- buttons with icons, space
-
-
-
+done * ?? ttkseparator, tkimage?, 
+DONE * fix size issues
+DONE * handler code isn't right -- Does add handler refer to hash? remove
+       handler removes it, but we bind a handler and removing doesn't seem to affect
+DONE * spruce up dialogs -- buttons with icons, space
