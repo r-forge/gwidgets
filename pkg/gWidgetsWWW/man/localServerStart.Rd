@@ -21,9 +21,9 @@
   main functions are \code{localServerStart}, \code{localServerOpen} and \code{localServerSource}.
 }
 \usage{
-localServerStart(file = "", port = 8079, package = NULL)
+localServerStart(file = "", port = 8079, package = NULL, ...)
 
-localServerOpen(file, package)
+localServerOpen(file, package=NULL, ...)
 
 localServerSource(file_or_url)
 
@@ -39,6 +39,7 @@ localServerRestart()
   \item{package}{ If specified, files are found reltive to this package through \code{system.file(file,package=package)}.}
   \item{file\_or\_url}{A file or url to source in to create the web page.}
   \item{port}{Deprected}
+  \item{...}{passed to constructor}
 
 }
 \details{
