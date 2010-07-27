@@ -70,4 +70,5 @@ add_help_button(paste("Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                       "Integer et purus lorem, quis suscipit risus.", collapse=" "))
 
 }
+}
 \keyword{ interface }% at least one, from doc/KEYWORDS

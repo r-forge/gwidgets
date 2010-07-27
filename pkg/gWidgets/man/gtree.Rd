@@ -31,13 +31,18 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   vector, \code{TRUE} if there is offspring, \code{FALSE} if not.
  
  }
-  \item{hasOffspring}{Whether an entry has an offspring is determined
-  by a) if this function is non-\code{NULL} and it returns a
-  \code{TRUE} value when called on the offspring data frame for this
-  row, b) if this is NULL and the second column of the offspring data frame is a
-  logical vector and for this row is \code{TRUE}. If this function is
-  \code{NULL} and the second column is not a logical vector then it is
-  assumed that there are no offspring.}
+ \item{hasOffspring
+ }{
+
+   Whether an entry has an offspring is determined by a. if this
+   function is non-\code{NULL} and it returns a \code{TRUE} value when
+   called on the offspring data frame for this row, b. if this is NULL
+   and the second column of the offspring data frame is a logical vector
+   and for this row is \code{TRUE}. If this function is \code{NULL} and
+   the second column is not a logical vector then it is assumed that
+   there are no offspring.
+   
+  }
 
   \item{offspring.data}{Passed to \code{offspring} function to
   parameterize that function.}
@@ -90,8 +95,18 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
   \code{offspring}. If present, it should return a vector of stock
   icon names.
 
-  The \code{svalue} method returns the current key. If \code{index} is
-  set to a column number, that column's value will be returned.
+  The \code{svalue} method returns the current key.  The \code{index}
+  argument has changed. If \code{index} is \code{TRUE}, the path of
+  each selection is returned as a numeric vector, where the numbers
+  represent the sibling count at each level, 1-based. That is
+  \code{c(1,2,3)} is the 3rd offspring of the second offspring of the
+  first offspring of the root. If more than one selection is made,
+  then a list of such values is returned.  This way -- in theory -- we
+  can set values by index too. In particular, we should have
+  \code{svalue(obj, index=TRUE) <- svalue(obj, index=TRUE)}.  (Before,
+  using a numeric value for index would give the ith column, as
+  opposed to the chosen column. This behaviour can be found using the
+  \code{"["} method.) 
 
   The \code{"["} method refers to the vector of keys for the selected
   object. That is, svalue gives the current key, and \code{[} returns
@@ -181,6 +196,8 @@ addHandlerDoubleclick(tr, handler=function(h,...) {
   print(svalue(h$obj))		# the key
   print(h$obj[])		# vector of keys
 })
+
+
 }
 }
 

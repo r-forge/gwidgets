@@ -179,7 +179,7 @@
     }
     
   
-    \item{ \code{[(x,i,j,...,drop=TRUE)}:}{ 
+    \item{ \code{[(x,i,j,...,drop=TRUE)]}:}{ 
       For widgets where selection is a choice from a collection of items,
       the \code{svalue} method refers to the choice and the square bracket
       notation refers to the items.  For instance, in a radio button
@@ -198,7 +198,8 @@
     
     
     \item{  \code{size(obj, ...)} or
-      \code{size<-(obj, ..., value)}:}{
+      \code{size<-(obj, ..., value)}:
+    }{
       Returns or sets the size of the object.  For setting
       the size, the value is given in terms of width and
       height of widget in pixels.
@@ -206,7 +207,8 @@
     
     \item{
       \code{visible(obj ...)} or
-      \code{visible<-(obj,..., value)}:}{
+      \code{visible<-(obj,..., value)}:
+    }{
       Used to check if widget is visible or not. When setting the
       visibility, \code{value} should be a logical. "Visibility"
       differs from widget to widget. For \code{gwindow} it refers
@@ -233,11 +235,20 @@
       used to change the state.
     }
     
-    \item{\code{isExtant(obj, ...)}{Method to check if widget is still usable. Useful to check if a widget has been destroyed and can no longer have methods called on it -- even if the R object is still extant, the underlying GUI object may not be.}
+    
+    \item{\code{isExtant(obj, ...)}
+    }{
+
+      Method to check if widget is still usable. Useful to check if a
+      widget has been destroyed and can no longer have methods called on
+      it -- even if the R object is still extant, the underlying GUI
+      object may not be.
+
+    }
 
     \item{ \code{focus(obj,...)} or \code{focus<-(obj,...,value)}:
     }{
-      method to check if a widget has focus, or to force focus on a widget.
+      method to check if a widget has focus (for keyboard input), or to force focus on a widget.
     }
     
     \item{\code{tooltip<-(obj,value)}
@@ -276,8 +287,8 @@
     }
 
     \item{\code{undo(obj, ...)} or \code{redo(obj,...}:
-      For toolkits that support undo/redo operations. (Qt and the \code{gtext} and \code{gedit} widgets.)
     }{
+      For toolkits that support undo/redo operations. (Qt and the \code{gtext} and \code{gedit} widgets.)
     }
   
     \item{  \code{tag(obj,i, drop=TRUE, ...)} or
