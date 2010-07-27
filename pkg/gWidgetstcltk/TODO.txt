@@ -1,5 +1,7 @@
 TODO:
 ---------
+* implement svalue( index=TRUE) (give index as "a:b:c") and
+  svalue(obj) <- index
 ** Bug with gfile being opened from a button -- button stays depressed
    after gfile is closed -- THIS IS A TK BUG
 DONE * the addSpring method. (Requires group to be expanded!)

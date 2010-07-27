@@ -352,33 +352,85 @@ setMethod(".update",
                               icons=icons)
           })
 
-## use index for the column to override the column returned
+## index returns the indices
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gTreetcltk"),
           function(obj, toolkit, index=NULL, drop=NULL,...) {
 
             tr <- getWidget(obj)
             
-            theArgs <- list(...) 
+            index <- getWithDefault(index, FALSE)
 
-            if(!is.null(index)) {
-              gwCat(gettext("index not supported for svalue gWidgetstcltk\n"))
+
+            if(index) {
+              sel <- unlist(strsplit(tclvalue(tcl(tr,"selection"))," "))
+              if(length(sel) == 0)
+                return(NULL)
+              vals <- lapply(sel, function(i) {
+                ind <- numeric(0)
+                parent <- i
+                while(parent != "") {
+                  ind <- c(as.numeric(tcl(tr, "index", parent)) + 1, ind)
+                  parent <- tclvalue(tcl(tr, "parent", parent))
+                }
+                ind
+              })
+              if(length(vals) == 1)
+                vals <- vals[[1]]
+              return(vals)
+            } else {
+              ## give key
+              whichCol <- tag(obj,"chosencol")
+              if(whichCol != 1)
+                gwCat(gettext(" svalue only returns first column with gWidgetstcltk\n"))
+              
+              
+              ## possible multiple selection
+              ## return path from selection
+              sel <- unlist(strsplit(tclvalue(tcl(tr,"selection"))," "))
+              if(length(sel) == 0) return(NULL)
+              vals <- sapply(sel, function(i) tclvalue(tcl(tr,"item",i,"-text")))
+              ## strip off names
+              attr(vals,"names") <- rep(NULL,length(vals))
+              
+              return(vals)
             }
-            whichCol <- tag(obj,"chosencol")
-
-            if(whichCol != 1)
-              gwCat(gettext(" svalue only returns first column with gWidgetstcltk\n"))
-            ## possible multiple selection
-            ## return path from selection
-            sel <- unlist(strsplit(tclvalue(tcl(tr,"selection"))," "))
-            if(length(sel) == 0) return(NULL)
-            vals <- sapply(sel, function(i) tclvalue(tcl(tr,"item",i,"-text")))
-            ## strip off names
-            attr(vals,"names") <- rep(NULL,length(vals))
-
-            return(vals)
           })
 
+##' set selection by index
+##' 
+##' @param value a numeric path, or list of numeric paths specifying the selection
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkittcltk",obj="gTreetcltk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+
+                   index <- getWithDefault(index, TRUE)
+                   if(!index) {
+                     gwCat(gettext("Need to have index=TRUE (or NULL)"))
+                     return(obj)
+                   }
+
+                   if(is.atomic(value))
+                     value <- list(value)
+                   ## 0-based
+                   value <- lapply(value, function(i) i)
+
+                   tr <- getWidget(obj)
+                   selected <- as.character(tcl(tr, "selection"))
+                   sapply(selected, function(sel) tcl(tr, "selection", "toggle", sel))
+                   sapply(value, function(path) {
+                     parent <- ""
+                     for(i in path) {
+                       parent <- as.character(tcl(tr, "children", parent))[i]
+                       tcl(tr, "see", parent)
+                     }
+                     tcl(tr, "selection", "add", parent)
+                   })
+
+                   return(obj)
+
+                                 
+                 })
 ### need to figure this out
 ## return the path in values
 setMethod("[",

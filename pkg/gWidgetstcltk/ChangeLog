@@ -1,3 +1,7 @@
+2010-07-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (.treeColWidths): added svalue<- method to set by index
+
 2010-07-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/glayout.R: fix so that [ method can be used to retrieve widget

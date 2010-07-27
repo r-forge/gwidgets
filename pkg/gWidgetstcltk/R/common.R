@@ -547,7 +547,7 @@ getStockIconName = function(name) allIcons[[name,exact=TRUE]]
 
 ##' get with default value
 getWithDefault <- function(x, default) {
-  if(is.null(x) || is.na(x))
+  if(is.null(x) || (is.atomic(x) && length(x) ==1 && is.na(x)))
     default
   else
     x

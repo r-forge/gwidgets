@@ -36,6 +36,7 @@
 \alias{.svalue<-,gStatusbartcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gTexttcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gToolbartcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
+\alias{.svalue<-,gTreetcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gAddargtcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gBivariatetcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gModeltcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
