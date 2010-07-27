@@ -1,3 +1,23 @@
+2010-07-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (isStillThere): Change to index=TRUE in svalue. No
+	longer specifies chosen column, rather returns index. Implemented
+	svalue<- method.
+	
+
+	* R/gvarbrowser.R: fixes to this suggested by TT. svalue, 
+
+2010-07-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (isStillThere): fix to add this function for update
+
+2010-07-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): put in multiple argument; can
+	override stockIconFromClass (see gWidgetsRGtk2 page);
+
+	* R/gtree.R: return NA if no selection
+
 2010-07-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): Added [ method for

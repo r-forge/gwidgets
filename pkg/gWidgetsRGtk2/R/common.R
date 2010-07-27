@@ -426,7 +426,7 @@ stockIconFromObject = function(obj)
 
 ## get with default
 getWithDefault <- function(x, default) {
-  if(is.null(x) || is.na(x))
+  if(is.null(x) || (is.atomic(x) && length(x) ==1 && is.na(x)))
     default
   else
     x

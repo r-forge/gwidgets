@@ -138,7 +138,7 @@ setMethod(".gvarbrowser",
               knownTypes <- getOption("knownTypes")
             }
 
-
+            multiple <- getWithDefault(theArgs$multiple, TRUE)
             
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
@@ -155,15 +155,19 @@ setMethod(".gvarbrowser",
             filterGroup <- ggroup(container=group)
             glabel("Filter by:",container=filterGroup)
             filterPopup <- gdroplist(names(knownTypes), container=filterGroup)
-            svalue(filterPopup) <- "data sets"
+            val <- ifelse("data sets" %in% names(knownTypes), "data sets", names(knownTypes)[1])
+            svalue(filterPopup) <- val
             
             ## main tree
             tree = gtree(offspring=offspring,
               offspring.data=function() knownTypes[[svalue(filterPopup)]],
               col.types=data.frame(Name="string",Type="string"),
               icon.FUN = function(d,...) {
-                byReturnVector(d,function(x) stockIconFromClass(x[,'type']))
+                ## Allow user to change stock icon
+                FUN <- getWithDefault(getOption("gWidgetsStockIconFromClass"), stockIconFromClass)
+                byReturnVector(d,function(x) FUN(x[,'type']))
               },
+              multiple=multiple,
               container = group, expand=TRUE
               )
             
@@ -201,6 +205,15 @@ setMethod(".gvarbrowser",
 
             obj = new("gVarbrowserRGtk",block=group, widget=tree, filter=filterPopup)
 
+
+            ## override how we compare items. Default is just by name, here we want
+            ## to include class
+            tag(tree, "isStillThere") <- function(old, new) {
+              out <- (old[1] %in% new[,1, drop=TRUE]) &&
+                     (old[2] %in% new[,3, drop=TRUE])
+              out
+            }
+            
             if(!is.null(handler)) {
               id = addhandlerdoubleclick(tree,
                 handler=handler, action=action)
@@ -221,10 +234,18 @@ setMethod(".update",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gVarbrowserRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            values = obj@widget[]       # from tree
-            
-            value = paste(values, collapse = "$")
 
+            ## check if any selection
+            value <- NA
+            x <- svalue(obj@widget)
+            if(!(is.atomic(x) && length(x) == 1 && is.na(x))) {
+              f <- function(x) paste(x, collapse="$")
+              values <- obj@widget[]       # from tree
+              if(is.list(values))
+                value <- sapply(values, f)
+              else
+                value <- f(values)
+            }
             return(value)
           })
 setMethod("[",

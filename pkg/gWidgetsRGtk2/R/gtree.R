@@ -266,9 +266,18 @@ setMethod(".update",
 
             obj = object                          # rename, object from update generic
             ## what should now be in this part of the tree
-            newchildren = tag(obj,"offspring")(c(), offspring.data)
-            newvalues = as.character(newchildren[,1])
-            alreadyThere = c()
+            newchildren <- tag(obj,"offspring")(c(), offspring.data)
+            newvalues <- newchildren
+            stillThere <- c()
+
+            ## allow override by passing in function isStillThere into object via tag
+            ## you may want to use get and digets here
+            ## val is c(name, type) of item from tree;
+            ## allVals is df with nameType of the newvalues to add to tree
+            isStillThere <- function(val, allVals) {
+              val[1] %in% allVals[,1,drop=TRUE]
+            }
+            isStillThere <- getWithDefault(tag(obj, "isStillThere"), isStillThere)
             
             ## loop over values in the treestore, if not in newchildren, remove
             i = 0
@@ -276,8 +285,9 @@ setMethod(".update",
             iter = tag(obj,"store")$GetIterFromString(i)
             while(iter$retval) {
               treeValue = tag(obj,"store")$GetValue(iter$iter,0+tag(obj,"iconFudge"))$value
-              if(treeValue %in% newvalues) {
-                alreadyThere = c(alreadyThere, treeValue)
+              treeValueType = tag(obj,"store")$GetValue(iter$iter,0+ 1 +tag(obj,"iconFudge"))$value
+              if(isStillThere(c(treeValue, treeValueType), newvalues)) {
+                stillThere <- c(stillThere, treeValue)
               } else {
                 ## need to delete
                 remove.these = c(remove.these, i)
@@ -292,9 +302,8 @@ setMethod(".update",
               }
             }
             
-            didThese = newvalues %in% alreadyThere
+            didThese = newvalues[,1,drop=TRUE] %in% stillThere
             newchildren = newchildren[!didThese, , drop=FALSE] # don't drop dimension
-
             ## add these to end
             if(nrow(newchildren) > 0) {
               
@@ -307,46 +316,99 @@ setMethod(".update",
             }
           })
 
-## use index for the column to override the column returned
+## XXX OLDuse index for the column to override the column returned
+##' XXX Index should be for index of selected, e.g 1:2:3 type thing -- aka the path
+##' @param index if TRUE, then return either a numeric vector or list of numeric vectors (if multiple selection)
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL,...) {
-            theArgs = list(...) 
-            if(!is.null(index))
-              whichCol = index          ## BAD FORM!!!
-            else 
-              whichCol = tag(obj,"chosencol")
+            theArgs = list(...)
 
-            ## multiple selection
-            if(tag(obj,"multiple")) {
-              treeselection = obj@widget$GetSelection()
-              out = treeselection$GetSelectedRows() # 2 parts, paths, model
-              if(length(out) == 0) {
-                return(c())
-              } else {
-                model = out$model
-                tmp = c()
-                for(i in out$retval) {
-                  iter = model$GetIter(i)$iter
-                  value = model$GetValue(iter,
-                    tag(obj,"chosencol")-1 + tag(obj,"iconFudge"))$value
-                  tmp = c(tmp,value)
-                }
-                return(tmp)
-              }
-            } else {
-              ## single selection
-              iter = obj@widget$GetSelection()$GetSelected()
-              if(iter$retval) 
-                return( obj@widget$GetModel()$GetValue(iter$iter,whichCol-1 +
-                                                       tag(obj,"iconFudge"))$value)
-              else
+            index <- getWithDefault(index, FALSE)
+            if(index) {
+              ## make change -- return tree index
+              twidget <- obj@widget
+              sel <- twidget$getSelection()
+              selectedRows <- sel$getSelectedRows()
+              selList <- selectedRows$retval # list of GtkTreePaths
+              if(length(selList) == 0) {
+                ## no selection
                 return(NULL)
+              }
+              out <- lapply(selList, function(i) {
+                tmp <- i$toString()
+                vals <- as.numeric(unlist(strsplit(tmp, ":"))) + 1
+              })
+              if(length(out) == 1)
+                out <- out[[1]]         # return a list only if 2 or more
+              
+              return(out)
+            } 
+            
+            ## we had case for both multiple or not, but we can use the same code for each
+            ##            if(tag(obj,"multiple")) {
+            treeselection = obj@widget$GetSelection()
+            out = treeselection$GetSelectedRows() # 2 parts, paths, model
+            if(length(out$retval) == 0) {
+              return(NULL)
+            } else {
+              model = out$model
+              tmp = c()
+              for(i in out$retval) {
+                iter = model$GetIter(i)$iter
+                value = model$GetValue(iter,
+                  tag(obj, "chosencol") - 1 + tag(obj,"iconFudge"))$value
+                tmp = c(tmp,value)
+              }
+              return(tmp)
             }
+          ## } else {
+          ##     ## single selection
+          ##     iter = obj@widget$GetSelection()$GetSelected()
+          ##     if(iter$retval) 
+          ##       return(obj@widget$GetModel()$GetValue(iter$iter,whichCol-1 +
+          ##                                              tag(obj,"iconFudge"))$value)
+          ##     else
+          ##       return(NULL)              # nothing selected
+          ##   }
           })
 
+
+##' svalue<-
+##'
+##' Set selection by index. A path looks like c(a,b,c) 1-based
+##' @param value indices. Either a vector for single selection or list of vectors for multiple selection.
+##' @param index must be TRUE
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   index <- getWithDefault(index, TRUE)
+                   if(!index) {
+                     gwCat(gettext("Need to have index=TRUE (or NULL)"))
+                     return(obj)
+                   }
+                   ## value is character vector of paths. 
+                   tr <- getWidget(obj)
+                   sel <- tr$getSelection()
+                   sel$unselectAll()    # clear selection
+
+                   if(is.atomic(value))
+                     value <- list(value)
+
+                   value <- lapply(value, function(i) i-1)
+                   
+                   sapply(value, function(tmp) {
+                     for(j in 1:length(tmp)) {
+                       tpath <- gtkTreePathNewFromString(paste(tmp[1:j], collapse=":"))
+                       tr$expandRow(tpath, open.all=FALSE)
+                     }
+                     sel$selectPath(tpath) ## adds if selection is multiple
+                   })
+                   return(obj)
+                 })
+
 ### need to figure this out
-## return the path in values
+## return the path in values. i,j ignored
 setMethod("[",
           signature(x="gTreeRGtk"),
           function(x, i, j, ..., drop=TRUE) {
@@ -356,32 +418,62 @@ setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gTreeRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             obj = x
-            sel <- obj@widget$GetSelection()$GetSelected()
-            if(!sel$retval) {
-              ## no selection
-              return(character(0))
-            }
-            iter <- sel$iter
-            ## need to convert to unsorted
-            iter = tag(obj,"SortedStore")$ConvertIterToChildIter(iter)$child.iter
             
-            string = tag(obj,"store")$GetPath(iter)$ToString()
-            indices = unlist(strsplit(string,":"))
-            thePath = c()
-            for(j in 1:length(indices)) {
-              path = paste(indices[1:j],collapse=":")
-              iter = tag(obj,"store")$GetIterFromString(path)
-              thePath[j] = tag(obj,"store")$GetValue(iter$iter,0+
-                       tag(obj,"iconFudge"))$value
+            ## XXX We had different cases for multiple and not, but this isn't necessary
+            ##            if(tag(obj,"multiple"))  {
+            twidget <- obj@widget
+            sel <- twidget$getSelection()
+            selectedRows <- sel$getSelectedRows()
+            selList <- selectedRows$retval # list of GtkTreePaths
+            model <- selectedRows$model
+            if(length(selList) == 0) {
+              ## no selection
+              return(NULL)
             }
-            if(missing(i))
-              return(thePath)
-            else
-              return(thePath[i])
+            
+            out <- lapply(selList, function(path) {
+              string <- path$toString()
+              indices <- unlist(strsplit(string,":"))
+              thePath <- c()
+              for(j in 1:length(indices)) {
+                npath <- paste(indices[1:j],collapse=":")
+                iter <- tag(obj,"store")$GetIterFromString(npath)
+                thePath[j] <- tag(obj,"store")$GetValue(iter$iter,0+
+                                                        tag(obj,"iconFudge"))$value
+              }
+              thePath
+            })
+            if(length(out) == 1)      # if only 1 selection return it, o/w give as list
+                out <- out[[1]]
+            return(out)
+          ## } else {
+          ##   sel <- obj@widget$GetSelection()$GetSelected()
+          ##     if(!sel$retval) {
+          ##       ## no selection
+          ##       return(character(0))
+          ##     }
+          ##     iter <- sel$iter
+          ##     ## need to convert to unsorted
+          ##     iter = tag(obj,"SortedStore")$ConvertIterToChildIter(iter)$child.iter
+              
+          ##     string = tag(obj,"store")$GetPath(iter)$ToString()
+          ##     indices = unlist(strsplit(string,":"))
+          ##     thePath = c()
+          ##     for(j in 1:length(indices)) {
+          ##       path = paste(indices[1:j],collapse=":")
+          ##       iter = tag(obj,"store")$GetIterFromString(path)
+          ##       thePath[j] = tag(obj,"store")$GetValue(iter$iter,0+
+          ##                tag(obj,"iconFudge"))$value
+          ##     }
+          ##     if(missing(i))
+          ##       return(thePath)
+          ##     else
+          ##       return(thePath[i])
+          ##   }
           })
-
-
-
+          
+          
+          
 ### methods
 ## row-activated in gtable gives double click
 setMethod(".addhandlerdoubleclick",

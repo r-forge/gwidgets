@@ -78,6 +78,10 @@ Port of gWidgets API to RGtk2
   "nfnGroupedData","nffGroupedData","nmGroupedData",
   "POSIXct","POSIXlt","POSIXt" )}.  \cr
 
+  The function used to map a class to an icon is by default
+  \code{getStockIconFromClass}. This can be changed by assigning a
+  function to the option \code{gWidgetsStockIconFromClass}. This function should take a class and return a stock icon name. (The class passed is the first value only.) 
+
   The \code{gfile} constructor has the argument \code{multiple}, which if
   TRUE will allow for multiple selections of files. This feature
   should be merged into the gWidgets API, but for now is passed in via

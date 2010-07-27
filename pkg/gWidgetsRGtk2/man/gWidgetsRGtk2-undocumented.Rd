@@ -35,6 +35,7 @@
 \alias{.svalue<-,gStatusbarRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gTextRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gToolbarRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
+\alias{.svalue<-,gTreeRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gAddargRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gBivariateRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gModelRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
