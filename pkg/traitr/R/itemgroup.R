@@ -429,12 +429,12 @@ ItemGroup <- Model$proto(class=c("ItemGroup",  Model$class),
 ##'                   )
 ##' 
 ##' ## using gbasicdialog from gWidgets
+##' \dontrun{
 ##' w <- gbasicdialog("testing", handler=function(h,...) {
 ##'   . <- h$action                         # action passes in itemgroup
 ##'   .$output <- sin(.$get_x())
 ##' },
 ##'                   action=ig)
-##' \dontrun{
 ##' ig$make_gui(container=w)
 ##' visible(w, TRUE)  ## modal now
 ##' print(ig$output)
