@@ -4,10 +4,12 @@
 ##' @param handler Not implemented
 ##' @param action Not implemented
 ##' @param container A container to place graphic into
+##' @export
 gwebvis <- function(wv,
                     handler=NULL, action=NULL,
                     container=NULL, ...) {
 
+  unfold.webvis <- NULL                 # quiet down check
   if(!bypassRequire("webvis"))
     return(glabel(gettext("gwebvis needs the webvis package to be installed"), cont=container))
 

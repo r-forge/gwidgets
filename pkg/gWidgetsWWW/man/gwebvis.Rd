@@ -1,6 +1,5 @@
 \name{gwebvis}
 \alias{gwebvis}
-\alias{ggraphics}
 \title{Interface to webvis device}
 \description{
 	This function uses the \pkg{webvis} package to create a device
@@ -26,8 +25,8 @@ gwebvis(wv, handler=NULL, action=NULL, container = NULL, ...)
 \author{John Verzani }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\examples{
-\dontrun{}
-}
+%\examples{
+%\dontrun{}
+%}
 \keyword{interface}
 

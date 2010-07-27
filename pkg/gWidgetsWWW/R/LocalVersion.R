@@ -203,6 +203,19 @@ processExternalRun <- function(path, query, ...) {
 ##' passed through ..., not query. We call it query below, nonetheless
 processAJAX <- function(path, query, ...) {
   query <- list(...)[[1]]               # query passed in body, not query (POST info)
+
+  ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
+  if(!is.null(attr(query, "content-type"))) {
+    out <- rawToChar(query)
+    tmp <- unlist(strsplit(tmp, "&"))
+    l <- list()
+    for(i in 1:length(tmp)) {
+      if(length(tmp[[i]]) > 1)
+        l[[tmp[[i]][1]]] <- tmp[[i]][2]
+    }
+    query <- l
+  }
+
   query <- lapply(query, function(i) i) # make a list
   type <- query$type
   
