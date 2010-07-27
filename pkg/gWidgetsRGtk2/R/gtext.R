@@ -246,7 +246,8 @@ setMethod(".add",
             markup = theArgs$font.attr
             if(!is.null(markup))
               markup = markup[markup %in% unlist(tag(obj,"tags"))] # only some markup
-            where = ifelse(is.null(theArgs$where), "end",theArgs$where)
+
+            where <- getWithDefault(theArgs$where, "end")
 
             
             view <- obj@widget
@@ -273,8 +274,13 @@ setMethod(".add",
               }
               if(do.newline) buffer$Insert(iter,"\n")
             }
+
             ## scroll to end -- if appended to end
             if(where == "end") {
+              gdkWindowProcessAllUpdates()
+              while (gtkEventsPending())
+                gtkMainIterationDo(blocking=FALSE)
+
               end <- buffer$getEndIter()$iter
               view$scrollToIter(end, within.margin = 0,
                                 use.align=TRUE)

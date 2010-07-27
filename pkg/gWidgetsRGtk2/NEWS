@@ -9,6 +9,7 @@ Changes for version 0.0-68
 * fix to font<- and colors. Thanks to S. Bonett for the feedback.
 * added [ method for glayout.
 * added svalue<- method to gtree, changed svalue(obj, index=XXX) behaviour
+* fix bug with insert method for gtext and scrolling to end.
 
 Changes for version 0.0-67
 --------------------------
