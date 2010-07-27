@@ -59,8 +59,8 @@ setMethod(".gframe",
 
             ## padding
             theArgs <- list(...)
-            padding <- getWithDefault(theArgs$padding, 0)
-            svalue(obj) <- padding
+            
+            svalue(obj) <- getWithDefault(theArgs$spacing, 0)
 
             if(!is.null(container))
               add(container, obj, ...)

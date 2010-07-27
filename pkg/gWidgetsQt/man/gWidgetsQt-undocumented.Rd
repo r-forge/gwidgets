@@ -738,6 +738,7 @@
 \alias{.font<-,RQtObject,guiWidgetsToolkitQt-method}
 \alias{.font<-,gExpandgroupQt,guiWidgetsToolkitQt-method} 
 \alias{.font<-,gFrameQt,guiWidgetsToolkitQt-method} 
+\alias{.font<-,gLabelQt,guiWidgetsToolkitQt-method} 
 \alias{.font<-,gTextQt,guiWidgetsToolkitQt-method} 
 %%
 %% --  tag --

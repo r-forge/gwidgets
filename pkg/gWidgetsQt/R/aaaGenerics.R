@@ -223,18 +223,18 @@ setMethod(".size",
           signature(toolkit="guiWidgetsToolkitQt",obj="gComponentQt"),
           function(obj, toolkit, ...) {
             w <- getWidget(obj)
-#            return(c(width=w$width, height=w$height))
-            return(c(width=w$size$width(),
-                     height=w$size$height()))
+            rect <- w$getGeometry()
+            return(c(width=rect$width(),
+                     height=rect$height()))
           })
 
 setMethod(".size", 
           signature(toolkit="guiWidgetsToolkitQt",obj="gContainerQt"),
           function(obj, toolkit, ...) {
-            w <- getBlock(obj)
-#            return(c(width=w$width, height=w$height))
-            return(c(width=w$size$width(),
-                     height=w$size$height()))
+            w <- getBlock(obj)          # block -- not widget
+            rect <- w$getGeometry()
+            return(c(width=rect$width(),
+                     height=rect$height()))
           })
 
 
@@ -498,6 +498,14 @@ setReplaceMethod(".font",
                    w <- getWidget(obj)
                    f <- makeQFont(value)
                    w$setFont(f)
+
+                   ## color
+                   if(is.atomic(value))
+                     value <- lapply(value, function(i) i)
+
+                   if(!is.null(value$color)) 
+                     w$setStyleSheet(sprintf("* {color: %s}", value$color))
+                   
                    
                    return(obj)
                    

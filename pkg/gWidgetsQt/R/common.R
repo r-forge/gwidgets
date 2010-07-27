@@ -13,7 +13,7 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-## Common functions
+## Common functions. Many of these just not used -- clean up.
 
 ## easy to find cat
 XXX <- function(...) cat(..., "\n")
@@ -92,7 +92,7 @@ stripWhiteSpace = function(str) {
 }
 
 
-quoteIfNeeded = function(str) {
+quoteIfNeeded <- function(str) {
   if(length(grep('^\\".*\\"$', str, perl=TRUE)) > 0 ||
      length(grep("^\\'.*\\'$", str, perl=TRUE)) > 0 )
     return(str)
@@ -101,11 +101,11 @@ quoteIfNeeded = function(str) {
 }
 
 ## ReadParseEvaL -- saves typing
-rpel = function(STRING, envir=.GlobalEnv) {
+rpel <- function(STRING, envir=.GlobalEnv) {
   eval(parse(text=STRING), envir=envir)
 }
 
-showErrorMessage = function() {       # leave here for scoping on command
+showErrorMessage <-  function() {       
   message = Paste("Error:",
     "\n\t",geterrmessage())
   gmessage(message,icon="error")
@@ -114,55 +114,24 @@ showErrorMessage = function() {       # leave here for scoping on command
   
 
 ## Push and Pop -- for convenience
-Push = function(v,d) c(v,d)
-Pop = function(v) ifelse(length(v) > 1, v[-length(v)], NA)
+Push <- function(v,d) c(v,d)
+Pop <- function(v) ifelse(length(v) > 1, v[-length(v)], NA)
 
 
 ### is functions
-is.rJavaObject = function(obj) {
-  is(obj,"rJavaObject") 
-}
 
-is.guiWidget = function(obj) {
+is.guiWidget <- function(obj) {
   is(obj,"guiWidget")
 }
-is.gWidget = function(obj) {
-  is(obj,"gWidgetrJava")
-}
-is.gWindow = function(obj) {
-  is(obj,"gWindowrJava")
-}
-is.gComponent = function(obj) {
-  is(obj,"gComponentrJava")
-}
-is.gContainer = function(obj) {
-  is(obj,"gContainer")
+is.gWidget <- function(obj) {
+  is(obj,"gWidgetQt")
 }
 
-is.gImage = function(obj) {
-  is(obj,"gImagerJava")
-}
-is.gLabel = function(obj) {
-  is(obj,"gLabelrJava") 
-}
-
-is.gMenu = function(obj) {
-  is(obj,"gMenurJava") 
-}
-is.gEditDataFrame=function(obj) {
-  stop("deprecated, use is.gGrid")
-}
-is.gGrid = function(obj) {
-  is(obj,"gGridrJava")
-}
-
-is.invalid = function(obj) {
-  while(!is.rJavaObject(obj))
-    obj = obj@block
-  ifelse("<invalid>" %in% class(obj), TRUE, FALSE)
+is.invalid <- function(obj) {
+  stop("Implement me for Qt")
 }
 ## used to check output 
-is.empty = function(obj) {
+is.empty <- function(obj) {
   if(is.null(obj) || is.na(obj) || obj == "") {
     return(TRUE)
   } else {
@@ -172,7 +141,7 @@ is.empty = function(obj) {
 
 
 ## for showing only possible values
-is.dataframelike = function(obj) {
+is.dataframelike <- function(obj) {
   if(is.data.frame(obj) || is.matrix(obj) ||
      is.numeric(obj) || is.logical(obj) ||
      is.factor(obj)) {
@@ -189,21 +158,6 @@ is.dataframelike = function(obj) {
 ##   else
 ##     return(FALSE)
 ## }
-
-## Function to convert back and forth between R classes and GObject classes
-RtoGObjectConversion = function(obj) {
-  if("gComponent" %in% class(obj)) return("GObject")
-  if(is.list(obj)) return("GObject")
-  
-  Klasse = class(obj)[1]                # silly name?
-  switch(Klasse,
-         "integer"="gint",
-         "numeric"="gdouble",
-         "gtk"="GObject",
-         "logical" = "gboolean",
-         "gchararray"
-         )
-}
 
 
 ### these are used by gvarbrowser
@@ -269,7 +223,7 @@ knownTypes = list(
 
 
 ## untaint a variable name so that $ can be used
-untaintName = function(objName) {
+untaintName <- function(objName) {
   if (length(grep(" |\\+|\\-|\\*|\\/\\(|\\[|\\:",objName)) > 0) {
     objName=Paste("\"",objName,"\"")
   }
@@ -277,7 +231,7 @@ untaintName = function(objName) {
 }
 
 ## try to stip off data frame stuff in fron to DND target
-findDataParent = function(x) {
+findDataParent <- function(x) {
   child = sub(".*]]","",x)
   child = sub(".*\\$","",child)
   parent = sub(Paste(child,"$"),"",x)
@@ -287,7 +241,7 @@ findDataParent = function(x) {
 
 
 ## basically repeat findDataParent until no parent
-findRootObject = function(x) {
+findRootObject <- function(x) {
   x = sub("\\[\\[.*","",x)
   x = sub("\\$.*","", x)
   return(x)
@@ -296,7 +250,7 @@ findRootObject = function(x) {
 
 ## get does not work with name$component, this gets around that
 ## returns NULL if not available
-getObjectFromString = function(STRING="", envir=.GlobalEnv) {
+getObjectFromString <- function(STRING="", envir=.GlobalEnv) {
   tmp = try(get(STRING, envir), silent = TRUE)
   if(!inherits(tmp, "try-error")) return(tmp)
   
@@ -310,7 +264,7 @@ getObjectFromString = function(STRING="", envir=.GlobalEnv) {
 
 
 ## get the names of the object, if available (datastores)
-getNamesofObject = function(STRING="") {
+getNamesofObject <- function(STRING="") {
   ## if empty string, get variables in .GlobalEnv
   if(length(STRING) == 0 || STRING == "") {
     ## return objects of certain type
@@ -333,7 +287,7 @@ getNamesofObject = function(STRING="") {
 
 ## a function to get objects and their types
 ## filter is a vector of classes
-getObjectsWithType = function(root=NULL, filter = NULL, envir=.GlobalEnv) {
+getObjectsWithType <- function(root=NULL, filter = NULL, envir=.GlobalEnv) {
 
   if(is.null(root)) {
     objects = ls(envir=envir)
@@ -373,7 +327,7 @@ getObjectsWithType = function(root=NULL, filter = NULL, envir=.GlobalEnv) {
 
 ## Find the name of the object by pasting toghther the pieces
 ## better to do name$name, but value may be a numeric
-makeObjectName = function(root,value) {
+makeObjectName <- function(root,value) {
   if(is.null(root)) return(untaintName(value))
 
   ## now decide between $ and [[]]
@@ -403,12 +357,12 @@ makeObjectName = function(root,value) {
   }
 
 ## help out with gtree
-byReturnVector = function(df, FUN,...) {
+byReturnVector <- function(df, FUN,...) {
   tmp = by(df, factor(1:nrow(df)), FUN)
   sapply(tmp, function(x) x)
 }
 
-hack.as.data.frame = function(items) {
+hack.as.data.frame <- function(items) {
   ## check rectangular, or coerce to rectangules
   if(!(is.data.frame(items) || is.matrix(items) || is.vector(items))) {
     warning("Needs rectangular data, either a vector, matrix or data.frame")
@@ -428,7 +382,7 @@ hack.as.data.frame = function(items) {
 }
 
 ## no easy way to not convert character vectors. This is a hack.
-hack.as.data.frame.matrix = 
+hack.as.data.frame.matrix <- 
   function (x, row.names = NULL, optional = FALSE) 
   {
     d <- dim(x)
@@ -474,7 +428,7 @@ hack.as.data.frame.matrix =
   return(obj)
 }
 
-Timestamp = function(obj,k=1) {
+Timestamp <- function(obj,k=1) {
   currentComment= comment(obj)
   allStamps =comment(obj)[names(comment(obj)) %in% "timestamp"]
   n = length(allStamps)
@@ -484,10 +438,3 @@ Timestamp = function(obj,k=1) {
     return(NA)
 }
 
-#################################################
-## functions to deal with icons
-## class to icon translation -- return stock name
-## with prefix
-
-## This is called on package load
-## no chance that icons aren't yet there

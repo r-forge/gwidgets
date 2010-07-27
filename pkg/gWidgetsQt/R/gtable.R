@@ -419,10 +419,27 @@ setReplaceMethod(".names",
 
 
 ## handlers
+## changed is double click
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gTableQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            .addhandlerclicked(obj, toolkit, handler, action, ...)
+            .addhandlerdoubleclick(obj, toolkit, handler, action, ...)
+          })
+
+
+## when a cell is double clicked
+setMethod(".addhandlerdoubleclick",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gTableQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            w <- getWidget(obj)
+            f <- function(row, column) {
+              h <- list(obj=obj, action=action)
+              h$row <- row
+              h$column <- column
+              handler(h)
+            }
+            id <- qconnect(w,"cellDoubleClicked", f)
+            invisible(id)
           })
 
 ## when a cell is clicked
@@ -439,21 +456,6 @@ setMethod(".addhandlerclicked",
             invisible(id)
           })
 
-## when a cell is double clicked
-setMethod(".addhandlerdoubleclick",
-          signature(toolkit="guiWidgetsToolkitQt",obj="gTableQt"),
-          function(obj, toolkit, handler, action=NULL, ...) {
-            w <- getWidget(obj)
-            f <- function(row, column) {
-              h <- list(obj=obj, action=action)
-              h$row <- row
-              h$column <- column
-              handler(h)
-            }
-            id <- qconnect(w,"cellDoubleClicked", f)
-            invisible(id)
-          })
-                 
 
 ##################################################
 ##################################################

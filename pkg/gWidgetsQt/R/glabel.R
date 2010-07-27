@@ -93,3 +93,20 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
+##' font method to add color then call next method
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelQt"),
+                 function(obj, toolkit, ..., value) {
+                   ## take care of color then pass on
+                   if("color" %in% names(value)) {
+                     if(is.list(value))
+                       col <- value$color
+                     else
+                       col <- value["color"]
+                     cur <- svalue(obj)
+                     cur <- gsub("<[^>]*>","",cur)    # strip off
+                     svalue(obj) <- sprintf("<font color=%s>%s</font>", col, cur)
+                   }
+                   ## call next
+                   callNextMethod()
+                 })

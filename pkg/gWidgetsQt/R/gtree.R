@@ -344,7 +344,7 @@ setMethod(".svalue",
             indices <- lapply(l, function(i) i$indices)
             
             ## return values
-            drop <- getWithDefault(drop, TRUE)
+            drop <- getWithDefault(drop, FALSE) # drop is FALSE, really no good reason for this
             index <- getWithDefault(index, FALSE)
 
             if(drop) {

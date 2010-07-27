@@ -24,7 +24,7 @@ setMethod(".glayout",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
                    homogeneous = FALSE,
-                   spacing = 10,        # amount (pixels) between row, cols, NULL=0
+                   spacing = 10,        # amount (pixels) between row, cols, NULL=1
                    container = NULL, ...
                    ) {
             
@@ -32,13 +32,14 @@ setMethod(".glayout",
 
             w <- Qt$QWidget()
             gridlyt <- Qt$QGridLayout()
-            w$setLayout(gridlyt)
+            w$setLayout(gridlyt)        # layout must be set *before* children added
 
             if(is.null(spacing))
-              spacing <- 0
-            gridlyt$setVerticalSpacing(spacing)
-            gridlyt$setHorizontalSpacing(spacing)
-            
+              spacing <- 1L
+            gridlyt$setSpacing(as.integer(spacing)) # does both horizontal and vertical
+            ## gridlyt$setVerticalSpacing(spacing)
+            ## gridlyt$setHorizontalSpacing(spacing)
+            gridlyt$setContentsMargin(1,1,1,1) # area around widget
             
             obj = new("gLayoutQt",
               block=w, widget=gridlyt,
@@ -49,7 +50,7 @@ setMethod(".glayout",
               add(container, obj, ...)
 
 
-            ## how to add in per column adjusments?
+            ## how to add in per column adjustments?
             adjust = "center"                             # left or right or center
 
             tag(obj,"homogeneous") <- homogeneous
