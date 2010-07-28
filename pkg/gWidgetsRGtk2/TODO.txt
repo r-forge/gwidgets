@@ -1,5 +1,5 @@
-* gvarbrowser: customize groups, icons, update should consider more
-  than just names (class too!) Others? (TT suggested more
+* DONE gvarbrowser: customize groups, icons, update should consider more
+  than just names (class too!); svalue error Others? (TT suggested more
 * svalue<- method for gtree to set by index or key svalue(obj,index=??) <- c(...)
 * fix height on gcombobox -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.
