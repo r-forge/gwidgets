@@ -19,35 +19,145 @@ setMethod(".gcalendar",
 
             force(toolkit)
 
-            if(text == "" && format != "")
-              text = format(Sys.Date(), format)
+            theArgs <- list(...)
 
-            text = as.character(text)
+            if(format != "%Y-%m-%d") {
+              cat(gettext("The format argument is not employed. Pass in coercion function through the coerce.with argument if year-month-day is not desired."), "\n")
+              format <- "%Y-%m-%d"
+            }
             
-            ## use a text widget
-            ## format is ignored -- it sets the text when selected via a GUI, but
-            ## tcltk has not such GUI
-            obj = gedit(text, cont=container, ...)
+            if(text == "" && format != "")
+              text <- format(Sys.Date(), format)
 
+
+            g <- ggroup(cont=container, ...)
+            obj <- gedit(text, cont=g, expand=TRUE)
+            b <- gbutton("choose", cont=g)
+
+            addHandlerClicked(b, action=obj, handler=function(h,...) {
+              text <- svalue(obj)
+              year <- as.numeric(format(as.Date(text, tag(obj, "format")), format="%Y"))
+              month <- as.numeric(format(as.Date(text, tab(obj, "format")), format="%m"))
+              makeCalendar(obj, year, month)
+            })
+
+            
+            if(!is.null(theArgs$coerce.with))
+              coerce.with <- theArgs$coerce.with
+            else
+              coerce.with <- function(x, ...) {
+                asDate(x, format=format)
+              }
+            
             theArgs <- list(...)
             tag(obj,"format") <- format
-            tag(obj,"coerce.with") <- theArgs$coerce.with
+            tag(obj,"coerce.with") <- coerce.with
             
             return(obj@widget)          # drop down to tcltk widget
           })
 
-## ## gcalendar is a gedit instance. It inherits those methods.
-## setMethod(".svalue",
-##           signature(toolkit="guiWidgetsToolkittcltk",obj="gCalendartcltk"),
-##           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-##             val = tclvalue(tag(obj,"tclVar"))
 
-##             val <- try(as.Date(val, format=tag(obj,"format")), silent=TRUE)
-##             if(inherits(val,"try-error")) return(NA)
-            
-##             coercewith = tag(obj,"coercewith")
-##             if(!is.null(coercewith))
-##               val = do.call(coercewith, list(val))
+makeCalendar <- function(widget, year, month) {
 
-##             return(val)
-##           })
+  toplevel <- tktoplevel()
+  f <- ttkframe(toplevel, padding=c(3,3,12,12))
+  tkpack(f, expand=TRUE, fill="both", side="top")
+  cframe <- ttkframe(f)
+  calframe <- ttkframe(f)
+  tkpack(cframe, fill="x", side="top")
+  tkpack(calframe, expand=TRUE, anchor="n")
+
+
+  year <- year; month <- month          # function local
+
+  
+  ##' from chron with slight change to arguments
+  day.of.week <- function (year, month, day) {
+    ix <- year + trunc((month - 14)/12)
+    jx <- (trunc((13 * (month + 10 - (month + 10)%/%13 * 12) - 
+                  1)/5) + day + 77 + (5 * (ix - (ix%/%100) * 100))%/%4 + 
+           ix%/%400 - (ix%/%100) * 2)
+    jx%%7
+  }
+  
+  
+  ## is this a valid date
+  validDate <- function(year, month, day) 
+    !is.na(as.Date(sprintf("%s-%s-%s", year, month, day), format="%Y-%m-%d"))
+  
+  ## how many days in a month
+  days.in.month <- function(year, month) {
+    for(i in c(31, 30, 29, 28)) {
+      if(validDate(year, month, i))
+        return(i)
+    }
+  }
+  ## 0-based week of month
+  week.of.month <- function(year, month, day) {
+    first.day <- day.of.week(year, month, 1)
+    (first.day + day - 1) %/% 7
+  }
+  
+  makeMonth <- function(w, year, month) {
+    ## add headers
+    days <- c("S","M","T","W","Th","F","S")
+    sapply(1:7, function(i) {
+      l <- ttklabel(w, text=days[i])           # color
+      tkgrid(l, row=0, column=i-1, sticky="")
+    })
+    ## add days
+    sapply(1:days.in.month(year, month),  function(day) {
+      l <- ttklabel(w, text=day)
+
+      ## bind to each day
+      ## might be more efficient to bind to toplevel and intercept
+      tkbind(l, "<Button-1>", function(W) {
+        day <- tclvalue(tkcget(W,"-text"))        
+        svalue(widget) <- sprintf("%s-%s-%s", year, month, day)
+        tkdestroy(toplevel)
+      })
+
+      
+      tkgrid(l, row=1 + week.of.month(year, month, day),
+             column=day.of.week(year, month, day),
+             sticky="e")
+    })
+  }
+
+  ## controls
+  prevb <- ttklabel(cframe, text="<")
+  nextb <- ttklabel(cframe, text=">")
+  curmo <- ttklabel(cframe)
+  
+  tkpack(prevb, side="left", anchor="w")
+  tkpack(curmo, side="left", anchor="center", expand=TRUE)
+  tkpack(nextb, side="left", anchor="e")
+
+  
+  setMonth <- function() {
+    tkpack("forget", calframe)
+    calframe <<- ttkframe(f); tkpack(calframe)
+    makeMonth(calframe, year, month)
+    tkconfigure(curmo, text=sprintf("%s %s", month.abb[month], year))
+  }
+  setMonth()                              # initial calendar
+  
+  tkbind(prevb, "<Button-1>", function() {
+    if(month > 1) {
+      month <<- month - 1
+    } else {
+      month <<- 12; year <<- year - 1
+    }
+    setMonth()
+  })
+  
+  tkbind(nextb, "<Button-1>", function() {
+    if(month < 12) {
+      month <<- month + 1
+  } else {
+    month <<- 1; year <<- year + 1
+  }
+    setMonth()
+  })
+  
+}

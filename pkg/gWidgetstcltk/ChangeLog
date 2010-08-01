@@ -1,3 +1,7 @@
+2010-08-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcalendar.R: added calendar selector
+
 2010-07-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtree.R (.treeColWidths): added svalue<- method to set by index
