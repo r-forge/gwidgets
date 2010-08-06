@@ -164,6 +164,7 @@ setMethod(".dispose",
             ## XXX Really need to do deleteLater -- but that is a slot
             ##get("~QMainWindow", envir=w)()
             w$close()
+            w$setParent(NULL)
             return()
           })
 
@@ -172,10 +173,13 @@ setReplaceMethod(".visible",
           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
           function(obj, toolkit, ...,value) {
             w <- getBlock(obj)
-            if(as.logical(value))
+            if(as.logical(value)) {
               w$show()
-            else
+              w$activateWindow()        # keyfocus
+              w$raise()                 # top of stack
+            } else {
               w$hide()
+            }
             if(is.list(tag(obj, "children")))
               sapply(tag(obj, "children"), function(i) visible(i) <- value)
 

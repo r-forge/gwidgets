@@ -46,10 +46,9 @@ setMethod(".ggroup",
             
             ## implement scrollbars if asked. 
             if(use.scrollwindow == TRUE) {
-              XXX("Not working")
-#              sb <- Qt$QScrollArea()
-#              sb$setWidget(gw)
-#              gw <- sb
+              sb <- Qt$QScrollArea()
+              sb$setWidget(gw)
+              gw <- sb
             }
 
             obj = new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            

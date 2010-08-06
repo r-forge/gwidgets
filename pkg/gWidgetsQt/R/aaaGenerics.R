@@ -829,10 +829,15 @@ setMethod(".delete",
             child <- getBlock(widget)
 
             if(is(child, "QWidget")) {
+              removeParent(widget)      # our accounting
+              removeChild(obj, widget)
               child$hide()              # hide first
               parent$removeWidget(child)
-              removeParent(widget)
-              removeChild(obj, widget)
+              child$setParent(NULL)     # really clear
+              ## API: If parent is 0, the new widget becomes a
+              ## window. If parent is another widget, this widget
+              ## becomes a child window inside parent. The new widget
+              ## is deleted when its parent is deleted.
             } else if(is(child, "QLayout")) {
               XXX("How to remove a layout? traverse?")
             }
