@@ -205,9 +205,9 @@ processAJAX <- function(path, query, ...) {
   query <- list(...)[[1]]               # query passed in body, not query (POST info)
 
   ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
-  if(!is.null(attr(query, "content-type"))) {
+  if(!is.raw(query)) {
     out <- rawToChar(query)
-    tmp <- unlist(strsplit(tmp, "&"))
+    tmp <- unlist(strsplit(out, "&"))
     l <- list()
     for(i in 1:length(tmp)) {
       if(length(tmp[[i]]) > 1)
@@ -281,7 +281,7 @@ gw.httpd.handler <- function(path, query, ...) {
                 "ext"=processBasehtmlFile(path, query, ...),
                 "images"=processBasehtmlFile(path, query, ...),
                 "gWidgetsWWWRun"=processRun(path[-1], query, ...),
-                "gWidgetsWWW" = processAJAX(path[-1], query, ...),
+                "gWidgetsWWW" = processAJAX(path[-1], query, post, ...),
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
                 processBasehtmlFile(c("",path), query,  ...)
                 )
