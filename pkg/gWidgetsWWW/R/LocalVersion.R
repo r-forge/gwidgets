@@ -205,7 +205,7 @@ processAJAX <- function(path, query, ...) {
   query <- list(...)[[1]]               # query passed in body, not query (POST info)
 
   ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
-  if(!is.raw(query)) {
+  if(is.raw(query)) {
     out <- rawToChar(query)
     tmp <- unlist(strsplit(out, "&"))
     l <- list()
