@@ -458,7 +458,7 @@ renamePageDfNotebook = function(nb, ...) {
 .addDataFrameToNotebook <- function(obj, dfname, ...) {
   theArgs <- list(...)
   label <- getWithDefault(theArgs$label, "")
-  out <- .gdf(dfname, container=obj, label=label)
+  out <- gdf(dfname, obj@toolkit, container=obj, label=label)
   ## add handlers to out
 }
 

@@ -6,3 +6,5 @@ Changes for 0.0-2
 -------------------
 * fixes to how ggroup, glayout handle expand, fill, anchor arguments
 * added [ method to glayout for extraction
+* put in enumerations
+* bug fix for how widgets are added when expand/anchor not given

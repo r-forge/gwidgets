@@ -707,7 +707,7 @@ setMethod(".add",
             theArgs <- list(...)
             expand <- getWithDefault(theArgs$expand, FALSE)
             anchor <- getWithDefault(theArgs$anchor, NULL)
-            if(!is.null(anchor))
+            if(!is.null(anchor) && anchor)
               expand <- TRUE
             fill <- getWithDefault(theArgs$fill, "both") # x, y
             
@@ -767,6 +767,8 @@ setMethod(".add",
                   }
                 }
               } else {
+                child$setSizePolicy(Qt$QSizePolicy$Fixed,
+                                    Qt$QSizePolicy$Fixed)
                 ## no expand, stretch == 0
                 parent$addWidget(child, 0L) # no stretch
               }

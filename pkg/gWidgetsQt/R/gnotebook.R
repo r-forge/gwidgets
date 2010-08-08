@@ -234,7 +234,7 @@ setMethod(".names",signature(toolkit="guiWidgetsToolkitQt",x="gNotebookQt"),
             if(n > 0)
               vals <- sapply(1:n, function(i) nb$tabText(i-1))
             else
-              vals <- NA
+              vals <- character(0)
             return(vals)
           })
 
@@ -292,7 +292,6 @@ setReplaceMethod(".leftBracket",
           function(x, toolkit, i, j, ..., value) {
             ##
             nb <- getWidget(x)
-            widget <- getBlock(value)
 
             if(missing(i))
               stop(gettext("Missing value for i"))
@@ -300,11 +299,13 @@ setReplaceMethod(".leftBracket",
             theArgs <- list(...)
             label <- getWithDefault(theArgs$label, "")
             
-            nb$insertTab(i[1], value, label)
+            nb$insertTab(i[1], getBlock(value), label)
 
             ## record children, parent
             setParent(value, x)
             addChild(x, value)
+
+            return(x)
           })
 
 

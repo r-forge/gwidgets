@@ -31,9 +31,9 @@ setMethod(".gpanedgroup",
             pg <- Qt$QSplitter()
             ## Use Qt$ORientation$Horizontal (1) or $Vertical (2)
             if(as.logical(horizontal))
-              pg$setOrientation(1L)
+              pg$setOrientation(Qt$Qt$Horizontal)
             else
-              pg$setOrientation(2L)
+              pg$setOrientation(Qt$Qt$Vertical)
             
             ## make object -- note block is pg so that add works correctly
             ## as it calls getBlock(container)

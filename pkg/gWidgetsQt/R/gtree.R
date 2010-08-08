@@ -217,7 +217,7 @@ setMethod(".gtree",
           citem$setIcon(0, icon)
       }
       if(!is.null(child$children)) {
-        citem$setChildIndicatorPolicy(0L) # 0L -- give expand icon
+        citem$setChildIndicatorPolicy(Qt$QTreeWidgetItem$ShowIndicator) # 0L -- give expand icon
         .gtree.itemHasChild(obj, citem)
       }
       item$addChild(citem)

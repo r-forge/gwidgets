@@ -27,7 +27,7 @@ setClass("gWindowQt",
          )
 
 ## Qt constructor
-##XX creategwClass("QMainWindow")
+creategwClass("QMainWindow")
 
 ## constructor
 setMethod(".gwindow",
@@ -47,10 +47,10 @@ setMethod(".gwindow",
               toplevel <- getTopLevel(parent)
               parentw <- getBlock(toplevel)
               w <- Qt$QMainWindow(parentw)
-##XX              w <- gwQMainWindow(parentw)
+              w <- gwQMainWindow(parentw)
             } else {
               w <- Qt$QMainWindow()
-##XX              w <- gwQMainWindow()
+              w <- gwQMainWindow()
             }
 
             ## main widget
@@ -63,7 +63,7 @@ setMethod(".gwindow",
             obj <- new("gWindowQt", block=w, widget=lyt,
                        toolkit=toolkit,e=new.env(), ID=getNewID()
                        )
-##XX            w$setObject(obj)
+            w$setObject(obj)
 
             svalue(obj) <- title
             size(obj) <- c(width=width, height=height)
@@ -88,11 +88,21 @@ setMethod(".getToolkitWidget",
 
 
 ## general add
-## setMethod(".add",
-##           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt", value="gWidgetQt"),
-##           function(obj, toolkit, value, ...) {
-##             ## us there anything different here?
-##           })
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt", value="gWidgetQt"),
+          function(obj, toolkit, value, ...) {
+            theArgs <- list(...)
+            if(!is.null(theArgs$do.dockwidget)) {
+              w <- getBlock(obj)
+              child <- getBlock(value)
+              dw <- Qt$QDockWidget()
+              dw$setWidget(child)
+              w$addDockWidget(Qt$Qt$RightDockWidgetArea, dw)
+            } else {
+              callNextMethod()
+            }
+            ## us there anything different here?
+          })
 
 
 ## add toolbar, menubar, statusbar
@@ -190,21 +200,21 @@ setReplaceMethod(".visible",
 ##################################################
 ## handlers
 
+## setMethod(".addhandlerunrealize",
+##           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+##           function(obj, toolkit,  handler, action=NULL, ...) {
+##             w <- getBlock(obj)
+##             cat("Unable to implement\n")
+##           })
+
+### if eventwidget stuff works, then this can be implemented:
 setMethod(".addhandlerunrealize",
           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
           function(obj, toolkit,  handler, action=NULL, ...) {
             w <- getBlock(obj)
-            cat("Unable to implement\n")
+            id <- w$setEventHandler("closeEvent", handler, action)
+            invisible(id)
           })
-
-##XX if eventwidget stuff works, then this can be implemented:
-##XX setMethod(".addhandlerunrealize",
-##XX           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
-##XX           function(obj, toolkit,  handler, action=NULL, ...) {
-##XX             w <- getBlock(obj)
-##XX             id <- w$setEventHandler("closeEvent", handler, action)
-##XX             invisible(id)
-##XX           })
 
 
 ## setMethod(".addhandlerdestroy",

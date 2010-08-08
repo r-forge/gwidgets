@@ -39,7 +39,11 @@ setMethod(".glabel",
               ### XXX("Markup implemented natively") 
             }
             if(editable) {
-              XXX("implement editable")
+              handler <- function(h,...) {
+                ret <- ginput(svalue(h$obj), parent=h$obj)
+                if(!is.na(ret))
+                  svalue(h$obj) <- ret
+              }
             }
             
 
@@ -63,8 +67,8 @@ setMethod(".glabel",
             
             if(editable) {
               handler <- function(h,...) {
-                val = ginput(message="Change label value:", text=svalue(h$obj),
-                  title="Change text for label", icon="question", parent=obj)
+                val = ginput(message=gettext("Change label value to:"), text=svalue(h$obj),
+                  title=gettext("Change text for label"), icon="question", parent=obj)
                 if(!is.na(val))
                   svalue(obj) <- val
               }
@@ -94,6 +98,7 @@ setReplaceMethod(".svalue",
                  })
 
 ##' font method to add color then call next method
+##' (Could use style she
 setReplaceMethod(".font",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelQt"),
                  function(obj, toolkit, ..., value) {
@@ -105,7 +110,7 @@ setReplaceMethod(".font",
                        col <- value["color"]
                      cur <- svalue(obj)
                      cur <- gsub("<[^>]*>","",cur)    # strip off
-                     svalue(obj) <- sprintf("<font color=%s>%s</font>", col, cur)
+                     svalue(obj) <- sprintf("<font color=%s>%s</font>", col, cur) 
                    }
                    ## call next
                    callNextMethod()

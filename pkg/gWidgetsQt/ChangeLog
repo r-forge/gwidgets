@@ -1,0 +1,6 @@
+2010-08-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/qtfuns.R: put in named enumerations as needed
+
+	* R/gdfnotebook.R (.addDataFrameToNotebook): fixed bug with gdfnotebook
+

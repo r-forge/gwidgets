@@ -28,10 +28,10 @@ setMethod(".gseparator",
 
             f <- Qt$QFrame()
             if(horizontal)
-              f$setFrameShape(4L)       # Shape enumerations
+              f$setFrameShape(Qt$QFrame$HLine)       # Shape enumerations
             else
-              f$setFrameShape(5L)
-            f$setFrameShadow(32L)       # QFrame::sunken
+              f$setFrameShape(Qt$QFrame$VLine)
+            f$setFrameShadow(Qt$QFrame$Sunken)       # QFrame::sunken
             
             obj = new("gSeparatorQt", block=f, widget=f,
               toolkit=toolkit, ID=getNewID(), e = new.env())

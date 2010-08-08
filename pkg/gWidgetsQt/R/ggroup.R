@@ -46,6 +46,11 @@ setMethod(".ggroup",
             
             ## implement scrollbars if asked. 
             if(use.scrollwindow == TRUE) {
+              width <- getWithDefault(theArgs$width, 400L)
+              height <- getWithDefault(theArgs$height, 400L)
+              gw$setMinimumSize(width, height)
+
+              
               sb <- Qt$QScrollArea()
               sb$setWidget(gw)
               gw <- sb

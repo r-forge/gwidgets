@@ -81,7 +81,7 @@ setMethod(".gbigtable",
               .leftBracket(obj, toolkit) <-  items
 
             if(!is.null(handler))
-              addHandlerChanged(obj, handler=handler, action=action)
+              .addhandlerchanged(obj, toolkit, handler=handler, action=action)
             
             if(!is.null(container)) 
               add(container, obj, ...)

@@ -174,7 +174,7 @@ setMethod(".add",
           function(obj, toolkit,  value, ...) {
             w <- getWidget(obj)
            if(!is.null(w$setContextMenuPolicy))
-             w$setContextMenuPolicy(2L) # override default
+             w$setContextMenuPolicy(Qt$Qt$ActionsContextMenu) # override default Qt::ContextMenuPolicy
            else
              return()                   # cant do popup
 

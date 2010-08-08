@@ -36,11 +36,11 @@ setMethod(".gframe",
             
             f <- Qt$QGroupBox()
             if(pos < 0.33)
-              f$setAlignment(1L)
+              f$setAlignment(Qt$Qt$AlignLeft)
             else if(pos > .66)
-              f$setAlignment(2L)
+              f$setAlignment(Qt$Qt$AlignRight)
             else
-              f$setAlignment(5L)
+              f$setAlignment(Qt$Qt$AlignHCenter)
 
             if(as.logical(horizontal))
               lyt <- Qt$QHBoxLayout()

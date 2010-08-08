@@ -18,20 +18,8 @@
 ## Character width
 QtCharacterWidth <- 9 ## change to corrct?
 
-## Enumerations
-QtCheckState <- function(bool) {
-  if(is.null(bool))
-    1L
-  else if(bool)
-    2L
-  else
-    0L
-}
-
-QtOrientation <- c(horizontal=1L, vertical=2L)
 
 ## flags
-QtTableItemFlags <- c(selectable=1, editable=2, dragEnabled=4,dropEnabled=8, userCheckable=16,enabled=32,tristate=64)
 
 
 ## return Qt widget from obj
@@ -131,7 +119,9 @@ makeQFont <- function(font.attr) {
   }
   ## style
   if(!is.null(l$style)) {
-    QtStyles <- c("normal"=0, "italic"=1, "oblique"=2)
+    QtStyles <- c("normal"=Qt$QFont$StyleNormal,
+                  "italic"=Qt$QFont$StyleItalic,
+                  "oblique"=Qt$QFont$StyleOblique)
     if(l$style %in% names(QtStyles))
       f$setStyle(QtStyles[l$style])
   }
@@ -139,10 +129,10 @@ makeQFont <- function(font.attr) {
   if(!is.null(l$weight)) {
     QtWeights = c(
       "ultra-light"=0L,
-      "light" = 25L,
-      "normal"=50L,
-      "bold"=75L,
-      "ultra-bold" = 87L,
+      "light" = Qt$QFont$Light,
+      "normal"=Qt$QFont$Normal,
+      "bold"=Qt$QFont$Bold,
+      "ultra-bold" = Qt$QFont$Black,
       "heavy" = 99L)
     if(l$weight == "bold")
       f$setBold(TRUE)
@@ -158,25 +148,6 @@ makeQTextCharFormat<- function(font.attr) {
   tcf
 }
 
-##################################################
-### Buttons
-QtPredefinedIcons <- c("question"=4L,
-                       "info"=1L,
-                       "warning"=2L,
-                       "error"=3L)
-## many others
-QtStandardButtons <- list(
-                          ok = c(0,0,0,4,0,0),
-                          cancel = c(4,0,0,0,0,0)
-                          )
-makeQtButtons <- function(x) {
-  tot <- 0
-  for(i in tolower(x)) {
-    if(!is.null(b <- QtStandardButtons[[i]]))
-      tot <- tot + sum(b*rev(16^(seq_len(length(b))-1)))
-  }
-  as.integer(tot)
-}
 
 ##################################################
 ### gdf and gtable
@@ -187,7 +158,7 @@ formatColumn.default <- function(x, j, tbl, pattern) tbl
 formatColumn.integer <- function(x, j, tbl, pattern) {
   sapply(1:length(x), function(i) {
     item <- tbl$item(i-1, j-1)
-    item$setTextAlignment(2)            # right
+    item$setTextAlignment(Qt$Qt$AlignRight)
   })
   invisible()
 }
@@ -197,7 +168,7 @@ formatColumn.numeric <- function(x, j, tbl, pattern) {
     pattern <- "%.5f"
   sapply(1:length(x), function(i) {
     item <- tbl$item(i-1, j-1)
-    item$setTextAlignment(2)            # right
+    item$setTextAlignment(Qt$Qt$AlignRight)            # right
     item$setText(sprintf(pattern, x[i]))
   })
   invisible()
@@ -206,11 +177,19 @@ formatColumn.numeric <- function(x, j, tbl, pattern) {
 
 
 ## set Table cell
-## need to format
+##' this saves some typing
 setTableWidgetCell <- function(tbl, x, i, j, flags = c("selectable", "editable", "enabled")) {
+  QtTableItemFlags <- list(selectable=Qt$Qt$ItemIsSelectable,
+                        editable=Qt$Qt$ItemIsEditable, 
+                        dragEnabled=Qt$Qt$ItemIsDragEnabled,
+                        dropEnabled=Qt$Qt$ItemIsDropEnabled,
+                        userCheckable=Qt$Qt$ItemIsUserCheckable,
+                        enabled=Qt$Qt$ItemIsEnabled,
+                        tristate=Qt$Qt$ItemIsTristate)
+
   item <- Qt$QTableWidgetItem(as.character(x))
   if(length(flags))
-    item$setFlags(sum(QtTableItemFlags[flags]))
+    item$setFlags(Reduce("|", QtTableItemFlags[flags]))
   tbl$setItem(i-1, j-1, item)
 }
 

@@ -346,10 +346,10 @@ setReplaceMethod(".svalue",
                    }
                    ## recycle
                    value <- as.logical(rep(value, length=n))
-                   
+                   state <- sapply(value, function(i) ifelse(i, Qt$Qt$Checked, Qt$Qt$Unchecked))
                    sapply(1:n, function(i) {
                      item <- tbl$item(i-1, 0)
-                     item$setCheckState(QtCheckState(value[i]))
+                     item$setCheckState(state[i])
                    })
                    
                    return(obj)
@@ -421,10 +421,10 @@ setReplaceMethod(".leftBracket",
             
             sapply(1:m, function(i) {
               item <- Qt$QTableWidgetItem(as.character(value[i,1]))
-              flags <- sum(QtTableItemFlags[c("editable", "userCheckable", "enabled")])
+              flags <- Qt$Qt$ItemIsEditable | Qt$Qt$ItemIsUserCheckable | Qt$Qt$ItemIsEnabled
               item$setFlags(flags) 
               
-              item$setCheckState(QtCheckState(FALSE)) # default, adjust
+              item$setCheckState(Qt$Qt$Unchecked) # default, adjust
 
               if(ncol(value) >= 2) {
                 icon <- value[i,2]

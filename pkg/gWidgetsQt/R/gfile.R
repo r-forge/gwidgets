@@ -78,13 +78,13 @@ setMethod(".gfile",
               if(!is.null(initialfilename))
                 fm$selectFile(basename(initialfilename))
               fm$setConfirmOverwrite(TRUE)
-              fm$setFileMode(1L)
+              fm$setFileMode(Qt$QFileDialog$AnyFile)
               
             } else if(type == "selectdir") {
 
               fm$setConfirmOverwrite(TRUE)
-              fm$setFileMode(2L)
-              fm$setOption(1L, TRUE)   # directory only
+              fm$setFileMode(Qt$QFileDialog$Directory)
+              fm$setOption(Qt$QFileDialog$ShowDirsOnly, TRUE)   # directory only
             }
 
             ret <- fm$exec()

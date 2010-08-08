@@ -13,6 +13,10 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+QtPredefinedIcons <- c("question"=Qt$QMessageBox$Question,
+                       "info"=Qt$QMessageBox$Information,
+                       "warning"=Qt$QMessageBox$Warning,
+                       "error"=Qt$QMessageBox$Critical)
 
 ## Dialogs
 setMethod(".gmessage",
@@ -47,7 +51,7 @@ setMethod(".gmessage",
             icon = match.arg(icon)
             mb$setIcon(QtPredefinedIcons[icon])
 
-            mb$setStandardButtons(makeQtButtons(c("ok")))
+            mb$setStandardButtons(Qt$QMessageBox$Ok) 
 
             ret <- mb$exec()
             return(TRUE)
@@ -85,7 +89,7 @@ setMethod(".gconfirm",
             icon = match.arg(icon)
             mb$setIcon(QtPredefinedIcons[icon])
 
-            mb$setStandardButtons(makeQtButtons(c("ok","cancel")))
+            mb$setStandardButtons(Qt$QMessageBox$Ok | Qt$QMessageBox$Cancel)
 
             ret <- mb$exec()
             if(ret == 1024 ) {
@@ -135,7 +139,7 @@ setMethod(".ginput",
                 handler(list(obj=e, action=action))
               val <- svalue(e)
             } else {
-              val <- TRUE
+              val <- NA
             }
             return(val)
           })
@@ -240,13 +244,13 @@ setMethod(".visible",
                    Cancelbutton = gbutton("Cancel",cont=buttonGroup,
                      handler=function(h,...) {
                        ans <<- FALSE
-                       dlg$done(makeQtButtons("ok"))
+                       dlg$done(Qt$QMessageBox$Ok)
                        })
                    addSpace(buttonGroup, 12)
                    OKbutton = gbutton("OK",cont=buttonGroup,
                      handler=function(h,...) {
                        ans <<- TRUE
-                       dlg$done(makeQtButtons("cancel"))
+                       dlg$done(Qt$QMessageBox$Cancel)
                      })
                    defaultWidget(OKbutton)
                    

@@ -16,7 +16,8 @@ Containers:
 -----------
 
 gwindow: 
-Unrealize handler is working. Overrides dispose method though
+Unrealize handler is working. Overrides dispose method though.
+If you use a \code{gwindow} instance as a container and pass in the argument \code{do.dockwidget=TRUE} then a the child will be added within a dock widget on the right side of the parent window. Dock widgets can be "undocked".
 
 ggroup:
 Need to implement scrollbars

@@ -43,13 +43,12 @@ setMethod(".gslider",
 
             if(as.logical(horizontal)) {
               ## ENUMS
-              ## XXX("How to get Qt$Orientations$Horizontal? Using numbers below")
               slider <- Qt$QSlider()
-              slider$setOrientation(QtOrientation['horizontal'])
-              slider$setTickPosition(QtQSliderTickPosition['ticksBelow']) # below
+              slider$setOrientation(Qt$Qt$Horizontal)
+              slider$setTickPosition(Qt$QSlider$TicksBelo) 
             } else {
-              slider <- Qt$QSlider(QtOrientation['vertical'])
-              slider$setTickPosition(QtQSliderTickPosition['ticksLeft']) # left
+              slider <- Qt$QSlider(Qt$Qt$Vertical)
+              slider$setTickPosition(Qt$QSlider$TicksLeft) 
             }
             slider$setTickInterval(as.integer(5*by))
             
