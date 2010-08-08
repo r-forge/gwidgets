@@ -281,7 +281,7 @@ gw.httpd.handler <- function(path, query, ...) {
                 "ext"=processBasehtmlFile(path, query, ...),
                 "images"=processBasehtmlFile(path, query, ...),
                 "gWidgetsWWWRun"=processRun(path[-1], query, ...),
-                "gWidgetsWWW" = processAJAX(path[-1], query, post, ...),
+                "gWidgetsWWW" = processAJAX(path[-1], query, ...),
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
                 processBasehtmlFile(c("",path), query,  ...)
                 )
