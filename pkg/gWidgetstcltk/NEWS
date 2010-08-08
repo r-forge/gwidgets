@@ -5,6 +5,7 @@ NEWS for gWidgetstcltk
 Changes for 0.0-40
 -------------------
 * Added calendar selector to gcalendar
+* add [ method for gnotebook, kill [<- (wasn't working, isn't right)
 
 Changes for 0.0-39
 -------------------

@@ -32,7 +32,7 @@ setMethod(".gcalendar",
 
             g <- ggroup(cont=container, ...)
             obj <- gedit(text, cont=g, expand=TRUE)
-            b <- gbutton("choose", cont=g)
+            b <- gbutton("date", cont=g)
 
             addHandlerClicked(b, action=obj, handler=function(h,...) {
               text <- svalue(obj)

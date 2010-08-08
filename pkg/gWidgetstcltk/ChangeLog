@@ -1,3 +1,8 @@
+2010-08-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R: added [ method to get children
+
+
 2010-08-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gcalendar.R: added calendar selector
