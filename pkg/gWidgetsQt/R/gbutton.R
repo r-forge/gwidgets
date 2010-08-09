@@ -37,8 +37,9 @@ setMethod(".gbutton",
 
 
             button <- Qt$QPushButton()
-            
-
+            ## properties
+            button$setSizePolicy(Qt$QSizePolicy$Fixed, # don't like expansion in x direction
+                                 Qt$QSizePolicy$Fixed)
 
             
             obj <- new("gButtonQt",

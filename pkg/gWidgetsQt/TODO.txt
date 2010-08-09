@@ -2,12 +2,12 @@ TODO:
 ---------
 
 * get bugs fixed for first version
-* DND
+* DND: use QtEvent framework
 * gdf -- column clicks -- can do context menu, but how to get column?
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
 * ggraphics: Is this from qtpaint or qtdevice, seems like the latter
 * write model for backend to gvarbrowser
-
+* write gdf using bigtable
 
 DONE * pass gwidgets tests
 DONE aabQtEvent.R * $event -- how to override, virtual function. 

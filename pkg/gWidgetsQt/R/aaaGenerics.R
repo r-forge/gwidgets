@@ -767,8 +767,7 @@ setMethod(".add",
                   }
                 }
               } else {
-                child$setSizePolicy(Qt$QSizePolicy$Fixed,
-                                    Qt$QSizePolicy$Fixed)
+               
                 ## no expand, stretch == 0
                 parent$addWidget(child, 0L) # no stretch
               }
