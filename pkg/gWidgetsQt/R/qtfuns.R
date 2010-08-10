@@ -326,11 +326,11 @@ getValueFromTableWidget <- function(tbl, colClasses=c("character")) {
 getTableWidgetSelection <- function(tbl, as.rectangle=FALSE) {
   ## must be a faster way
   selectedItems <- tbl$selectedItems()
-  selection <- sapply(selectedItems, function(item) c(row=item$row(), column=item$column()))
-  if(length(selection) == 0) {
-    ## no selection
+  if(length(selectedItems) == 0) {          # no selection
     return(NULL)
   }
+
+  selection <- sapply(selectedItems, function(item) c(row=item$row(), column=item$column()))
   if(as.rectangle) {
     rows <- selection[1,]
     columns <- selection[2,]

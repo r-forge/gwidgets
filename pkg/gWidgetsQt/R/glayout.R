@@ -39,7 +39,7 @@ setMethod(".glayout",
             gridlyt$setSpacing(as.integer(spacing)) # does both horizontal and vertical
             ## gridlyt$setVerticalSpacing(spacing)
             ## gridlyt$setHorizontalSpacing(spacing)
-            gridlyt$setContentsMargin(1,1,1,1) # area around widget
+            gridlyt$setContentsMargins(1,1,1,1) # area around widget
             
             obj = new("gLayoutQt",
               block=w, widget=gridlyt,

@@ -1,3 +1,7 @@
+2010-08-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R: fixed bug when filtering
+
 2010-08-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gnotebook.R: bug fix in [<- method. 

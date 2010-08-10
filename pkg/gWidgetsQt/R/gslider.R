@@ -38,14 +38,12 @@ setMethod(".gslider",
               return(obj)
             }
 
-            QtQSliderTickPosition <- c("noTicks"=0, ticksBothSides=3, ticksAbove=1, ticksBelow=2,
-                                       ticksLeft=1, ticksRight=2)
-
+         
             if(as.logical(horizontal)) {
               ## ENUMS
               slider <- Qt$QSlider()
               slider$setOrientation(Qt$Qt$Horizontal)
-              slider$setTickPosition(Qt$QSlider$TicksBelo) 
+              slider$setTickPosition(Qt$QSlider$TicksBelow) 
             } else {
               slider <- Qt$QSlider(Qt$Qt$Vertical)
               slider$setTickPosition(Qt$QSlider$TicksLeft) 

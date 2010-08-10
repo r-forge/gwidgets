@@ -48,7 +48,10 @@ setMethod(".gdroplist",
               cb$setEditable(TRUE)
               cb$setDuplicatesEnabled(FALSE)
             }
-            
+            ## expand in x, not y
+            cb$setSizePolicy(Qt$QSizePolicy$Expanding,
+                             Qt$QSizePolicy$Fixed)
+
             ## process
             theArgs <- list(...)
 

@@ -521,12 +521,12 @@ setMethod(".gtableWithFilter",
 
             
             ## make an object to return
-            obj <- new("gTableWithFilterQt",block=g@block,widget=tbl@widget,
+            obj <- new("gTableWithFilterQt", block=getBlock(g),widget=getWidget(tbl), 
               toolkit=toolkit,ID=getNewID())
 
             tag(obj, "filterPopup") <- filterPopup
             tag(obj, "filterByLabel") <- filterByLabel
-
+            tag(obj, "colClasses") <- tag(tbl, "colClasses")
             
             ## one of filter.column or filter.fun is non-NULL
             if(is.null(filter.FUN)) {
