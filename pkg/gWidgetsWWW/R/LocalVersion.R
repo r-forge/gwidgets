@@ -204,6 +204,9 @@ processExternalRun <- function(path, query, ...) {
 processAJAX <- function(path, query, ...) {
   query <- list(...)[[1]]               # query passed in body, not query (POST info)
 
+
+  assign("debug", query, envir=.GlobalEnv)
+
   ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
   if(is.raw(query)) {
     out <- rawToChar(query)
