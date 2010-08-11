@@ -212,10 +212,12 @@ processAJAX <- function(path, query, ...) {
     out <- rawToChar(query)
     tmp <- unlist(strsplit(out, "&"))
     l <- list()
-    for(i in 1:length(tmp)) {
-      if(length(tmp[[i]]) > 1)
-        l[[tmp[[i]][1]]] <- tmp[[i]][2]
+    for(i in tmp) {
+      a <- strsplit(i, "=")[[1]]
+      if(length(a) > 1 && !is.na(a[2]))
+        l[[a[1]]] <- a[2]
     }
+
     query <- l
   }
 
