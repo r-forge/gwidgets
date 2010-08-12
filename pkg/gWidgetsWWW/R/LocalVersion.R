@@ -434,7 +434,7 @@ localAssignValue <- function(id, value, sessionID) {
 }
 
 ##' Called to run a handler
-localRunHandler <- function(id, context="", sessionID) {
+localRunHandler <- function(id, context=NULL, sessionID) {
   e <- getBaseObjectFromSessionID(sessionID)
   if(is.null(e)) {
     out <- "alert('No session for this id');"
@@ -455,7 +455,7 @@ localRunHandler <- function(id, context="", sessionID) {
       stop("Tried too many times")
     
     out <- try({
-      if(nchar(context))
+      if(!is.null(context))
         e$runHandler(id, fromJSON(context))
       else
         e$runHandler(id)
