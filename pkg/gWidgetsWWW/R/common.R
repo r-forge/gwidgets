@@ -8,6 +8,8 @@ ourURLencode <- function(x) {
 
 ##' same as URLdecode, but takes care of plus signs
 ourURLdecode <- function(x) {
+  if(is.null(x))
+    return(x)
   x <- URLdecode(x)
   x <- gsub("&2B;", "+", x, fixed=TRUE)
   x

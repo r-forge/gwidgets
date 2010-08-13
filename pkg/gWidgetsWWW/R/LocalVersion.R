@@ -232,7 +232,7 @@ processAJAX <- function(path, query, ...) {
          },
          "assign" = {
            ## pass back return value. Assign does nothing otherwise
-           out <- gWidgetsWWW:::localAssignValue(query$variable, query$value, query$sessionID)
+           out <- gWidgetsWWW:::localAssignValue(query$variable, ourURLdecode(query$value), query$sessionID)
            ret <- list(payload="",
                        "content-type"="text/xml",
                        "headers"=paste(
@@ -272,6 +272,9 @@ processAJAX <- function(path, query, ...) {
 gw.httpd.handler <- function(path, query, ...) {
 
   ## here path is path, query contains query string, ... ???
+  ## assign("path", path, envir=.GlobalEnv)
+  ## assign("query", query, envir=.GlobalEnv)
+  ## assign("post", list(...)[[1]], envir=.GlobalEnv)
   path <- ourURLdecode(path)
   query <- ourURLdecode(query)
   
@@ -433,6 +436,12 @@ localAssignValue <- function(id, value, sessionID) {
 
 ##' Called to run a handler
 localRunHandler <- function(id, context=NULL, sessionID) {
+  ## assign("id",id, envir=.GlobalEnv)
+  ## assign("context", context, envir=.GlobalEnv)
+  ## assign("sessionID", sessionID, envi=.GlobalEnv)
+
+
+  
   e <- getBaseObjectFromSessionID(sessionID)
   if(is.null(e)) {
     out <- "alert('No session for this id');"
