@@ -419,6 +419,10 @@ gWidgetsWWWIsLocal <- function() {
 
 ##' Called by AJAX script to assign a value
 localAssignValue <- function(id, value, sessionID) {
+  assign("id", id, envir=.GlobalEnv)
+  assign("value", value,envir=.GlobalEnv)
+
+  
   e <- getBaseObjectFromSessionID(sessionID)
   retval <- "419"                         # expectation failed
   if(is.null(e)) {
@@ -426,6 +430,7 @@ localAssignValue <- function(id, value, sessionID) {
   } else {
     out <- fromJSON(value)
     if(is.list(out)) {
+      assign("value1", out$value, envir=.GlobalEnv)
       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
       if(!inherits(tmp, "try-error"))
         retval <- "200"                   # all good
