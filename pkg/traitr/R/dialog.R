@@ -406,7 +406,6 @@ aDialog <- function(items=list(),
 ##' @param make_gui If \code{TRUE} or \code{add_graphic_device=TRUE} then call dialogs \code{make_gui} method
 ##' @param add_graphic_device If \code{TRUE} add an graphicDeviceItem to dialog
 ##' @param ... passed to \code{make_gui} when no graphic device asked for
-##' @return Returns the dialog instance
 ##' 
 ##' @return Returns an instance of \code{aDialog}.
 ##' @export
