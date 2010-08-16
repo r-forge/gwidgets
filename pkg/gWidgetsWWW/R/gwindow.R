@@ -168,12 +168,15 @@ gwindow <- function(title="title",file="",visible=TRUE,
               }
               
               ## transportToR copies data in widget back into R
-              ## using a global variable IDXXX 
+              ## using a global variable IDXXX
+              ## We don't expect a return value
               out <- out +
                 '_transportToR = function(id, val) {' +
                   "Ext.Ajax.request({" +
                     "url: '" + gWidgetsWWWAJAXurl + "'," +
-                      "success: evalJSONResponse," +
+## JV                     "success: evalJSONResponse," +
+                      ## we get some XML back, not JSON
+                      "success: function(response, opts) {}," +
                         "failure: processFailure," +
                           "timeout: 2000," +
                             "method: 'POST'," +
