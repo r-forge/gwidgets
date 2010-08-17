@@ -237,6 +237,7 @@ processAJAX <- function(path, query, ...) {
                        "content-type"="text/xml",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
+                         "<responseXML></responseXML>",
                          "<responseText></responseText>",
                          "<readyState>4</readyState>",
                          sep="\n"),
