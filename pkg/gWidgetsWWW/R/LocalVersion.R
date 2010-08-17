@@ -234,10 +234,9 @@ processAJAX <- function(path, query, ...) {
            ## pass back return value. Assign does nothing otherwise
            out <- gWidgetsWWW:::localAssignValue(query$variable, ourURLdecode(query$value), query$sessionID)
            ret <- list(payload="",
-                       "content-type"="text/xml",
+                       "content-type"="text/html",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
-                         "<responseXML></responseXML>",
                          "<responseText></responseText>",
                          "<readyState>4</readyState>",
                          sep="\n"),
@@ -248,7 +247,7 @@ processAJAX <- function(path, query, ...) {
            ## clear out session
            clearSessionId(query$sessionID)
             ret <- list(payload="",
-                       "content-type"="text/xml",
+                       "content-type"="text/html",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
                          "<responseText></responseText>",
