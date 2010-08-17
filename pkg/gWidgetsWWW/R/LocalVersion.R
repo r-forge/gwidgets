@@ -292,7 +292,7 @@ gw.httpd.handler <- function(path, query, ...) {
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
                 processBasehtmlFile(c("",path), query,  ...)
                 )
-
+  assign("out", out, envir=.GlobalEnv)x
   return(out)
 }
 
