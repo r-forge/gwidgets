@@ -30,16 +30,19 @@ setMethod(".gwindow",
               if(inherits(location,"guiContainer") ||
                  inherits(location,"guiComponent")) {
                 ## a gWidget.
-                widget = getToolkitWidget(location)
+                widget <- getToolkitWidget(location)
                 if(!inherits(widget,"GtkWindow"))
-                  widget = getGtkWindow(widget)
+                  widget <- getGtkWindow(widget)
                 window$SetTransientFor(widget)
                 window$SetPosition(GtkWindowPosition["center-on-parent"])
                 window$SetDestroyWithParent(TRUE)
+                ## windows fixes
+                window$setSkipTaskbarHint(TRUE)
+                window$setSkipPagerHint(TRUE)
               } else {
                 ## check that location is a numeric pair
-                if(length(location) == 2) {
-                  location = as.integer(location)
+                if(is.numeric(location) && length(location) >= 2) {
+                  location <- as.integer(location)
                   window$Move(location[1],location[2])
                 }
               }

@@ -185,8 +185,8 @@ setReplaceMethod(".visible",
             w <- getBlock(obj)
             if(as.logical(value)) {
               w$show()
-              w$activateWindow()        # keyfocus
               w$raise()                 # top of stack
+              w$activateWindow()        # keyfocus
             } else {
               w$hide()
             }

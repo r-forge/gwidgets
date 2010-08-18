@@ -1,7 +1,7 @@
 \name{gdfedit}
 \alias{gdfedit}
 \alias{.gdfedit}
-\title{gWidgets interface for RGtk2DfEdit widget}
+\title{gWidgets interface for RGtk2Extras data editor widget}
 \description{
 	An alternative widget for editing a data frame using the
 	RGtk2DfEdit package
@@ -21,8 +21,8 @@ gdfedit(items = NULL,
 \details{
   
   The \code{gdf} widget is used for editing data frames, but does not
-  have the most natural keyboard handling. The RGtk2DfEdit package by
-  Tom Taverner provides an easier to use interface for editing data
+  have the most natural keyboard handling. The \pkg{RGtk2Extras} package by
+  Tom Taverner provides a more powerful and easier to use interface for editing data
   frame, and this wraps that widget into gWidgetsRGtk2.
  
 

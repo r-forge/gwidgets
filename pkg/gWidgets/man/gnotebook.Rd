@@ -28,23 +28,23 @@ gnotebook(tab.pos = 3, closebuttons = FALSE, dontCloseThese = NULL, container = 
 
   Notebooks have the following methods:
 
-  New pages are added with the \code{add} method. The extra argument
-  \code{label} is used to specify the tab label. This may be a string,
-  or in gWidgetsRGtk2 a \code{glabel} instance. The extra argument \code{index}
-  can be used to specify which page to add to. By default, a new page is
-  created at the end of the notebook. In gWidgetsRGtk2, the extra argument
-  \code{override.closebutton} can be used to add or not add a close
-  button in the tab label.
-
-  The \code{dispose} method will remove the currently selected page
-  unless it is overridden by the value of \code{dontCloseThese}.
+  New pages are added with the \code{add} method, which most likely is
+  called by the widget constructor. The extra argument \code{label} is
+  used to specify the tab label. This may be a string, or in
+  gWidgetsRGtk2 a \code{glabel} instance. The extra argument
+  \code{index} can be used to specify which page to add to. By
+  default, a new page is created at the end of the notebook. In
+  gWidgetsRGtk2, the extra argument \code{override.closebutton} can be
+  used to add or not add a close button in the tab label.
 
   The \code{svalue} method returns the current page number. The
   \code{svalue<-} method is used to set the page number.
 
+  The \code{dispose} method will remove the currently selected page
+  unless it is overridden by the value of \code{dontCloseThese}.
 
   The \code{delete(obj, widget,...)} method will delete the widget on a
-  given page. This can then be replaced with the add method.
+  given page. For some toolkits, the unparented widget can be reparented with the \code{add} method or \code{[<-}.
 
   The \code{length} method returns the number of pages.
 
@@ -53,9 +53,10 @@ gnotebook(tab.pos = 3, closebuttons = FALSE, dontCloseThese = NULL, container = 
   The \code{names<-} method may be used to replace the tab
   labels. Something like \code{names(obj)[1]<-"new label"} should work.
 
-%  The \code{"["} method refers to the widgets in the notebook.
+   The \code{"["} method refers to the widgets in the notebook. It
+   returns a single widget or list of widgets.
 
-%  The \code{"[<-"} method can be used to replace a widget on a notebook page.
+   For some toolkits, the \code{"[<-"} method may be used to replace a widget on a notebook page.
   
 }
 % \value{}
@@ -69,8 +70,8 @@ gnotebook(tab.pos = 3, closebuttons = FALSE, dontCloseThese = NULL, container = 
 \dontrun{
   w <- gwindow("gnotebook example")
   nb <- gnotebook(container=w)
-  glabel("Widget 1", cont=nb, label="page 1")
-  glabel("Widget 2", cont=nb, label="page 2")
+  glabel("Widget 1", cont=nb, label="page 1")   ## "add" called by constructor
+  glabel("Widget 2", cont=nb, label="page 2")   ## label argument passed by constructor to add method
 
   length(nb)
   names(nb)

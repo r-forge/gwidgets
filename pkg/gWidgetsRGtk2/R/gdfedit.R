@@ -1,7 +1,7 @@
 
 #' Constructor for gdfedit widget
 #'
-#" gdfedit is a light-weight interface to RGtkDfEdit widget of Thomas Taverner
+#" gdfedit is a light-weight interface to RGtk2Extras data editor widget of Thomas Taverner
 
 gdfedit <- function(
                     items = NULL,
@@ -43,8 +43,8 @@ setMethod(".gdfedit",
             
             ## load package RGtk2DfEdit and RGtk2 but get passed R CMD check by cheating
             gtkDfEdit <- NULL
-            if(!do.call("require",list("RGtk2DfEdit")))
-              stop(sprintf("Must have %s package installed", "RGtk2DfEdit"))
+            if(!do.call("require",list("RGtk2Extras")))
+              stop(sprintf("Must have %s package installed", "RGtk2Extras"))
             do.call("require", list("RGtk2"))
             
             widget <- gtkDfEdit(items, dataset.name=name) ## how to add

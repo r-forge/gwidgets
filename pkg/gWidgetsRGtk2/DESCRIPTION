@@ -6,7 +6,7 @@ Maintainer: John Verzani <gwidgetsrgtk@gmail.com>
 Depends: methods, gWidgets(>= 0.0.41)
 Imports: RGtk2(>= 2.12.8)
 Suggests: cairoDevice (>= 2.3.0)  
-Extends: RGtk2DfEdit
+Extends: RGtk2Extras
 Description: Port of gWidgets API to RGtk2
 License: GPL (>= 2)
 URL: http://gwidgets.r-forge.r-project.org/

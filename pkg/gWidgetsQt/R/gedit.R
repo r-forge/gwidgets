@@ -63,8 +63,7 @@ setMethod(".gedit",
            
            svalue(obj) <- text
            tag(obj, "coerce.with") <- coerce.with
-           ## type ahead
-           tag(obj,"typeAhead") <- c()
+
 
            ## XXX no width argument. Use size<- instead
            if(!is.null(width)) 
@@ -106,6 +105,14 @@ setReplaceMethod(".svalue",
                    return(obj)
           })
 
+setMethod("[",
+          signature(x="gEditQt"),
+          function(x, i, j, ..., drop=TRUE) {
+            if(missing(i))
+              .leftBracket(x,x@toolkit, ...)
+            else
+              .leftBracket(x,x@toolkit, i, ...)
+          })
 
 ## left bracket implement completion
 setMethod(".leftBracket",
@@ -123,15 +130,14 @@ setMethod(".leftBracket",
                 item$text()
               })
           })
-            
-setMethod("[",
-          signature(x="gEditQt"),
-          function(x, i, j, ..., drop=TRUE) {
-            if(missing(i))
-              .leftBracket(x,x@toolkit, ...)
-            else
-              .leftBracket(x,x@toolkit, i, ...)
-          })
+
+setReplaceMethod("[",
+                 signature(x="gEditQt"),
+                 function(x, i, j,..., value) {
+                   .leftBracket(x, x@toolkit, i, j, ...) <- value
+                   return(x)
+                 })
+
 
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitQt",x="gEditQt"),
@@ -153,13 +159,6 @@ setReplaceMethod(".leftBracket",
             
             return(x)
           })
-
-setReplaceMethod("[",
-                 signature(x="gEditQt"),
-                 function(x, i, j,..., value) {
-                   .leftBracket(x, x@toolkit, i, j, ...) <- value
-                   return(x)
-                 })
 
 
 ## setReplaceMethod(".size", 

@@ -2,6 +2,9 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-69
+--------------------------
+* use RGtk2Extras now (name change)
 
 Changes for version 0.0-68
 --------------------------

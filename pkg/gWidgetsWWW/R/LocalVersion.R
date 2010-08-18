@@ -210,6 +210,7 @@ processAJAX <- function(path, query, ...) {
     tmp <- unlist(strsplit(out, "&"))
     l <- list()
     for(i in tmp) {
+      i <- ourURLdecode(i)
       a <- strsplit(i, "=")[[1]]
       if(length(a) > 1 && !is.na(a[2]))
         l[[a[1]]] <- a[2]
@@ -440,7 +441,11 @@ localRunHandler <- function(id, context=NULL, sessionID) {
   ## assign("context", context, envir=.GlobalEnv)
   ## assign("sessionID", sessionID, envi=.GlobalEnv)
 
-
+  if(!is.null(context)) {
+    context <- ourURLdecode(context)
+    if(context == "\"\"")
+      context <- NULL
+  }
   
   e <- getBaseObjectFromSessionID(sessionID)
   if(is.null(e)) {

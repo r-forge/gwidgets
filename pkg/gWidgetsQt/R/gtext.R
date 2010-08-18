@@ -158,11 +158,11 @@ setMethod(".add",
             tc <- w$textCursor()
 
             if(where == "beginning") {
-              tc$movePosition(1L, 0L)        # 1=start, 0=move anchor
+              tc$movePosition(Qt$QTextCursor$Start, Qt$QTextCursor$MoveAnchor)        # 1=start, 0=move anchor
             } else if(where == "end") {
-              tc$movePosition(11L, 0L)
+              tc$movePosition(Qt$QTextCursor$End,  Qt$QTextCursor$MoveAnchor)
             } else {
-              tc$movePosition(tc$anchor(), 0)
+              tc$movePosition(tc$anchor(),  Qt$QTextCursor$MoveAnchor)
             }
             
             if(!is.null(font.attr)) 
@@ -171,6 +171,8 @@ setMethod(".add",
               tc$insertText(value)
 
             ## scroll viewport to cursor?
+            w$setTextCursor(tc)
+            
                         
           })
 

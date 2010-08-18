@@ -1,4 +1,3 @@
-ffspring
 \name{gtree}
 \alias{gtree}
 \title{Constructor for widget to display heirarchical dta}
