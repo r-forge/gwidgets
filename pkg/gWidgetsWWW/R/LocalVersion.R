@@ -259,7 +259,7 @@ processAJAX <- function(path, query, ...) {
          "fileupload"={
            ret <- makeErrorPage(sprintf("Don't know how to process type %s.", type))
          })
-  assign("ret", ret, envir=.GlobalEnv)
+  ##  assign("ret", ret, envir=.GlobalEnv)
   return(ret)
 }
 
@@ -291,7 +291,7 @@ gw.httpd.handler <- function(path, query, ...) {
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
                 processBasehtmlFile(c("",path), query,  ...)
                 )
-  assign("out", out, envir=.GlobalEnv)
+  ## assign("out", out, envir=.GlobalEnv)
   return(out)
 }
 
