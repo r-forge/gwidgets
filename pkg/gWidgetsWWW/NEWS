@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW
 
+Changes for 0.0-21
+-------------------
+* fixes to work with R-studio under local server
+* bug fix for gdf
+
 Changes for  0.0-20
 -------------------
 * deprecate ggooglemaps for a bit

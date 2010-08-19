@@ -1,3 +1,7 @@
+2010-08-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdf.R (widget$getValues): bug fix
+
 2010-06-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtable.R (mapRenderer): put in sensible column widths. Need

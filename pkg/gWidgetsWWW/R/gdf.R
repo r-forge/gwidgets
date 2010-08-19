@@ -50,13 +50,13 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     ## first we pt the new values into the data frame
     items <- .$..store$data
 
-    newVals <- ls(pat = String("^") + .$ID + '\\.', envir=.)
+    newVals <- ls(pat = String("^") + .$ID + '\\.', envir=.$toplevel)
     if(length(newVals) > 0) {
       for(i in newVals) {
         tmp <- unlist(strsplit(i, "\\."))
         row <- as.numeric(tmp[2])
         col <- as.numeric(tmp[3])
-        value <- get(i, envir=.)
+        value <- get(i, envir=.$toplevel)
 
         colType <- class(items[,col, drop=TRUE])[1]
 
@@ -91,7 +91,7 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     out <- String() +
       'var rowIndex = e.row + 1; var colIndex = e.column + 1;' +
         'var id = "' + .$ID + '" + "." + rowIndex.toString() + "." + colIndex.toString();' +
-          '_transportToR(id,{value:e.value});'
+          '_transportToR(id, Ext.util.JSON.encode({value:e.value}));'
     return(out)
   }
 
