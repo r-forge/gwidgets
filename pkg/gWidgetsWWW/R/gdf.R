@@ -67,7 +67,7 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
                         as.character(value))
         items[row,col] <- value
 
-        rm(list = i, envir=.)                           # remove
+        rm(list = i, envir=.$toplevel)                           # remove
       }
     }
 
