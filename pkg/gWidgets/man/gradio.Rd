@@ -29,7 +29,7 @@ gradio(items, selected = 1, horizontal = FALSE, handler
 \details{
 	The \code{svalue} method returns the selected value by
 	name. If the extra argument \code{index=TRUE} is specified,
-	the indices of the selected value is given. 
+	the index of the selected value is given. 
 
 
 	The \code{svalue<-} method can be used to set the selected
@@ -39,7 +39,7 @@ gradio(items, selected = 1, horizontal = FALSE, handler
 	The \code{"["} method refers to the vector defining the items.
 
 	The \code{"[<-"} method can be used to change the vector
-	defining the items. The length will most likely need to be the same.
+	defining the items. For \pkg{gWidgetstcltk} the length can't change. 
 
 	The \code{"length"} method returns the number of items.
 	
@@ -64,29 +64,27 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
 \dontrun{
   flavors <- c("vanilla", "chocolate", "strawberry")
 
-  f <- function(h,...) print(
-      paste("Yum",
-      paste(svalue(h$obj),collapse=" and "),
-      sep = " "))
-
   w <- gwindow("Radio example")
   gp <- ggroup(container=w)
-  glabel("Favorite flavor:",cont=gp)
-  rb <- gradio(flavors, cont=gp, handler = f)
+  glabel("Favorite flavor:",cont=gp, anchor=c(0,1))
+  rb <- gradio(flavors, cont=gp)
+  addHandlerClicked(rb, handler=function(h,..) {
+   cat(sprintf("You picked %s\n", svalue(h$obj)))
+  })
 
-  w <- gwindow("combobox example")
-  gp <- ggroup(container=w)
-  glabel("Favorite flavor:", cont=gp)
-  gcombobox(flavors, editable=TRUE, cont=gp, handler=f)
+  betterFlavors <- c("coffee", "mint chip")
+  rb[] <- betterFlavors ## tcltk won't be happy -- needs 3 flavors
+  rb[] <- c(betterFlavors, "chocolate") ## to make tcltk happy
+  
+  rb[3] <- "mango sorbet" ## can change a label name
 
-  w <- gwindow("checkbox example")
-  gp <- ggroup(container=w)
-  glabel("Favorite flavors:",cont=gp)
-  cbg <- gcheckboxgroup(flavors, cont=gp, handler=f)
+  ## set values
+  svalue(rb) <- "coffee"  ## by name
+  svalue(rb, index=TRUE) <- 1  ## by index
 
-  svalue(cbg) <- c(TRUE, FALSE, TRUE)
-  svalue(cbg)
-  cbg[3] <- "raspberry"
+  ## get selected values
+  svalue(rb)
+  svalue(rb, index=TRUE)
 
 }
 

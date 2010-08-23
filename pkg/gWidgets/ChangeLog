@@ -1,3 +1,8 @@
+2010-08-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R (gwindow): added check to options for whether
+	visible=TRUE should be default.
+
 2010-07-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* man/ggraphics.Rd: new example

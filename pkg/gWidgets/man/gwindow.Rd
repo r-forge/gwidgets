@@ -17,7 +17,8 @@ gwindow(title = "Window", visible = TRUE, name=title,
 \arguments{
   \item{title}{Title of window}
   \item{visible}{If \code{TRUE} window is drawn when
-  constructed. Otherwise, window can be drawn latter using \code{visible<-}.}
+  constructed. Otherwise, window can be drawn latter using \code{visible<-}. This value can default to \code{FALSE} by
+setting the option: \code{options("gWidgets:gwindow-default-visible-is-false"=TRUE)}. There are advantages: windows can draw slowly when adding item by item; \code{ggraphics} like to be added to an undrawn widget as this avoids a sizing issue.}
 \item{name}{Name for registry of windows}
 \item{width}{Default width for window at creation}
 \item{height}{Default height for window at creation}
@@ -35,18 +36,18 @@ placing dialogs near the parent window.}
    A base window can also be created using the argument
    \code{container=TRUE} when constructing a widget.
 
-   The \code{svalue} method refers to the window title. Use
+   The \code{svalue} method returns the window title. Use
    \code{svalue<-} to change the title.
 
    The \code{add} method is used to add a widget or container to the
    base window. For top-level windows, some toolkits only support adding
-   one widter, so in gWidgets only one widget should be added to a
+   one widget, so in gWidgets only one widget should be added to a
    window, so usually it would be another container.
 
-   Additionally the menubar, toolbar and statusbar widgets should now be
-   added and deleted from the top-level window (Not yet implemented in
-   gWidgetsrJava). Outside of RGtk2, the other toolkits expect these
-   items to be properties of a top-level window.
+   Additionally the menubar, toolbar and statusbar widgets should now
+   be added and deleted from the top-level window. Outside of RGtk2,
+   the other toolkits expect these items to be properties of a
+   top-level window.
    
    The \code{dispose} method destroys the window.
 
@@ -59,7 +60,8 @@ placing dialogs near the parent window.}
    is issued. If this has the right value then the "destroy" event is
    fired. The \code{addHandlerUnrealize} handler can be called to
    intercept the closing of the window. Its handler should return a
-   logical: \code{TRUE} to prevent the closing, \code{FALSE} to proceed.
+   logical: \code{TRUE} to prevent the closing, \code{FALSE} to proceed. This may not work on all toolkits
+
 }
 % \value{}
 % \references{}
