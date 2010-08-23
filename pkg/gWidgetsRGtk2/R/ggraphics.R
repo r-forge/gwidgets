@@ -2,8 +2,6 @@
 ## would like to get size from par("fin"), but this isn't so easy as it
 ## seems to pop up a new plot container
 
-### Trouble when adding to a notebook. Currently when a notebook page is closed the signal to close the widget is not propogated.
-
 
 setClass("gGraphicsRGtk",
          contains="gComponentRGtk",
@@ -22,12 +20,13 @@ setMethod(".ggraphics",
             require(cairoDevice)
             
             da <- gtkDrawingAreaNew()
+            asCairoDevice(da, pointsize=ps)
+            ## set size
+            if(!is.null(width) & !is.null(height))
+              da$setSizeRequest(width, height)              
             ## allow events on this widget
             da$AddEvents(GdkEventMask["all-events-mask"])
-            if(!is.null(width) & !is.null(height))
-              da$setSizeRequest(width, height)
 
-            theArgs <- list(...)
             
             obj <- as.gWidgetsRGtk2(da)
 #            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
@@ -37,18 +36,14 @@ setMethod(".ggraphics",
             ## so we put this in: 
             ## when a device is clicked.
             
-            addhandler(obj,signal="map",handler = function(h, ...) {
+            addhandler(obj,signal="map-event",handler = function(h, w, e, ...) {
               da <- h$action
               ## in cairoDevice (>= 2.2.0) the device is stored in da$GetData(".devnum")
               if(is.null(da$GetData(".devnum"))) {
-                 asCairoDevice(da, pointsize=ps) # turn into cairo device
-                 tag(obj,"device") <- da$GetData(".devnum")
-               }
-##                if(is.null(tag(obj,"device"))) {
-##                  asCairoDevice(da, pointsize=ps) # turn into cairo device
-##                  tag(obj,"device") <- dev.cur()  # now we can set device, as it is realized and now drawable
-##                }
-               return(TRUE)             # don't propogate
+                asCairoDevice(da, pointsize=ps) # turn into cairo device
+                tag(obj,"device") <- da$GetData(".devnum")
+              }
+              return(TRUE)             # don't propogate
              }, action=da)
 
             ## handlers to raise device when clicked upon. This seems a natural way to interact with
@@ -61,7 +56,7 @@ setMethod(".ggraphics",
               FALSE}
             ## raise when click into window
             gSignalConnect(da, "button-press-event", f=.setDevNo)
-            ## raise when motion over device
+            ## raise when motion over device -- CONFUSING, leave out
 #            da$addEvents(GdkEventMask['enter-notify-mask'])
 #            gSignalConnect(da, "enter-notify-event", f=.setDevNo)
             ## close device when destroyed
@@ -129,6 +124,7 @@ setMethod(".ggraphics",
             })
             
             ## Right mouse menu -- some means to prevent
+            theArgs <- list(...)
             if(is.null(theArgs$no_popup)) {
               l <- list()
               l$copyAction <- gaction("Copy", "Copy current graph to clipboard", icon="copy",
@@ -147,18 +143,16 @@ setMethod(".ggraphics",
               
               
             ## Add to container if requested
-            ## attach?
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow()
               add(container, obj, ...)
             }
 
-            ## after realization, process events
-            ## fixes (sometimes) the issue with plot.new having too small margins --
-            ## got this from playwith
-            gdkWindowProcessAllUpdates()
-            while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
+            gSignalConnect(da, "realize", function(...) {
+              gdkWindowProcessAllUpdates()
+              while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
+            })
             
             return(obj)
           })
@@ -283,13 +277,6 @@ setMethod(".addhandlerclicked",
           function(obj, toolkit, handler, action=NULL, ...) {
             ## handler has $obj for obj clicked on, $x, $y, $action
 
-            ## ## convert from "plt" coordinates to more familiar "usr"
-            ## pltToUsr = function(x,y) {
-            ##   plt = par("plt"); usr = par("usr")
-            ##   c( (usr[2]-usr[1])/(plt[2]-plt[1])*(x - plt[1]) + usr[1],
-            ##     (usr[4] - usr[3])/(plt[4] - plt[3])*(y - plt[3]) + usr[3])
-            ## }
-
 
             f = function(h,w,e,...) {
               if(!isFirstMouseClick(e))
@@ -302,11 +289,6 @@ setMethod(".addhandlerclicked",
               y = (allocation$height - yclick)/allocation$height
 
               ## put into usr coordinates
-#              tmp = pltToUsr(x,y)
-              
-#              h$x = tmp[1]
-#              h$y = tmp[2]
-
               h$x <- grconvertX(x, from="ndc", to="user")
               h$y <- grconvertY(y, from="ndc", to="user")
               

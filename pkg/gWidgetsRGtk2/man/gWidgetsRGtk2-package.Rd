@@ -22,6 +22,11 @@ Port of gWidgets API to RGtk2
 
   \bold{Containers:}\cr
 
+  If using a \code{ggraphics} device, one should call \code{gwindow}
+  with the argument \code{visible=FALSE} then after the device is
+  added call the \code{visible<-} method to show the window.
+
+
   To access the underlying gtk container from a \code{gframe} object
   one uses \code{getToolkitWidget(obj)$getParent()} \cr
 
@@ -38,6 +43,8 @@ Port of gWidgets API to RGtk2
   create another widget, like a top-level window. Something similar is the case
   for the \code{gdfedit} widget.
   \cr
+
+  The \code{gradio} widget can now have its items shortened or lengthened via \code{[<-}.\cr
 
   For the data frame viewer \code{gtable} when no filtering is
   requested -- the default -- the column headers can be clicked to sort
@@ -98,8 +105,11 @@ Port of gWidgets API to RGtk2
   \enumerate{
     \item Drawing a graphic too soon may result in a message about
     \code{plot.margins too small}. This comes from trying to draw the
-    first graphic before the window is fully realized. An attempt has been
-    made to clear this up, but so far it isn't perfect.
+    first graphic before the window is fully realized.
+    \cr
+
+    One workaround is to initially set the window not visible then when the GUI is done, make the window visible. That is, try: \code{w <- gwindow(visible=FALSE); ggraphics(cont=w); visible(w) <- TRUE; hist(rnorm(100))}
+
     \item When there are multiple
   devices, the standard means of setting a device via \code{dev.set}
   are supplemented by mouse handlers. Clicking in the graphics window

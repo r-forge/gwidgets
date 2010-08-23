@@ -783,6 +783,7 @@
 \alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.blockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.blockhandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.blockhandler,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
 
 %%
 %% --  unblockhandler --
@@ -801,6 +802,7 @@
 \alias{.unblockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.unblockhandler,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
 
 
 %%
@@ -819,6 +821,7 @@
 \alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.removehandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.removehandler,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 
 
