@@ -1,6 +1,7 @@
 ## TODO for gWidgetsWWW
 * update to ext 3.2
 (A firefox thing) * size of text in gcombobox is too big. How to change?
+* update googlemaps to new API (disabled for now)
 * gfile: server version, now its local only
 DONE * gcli for local version
 * spinbutton trigger icons -- need to work with css to get this going. Wait until part of Ext, not Ext.ux

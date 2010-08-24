@@ -30,7 +30,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
   w$sessionID <- makeSessionID()
   w$toplevel <- w
   w$..renderTo <- String("Ext.getBody()") # can override
-  
+  w$..show_error_messages <- TRUE         # set to NULL to not show
   w$doLoadingText <- gWidgetsWWWIsLocal() # do we print a message when calling a handler
   w$loadingText <- gettext("Loading...")  # prints when a handler is called to indicate a request.
   ##  w$..visible <- FALSE
@@ -124,14 +124,22 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
               ## Some javascript functions
               ## XXX make betters
+
+              if(exists("..show_error_message", envir=.)) {
+                processFailure <- paste("function processFailure(response, options) {",
+                                        "Ext.example.msg('Error:', response.responseText, 4);" 
+                                        "};", sep="\n")
+              } else {
+                processFailure <- paste("function processFailure(response, options) {",
+                                        "eval(response.responseText);"
+                                        "};", sep="\n")                
+              }
               out <- out +
-                "function processFailure(response, options) {" +
-                  "eval(response.responseText);" +
-                    "};" +
-                      "\n" +
-                        "function evalJSONResponse(response, options) {" +
-                          "eval(response.responseText);" +
-                            "};" + "\n"
+                processFailure +
+                  "\n" +
+                    "function evalJSONResponse(response, options) {" +
+                      "eval(response.responseText);" +
+                        "};" + "\n"
 
               if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))  {
                 gWidgetsWWWAJAXurl <- "/gWidgetsWWW"

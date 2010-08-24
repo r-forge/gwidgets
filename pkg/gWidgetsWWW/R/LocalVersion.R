@@ -224,24 +224,24 @@ processAJAX <- function(path, query, ...) {
   
   switch(type,
          "runHandler"= {
-           out <- gWidgetsWWW:::localRunHandler(query$id, query$context, query$sessionID)
-           ret <- list(payload=out,
+           l <- gWidgetsWWW:::localRunHandler(query$id, query$context, query$sessionID)
+           ret <- list(payload=l$out,
                        "content-type"="text/javascript",
                        "headers"=NULL,
-                       "status code"=200L
+                       "status code"=l$retval
                        )
          },
          "assign" = {
            ## pass back return value. Assign does nothing otherwise
-           out <- gWidgetsWWW:::localAssignValue(query$variable, ourURLdecode(query$value), query$sessionID)
-           ret <- list(payload="",
+           l <- gWidgetsWWW:::localAssignValue(query$variable, ourURLdecode(query$value), query$sessionID)
+           ret <- list(payload=l$out,
                        "content-type"="text/html",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
                          "<responseText></responseText>",
                          "<readyState>4</readyState>",
                          sep="\n"),
-                       "status code"=as.integer(out)
+                       "status code"=l$retval
                        )
          },
          "clearSession"={
@@ -421,18 +421,22 @@ gWidgetsWWWIsLocal <- function() {
 ##' Called by AJAX script to assign a value
 localAssignValue <- function(id, value, sessionID) {
   e <- getBaseObjectFromSessionID(sessionID)
-  retval <- "419"                         # expectation failed
+  OK <- 200L; ERROR <- 419L
+  l <- list(out="", retval=OK)
   if(is.null(e)) {
-    cat("Error: can't find session for", sessionID, "\n")
+    l$out <- sprintf("Error: can't find session for", sessionID, "\n")
+    l$retval <- ERROR
   } else {
     out <- fromJSON(value)
     if(is.list(out)) {
       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
-      if(!inherits(tmp, "try-error"))
-        retval <- "200"                   # all good
+      if(inherits(tmp, "try-error")) {
+        l$out <- tmp
+        l$retval <- ERROR
+      }
     }
   }
-  return(retval)
+  return(l)
 }
 
 ##' Called to run a handler
@@ -446,12 +450,18 @@ localRunHandler <- function(id, context=NULL, sessionID) {
     if(context == "\"\"")
       context <- NULL
   }
+
+  ## return 200 if ok, 419 if no
+  OK <- 200L; ERROR <- 419L
+  ret <- list(out="", retval=OK)
   
   e <- getBaseObjectFromSessionID(sessionID)
   if(is.null(e)) {
-    out <- "alert('No session for this id');"
+    ret$out <- "alert('No session for this id');"
+    ret$retval <- ERROR
   } else if(sink.number() > 10) {
-    out <- sprintf("alert('too many sinks: %s');", sink.number())
+    ret$out <- sprintf("alert('too many sinks: %s');", sink.number())
+    ret$retval <- ERROR
   } else {
     f <- tempfile()
     ## XXX There is an issue with SIGPIPE presumably related to the way we open a file to capture the output
@@ -475,17 +485,17 @@ localRunHandler <- function(id, context=NULL, sessionID) {
     
     if(inherits(out, "try-error")) {
       sink(NULL)
-      cat("Error:", as.character(out))
-      out <- ""
+      ret$out <- sprintf("Error: %s", as.character(out))
+      ret$retval <- ERROR
     } else {
       sink(NULL)
       cat("\n", file=f, append=TRUE)
-      out <- paste(readLines(f), collapse="\n")
+      ret$out <- paste(readLines(f), collapse="\n")
     }
     
     unlink(f)
   }
-  return(out)
+  return(ret)
 }
 
 ## out <- tryCatch({

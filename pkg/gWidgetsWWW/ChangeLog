@@ -1,3 +1,8 @@
+2010-08-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* inst/Examples/ex-clt.R (makePlot): fix to example -- was making
+	matrix of values incorrectly when arguments were present.
+
 2010-08-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdf.R (widget$getValues): bug fix
