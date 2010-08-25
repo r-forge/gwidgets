@@ -1,3 +1,8 @@
+2010-08-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: fixed tooltip issue
+	when adding gaction backend for button
+
 2010-08-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggraphics.R: cleaned up code. Issue with size can be avoided

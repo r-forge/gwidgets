@@ -92,6 +92,10 @@ setMethod(".gbutton",
               image <- gtkaction$createIcon(GtkIconSize[4])
               button$setImage(image)
             }
+            ## tooltip
+            tip <- gtkaction['tooltip']
+            if(!is.null(tip))
+              tooltip(obj) <- tip
 
             if(!is.null(container)) {
               if(is.logical(container) && container) {

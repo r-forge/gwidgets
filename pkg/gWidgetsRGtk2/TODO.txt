@@ -1,4 +1,5 @@
-* fix delete with gradio, [<- method to reduce length
+* tooltip in gaction -- broken?
+DONE* fix delete with gradio, [<- method to reduce length
 * DONE gvarbrowser: customize groups, icons, update should consider more
   than just names (class too!); svalue error Others? (TT suggested more
 * svalue<- method for gtree to set by index or key svalue(obj,index=??) <- c(...)
