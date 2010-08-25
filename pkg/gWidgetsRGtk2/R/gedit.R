@@ -217,15 +217,15 @@ setMethod(".adddroptarget",
             ## again we don't want this
             ## so we store the pre-value then set after as a hack
             predrophandler <- function(h,...) {
-              tag(h$obj,"predropvalue") <- svalue(h$obj)
+              tag(h$obj,"..predropvalue") <- svalue(h$obj)
             }
             gSignalConnect(getWidget(obj), "drag-data-received", f= predrophandler,
                            data=list(obj=obj), user.data.first=TRUE,
                            after=FALSE)
             
             postdropHandler <- function(h,w, ctxt, x, y, selection, ...) {
-              svalue(h$obj) <- tag(h$obj,"predropvalue") # complete the hack
-              tag(h$obj, "predropvalue") <- NULL
+              svalue(h$obj) <- tag(h$obj,"..predropvalue") # complete the hack
+              tag(h$obj, "..predropvalue") <- NULL
               
               dropdata <- selection$GetText()
               if(is.integer(dropdata)) 

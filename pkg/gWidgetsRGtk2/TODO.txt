@@ -1,51 +1,52 @@
-* tooltip in gaction -- broken?
-DONE* fix delete with gradio, [<- method to reduce length
-* DONE gvarbrowser: customize groups, icons, update should consider more
-  than just names (class too!); svalue error Others? (TT suggested more
-* svalue<- method for gtree to set by index or key svalue(obj,index=??) <- c(...)
 * fix height on gcombobox -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.
+* no tag<- methods for gaction?
+* svalue<- for gtable calls changed twice
+
+FIXED * tooltip in gaction -- broken?
+DONE* fix delete with gradio, [<- method to reduce length
+DONE * DONE gvarbrowser: customize groups, icons, update should consider more
+  than just names (class too!); svalue error Others? (TT suggested more
+DONE * svalue<- method for gtree to set by index or key svalue(obj,index=??) <- c(...)
 DONE * index.search in ghelp needs to be replaced to use dynamic
        search (is ghelp even necessary anymore?)
 DONE * gtext -- API to set font properties for entire buffer?
-* gWidgets with mac os x GUI
+DONE * gWidgets with mac os x GUI
 DONE * Yvonnick and addHandlerRightClick
-* no tag<- methods for gaction?
-* svalue<- for gtable calls changed twice
-* fix to dnd and gedit
-library(RGtk2)
-gSignalConnect(getToolkitWidget(ed), "drag-data-received", f=function(w,...) {
-  print("arrived")
-  val <- w$getText()
-  svalue(ed) <- val
-  })
+DONE? * fix to dnd and gedit
+## library(RGtk2)
+## gSignalConnect(getToolkitWidget(ed), "drag-data-received", f=function(w,...) {
+##   print("arrived")
+##   val <- w$getText()
+##   svalue(ed) <- val
+##   })
 
 DONE (TOM did all the work) 
-* Dear John,
+## * Dear John,
 
-I have to thank you again for paying attention to my query. I realize you're busy; this email is nothing more than a wish list.
+## I have to thank you again for paying attention to my query. I realize you're busy; this email is nothing more than a wish list.
 
-Based on the user feedback, the most persistent question has been to allow more "Excel-like" behavior with respect to table cell selection behavior. I realize this isn't what the designers of TreeView intended - although having had a look at the classes, I can see there are methods allowing a great deal of flexibility like SetCellDataFunc.
+## Based on the user feedback, the most persistent question has been to allow more "Excel-like" behavior with respect to table cell selection behavior. I realize this isn't what the designers of TreeView intended - although having had a look at the classes, I can see there are methods allowing a great deal of flexibility like SetCellDataFunc.
 
-For example http://markmail.org/message/ebbyt5ephsfqlz2t gives an example of highlighting individual cells.
+## For example http://markmail.org/message/ebbyt5ephsfqlz2t gives an example of highlighting individual cells.
 
-In order of how nice it would be to have these features in something like gdf or gtable:
+## In order of how nice it would be to have these features in something like gdf or gtable:
 
-1. Clicking on a column header should highlight and select the column by default. A right-click or an external call might be better to sort the column or change its name (the gdf functionality). Clicking and dragging a column header should expand the selection of columns. It would also be good to have the ability to rearrange columns by dragging, if a rearrangement mode was enabled.
+## 1. Clicking on a column header should highlight and select the column by default. A right-click or an external call might be better to sort the column or change its name (the gdf functionality). Clicking and dragging a column header should expand the selection of columns. It would also be good to have the ability to rearrange columns by dragging, if a rearrangement mode was enabled.
 
-2. Clicking on an ordinary cell should highlight and select the individual cell and allow rubber-banding selection.
+## 2. Clicking on an ordinary cell should highlight and select the individual cell and allow rubber-banding selection.
 
-3. Ctrl-C and Ctrl-V should work by default to copy and paste whatever's selected.
+## 3. Ctrl-C and Ctrl-V should work by default to copy and paste whatever's selected.
 
-4. Useful handlers might include addHandlerColumnClicked, addHandlerColumnRightClick, addHandlerRowClicked, addHandlerRowRightClick, addHandlerCellClicked, addHandlerCellRightClick, which would expose rows/columns. This would allow adding context-sensitive popup menus to data table displays (for example, highlighting cells containing protein names and then popping up a table containing the corresponding gene information).
+## 4. Useful handlers might include addHandlerColumnClicked, addHandlerColumnRightClick, addHandlerRowClicked, addHandlerRowRightClick, addHandlerCellClicked, addHandlerCellRightClick, which would expose rows/columns. This would allow adding context-sensitive popup menus to data table displays (for example, highlighting cells containing protein names and then popping up a table containing the corresponding gene information).
 
-The other solution to this might be to just call Excel or Calc, although getting an edited table back might be a bit of a hack involving an idle handler to look at a file date, or similar.
+## The other solution to this might be to just call Excel or Calc, although getting an edited table back might be a bit of a hack involving an idle handler to look at a file date, or similar.
 
-One more thought I've had -- and this is definitely in the "wouldn't it be nice" category -- is that for big data, it might make sense to buffer the table display against the data frame (or a class with "[,]", "[,]<-" and dimnames methods). Fully loading a numeric 5000x33 table into gtable takes over 10 elapsed seconds on my (modern) computer under Windows Vista, whereas a buffered display should be instantaneous. Furthermore, we'd gain a powerful ability to display very large tables or SQL databases, which are generally common for bioinformatics users.
+## One more thought I've had -- and this is definitely in the "wouldn't it be nice" category -- is that for big data, it might make sense to buffer the table display against the data frame (or a class with "[,]", "[,]<-" and dimnames methods). Fully loading a numeric 5000x33 table into gtable takes over 10 elapsed seconds on my (modern) computer under Windows Vista, whereas a buffered display should be instantaneous. Furthermore, we'd gain a powerful ability to display very large tables or SQL databases, which are generally common for bioinformatics users.
 
-I've actually implemented something similar to this concept in tcltk already (although, it doesn't work very well yet). I maintain a separate table which keeps track of which cells have been selected and I update the table cells when the viewing window is changed. The main problem I had is that scrolling around can lead to the program locking up since the event queue can run ahead of the speed of redrawing the view port - despite some experimentation with flags and idle handlers I haven't been able to completely resolve this.
+## I've actually implemented something similar to this concept in tcltk already (although, it doesn't work very well yet). I maintain a separate table which keeps track of which cells have been selected and I update the table cells when the viewing window is changed. The main problem I had is that scrolling around can lead to the program locking up since the event queue can run ahead of the speed of redrawing the view port - despite some experimentation with flags and idle handlers I haven't been able to completely resolve this.
 
-Cheers, Tom
+## Cheers, Tom
 
 * fix gcommandline -- it isn't working with ggenericwidget
 DONE* On mac implement button-2 or control-1 (latter is through
@@ -83,30 +84,30 @@ DONE * gaction -- atleast for menu and toolbar.
 * gdf -- speed ups?
 * fix shading in gnotebook (Giles e-mail)
 * check gradio enable<- fix, gpanedgroup svalue<- fix
-* tooltip in gtoolbar
+DONE * tooltip in gtoolbar
 * NaN in gtable/gdf in palce of NA. Character sorts funny so don't coerce.
 * redo gdf -- look at EDF stuff. The numbr of digits in a numeric
   number should be configurable, NA NaN, etc under windows.
 * nb[i] should return gWidgets (it might, but gdf doesn't work)
 * RONGUI email regarding table code and adding values
 
-* put drag rectangle addHandler??? How to draw the rectangle (see
-  ggobi, playwith). The
-  button-press-release signal (or some such) allows on to easily get
-  at the values.
+## * put drag rectangle addHandler??? How to draw the rectangle (see
+##   ggobi, playwith). The
+##   button-press-release signal (or some such) allows on to easily get
+##   at the values.
 
-device <- asCairoDevice(da, pointsize=12)
-win$Show()
-gSignalConnect(da,"button-press-event",function(h,e,...) {
-  print("press")
-  print(e$GetX())
-  return(TRUE)
-})
-gSignalConnect(da,"button-release-event",function(h,e,...) {
-  print("release")
-  print(e$GetX())
-  return(TRUE)
-})
+## device <- asCairoDevice(da, pointsize=12)
+## win$Show()
+## gSignalConnect(da,"button-press-event",function(h,e,...) {
+##   print("press")
+##   print(e$GetX())
+##   return(TRUE)
+## })
+## gSignalConnect(da,"button-release-event",function(h,e,...) {
+##   print("release")
+##   print(e$GetX())
+##   return(TRUE)
+## })
 
 * gcommandline is a *mess* -- clean up
 
