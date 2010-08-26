@@ -127,12 +127,14 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
               if(exists("..show_error_message", envir=.)) {
                 processFailure <- paste("function processFailure(response, options) {",
-                                        "Ext.example.msg('Error:', response.responseText, 4);" 
-                                        "};", sep="\n")
+                                        "Ext.example.msg('Error:', response.responseText, 4);",
+                                        "};",
+                                        sep="\n")
               } else {
                 processFailure <- paste("function processFailure(response, options) {",
-                                        "eval(response.responseText);"
-                                        "};", sep="\n")                
+                                        "eval(response.responseText);",
+                                        "};",
+                                        sep="\n")                
               }
               out <- out +
                 processFailure +
