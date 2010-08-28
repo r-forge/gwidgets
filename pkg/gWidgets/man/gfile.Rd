@@ -13,7 +13,7 @@ gfile(text = "", type = c("open", "save", "selectdir"), initialfilename = NULL,
     filter = list("All files" = list(patterns = c("*")), "R files" =
     list(patterns = c("*.R","*.Rdata")),
         "text files" = list(mime.types = c("text/plain"))
-        ), handler = NULL, action = NULL, ..., toolkit = guiToolkit())
+        ), multi=FALSE, handler = NULL, action = NULL, ..., toolkit = guiToolkit())
 
 gfilebrowse (text = "Select a file...", type = "open", quote = TRUE, 
     container = NULL, ..., toolkit = guiToolkit()) 
@@ -27,6 +27,7 @@ gcalendar(text = "", format = "\%Y-\%m-\%d", handler=NULL, action=NULL, containe
   for saving or you may want to select a directory.}
 \item{initialfilename}{Suggested name for file save}
   \item{filter}{Filter for files shown during selection }
+  \item{multi}{Logical. Allow selection of multiple files?}
   \item{quote}{Is result quoted}
   \item{format}{Format of date, default is year-month-day}
   \item{handler}{Handler for when file is changed. The component

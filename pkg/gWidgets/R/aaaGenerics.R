@@ -58,7 +58,11 @@ setClass("guiWidgetsToolkitQt",
 ##################################################
 
 
+##' all packages that are registered with gWidgets. Used if guiToolkit not specified
+registered_packages <- c("gWidgetsRGtk2", "gWidgetstcltk", "gWidgetsQt", "gWidgetsrJava",
+                         "gWidgetsRwxWidgets")
 
+##' set or get the current toolkit for gWidgets
 guiToolkit = function(name=NULL) {
   ## plan, if name is NULL, and options("guiToolkit") NULL then we popup a menu
   ## with choices coming from all installed packages named gWidgetsXXXX
@@ -82,9 +86,9 @@ guiToolkit = function(name=NULL) {
   if(!is.null(name) && is.na(name)) return(NULL)          # use NA to override choice
   ## no if it is null, we have to find the possible choices
   if(is.null(name)) {
-    tmp <- installed.packages() 
-    choices <- tmp[grep("^gWidgets.",tmp[,1]),1]
-    choices <- setdiff(choices, "gWidgetsWWW")
+    
+    choices <- registered_packages[sapply(registered_packages, function(i) system.file(i) != "")]
+
     
     if(interactive()) {
       if(length(choices) == 0) {
@@ -542,15 +546,16 @@ setGeneric( '.gtree' ,
 
 ## gfile (gfilebrowse in base)
 ## the constructor
-gfile =function(
-  text = "", type = c("open", "save", "selectdir"),
-  initialfilename = NULL,
-  filter = list("All files" = list(patterns = c("*")), "R files" = list(patterns = c("*.R",          "*.Rdata")), "text files" = list(mime.types = c("text/plain"))          ),
-  handler = NULL, action = NULL, ... ,
-  toolkit=guiToolkit()){
+gfile <- function(
+                  text = "", type = c("open", "save", "selectdir"),
+                  initialfilename = NULL,
+                  filter = list("All files" = list(patterns = c("*")), "R files" = list(patterns = c("*.R",          "*.Rdata")), "text files" = list(mime.types = c("text/plain"))          ),
+                  multi=FALSE,
+                  handler = NULL, action = NULL, ... ,
+                  toolkit=guiToolkit()){
   widget =  .gfile (toolkit,
     text=text, type=type, initialfilename=initialfilename,
-    filter=filter, handler=handler, action=action ,...
+    filter=filter, multi=multi, handler=handler, action=action ,...
     )
 }
 
