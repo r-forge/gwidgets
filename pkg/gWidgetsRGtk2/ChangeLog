@@ -1,3 +1,15 @@
+2010-08-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: Try to make OK button default button
+
+	* R/aaaGenerics.R: in 3rd mous popup propogate signal to next
+	handler. (So 3rd mouse will still do selection)
+
+2010-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (tag(tree, "isStillThere")): check if there are
+	empty values to avoid crash
+
 2010-08-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gbutton.R: fixed tooltip issue

@@ -49,7 +49,7 @@ setMethod(".gmessage",
             dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
-
+            dlg$setDefaultResponse(GtkResponseType["ok"])
             
             ## run in modal mode
             response = dlg$Run()
@@ -117,7 +117,8 @@ setMethod(".gconfirm",
             dlg$SetTitle(title)            
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
-
+            dlg$setDefaultResponse(GtkResponseType["ok"])
+            
             ## add callback to close
             close.handler = function(h,...) h$obj$Destroy()
             
@@ -179,6 +180,8 @@ setMethod(".ginput",
               message[1]
               )
             dlg$SetTitle(title)
+            dlg$setDefaultResponse(GtkResponseType["ok"])
+            
             ## secret bit. Needs API! If message has length more than
             ## 1, use rest for secondary text.
             if(length(message) > 1)
@@ -332,7 +335,8 @@ setMethod(".gbasicdialognoparent",
               "gtk-cancel", GtkResponseType["cancel"],
               show=FALSE)
             dlg$SetTitle(title)
-
+            dlg$setDefaultResponse(GtkResponseType["ok"])
+            
             obj <- new("gBasicDialogNoParentRGtk",
                        block=dlg, widget=dlg, toolkit=guiToolkit("RGtk2"))
             tag(obj,"handler") <- handler

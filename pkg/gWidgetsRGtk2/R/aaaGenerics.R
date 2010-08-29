@@ -1783,6 +1783,7 @@ add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, 
       gtkMenuPopupHack(mb,button = event$GetButton(),
                        activate.time=event$GetTime()
                        )
+      return(FALSE)
     } else {
       return(FALSE)
     }

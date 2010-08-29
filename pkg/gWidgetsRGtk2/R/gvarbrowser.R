@@ -209,9 +209,12 @@ setMethod(".gvarbrowser",
             ## override how we compare items. Default is just by name, here we want
             ## to include class
             tag(tree, "isStillThere") <- function(old, new) {
-              out <- (old[1] %in% new[,1, drop=TRUE]) &&
-                     (old[2] %in% new[,3, drop=TRUE])
-              out
+              if(length(old) && length(new)) {
+                (old[1] %in% new[,1, drop=TRUE]) &&
+                (old[2] %in% new[,3, drop=TRUE])
+              } else {
+                FALSE
+              }
             }
             
             if(!is.null(handler)) {

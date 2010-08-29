@@ -275,7 +275,10 @@ setMethod(".update",
             ## val is c(name, type) of item from tree;
             ## allVals is df with nameType of the newvalues to add to tree
             isStillThere <- function(val, allVals) {
-              val[1] %in% allVals[,1,drop=TRUE]
+              if(length(val) && length(allVals))
+                val[1] %in% allVals[,1,drop=TRUE]
+              else
+                FALSE
             }
             isStillThere <- getWithDefault(tag(obj, "isStillThere"), isStillThere)
             

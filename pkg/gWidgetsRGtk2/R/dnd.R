@@ -42,9 +42,9 @@ gWidgetTargetTypes = list(
 addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
 
   ##  ver = getRGtk2Version()   ## too slow!
-  x = read.dcf(system.file("DESCRIPTION", package="RGtk2"))
+  x <- read.dcf(system.file("DESCRIPTION", package="RGtk2"))
   version <- x[1,'Version']
-  ver <- strsplit(,"\\.")[[1]]
+  ver <- strsplit(version,"\\.")[[1]]
   names(ver) <- c("major","minor","mini?")
   
   tmp = gtkDragSourceSet(getWidget(obj),

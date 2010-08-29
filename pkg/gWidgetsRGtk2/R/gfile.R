@@ -16,6 +16,7 @@ setMethod(".gfile",
                        mime.types=c("text/plain")
                        )
                      ),
+                   ## multiple=FALSE, ## XXX uncomment at some point
                    handler = NULL,
                    action = NULL,                     # 
                    ...
