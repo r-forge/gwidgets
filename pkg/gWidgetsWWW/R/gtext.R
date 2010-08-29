@@ -37,11 +37,6 @@ gtext <- function(text = NULL, width = NULL, height = 300,
       svalue(.) <- c(svalue(.), child)
     else
       svalue(.) <- c(child,svalue(.))
-##     curValue <- String(svalue(.))
-##     for(i in child) {
-##       curValue <- curValue + i
-##     }
-##     svalue(.) <- curValue
   }
   widget$insert <- widget$add
   

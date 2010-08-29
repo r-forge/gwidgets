@@ -56,6 +56,7 @@ EXTGroup$addSpace <- function(., value, horizontal=TRUE, ...) {
 ## this is not defined
 EXTGroup$addSpring <- function(.) {invisible("")}
 
+##' ggroup is the basic box container
 ggroup <- function(horizontal=TRUE, spacing=5, use.scrollwindow = FALSE,
                     container,...) {
    ## a group
@@ -75,6 +76,7 @@ ggroup <- function(horizontal=TRUE, spacing=5, use.scrollwindow = FALSE,
    invisible(cont)
  }
 
+##################################################
 EXTFrame <- EXTGroup$new(children=list())
 EXTFrame$ExtCfgOptions <- function(.) {
   out <- EXTGroup[['ExtCfgOptions']](.)
@@ -82,7 +84,8 @@ EXTFrame$ExtCfgOptions <- function(.) {
   return(out)
 }
 EXTFrame$setValueJSMethod = "setTitle"
-     
+
+##' gframe is a title-decorated ggroup box container
 gframe <- function(text = "", pos = 0, horizontal=TRUE, container=NULL,...) {
 
   cont <- EXTFrame$new(toplevel = container$toplevel,
@@ -106,7 +109,7 @@ gframe <- function(text = "", pos = 0, horizontal=TRUE, container=NULL,...) {
   invisible(cont)
 }
 
-
+##################################################
 EXTExpandGroup <- EXTFrame$new(children=list())
 EXTExpandGroup$ExtCfgOptions <- function(.) {
   out <- .super$ExtCfgOptions(.)
@@ -115,6 +118,7 @@ EXTExpandGroup$ExtCfgOptions <- function(.) {
   return(out)
 }
 
+##' gexpandgroup is a group with trigger icon and label
 gexpandgroup <- function(text = "", horizontal = TRUE,
                          handler = NULL, action=NULL,
                          container=NULL, ...) {
@@ -131,8 +135,8 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
   cont$setValue(value=text)
 
   cont$..ExtCfgOptions <- function(.) {
-    out <- list(border=TRUE
-                )
+    out <- list(border=TRUE)
+    out
   }
 
   if(!is.null(handler))

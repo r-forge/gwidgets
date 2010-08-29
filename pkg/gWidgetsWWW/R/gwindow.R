@@ -372,11 +372,7 @@ handler = NULL, action=NULL, container=NULL,...) {
       .$..setVisibleJS()
     
     ## opposite -- we already changed if we got here
-    if(.$..visible)
-      method = "show"
-    else
-      method = "hide"
-    
+    method <- ifelse(.$..visible, "show", "hide")
     out <- String() + 
       'o' + .$ID + '.' + method + '();'
     cat(out, file=stdout())
