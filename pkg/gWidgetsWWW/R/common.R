@@ -141,6 +141,11 @@ escapeQuotes <- function(x) {
   return(x)
 }
 
+ourFromJSON <- function(x, ...) {
+  if(x == "") return(x)
+  fromJSON(x, ...)
+}
+
 ###
 ##' are we online?
 gWidgetsWWWIsOnline <- function() FALSE

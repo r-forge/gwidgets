@@ -427,7 +427,7 @@ localAssignValue <- function(id, value, sessionID) {
     l$out <- sprintf("Error: can't find session for", sessionID, "\n")
     l$retval <- ERROR
   } else {
-    out <- fromJSON(value)
+    out <- ourFromJSON(value)
     if(is.list(out)) {
       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
       if(inherits(tmp, "try-error")) {
@@ -478,7 +478,7 @@ localRunHandler <- function(id, context=NULL, sessionID) {
     
     out <- try({
       if(!is.null(context))
-        e$runHandler(id, fromJSON(context))
+        e$runHandler(id, ourFromJSON(context))
       else
         e$runHandler(id)
     }, silent=TRUE)
@@ -502,7 +502,7 @@ localRunHandler <- function(id, context=NULL, sessionID) {
 ## tc <- textConnection("textfromconnection", open="w")
 ## sink(file=tc)
 ## if(nchar(context))
-##   e$runHandler(id, fromJSON(context))
+##   e$runHandler(id, ourFromJSON(context))
 ## else
 ##   e$runHandler(id)
 ## sink()
@@ -680,7 +680,7 @@ localServerRestart <- restartRpadServer <- function() .Deprecated("",msg="No lon
 ##   if(is.null(e)) {
 ##     cat("Error: can't find session for", sessionID, "\n")
 ##   } else {
-##     out <- fromJSON(value)
+##     out <- ourFromJSON(value)
 ##     if(is.list(out)) {
 ##       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
 ##       if(!inherits(tmp, "try-error"))
@@ -701,7 +701,7 @@ localServerRestart <- restartRpadServer <- function() .Deprecated("",msg="No lon
 ##       tc <- textConnection("textfromconnection", open="w")
 ##       sink(file=tc)
 ##       if(nchar(context))
-##         e$runHandler(id, fromJSON(context))
+##         e$runHandler(id, ourFromJSON(context))
 ##       else
 ##         e$runHandler(id)
 ##       sink()
