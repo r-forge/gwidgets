@@ -1,6 +1,7 @@
 2010-08-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
-	* R/gdialogs.R: Try to make OK button default button
+	* R/gdialogs.R: Try to make OK button default button. Doesn't
+	work, need to use gtkDialog, not gtkMessageDialog it seems
 
 	* R/aaaGenerics.R: in 3rd mous popup propogate signal to next
 	handler. (So 3rd mouse will still do selection)

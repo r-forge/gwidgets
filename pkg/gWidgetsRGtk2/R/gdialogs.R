@@ -117,7 +117,7 @@ setMethod(".gconfirm",
             dlg$SetTitle(title)            
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
-            dlg$setDefaultResponse(GtkResponseType["ok"])
+            dlg$setDefaultResponse(GtkResponseType["ok"]) # fails -- need to use gtkDialog directly
             
             ## add callback to close
             close.handler = function(h,...) h$obj$Destroy()
