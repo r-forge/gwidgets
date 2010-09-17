@@ -4,6 +4,9 @@ NEWS for gWidgetsQt
 
 Changes for 0.0-2
 -------------------
+* rewrote gexpandgroup. Still have issue with sizing
+* rewrote gvarbrowser
+* fix to how gwindow responds to size changes
 * fixes to how ggroup, glayout handle expand, fill, anchor arguments
 * added [ method to glayout for extraction
 * put in enumerations

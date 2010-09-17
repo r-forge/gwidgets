@@ -16,12 +16,80 @@
 ## WHy do we have to do this ourselves??? Must be a Qt thing
 ## expander group, like a group, only expands, contracts if requested
 ## inherits from ggroup, see ggroup's arguments: horizontal, spacing, container
+
+##' Class for an expanding container
+##' Have issue with resizing of parent widget when collapsed
+##' 
+qsetClass("ExpandContainer", Qt$QWidget, function(title="", parent=NULL) {
+  super(parent)
+
+  
+  setSizePolicy(Qt$QSizePolicy$Preferred, Qt$QSizePolicy$Minimum) 
+  
+  this$cb <- Qt$QCheckBox(title)
+  cb$setCheckState(Qt$Qt$Unchecked)
+  
+  this$centralWidget <- Qt$QGroupBox()
+
+  
+  lyt <- Qt$QVBoxLayout()
+  super("setLayout", lyt)
+
+  lyt$addWidget(cb, stretch=0, Qt$Qt$AlignTop | Qt$Qt$AlignLeft)
+  lyt$addWidget(centralWidget, stretch=10, Qt$Qt$AlignTop | Qt$Qt$AlignLeft)
+
+  qconnect(cb, "stateChanged", function(state) {
+    setHidden(!as.logical(state & Qt$Qt$Checked))
+  })
+
+  setHidden(FALSE)
+})
+
+## checkbox methods
+##' Return checkbox, used internally
+qsetMethod("checkBox", ExpandContainer, function() cb)
+##' label for expand group
+qsetMethod("labelText", ExpandContainer, function() cb$text)
+##' set label for expand group
+##' @param txt label text
+qsetMethod("setLabelText", ExpandContainer, function(txt) cb$setText(txt))
+
+## push to central widget
+##' override setLayout to put into central widget
+qsetMethod("setLayout", ExpandContainer, function(lyt) centralWidget$setLayout(lyt))
+##' returns state of widget (checked=open, unchecked=collapsed)
+##' @returns Qt$Qt Check state object
+qsetMethod("checkState", ExpandContainer, function() cb$checkState())
+##' set checkstate with Qt$Qt Check State
+qsetMethod("setCheckState", ExpandContainer, function(state) {
+  setHidden(as.logical(Qt$Qt$Unchecked & state))
+})
+
+##' set hidden override. BOth hides and updates check button
+##' @param bool TRUE to hide, FALSE to open
+qsetMethod("setHidden", ExpandContainer, function(bool) {
+
+  cb$blockSignals(TRUE)
+  cb$setCheckState(ifelse(!bool, Qt$Qt$Checked, Qt$Qt$Unchecked)) # TRUE -> uncheck
+  cb$blockSignals(FALSE)
+
+  centralWidget$setHidden(bool)
+  adjustSize()
+
+  ## if(!is.null(parent <- this$parent()))
+  ##   parent$adjustSize()
+})
+
+
+
+##' Class for gWidgets expand group
+##' Inherits from ggroup the svalue method
 setClass("gExpandgroupQt",
-         contains="gContainerQt",
-         prototype=prototype(new("gContainerQt"))
+         contains="gGroupQt",
+         prototype=prototype(new("gGroupQt"))
          )
 
-
+##' toolkit constructor for expandgroup object
 setMethod(".gexpandgroup",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -31,67 +99,25 @@ setMethod(".gexpandgroup",
 
             force(toolkit)
 
-            w <- Qt$QWidget()
 
-            ## 3 widgets
-            cb <- gcheckbox()
-            XXX("Use QT Graphic Item, not label")
-            label <- glabel(text)
-            mw <- Qt$QWidget()
-
-            elyt <- Qt$QVBoxLayout()
-            w$setLayout(elyt)
-            glty <- Qt$QGridLayout()
-            elyt$addLayout(glty)
-            elyt$addStretch(10)         # push glty up
-
-            
-
-
-            ### anchors into upper right"
-            glty$addWidget(getBlock(cb), 0, 0,1,1)
-            glty$addWidget(getBlock(label), 0, 1, 1, 1)
-            glty$addWidget(Qt$QLabel(), 0, 2, 1, 1)
-            glty$addWidget(mw, 1, 1,1,1)
-            glty$addWidget(Qt$QLabel(), 2, 1,1,3)
-
-            ## give space to cell 1,1
-            glty$setColumnStretch(1, 1)
-            glty$setRowStretch(0, 0)
-            glty$setColumnStretch(0, 0)
-            ## hacks -- really want to push alignment
-            glty$setRowStretch(2, .1)            
-            glty$setColumnStretch(2, .1)
-            
+            widget <- ExpandContainer()
 
             if(as.logical(horizontal))
               lyt <- Qt$QHBoxLayout()
             else
               lyt <- Qt$QVBoxLayout()
-            mw$setLayout(lyt)
+            widget$setLayout(lyt)
             
-            obj <- new("gExpandgroupQt", block=w, widget=lyt, 
+            obj <- new("gExpandgroupQt", block=widget, widget=lyt, 
                        toolkit=toolkit, e=new.env(), ID=getNewID())
 
 
-            tag(obj, "mainwidget") <- mw
-            tag(obj, "cb") <- cb
-            tag(obj, "label") <- label
-            
-            ## initial state is open
+            names(obj) <- text
             visible(obj) <- TRUE
-            
-            ## must take care of closing/opening
-            qconnect(getWidget(cb), "stateChanged", function(state, obj) {
-              visible(obj) <- state
-            }, user.data=obj)
             
             if(!is.null(handler)) {
               addHandlerChanged(obj, handler=handler, action=action)
             }
-
-
-            
 
             if(!is.null(container)) {
               add(container, obj, ...)
@@ -102,128 +128,101 @@ setMethod(".gexpandgroup",
 
 
 
-## push onto label
+##' Font is not implemented 
 setReplaceMethod(".font",
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit,  ..., value) {
-            ## add value to expandgroup
-            font(tag(obj,"label")) <- value
+            ### XXX implement me -- pass to cb
             return(obj)
           })
 
+## svalue is inherited from ggroup. No longer does svalue<- set the name (which is deprecated)
 
-## Should make
-## a) svalure refer to padding, ala ggroup padding
-## b) names refer to label
-## c) font refer to font of label
-## d) visible refer to state
-
-## value refers to padding
-## FOr svalue<- we still accept non-numeric for setting lable
-setMethod(".svalue",
-          signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
-          function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            svalue(tag(obj,"label"))
-          })
-
-setReplaceMethod(".svalue",
-                 signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt",
-                           value = "numeric"),
-                 function(obj, toolkit, index=NULL, ..., value) {
-                   ## If numeric, this is spacing -- from ggroup
-                   svalue(obj@widget, value)
-                   return(obj)
-                 })
-
-## set name, but is deprecated
-setReplaceMethod(".svalue",
-                 signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
-                 function(obj, toolkit, index=NULL, ..., value) {
-                   gwCat("Using names<- to set label value")
-                   names(obj) <- value
-                   return(obj)
-                 })
 
 
 ## visible method
+##' returns visible state
 setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit, set=TRUE,...) {
-            svalue(tag(obj,"cb"))
+            getBlock(obj)$isVisible()
           })
 
-## control expand/close with logical
+##' control expand/close with logical
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
                  function(obj, toolkit, ..., value) {
-                   cb <- tag(obj, "cb")
-                   mw <- tag(obj, "mainwidget")
-                   
-                   if(as.logical(value)) {
-                     svalue(cb) <- TRUE
-                     mw$show()
-                   } else {
-                     svalue(cb) <- FALSE
-                     mw$hide()
-                   }
-                   
+                   getBlock(obj)$setVisible(as.logical(value))
                    return(obj)
                  })
 
 
-## names refers to label
+##' names refers to label
 setMethod(".names",
           signature(toolkit="guiWidgetsToolkitQt",x="gExpandgroupQt"),
           function(x, toolkit) {
-            svalue(tag(x,"label"))
+            getBlock(x)$labelText()
           })
 
+##' replacement method for label
 setReplaceMethod(".names",
                  signature(toolkit="guiWidgetsToolkitQt",x="gExpandgroupQt"),
                  function(x, toolkit, value) {
-                   svalue(tag(x,"label")) <- as.character(value)
+                   getBlock(x)$setLabelText(paste(value, collapse="\n"))
                    return(x)
                  })
 
 
 ## handlers
-## putonto icon, button
+##' addhandler, goes onto checkbox
 setMethod(".addhandler",
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
-            l <- list(tag(obj, "cb"), tag(obj, "label"))
-            IDs <- sapply(l, function(i) {
-              .addhandler(i, toolkit,  handler, action,...)
-            })
-            IDs
+            widget <- getBlock(obj)
+            cb <- widget$checkBox()
+            .addhandler(cb, toolkit, signal, handler, action,...)
           })
 
+##' only a click handler
+setMethod(".addhandlerchanged", 
+          signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerclicked(obj, toolkit, handler, action, ...)
+          })
+
+##' toolkit click handler
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            f <- function(state, h, ...) handler(h, state, ...)
+            .addhandler(obj, toolkit, "stateChanged", f, action, ...)
+          })
+
+##' remove handler from checkbox
 setMethod(".removehandler", 
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit, ID=NULL, ...) {
-            l <- list(tag(obj, "cb"), tag(obj, "label"))
-            sapply(l, function(i) {
-              .removehandler(i, toolkit,  ID, ...)
-            })
+            widget <- getBlock(obj)
+            cb <- widget$checkBox()
+            cb$disconnect(ID)
             invisible()
           })
 
+##' block handler. Blocks *all* of them
 setMethod(".blockhandler", 
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit, ID=NULL, ...) {
-            l <- list(tag(obj, "cb"), tag(obj, "label"))
-            sapply(l, function(i) {
-              .blockhandler(i, toolkit,  ID, ...)
-            })
-            invisible()
+            widget <- getBlock(obj)
+            cb <- widget$checkBox()
+            cb$blockSignals(TRUE)
           })
 
+##' unblock  blocked handlers
 setMethod(".unblockhandler", 
           signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
           function(obj, toolkit, ID=NULL, ...) {
-            l <- list(tag(obj, "cb"), tag(obj, "label"))
-            sapply(l, function(i) {
-              .unblockhandler(i, toolkit,  ID, ...)
-            })
-            invisible()
+            widget <- getBlock(obj)
+            cb <- widget$checkBox()
+            cb$blockSignals(FALSE)
           })
+

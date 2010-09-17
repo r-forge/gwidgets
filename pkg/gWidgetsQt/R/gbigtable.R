@@ -61,17 +61,20 @@ setMethod(".gbigtable",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
                    items=NULL,
-                   multiple=FALSE,
-                   chosencol=1,
                    handler=NULL,
                    action=NULL,
                    container=NULL,...)  {
             force(toolkit)
 
-            ## setup widget
+            ## setup view
             tbl <- Qt$QTableView()
 
-            
+            ## alternate shading
+            tbl$setAlternatingRowColors(TRUE)
+            ## header stuff
+            header <- tbl$horizontalHeader()
+            header$setStretchLastSection(TRUE) # stretch last to fill
+            header$setClickable(TRUE)           # column clicks
 
             
             obj <- new("gBigTableQt", block=tbl, widget=tbl,
@@ -134,7 +137,7 @@ setMethod(".svalue",
             }
           })
 
-#' set selection
+#' set selection. Selections blocks only
 #' value can be vector -- sets rows
 #' list of rows, or rows and columns
 #' XXX Needs to have a method implemented -- setSelection?
@@ -142,17 +145,26 @@ setReplaceMethod(".svalue",
                 signature(toolkit="guiWidgetsToolkitQt",obj="gBigTableQt"),
                 function(obj, toolkit, index=NULL, ..., value) {
                   object <- getWidget(obj)
-                  ## how to set selection?
+                  n <- dim(obj)[2]
+                  if(n < 1)
+                    return(obj)         # nothing to do
+                  
                   if(!is.list(value)) {
-                    ## set rows to value
-                    sapply(value)
-                  } else {
-                    # set rows to value[[1]
-                    if(length(value) > 1) {
-                      # set cols to value[[2]]
-                    }
+                    value <- list(value, 1:n)
                   }
+                  
+                  model <- object$model()
+                  selModel <- object$selectionModel()
 
+                  ## clear out
+                  selModel$clear()
+
+                  ## add
+                  selection <- selModel$selection()
+                  topLeft <- model$index(min(value[[1]])-1, min(value[[2]])-1)
+                  bottomRight <- model$index(max(value[[1]])-1, max(value[[2]])-1)
+                  selection$select(topLeft, bottomRight)
+                  selModel$select(selection, Qt$QItemSelectionModel$Select)
                   return(obj)
                 })
 ##' Lists the visible rows as a logical vector
@@ -224,16 +236,36 @@ setReplaceMethod("[",
                  })
 
 ##' function to unmunge the data frame
+##' returns all variables without inital . in name
 .unmungeDataFrame <- function(df) {
-  ## return every kth column
-  df
+  df[, !grepl("\\.", names(df))]
 }
 
 ##'
 ##' function to munge a data frame --
 ##' add in columns for alignments, etc.
 .mungeDataFrame <- function(df) {
-  df
+
+  sapply(names(df), function(varname) {
+    var <- df[[varname]]
+    
+    if(is.numeric(var)) {
+      ## alignment
+      df[[sprintf(".%s.textAlignment", varname)]] <<- Qt$Qt$AlignCenter
+    } else if(is.factor(var)) {
+      ## factors are an issue, as no as.character coercion
+      df[[sprintf(".%s.textAlignment", varname)]] <<- Qt$Qt$AlignRight
+      df[[sprintf(".%s.background", varname)]] <<- sapply(seq_len(nrow(df)),
+                                                          function(i) Qt$QBrush(Qt$QColor("yellow")))
+    } else if(is.logical(var)) {
+      df[[sprintf(".%s.textAlignment", varname)]] <<- Qt$Qt$AlignCenter
+    } else {
+      df[[sprintf(".%s.textAlignment", varname)]] <<- Qt$Qt$AlignLeft | Qt$Qt$AlignTop
+    }
+  })
+  ## return data frame
+    df
+  
 }
 
 ##' Method for [<-
@@ -367,10 +399,6 @@ setReplaceMethod(".names",
   ID <- qconnect(getWidget(obj), signal, f, user.data=h)
   invisible(ID)
 }
-
-## XXX Want a richer set -- TableWidget has them -- not TableView
-## want selection changed, value changed, column clicks, ...
-
 ## really selection changed
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gBigTableQt"),
@@ -396,4 +424,36 @@ setMethod(".addhandlerdoubleclick",
             .addHandlergBigTableQt(obj, "doubleClicked", handler, action)
           })
 
+setMethod(".addhandlercolumnclicked",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gBigTableQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            object <- getWidget(obj)
+            header <- object$horizontalHeader()
+
+            f <- function(ind, h) {
+              h$column <- ind + 1
+              handler(h)
+            }
+            h <- list(obj=obj, action=action)
+            ID <- qconnect(header, "sectionClicked", f, user.data=h)
+            invisible(ID)
+            
+          })
+
+
+setMethod(".addhandlercolumndoubleclick",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gBigTableQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            object <- getWidget(obj)
+            header <- object$horizontalHeader()
+
+            f <- function(ind, h) {
+              h$column <- ind + 1
+              handler(h)
+            }
+            h <- list(obj=obj, action=action)
+            ID <- qconnect(header, "sectionDoubleClicked", f, user.data=h)
+            invisible(ID)
+            
+          })
 

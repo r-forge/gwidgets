@@ -1,15 +1,16 @@
 TODO:
 ---------
-
+* gexpandgroup: fix resize issues when collapsed
 * get bugs fixed for first version
 * DND: use QtEvent framework
+* gvarbrowser -- put in DND for dragging values
 * gdf -- column clicks -- can do context menu, but how to get column?
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
-* ggraphics: Is this from qtpaint or qtdevice, seems like the latter
-* write model for backend to gvarbrowser
 * write gdf using bigtable
+* ggraphics: Is this from qtpaint or qtdevice, seems like the latter
 
 DONE * pass gwidgets tests
 DONE aabQtEvent.R * $event -- how to override, virtual function. 
-DONE gbigtable (for now) * integerate in dataframe.R functions -- much faster, but buggy
+DONE gbigtable (for now) * integerate in dataframe.R functions -- much faster
 DONE * dnd -- punted, would need to wrap each in event -- too slow.
+DONE * gexpandgroup -- replace checkbox with icon. checkable QFrame

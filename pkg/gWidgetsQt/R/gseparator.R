@@ -33,7 +33,7 @@ setMethod(".gseparator",
               f$setFrameShape(Qt$QFrame$VLine)
             f$setFrameShadow(Qt$QFrame$Sunken)       # QFrame::sunken
             
-            obj = new("gSeparatorQt", block=f, widget=f,
+            obj <- new("gSeparatorQt", block=f, widget=f,
               toolkit=toolkit, ID=getNewID(), e = new.env())
 
             if(!is.null(container))

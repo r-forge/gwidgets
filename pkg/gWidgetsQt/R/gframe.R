@@ -48,7 +48,7 @@ setMethod(".gframe",
               lyt <- Qt$QVBoxLayout()
             f$setLayout(lyt)
             
-            obj = new("gFrameQt",
+            obj <- new("gFrameQt",
               block=f, widget=lyt, toolkit=toolkit)
 
             ## label

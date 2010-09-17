@@ -55,6 +55,9 @@ setMethod(".gwindow",
 
             ## main widget
             w1 <- Qt$QWidget()
+            w1$setSizePolicy(Qt$QSizePolicy$Expanding,
+                             Qt$QSizePolicy$Expanding)
+            
             w$setCentralWidget(w1)
             lyt <- Qt$QVBoxLayout()
             w1$setLayout(lyt)
@@ -99,7 +102,17 @@ setMethod(".add",
               dw$setWidget(child)
               w$addDockWidget(Qt$Qt$RightDockWidgetArea, dw)
             } else {
-              callNextMethod()
+              ## do this add ourselves
+              lyt <- getWidget(obj)
+              child <- getBlock(value)
+              expand <- getWithDefault(theArgs$expand, TRUE)
+              if(expand)
+                child$setSizePolicy(Qt$QSizePolicy$Expanding,
+                                    Qt$QSizePolicy$Expanding)
+
+              anchor <- getWithDefault(theArgs$anchor, NULL)
+              lyt$addWidget(child, stretch=1, xyToAlign(anchor))
+##              callNextMethod()
             }
             ## us there anything different here?
           })

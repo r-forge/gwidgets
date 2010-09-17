@@ -207,13 +207,13 @@ setReplaceMethod(".font",
                    
                    if(tc$hasSelection()) {
                      w$setCurrentFont(f)
-                     if(!is.null(value$color))
-                       w$setTextColor(Qt$QColor(value$color))
+#                     if(!is.null(value$color))
+#                       w$setTextColor(Qt$QColor(value$color))
                    } else {
                      w$selectAll()
                      w$setCurrentFont(f)
-                     if(!is.null(value$color))
-                       w$setTextColor(value$color)
+                     ## if(!is.null(value$color))
+                     ##   w$setTextColor(value$color)
                      tc$clearSelection()
                      w$setTextCursor(tc)
                    }

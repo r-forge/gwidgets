@@ -110,37 +110,54 @@ setReplaceMethod(".leftBracket",
             theArgs = list(...)
             spacing <- tag(x,"spacing")
             homogeneous <- as.logical(tag(x,"homogeneous"))
-            anchor <- getWithDefault(theArgs$spacing, c(0,0))
+            anchor <- getWithDefault(theArgs$anchor, NULL)
             expand <- getWithDefault(theArgs$expand, FALSE)
             fill <- getWithDefault(theArgs$fill, NULL)
 
-
-
+            if(!is.null(fill) || !is.null(anchor))
+              expand <- TRUE
+            
             parent <- getWidget(x)
             child <- getBlock(value)
 
             ## add -- depends on object
             if(is(child,"QWidget")) {
-              ## We have expand/anchor/fill implement for  ggroup (actually .add) so we
-              ## use ggroup here, but it is an issue -- there is too much spacing
-              ## even with everything cranked down to 0.
-              ## fill/anchor only applies if expand is TRUE, so we check.            
-              if(expand) {
-                tmp <- .ggroup(toolkit, expand=TRUE, fill="both", spacing=0)
-                add(tmp, value, expand=expand, fill=fill, anchor=anchor)
-                child <- getBlock(tmp)
+              ## We have expand/anchor/fill 
+
+              align <- Qt$Qt$AlignTop | Qt$Qt$AlignLeft # default alignment
+              ## anchor or fill, share with ggroup?
+              if(is.null(anchor)) {
+                if(!is.null(fill)) {
+                  if(fill == "x")
+                    child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
+                                        Qt$QSizePolicy$Expanding)
+                  else if(fill == "y")
+                    child$setSizePolicy(Qt$QSizePolicy$Expanding,
+                                        Qt$QSizePolicy$Fixed)
+                  else                  # default is fill = "both" when no anchor, but expand
+                    child$setSizePolicy(Qt$QSizePolicy$Expanding,
+                                        Qt$QSizePolicy$Expanding)
+                }
+              } else {
+                ## anchor non NULL
+                align <- xyToAlign(anchor)
+                ## halign <- list(Qt$Qt$AlignLeft, Qt$Qt$AlignHCenter, Qt$Qt$AlignRight)
+                ## valign <- list(Qt$Qt$AlignBottom, Qt$Qt$AlignVCenter, Qt$Qt$AlignTop)
+                ## if(is.numeric(anchor) && length(anchor) >= 2) {
+                ##   align <- halign[[anchor[1] + 2]] | valign[[anchor[2] + 2]]
+                ## }
+              }
+              
+              if(homogeneous || expand) {
+                ## stretch rows
+                stretch <- 1
+                for(col in seq(min(i), min(i) + length(i) - 1))
+                  parent$setColumnStretch(col-1, stretch)
+                for(row in seq(min(j), min(j) + length(j) - 1))
+                  parent$setRowStretch(row-1, stretch)
               }
 
-              ## homogeneous is governed by columnstretch, but not sure what this should be
-              if(homogeneous) {
-                stretch <- 1
-              } else {
-                stretch <- 0
-              }
-              for(col in seq(min(i), min(i) + length(i) - 1))
-                  parent$setColumnStretch(col-1, stretch)
-              
-              parent$addWidget(child, min(i)-1, min(j)-1, length(i), length(j))
+              parent$addWidget(child, min(i)-1, min(j)-1, length(i), length(j), align)
               child$show()
             } else if(is(child, "QLayout")) {
               parent$addLayout(child, min(i)-1, min(j)-1, length(i), length(j))

@@ -56,7 +56,7 @@ setMethod(".ggroup",
               gw <- sb
             }
 
-            obj = new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            
+            obj <- new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            
             e=new.env(), ID=getNewID()  
             )
             

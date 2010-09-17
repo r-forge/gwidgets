@@ -31,6 +31,7 @@ setMethod(".gfile",
                        mime.types=c("text/plain")
                        )
                      ),
+                   multiple=FALSE, 
                    handler = NULL,
                    action = NULL,                     # 
                    ...
@@ -73,6 +74,8 @@ setMethod(".gfile",
               if(!is.null(initialfilename))
                 fm$selectFile(basename(initialfilename))
 
+              if(multiple)
+                fm$setFileMode(Qt$QFileDialog$ExistingFiles)
             } else if(type == "save") {
 
               if(!is.null(initialfilename))

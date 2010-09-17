@@ -67,8 +67,8 @@ setMethod(".glabel",
             
             if(editable) {
               handler <- function(h,...) {
-                val = ginput(message=gettext("Change label value to:"), text=svalue(h$obj),
-                  title=gettext("Change text for label"), icon="question", parent=obj)
+                val <- ginput(message=gettext("Change label value to:"), text=svalue(h$obj),
+                              title=gettext("Change text for label"), icon="question", parent=obj)
                 if(!is.na(val))
                   svalue(obj) <- val
               }
@@ -98,9 +98,9 @@ setReplaceMethod(".svalue",
                  })
 
 ##' font method to add color then call next method
-##' (Could use style she
+##' (Could use style sheet here)
 setReplaceMethod(".font",
-                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelQt"),
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gLabelQt"),
                  function(obj, toolkit, ..., value) {
                    ## take care of color then pass on
                    if("color" %in% names(value)) {

@@ -66,6 +66,17 @@ xyToAnchor = function(anchor) {
   return(anchor)
 }
 
+xyToAlign <- function(anchor=NULL) {
+  halign <- list(Qt$Qt$AlignLeft, Qt$Qt$AlignHCenter, Qt$Qt$AlignRight)
+  valign <- list(Qt$Qt$AlignBottom, Qt$Qt$AlignVCenter, Qt$Qt$AlignTop)
+  align <- Qt$Qt$AlignCenter
+  if(!is.null(anchor) && is.numeric(anchor) && length(anchor) >= 2) {
+    align <- halign[[anchor[1] + 2]] | valign[[anchor[2] + 2]]
+  }
+  align
+}
+
+
 DEBUG <- function(...) {
   if(0)
     cat(paste(...,sep=" ",collapse=" "),"\n")

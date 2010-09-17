@@ -992,6 +992,16 @@
 \alias{.addhandlerrightclick-methods}
 \alias{.addhandlerrightclick,gWidgetQt,guiWidgetsToolkitQt-method} 
 %%
+%% -- .addhandlercolumnclicked --
+%%
+\alias{.addhandlercolumnclicked-methods}
+\alias{.addhandlercolumnclicked,gBigTableQt,guiWidgetsToolkitQt-method} 
+%%
+%% -- .addhandlercolumndoubleclick --
+%%
+\alias{.addhandlercolumndoubleclick-methods}
+\alias{.addhandlercolumndoubleclick,gBigTableQt,guiWidgetsToolkitQt-method} 
+%%
 %% --  addhandlerdestroy --
 %%
 \alias{addhandlerdestroy-methods}

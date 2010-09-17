@@ -13,8 +13,8 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-## can't extend or shorten via []<- but o/w is working
-## implement horizontal=TRUE
+## when resizing via [<- the widgets move around. Sloppy looking
+
 
 setClass("gRadioQt",
          contains="gContainerQt",
@@ -35,7 +35,7 @@ setMethod(".gradio",
             if(is.data.frame(items))
               items <- items[,1, drop=TRUE]
             
-            n = length(items)
+            n <- length(items)
             
             if (n<2)
               stop(gettext("Radio button group makes sense only with at least two items. Use a checkbox"))
@@ -56,7 +56,7 @@ setMethod(".gradio",
 
 
             
-            obj = new("gRadioQt",block=w, widget=lyt,
+            obj <- new("gRadioQt",block=w, widget=lyt,
               e=new.env(), ID=getNewID(),
               toolkit=toolkit)
 
@@ -74,12 +74,12 @@ setMethod(".gradio",
               if(is.numeric(items))
                 coerce.with = as.numeric
               else if(is.logical(items))
-                coerce.with = as.logical
+                coerce.with <- as.logical
               else
-                coerce.with = as.character
+                coerce.with <- as.character
             }
             if(is.character(coerce.with))
-              coerce.with = get(coerce.with)
+              coerce.with <- get(coerce.with)
 
             tag(obj, "coerce.with") <- coerce.with
             
@@ -163,7 +163,7 @@ setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitQt",x="gRadioQt"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             ## return(items)
-            items = tag(x,"items")
+            items <- tag(x,"items")
             items <- sapply(items, function(i) i$text)
             
             if(missing(i))
@@ -191,11 +191,9 @@ setReplaceMethod(".leftBracket",
             ## check
             if(is.data.frame(value))
               value <- value[,1,drop=TRUE] 
-            
-            if(missing(i))
-              i <- length(value)
-            
-            if(length(value) != length(i)) {
+
+
+            if(missing(i)) {
               ## replace
               ## clear out layout, add from value -- use coerce.with still
               l <- tag(x, "items")
@@ -212,23 +210,25 @@ setReplaceMethod(".leftBracket",
                 l[[i]] <<- rb
               })
               tag(x, "items") <- l
-
+              
               ## we may have erased handler
               handler <- tag(x, "handler")
               if(!is.null(handler))
                 tag(x, "handler.id") <-
                   .addhandlerclicked(x, toolkit, handler=handler, action=tag(x,"action"))
               
+            } else {
+              ## replace label i
+              l <- tag(x, "items")
+              for( j in seq_along(i)) {
+                if(1 <= i[j] && i[j] <= length(l)) {
+                  l[[i[j]]]$setText(value[j])
+                }
+              }
             }
-
-            l <- tag(x, "items")
-
-            sapply(seq_along(value), function(i) {
-              l[[i]]$setText(value[i])
-            })
-            
+            ## set value to last selected
             svalue(x, index=TRUE) <- curVal
-
+            
             
             ## all done
             return(x)

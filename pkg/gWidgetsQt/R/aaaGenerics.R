@@ -74,6 +74,15 @@ sapply(.oldClass, function(i) setIs(i, "RQtObject"))
 sapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
 sapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
 
+.ourClasses <- c("R::gWidgetsQt::WSBrowser",
+                "R::gWidgetsQt::ExpandContainer")
+
+sapply(.ourClasses, function(i) {
+       setOldClass(i)
+       setIs(i, "RQtObject")
+     })
+       
+
 
 
 setOldClass("try-error")                # for handling try-errors
@@ -245,6 +254,7 @@ setReplaceMethod("size",signature(obj="gWidgetQt"),
             return(obj)
           })
 
+##' size sets minimum size
 setReplaceMethod(".size", 
                  signature(toolkit="guiWidgetsToolkitQt",obj="gComponentQt"),
                  function(obj, toolkit, ..., value) {
@@ -709,70 +719,44 @@ setMethod(".add",
             anchor <- getWithDefault(theArgs$anchor, NULL)
             if(!is.null(anchor) && anchor)
               expand <- TRUE
+
             fill <- getWithDefault(theArgs$fill, "both") # x, y
+            if(is.null(anchor)) {
+              if(fill == "x")
+                child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
+                                    Qt$QSizePolicy$Expanding)
+              else if(fill == "y")
+                child$setSizePolicy(Qt$QSizePolicy$Expanding,
+                                    Qt$QSizePolicy$Fixed)
+              else                  # default is fill = "both" when no anchor, but expand
+                child$setSizePolicy(Qt$QSizePolicy$Expanding,
+                                    Qt$QSizePolicy$Expanding)
+            }
+
             
+
             ## add -- depends on object
             if(is(child,"QWidget")) {
-              ## adding a widget: look at signature of addWidget
-              ## 0 is strecth
-              ## alignment is from anchor
-              stretch <- 0
-              if(as.logical(expand)) {
-                ## expand can either use fill, or use anchor
-                ## if fill we expand widget
-                ## if anchor we expand cavity and anchor widget within
-                ## this is tcltk stuff. The default is fill = both
-
+              ## adding a child widget
+              ## we need child, stretch and alignment
+              align <- xyToAlign(anchor)
+#              halign <- list(Qt$Qt$AlignLeft, Qt$Qt$AlignHCenter, Qt$Qt$AlignRight)
+#              valign <- list(Qt$Qt$AlignBottom, Qt$Qt$AlignVCenter, Qt$Qt$AlignTop)
+#              align <- Qt$Qt$AlignCenter
+#              if(is.numeric(anchor) && length(anchor) >= 2) {
+#                align <- halign[[anchor[1] + 2]] | valign[[anchor[2] + 2]]
+#              }
+              ## stretch
+              if(as.logical(expand))
                 stretch <- 2L
-                if(is.null(anchor)) {
-                  if(fill == "x")
-                    child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
-                                        Qt$QSizePolicy$Expanding)
-                  else if(fill == "y")
-                    child$setSizePolicy(Qt$QSizePolicy$Expanding,
-                                        Qt$QSizePolicy$Fixed)
-                  else                  # default is fill = "both" when no anchor, but expand
-                    child$setSizePolicy(Qt$QSizePolicy$Expanding,
-                                        Qt$QSizePolicy$Expanding)
+              else
+                stretch <- 0L
 
-                  parent$addWidget(child, stretch)
-                } else {
-                  ## is anchor a numeric vector with x and y
-                  if(is.numeric(anchor) && length(anchor) == 2) {
-                    ## This is complicated -- too much?
-                    ## we have to layouts and add accordingly
-                    sublHor <- Qt$QHBoxLayout()
-                    sublVert <- Qt$QVBoxLayout()
-                    parent$addLayout(sublHor,2)
-
-                    anchor <- as.integer(anchor)
-                    if(anchor[1] > 0)
-                      sublHor$addStretch(10)
-
-                    sublHor$addLayout(sublVert,2)
-
-                    
-                    if(anchor[2] > 0) {
-                      sublVert$addWidget(child)
-                      sublVert$addStretch(10)
-                    } else if(anchor[2] == 0) {
-                      sublVert$addWidget(child)
-                    } else if(anchor[2] < 0) {
-                      sublVert$addStretch(10)
-                      sublVert$addWidget(child)
-                    }
-
-                    if(anchor[1] < 0)
-                      sublHor$addStretch(10)
-                  }
-                }
-              } else {
-               
-                ## no expand, stretch == 0
-                parent$addWidget(child, 0L) # no stretch
-              }
-              child$show()
+              parent$addWidget(child, stretch, align)
+              child$update()
+              child$updateGeometry()
             } else if(is(child, "QLayout")) {
+
               ## adding a layout
               parent$addLayout(child)
             }

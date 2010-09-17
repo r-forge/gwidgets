@@ -39,7 +39,7 @@ setMethod("addhandler",
           signature(obj="RQtObject"),
           function(obj, 
                    signal, handler, action=NULL, ...) {
-            .addhandler(gqtobject(obj), force(toolkit), signal, handler, action, ...)
+            .addhandler(gqtobject(obj), guiToolkit("Qt"), signal, handler, action, ...)
           })
 
 setMethod(".addhandler",

@@ -1,3 +1,31 @@
+2010-09-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gexpandgroup.R: replaced with customized class. Still can't
+	get resizing to work as desired.
+
+2010-09-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: redid this widget, runs slow so made option to
+	refresh on click, as opposed to timer.
+
+2010-09-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: fix to add -- didn't resize central widget correctly
+
+	* R/gbigtable.R (gbigtable): fix svalue<- (idn
+
+2010-08-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: implemented multiple=TRUE
+
+2010-08-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R: fix to [<- when specifying an index
+
+2010-08-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R: changed way selection is done via svalue<-
+
 2010-08-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtable.R: fixed bug when filtering

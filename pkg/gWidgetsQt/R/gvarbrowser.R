@@ -13,123 +13,255 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+## use QTreeWidget to make workspace browser
+## Can be on the slow side, so we add option to auto refresh
 
-## Use this to filter by type
-## knownTypes in common
-### Use this for filtering by (gvarbrowser, gvarbrowsertree)
-.datasets <- c(
-  "numeric","logical","factor","character",
-  "data.frame","matrix","list",
-  "table","xtabs",
-  "nfnGroupedData","nffGroupedData","nmGroupedData"
-  )
-.models <- c("lm","glm","lqs","aov","anova",
-             "lme","lmList","gls",
-             "ar","arma","arima0","fGARCH","fAPARCH"
-             )
-.ts <- c("ts", "mts", "timeSeries", "its", "zoo")
-.functions <- c("function")
-.plots <- c("recordedplot")
 
-knownTypes = list(
-  "data sets and models"=c(.datasets, .models, .ts),
-  "data sets"= c(.datasets,.ts),
-  "model objects" = .models,
-  "time series objects" = .ts,
-  "functions"=.functions,
-  "saved plots" = .plots,
-  "all" = NULL
-  )
 
-##' knownTypes determines how filtering will work
-##' This allows override by setting an option
-knownTypes <- getWithDefault(getOption("gvarbrowserKnownTypes"), knownTypes)
-##' return the known types for this key
-.getKnownTypes <- function(key=NULL) {
-  knownTypes <- getWithDefault(getOption("gvarbrowserKnownTypes"), knownTypes)
-  if(is.null(key)) {
-    NULL
-  } else {
-    knownTypes[[key]]
+##' a base tree widget item
+##' This is here so we can store a digest value for comparison
+qsetClass("OurTreeWidgetItem", Qt$QTreeWidgetItem, function() {
+  this$digest <- NULL
+})
+qsetMethod("digest", OurTreeWidgetItem, function() digest)
+qsetMethod("setDigest", OurTreeWidgetItem, function(value) {
+  this$digest <- value
+})
+
+                   
+
+##' Main wsbrowser class. Its a widget, but mostly centered around the tree
+qsetClass("WSBrowser", Qt$QWidget, function(parent=NULL) {
+  super(parent)
+
+  ## filter by class
+  this$classFilter <- Qt$QComboBox()
+
+  knownTypes <- getWithDefault(getOption("gvarbrowserKnownTypes"))
+  if(is.null(knownTypes))
+     knownTypes <- getOption("knownTypes")
+  if(is.null(knownTypes))
+    knownTypes <-  gWidgets:::knownTypes
+  this$knownTypes <- knownTypes
+  
+  classFilter$addItems(names(knownTypes))
+  qconnect(classFilter, "activated", function(...) {
+    updateTopLevelItems()
+  })
+
+  ## tree widget
+  this$tr <- Qt$QTreeWidget()
+  tr$setColumnCount(2)                    # name, class
+  tr$setHeaderLabels(gettext(c("Name", "Class")))
+
+  ## update button
+  this$ub <- Qt$QPushButton(gettext("Refresh"))
+  qconnect(ub, "clicked", function() this$updateTopLevelItems())
+  ub$setSizePolicy(Qt$QSizePolicy$fixed, Qt$QSizePolicy$fixed)
+
+  ## auto update checkbox
+  this$cb <- Qt$QCheckBox(gettext("Auto refresh"))
+
+  lyt <- Qt$QGridLayout()
+  setLayout(lyt)
+
+  lyt$addWidget(Qt$QLabel("Filter by:"), 0, 0, 1, 1, Qt$Qt$AlignRight | Qt$Qt$AlignTop)
+  lyt$addWidget(classFilter, 0, 1, 1, 1)
+  lyt$addWidget(tr, 1, 0, 1, 2)
+  lyt$addWidget(ub, 2, 0, 1, 1, Qt$Qt$AlignLeft)
+  lyt$addWidget(cb, 2, 1, 1, 1, Qt$Qt$AlignRight)
+
+  lyt$setColumnStretch(0, 1)
+  lyt$setRowStretch(1, 1)
+
+  updateTopLevelItems()
+  
+  ## setup timer to update if checked
+  this$timer <- Qt$QTimer(this)
+  qconnect(timer, "timeout", function() {
+    if(cb$checkState() & Qt$Qt$Checked) {
+      updateTopLevelItems()
+    }
+  })
+  startTimer()
+})
+
+## get the tree widget
+qsetMethod("treeWidget", WSBrowser, function() tr)
+
+##' method call to stop the timer
+qsetMethod("stopTimer", WSBrowser, function() {
+  timer$stop()
+})
+
+##' method call to start the times
+##' @param int is interval in milliseconds
+qsetMethod("startTimer", WSBrowser, function(int=2000L) {
+  timer$start(int)
+})
+
+##' Make a new item. Sets icons and children into top-level item
+##' Why doesn't this work as a method?
+##' We have issues with recursion within a method. So we make this a function
+##'
+##' @param varname variable name as character
+##' @param obj actual object, if not passed in found in global environment
+##' @param toplevel are we making a top-level item (if so, we take a digest to compare)
+..makeItem <- function(varname, obj=NULL, toplevel=FALSE) {
+  if(is.null(obj))
+    obj <- get(varname, envir=.GlobalEnv)
+
+  item <- OurTreeWidgetItem()
+  if(toplevel)
+    item$setDigest(digest(obj))
+  item$setText(0, varname)
+  item$setIcon(0, findStockIcon(obj))
+  item$setText(1, paste(class(obj), collapse=", "))
+  
+  if(is.recursive(obj) && !is.null(attr(obj, "names"))) {
+    item$setChildIndicatorPolicy(Qt$QTreeWidgetItem$ShowIndicator)
+    for(i in names(obj)) {
+      if(i != "") {
+        newItem <- ..makeItem(i, obj[[i]], toplevel=FALSE)
+        item$addChild(newItem)
+      }
+    }
   }
+  item
 }
 
 
+##' update the top-level items
+##' @param classes vector of class names to narrow displayed values (also speeds things up)
+##' This is passed in or set by the classFilter
+qsetMethod("updateTopLevelItems", WSBrowser,  function(classes=NULL) {
 
-
-## list of some type
-lsType = function(type, envir=.GlobalEnv) {
-  x = with(envir, sapply(ls(), function(i) class(get(i))))
-  objects = names(x)[sapply(x, function(i) any(i %in% type))]
-  return(objects)
-}
-
-
-##' Data is not used here at end
-##' to filter by types
-offspring = function(path=c(), data=NULL) {
-  if(length(path) == 0) {
-    x = ls(envir=.GlobalEnv)
-    if(length(x) == 0) {
-      return(data.frame(names="",hasSubTree=FALSE,type=""))
-    }
-
-    type = c();hasTree=c()
-    for(i in 1:length(x)) {
-      y = getObjectFromString(x[i])
-      type[i] = str2(y)
-      hasTree[i] = hasSubTree(y)
-    }
-  } else {
-    string = paste(path,collapse="$")
-    obj = getObjectFromString(string)
-
-    x = with(obj, ls())
-
-    if(length(x) == 0) {
-      return(data.frame(names="",hasSubTree=FALSE,type=""))
-    }
-
-    type = c();hasTree=c()
-    for(i in 1:length(x)) {
-      y = getObjectFromString(paste(string,x[i],sep="$"))
-      type[i] = str2(y)
-      hasTree[i] = hasSubTree(y)
+  ## get classes from filter. XXX
+  if(is.null(classes)) {
+    if((i <- classFilter$currentIndex) >= 0) {
+      classes <- knownTypes[[i+1]]      # editable?
     }
   }
 
-  allValues = data.frame(names=I(x), hasSubTree=hasTree, type=I(type))
-
-  if(!is.null(data)) {
-    return(allValues[allValues$type %in% data, ,drop=FALSE])
-  } else {
-    return(allValues)
+  
+  addItem <- function(tr, varname) {
+    newItem <- ..makeItem(varname, obj=NULL, toplevel=TRUE)
+    tr$addTopLevelItem(newItem)
   }
-}
+  
+  removeItem <- function(tr, item) {
+    root <- tr$invisibleRootItem()
+    root$removeChild(item)
+  }
+  
+  replaceItem <- function(tr, item, varname) {
+    removeItem(tr, item)
+    addItem(tr, varname)
+  }
 
-hasSubTree = function(x) {
-  tmp  = try(is.list(x)  && ## !is.guiWidget(x) && !is.gWidget(x) &&
-    !is.null(names(x)), silent=TRUE)
+  
+  ## objects in workspace
+  objs <- ls(envir=.GlobalEnv)
+  ## trim down here -- before tree level
+  if(!is.null(classes)) {
+    ind <- sapply(objs, function(i) {
+      x <- get(i, envir=.GlobalEnv)
+      for(i in classes)
+        if(is(x,i))
+          return(TRUE)
+      return(FALSE)
+    })
+    objs <- objs[ind]
+  }
+  
+  ## current objects in widget
+  curObjs <- lapply(seq_len(tr$topLevelItemCount), function(i) {
+    item <- tr$topLevelItem(i-1)
+    list(item=item, value=item$data(0, role=0) )               # better role?
+  })
+  cur <- sapply(curObjs, function(i) i$value)
+  names(curObjs) <- cur
+  
+  ## we have three types here:
+  removeThese <- setdiff(cur, objs)
+  maybeSame <- intersect(cur, objs)
+  addThese <- setdiff(objs, cur)
 
-  return(!inherits(tmp,"try-error") && tmp)
-}
+  tr$setUpdatesEnabled(FALSE)
+  for(i in removeThese) {
+    item <- curObjs[[i]]$item
+    removeItem(tr, item)
+  }
 
-## in common.R
-## getObjectFromString = function(string, envir=.GlobalEnv) {
-##   out = try(eval(parse(text=string), envir=envir), silent=TRUE)
-##   if(inherits(out, "try-error"))
-##     return(NA)
-##   return(out)
-## }
+  
+  for(i in maybeSame) {
+    obj <- get(i, envir=.GlobalEnv)
+    if(digest(obj) != curObjs[[i]]$item$digest()) {
+      replaceItem(tr, curObjs[[i]]$item, i)
+    }
+  }
+
+  for(i in addThese) 
+    addItem(tr, i)
+
+  tr$sortItems(0, Qt$Qt$AscendingOrder)
+  tr$setUpdatesEnabled(TRUE)  
+})
 
 
+## traverse
+##' find an index (1-based) from an item
+##' @param item an item
+##' @note replaces a broken feature in the API
+qsetMethod("indexFromItem", WSBrowser, function(item) {
+  parent <- item$parent()
+  if(is.null(parent))
+    parent <- tr$invisibleRootItem()
+  parent$indexOfChild(item) + 1
+})
+
+##' find the path from the item
+##' @param item an item
+##' @param index if TRUE return numeric index vector, else a character vector of first-column keys
+qsetMethod("pathFromItem", WSBrowser, function(item, index=TRUE) {
+  getVal <- function(item) {
+    if(index) 
+      path <- tr$indexFromItem(item)
+    else
+      path <- item$data(0, role=0)
+    path
+  }
+  path <- getVal(item)
+  while(!is.null(item <- item$parent())) {
+    path <- c(getVal(item), path)
+  }
+  path
+})
+
+
+##' From a path (1-based numeric specification) return an item
+##' If path is not valid, returns NULL
+##' @param path 1-based value, e.g. c(1,2,3) is third child of second child of first child
+qsetMethod("itemFromPath", WSBrowser, function(path) {
+  item <- tr$invisibleRootItem()
+  for(i in path) {
+    item <- item$child(i)
+    if(is.null(item))
+      return(NULL)
+  }
+  item
+})
+
+
+
+##' The main class
 setClass("gVarbrowserQt",
          representation(filter="guiComponent"),
          contains="gComponentQt",
          prototype=prototype(new("gComponentQt"))
          )
 
-## THe main object
+##' toolkit constructor for gvarbrowser
 setMethod(".gvarbrowser",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -144,78 +276,28 @@ setMethod(".gvarbrowser",
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
               handler = function(h, ...) {
-                values = h$obj[]
-                value = paste(values, collapse = "$")
-                if (!is.null(action))
-                        print(do.call(h$action, list(svalue(value))))
+                value <- svalue(h$obj)
+                if(nchar(value)) {
+                  if (!is.null(action))
+                    print(do.call(h$action, list(svalue(value))))
+                }
               }
             }
 
-            ## begin
-            group <- ggroup(horizontal=FALSE, container=container,...)
-            filterGroup <- ggroup(container=group)
-            glabel("Filter by:",container=filterGroup)
-            filterPopup <- gcombobox(names(knownTypes), container=filterGroup)
-            svalue(filterPopup) <- "data sets"
 
-            icon.FUN <- function(d,...) {
-              sapply(d[,'type'], function(i) names(stockIconFromClass(i)))
-            }
-
+            w <- WSBrowser()
             
-            ## main tree
-            tree <- gtree(
-                          offspring=offspring,
-                          offspring.data=.getKnownTypes(svalue(filterPopup)),
-                          col.types=data.frame(Name="string",Type="string"),
-                          icon.FUN=icon.FUN,
-                          container=group,
-                          expand=TRUE
-                          )
-
-            
-
-            
-            ## update the tree this way
-            addhandlerclicked(filterPopup,
-                              handler = function(h,...) {
-                                tree <- h$action
-                                offspring.data <- .getKnownTypes(svalue(h$obj))
-                                tag(tree, "offspring.data") <- offspring.data
-                                update(tree)
-                              },
-                              action=tree)
-            
-            ## add an idle handler for updating tree every  second
-            idleid <- addhandleridle(tree, interval=1000, handler = function(h,...) {
-              key <- svalue(filterPopup)
-              offspring.data <- .getKnownTypes(key)
-              ## update must be smart, or this will close open branches
-              update(h$obj, offspring.data = offspring.data)
-            })
-
-            
-##             addhandlerunrealize(tree, handler = function(h,...) {
-##               removeHandler(h$obj, h$action)
-##             },action=idleid)
-            
-            
-            
-            ## drop handler
-            adddropsource(tree,handler=function(h,...) {
-              values <- h$obj[]
-              values <- sapply(values, untaintName)
-              return(paste(values,collapse="$"))
-            })
-
-
-            obj <- new("gVarbrowserQt", block=group, widget=tree, filter=filterPopup,
+            obj <- new("gVarbrowserQt", block=w, widget=w$treeWidget(),
               toolkit=toolkit, e=new.env(), ID=getNewID())
 
             if(!is.null(handler)) {
-              id <- addhandlerdoubleclick(tree, handler=handler, action=action)
+              id <- addhandlerdoubleclick(obj, handler=handler, action=action)
               tag(obj, "handler.id") <- id
             }
+
+
+            if(!is.null(container))
+              add(container, obj, ...)
             
             ## all done
             return(obj)
@@ -224,28 +306,59 @@ setMethod(".gvarbrowser",
 ### methods
 ## push methods and handlers down to tree in this case
 
+##' svalue returns the variable name. If a child, puts "$" between the parts.
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitQt",obj="gVarbrowserQt"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            values = obj@widget[]       # from tree
-            value = paste(values, collapse = "$")
-
+            values <- obj[]
+            value <- paste(values, collapse = "$")
             return(value)
           })
+
+##' returns the path (keyword path) of the object
 setMethod("[",
           signature(x="gVarbrowserQt"),
           function(x, i, j, ..., drop=TRUE) {
             .leftBracket(x,guiToolkit("Qt"), i, j, ..., drop=drop)
           })
+
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitQt",x="gVarbrowserQt"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
+            widget <- getBlock(x)
+            tr <- getWidget(x)
+            item <- tr$currentItem()
+            if(is.null(item)) 
+              return(character(0))
+            
+            path <- widget$pathFromItem(item, index=FALSE)
             if(missing(i))
-              x@widget[...]
+              path
             else
-              x@widget[i,...]
+              path[i]
           })
 
+## handlers
 
+##' Change handler is for double click
+setMethod(".addhandlerchanged",  signature(toolkit="guiWidgetsToolkitQt",obj="gVarbrowserQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerdoubleclick(obj, toolkit, handler, action, ...)
+          })
+
+##' single click handler, activated also does keyboard input
+setMethod(".addhandlerclicked",  signature(toolkit="guiWidgetsToolkitQt",obj="gVarbrowserQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            f <- function(item, column, h, ...) handler(h, item, column, ...)
+            addhandler(obj, "itemActivated", f, action, ...)
+          })
+
+##' Double click handler
+setMethod(".addhandlerdoubleclick",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gVarbrowserQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            f <- function(item, column, h, ...) handler(h, item, column, ...)
+            addhandler(obj, "itemDoubleClicked", f, action, ...)
+          })
 
 

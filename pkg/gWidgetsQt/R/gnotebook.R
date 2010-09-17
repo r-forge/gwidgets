@@ -189,7 +189,7 @@ setMethod(".add",
             
             index <- getWithDefault(theArgs$index, length(obj) + 1)
             index <- getWithDefault(theArgs$pageno, index)
-            markup = getWithDefault(theArgs$markup, FALSE)
+            markup <- getWithDefault(theArgs$markup, FALSE)
             override.closebutton <-
               getWithDefault(theArgs$override.closebutton, FALSE)
 

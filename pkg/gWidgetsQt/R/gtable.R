@@ -64,7 +64,7 @@ setMethod(".gtable",
                 m <- tbl$selectionModel()
                 m$clearSelection()
               }
-              setTableWidgetSelection(tbl, row+1, 1:tbl$columnCount, TRUE)
+              setTableWidgetSelection(tbl, rows=row+1, full.row=TRUE)
             }, user.data=list(tbl=tbl, multiple=multiple))
             
 
@@ -89,7 +89,7 @@ setMethod(".gtable",
             }
             
             
-            obj = new("gTableQt",block=tbl, widget=tbl,
+            obj <- new("gTableQt",block=tbl, widget=tbl,
               toolkit=toolkit,ID=getNewID(), e = new.env())
             
             tag(obj, "chosencol") <- chosencol
@@ -154,7 +154,7 @@ setReplaceMethod(".svalue",
                    chosencol <- getWithDefault(tag(obj,"chosencol"), 1)
                    
                    if(index) {
-                     setTableWidgetSelection(tbl, list(rows=value, columns=1:d[2]))
+                     setTableWidgetSelection(tbl, rows=value, full.row=TRUE)
                    } else {
                      items <- obj[,chosencol, drop=TRUE]
                      if(value %in% items) {

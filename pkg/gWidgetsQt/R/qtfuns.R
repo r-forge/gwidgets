@@ -342,27 +342,53 @@ getTableWidgetSelection <- function(tbl, as.rectangle=FALSE) {
   }
 }
 
-## set selection. Rows and columns *assumed* to indicate a range. Use min(), max()
-setTableWidgetSelection <- function(tbl, rows, columns, select=TRUE, clear=TRUE) {
-  if(missing(columns)) {
+## set selection. 
+## rows and columns are 1-based -- not 0-bsed
+setTableWidgetSelection <- function(tbl, rows, columns, select=TRUE, clear=TRUE, full.row=FALSE) {
+  if(!full.row && missing(columns)) {
     if(is.list(rows)) {
       columns <- rows[[2]]; rows <- rows[[1]]
     } else {
       return()                          # need both row, col
     }
   }
-  top <- min(rows)-1; left <- min(columns) - 1
-  bottom <- max(rows) - 1; right <- max(columns) - 1
-  rng = Qt$QTableWidgetSelectionRange(top, left, bottom, right)
   if(clear) {
     ## remove/ otherwise will add
     m <- tbl$selectionModel()
     m$clearSelection()
   }
 
-  tbl$setRangeSelected(rng, select)
+  ## values are 1-base, so we subtract 1
+  ## we loop -- useing the selectino range isn't working
+  if(full.row) {
+    for(i in rows) 
+      tbl$setCurrentCell(i - 1, 0, Qt$QItemSelectionModel$Rows |  Qt$QItemSelectionModel$Select)
+  } else {
+    for(i in rows) 
+      for(j in columns)
+        tbl$setCurrentCell(i - 1, j - 1, Qt$QItemSelectionModel$Select)
+
+  ## rng = Qt$QTableWidgetSelectionRange(top, left, bottom, right)
+  ## tbl$setRangeSelected(rng, select)
 
 
- } 
+  } 
+
+}
 
 
+##' Helper function to find a stock icon for an object
+##' This should be gWidgets!
+findStockIcon <- function(x) UseMethod("findStockIcon")
+findStockIcon.default <- function(x) Qt$QIcon(system.file("images/symbol_square.gif", package="gWidgets"))
+findStockIcon.numeric <- function(x) Qt$QIcon(system.file("images/numeric.gif", package="gWidgets"))
+findStockIcon.integer <- function(x) Qt$QIcon(system.file("images/numeric.gif", package="gWidgets"))
+findStockIcon.character <- function(x) Qt$QIcon(system.file("images/character.gif", package="gWidgets"))
+findStockIcon.factor <- function(x) Qt$QIcon(system.file("images/factor.gif", package="gWidgets"))
+findStockIcon.data.frame <- function(x) Qt$QIcon(system.file("images/dataframe.gif", package="gWidgets"))
+findStockIcon.matrix <- function(x) Qt$QIcon(system.file("images/matrix.gif", package="gWidgets"))
+findStockIcon.function <- function(x) Qt$QIcon(system.file("images/function1.gif", package="gWidgets"))
+findStockIcon.list <- function(x) Qt$QIcon(system.file("images/datasheet.gif", package="gWidgets"))
+findStockIcon.ts <- function(x) Qt$QIcon(system.file("images/ts.gif", package="gWidgets"))
+findStockIcon.lm <- function(x) Qt$QIcon(system.file("images/graph.gif", package="gWidgets"))
+findStockIcon.posixCt <- function(x) Qt$QIcon(system.file("images/date.gif", package="gWidgets"))
