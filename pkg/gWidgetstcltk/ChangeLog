@@ -1,3 +1,7 @@
+2010-09-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gpanedgroup.R: bug fix in svalue() method
+
 2010-08-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gnotebook.R: added [ method to get children

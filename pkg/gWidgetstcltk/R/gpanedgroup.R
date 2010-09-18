@@ -109,9 +109,9 @@ setMethod(".svalue",
             theSize <- size(obj)
             
             if(tag(obj,"horizontal"))
-              return(floor(sashpos/theSize[1]))
+              return(sashpos/theSize[1])
             else
-              return(floor(sashpos/theSize[2]))
+              return(sashpos/theSize[2])
           })
 
 ## svalue sets position

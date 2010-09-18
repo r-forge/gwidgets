@@ -493,6 +493,7 @@
 \alias{.delete,gMenutcltk,guiWidgetsToolkittcltk,gMenutcltk-method}
 \alias{.delete,gMenutcltk,guiWidgetsToolkittcltk,list-method}
 \alias{.delete,gNotebooktcltk,guiWidgetsToolkittcltk-method}
+\alias{.delete,gNotebooktcltk,guiWidgetsToolkittcltk,gWidgettcltk-method}
 \alias{.delete,gPanedgrouptcltk,guiWidgetsToolkittcltk,gWidgettcltk-method}
 \alias{.delete,gToolbartcltk,guiWidgetsToolkittcltk-method} 
 %%

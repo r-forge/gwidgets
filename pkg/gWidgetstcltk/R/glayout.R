@@ -129,6 +129,12 @@ setReplaceMethod(".leftBracket",
                    padx=spacing, pady=spacing
                    )
 
+            weight <- ifelse(tag(x, "homogeneous"), 1, 0)
+            sapply( (min(i):max(i)), function(row) tkgrid.rowconfigure(getBlock(value), row-1, weight=weight))
+            sapply( (min(j):max(j)), function(col) tkgrid.columnconfigure(getBlock(value), col-1, weight=weight))
+
+
+            
             ## add to list so [ method works
             l <- tag(x, "childlist")
             l[[as.character(length(l) + 1)]] <- list(x=i, y=j, child=value)

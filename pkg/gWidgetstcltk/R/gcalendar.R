@@ -37,7 +37,7 @@ setMethod(".gcalendar",
             addHandlerClicked(b, action=obj, handler=function(h,...) {
               text <- svalue(obj)
               year <- as.numeric(format(as.Date(text, tag(obj, "format")), format="%Y"))
-              month <- as.numeric(format(as.Date(text, tab(obj, "format")), format="%m"))
+              month <- as.numeric(format(as.Date(text, tag(obj, "format")), format="%m"))
               makeCalendar(obj, year, month)
             })
 
@@ -46,7 +46,7 @@ setMethod(".gcalendar",
               coerce.with <- theArgs$coerce.with
             else
               coerce.with <- function(x, ...) {
-                asDate(x, format=format)
+                as.Date(x, format=format)
               }
             
             theArgs <- list(...)
