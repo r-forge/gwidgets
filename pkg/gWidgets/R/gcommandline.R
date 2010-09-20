@@ -1,9 +1,41 @@
-## command line widget
-## This could be improved big time. It's written for tcltk.
+##' @include guiComponents.R
+
+##' Class for a commandline widget
+setClass("gCommandline",
+         contains="guiComponent",
+         prototype=prototype(new("guiComponent"))
+         )
+
+##' constructor of widget for use as a command line
+##'
+##' @exports
+gcommandline =function(
+  command = "", assignto = NULL, useGUI = TRUE, useConsole = FALSE,
+  prompt = getOption("prompt"), width = 500, height = 0.6 * width,
+  container = NULL, ... ,
+  toolkit=guiToolkit()){
+  widget =  .gcommandline (toolkit,
+    command=command, assignto=assignto,
+    useGUI = useGUI, useConsole=useConsole,
+    prompt=prompt, width=width, height=height, container=container, ...
+    )
+  obj = new( 'guiComponent',widget=widget,toolkit=toolkit) 
+  return(obj)
+}
 
 
+##' generic for toolkit dispatch
+##' @alias gcommandline
+setGeneric( '.gcommandline' ,
+           function(toolkit,
+                    command = "", assignto = NULL,
+                    useGUI = TRUE, useConsole = FALSE,
+                    prompt = getOption("prompt"), width = 500,
+                    height = 0.6 * width, container = NULL, ... )
+           standardGeneric( '.gcommandline' ))
 
 
+##' gcommandline implementation for any toolkit
 setClass("gCommandlineANY",
          representation=representation("gComponentANY",
            editArea="guiWidgetOrNULL",
@@ -16,7 +48,8 @@ setClass("gCommandlineANY",
          )
 
 
-## constructor
+##' gcommandline constructor for ANY toolkit
+##' @alias gcommandline
 setMethod(".gcommandline",
           signature(toolkit="ANY"),
           function(toolkit,
@@ -219,8 +252,7 @@ evalChunkReturnOutput = function(chunk, prompt = getOption("prompt")) {
 }
 
 
-### Methods
-## return all previous, or just the index most recent
+##' return all previous, or just the index most recent
 setMethod(".svalue",
           signature(toolkit="ANY",obj="gCommandlineANY"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {

@@ -1,3 +1,7 @@
+2010-09-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ghelp.R: reworked this, made work for all three toolkits
+
 2010-08-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R (gwindow): added check to options for whether

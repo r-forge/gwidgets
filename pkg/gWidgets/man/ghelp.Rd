@@ -9,7 +9,7 @@
 }
 \usage{
 ghelp(topic = NULL, package = NULL, container = NULL, ..., toolkit = guiToolkit())
-ghelpbrowser(title = "Help browser", maxTerms=100, width=550, height=600, ..., toolkit = guiToolkit()) 
+ghelpbrowser(title = "Help browser", maxTerms=100, width=1000, height=600, ..., toolkit = guiToolkit()) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,24 +24,18 @@ ghelpbrowser(title = "Help browser", maxTerms=100, width=550, height=600, ..., t
   \item{toolkit}{Which GUI toolkit to use}
 }
 \details{
-  [This widget/interface needs to be updated to reflect changes to the R help system]
+  
+	The \code{ghelp} widget is a notebook to hold help pages. One
+	can add pages with \code{add}. The help page is specified with a
+	character vector or list. The first component is the topic, the
+	second and optional package designation. The \code{svalue}
+	method returns a list with topic and package. The \code{dispose} method
+	will remove the current page. For toolkits that support them,
+	closebuttons appear on the etabs
 
-  Finding the help page can be a little slow.
-
-  This does not work with chm files on windows. However, the help
-  browser in that environment is far superior than this, so no
-  incentive exists to implement that.
-
-  The \code{add(obj,value)} method can be used to add a new page. The
-  page may be specified to \code{value} in different ways: as a string
-  containing the \code{topic}, as a list with components \code{topic}
-  and \code{package}, or as a string in the form
-  \code{package:::topic}.
-
-  The \code{ghelpbrowser} constructor produces a stand alone GUI for
-  browsing help pages, running the corresponding examples and viewing
-  a packages vignettes. Unlike other \pkg{gWidgets} constructors, this
-  has no \code{container} argument.
+	The \code{ghelpbrowser} constructor produces a stand alone GUI for
+	browsing help pages. Unlike other \pkg{gWidgets} constructors, this
+	has no \code{container} argument.
   
 }
 % \value{}
@@ -51,8 +45,21 @@ ghelpbrowser(title = "Help browser", maxTerms=100, width=550, height=600, ..., t
 % \seealso{}
 \examples{
 \dontrun{
-  obj <- ghelp(container=TRUE)
-  add(obj,"base:::mean")
+  w <- gwindow("Help browser", visible=FALSE)
+  g <- ggroup(horizontal=FALSE, cont=w)
+  g1 <- ggroup(cont=g)
+  addSpring(g1)
+  glabel("Help on:", cont=g1)
+  e <- gedit("", cont=g1)
+  helpWidget <- ghelp(cont = g, expand=TRUE)
+  addHandlerChanged(e, handler=function(h,...) {
+     add(helpWidget, svalue(h$obj))
+  })
+  visible(w) <- TRUE
+  ## add others
+  add(helpWidget,"base:::mean")
+  add(helpWidget, list(topic="mean", package="base"))
+  add(helpWidget, "boxplot")
 
 }
 }

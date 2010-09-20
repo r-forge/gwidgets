@@ -1,5 +1,46 @@
-## This is basically a hack, but it kinda works so I'm not touching it
+##' @include guiComponents.R
 
+##' Class for creating a widget based on function values or markup specified by a list
+setClass("gGenericWidget",
+         contains="guiComponent",
+         prototype=prototype(new("guiComponent"))
+         )
+
+##' Constructor for "generic widget"
+##'
+##' @export
+ggenericwidget <- function(
+                           lst,  cli = NULL, container = NULL,
+                           ... ,
+                           toolkit=guiToolkit()){
+
+  ## if lst is a function, we much fix
+  fName <- NULL
+  if(is.function(lst)) 
+    fName <- deparse(substitute(lst))
+  
+  widget <- .ggenericwidget (toolkit,
+                             lst=lst, cli=cli, container=container , fName=fName, ...
+                             )
+  obj = new( 'guiComponent',widget=widget,toolkit=toolkit) 
+  return(obj)
+}
+
+
+##' generic for toolkit dispatch
+##' @alias ggenericwidget
+setGeneric( '.ggenericwidget' ,
+           function(toolkit,
+                    lst, cli = NULL,
+                    container = NULL, ... )
+           standardGeneric( '.ggenericwidget' ))
+
+
+
+
+
+##################################################
+## This is basically a hack, but it kinda works so I'm not touching it
 ##################################################
 
 setClass("gGenericWidgetANY",

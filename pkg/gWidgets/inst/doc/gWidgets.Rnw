@@ -759,7 +759,7 @@ widget layout; and assignment of handlers, or call backs, seems to
 lead to easier to understand code.
 
 Proceeding, first we define the two distributions and the possible kernels.
-<<setUp>>=
+<<setUp, eval=FALSE>>=
 ## set up
 availDists <- c(Normal="rnorm", Exponential="rexp")
 availKernels <- c("gaussian", "epanechnikov", "rectangular",
@@ -769,7 +769,7 @@ availKernels <- c("gaussian", "epanechnikov", "rectangular",
 We then define the key function for drawing the graphic. This refers
 to widgets yet to be defined.
                       
-<<updatePlot>>=
+<<updatePlot, eval=FALSE>>=
 updatePlot <- function(h,...) {
   x <- do.call(availDists[svalue(distribution)],list(svalue(sampleSize)))
   plot(density(x, adjust = svalue(bandwidthAdjust), 
@@ -778,7 +778,7 @@ updatePlot <- function(h,...) {
 }
 @
 Now to define the widgets.
-<<define.widgets>>=
+<<define.widgets, eval=FALSE>>=
 distribution <- gradio(names(availDists), horizontal=FALSE, handler=updatePlot)
 kernel <- gcombobox(availKernels, handler=updatePlot)
 bandwidthAdjust <- gslider(from=0,to=2,by=.01, value=1, handler=updatePlot)
@@ -789,7 +789,7 @@ Now the layout. We use frames to set off the different arguments. A
 frame is like a group, only it has an option for placing a text label
 somewhere along the top. The position is specified via the \code{pos}
 argument, with a default using the left-hand side.
-<<layout>>=
+<<layout, eval=FALSE>>=
 ## now layout
 window <- gwindow("gWidgetsDensity")
 BigGroup <- ggroup(cont=window)
@@ -1694,7 +1694,7 @@ lst$arguments$hypotheses$alternative <-
 @
 
 This list is then given to the constructor.
-<<>>=
+<<ggenericw, eval=FALSE>>=
 ggenericwidget(lst, container=gwindow("One sample t test"))
 @
 

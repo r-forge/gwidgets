@@ -91,7 +91,7 @@ stripWhiteSpace = function(str) {
 
 knownTypes = list(
   "data sets and models"=c(.datasets, .models, .ts),
-  "data sets"= c(.datasets,ts),
+  "data sets"= c(.datasets,.ts),
   "model objects" = .models,
   "time series objects" = .ts,
   "functions"=.functions,
@@ -239,4 +239,15 @@ installing_gWidgets_toolkits <- function() {
 
 }
 
+##' return x unless null then give default
+getWithDefault <- function(x, default)
+  ifelse(is.null(x) || is.na(x) || x == "", default, x)
 
+
+## ID is used by the ANY widgets
+n=0;assignInNamespace("n",0,"gWidgets")
+getNewID = function() {                 # get new one, incremented
+  n = getFromNamespace("n",ns="gWidgets")
+  assignInNamespace("n",n+1,ns="gWidgets")
+  return(n+1)
+}

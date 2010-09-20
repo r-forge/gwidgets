@@ -32,7 +32,16 @@ exportClasses("guiWidgetsToolkit",
               "guiWidgetsToolkitRwxWidgets",                            
               "guiWidget","guiComponent","guiContainer","guiDialog",
               "gWidgetANY","gComponentANY","gContainerANY","guiDialog",
-              "guiWidgetOrNULL")
+              "guiWidgetOrNULL",
+              "guiDialog", "gAction", "gButton", "gCalendar", "gCheckbox","gCheckboxGroup",
+              "gCombobox","gCommandline", "gCommandlineANY", "gDf", "gDfNotebook", "gEdit",
+              "gExpandGroup", "gFilebrowse", "gFormLayout","gFormLayoutANY", "gFrame", "gGenericWidget",
+              "gGenericWidgetANY", "gGraphics", "gGraphicsNotebook", "gGroup", "gHelp", "gHelpBrowser",
+              "gHelpANY", "gHelpbrowserANY", "gHtml", "gImage", "gLabel", "gLayout", "gMenu", "gNotebook",
+              "gPanedGroup", "gRadio", "gSeparator", "gSlider", "guiComponentRangeSelector", "gSpinbutton",
+              "gStatusbar", "gSvg", "gTable", "gText", "gToolbar", "gTree",
+              "guiComponentWithItems", "gVarBrowser", "gWindow"
+              )
 
 ## these are used by others but defined here.
 export("editSubsetDialog","editSelectDialog", "editFormulaDialog",".fixFontMessUp", "str2")

@@ -1,8 +1,76 @@
+##' @include guiComponent.R
+
+##' 
+
+##' Method to add icon to list of stock icons
+##'
+##' @export
+addStockIcons = function(iconNames,iconFiles, ..., toolkit = guiToolkit()) {
+  out =  .addStockIcons (toolkit, iconNames, iconFiles, ...)
+  return(out)
+}
+
+##' generic for dispath
+##' @alias addStockIcons
+setGeneric( '.addStockIcons' ,
+           function(toolkit, iconNames, iconFiles,... )
+           standardGeneric( '.addStockIcons' ))
+
+##' return list of available stock icons
+##'
+##' @export
+getStockIcons = function( ..., toolkit = guiToolkit()) {
+  out =  .getStockIcons (toolkit,...)
+  return(out)
+}
+
+##' generic for toolkit dispatch
+##' @alias getStockIcons
+setGeneric( '.getStockIcons' ,
+           function(toolkit,...)
+           standardGeneric( '.getStockIcons' ))
+
+##' Find a stock icon from the given class
+##'
+##' @export
+stockIconFromClass = function(theClass, ..., toolkit = guiToolkit()) {
+  out =  .stockIconFromClass (toolkit, theClass, ...)
+  return(out)
+}
+##' generic for dispath
+##' @alias stockIconFromClass
+setGeneric( '.stockIconFromClass' ,
+           function(toolkit, theClass,... )
+           standardGeneric( '.stockIconFromClass' ))
+
+##' Find stock icon from the given object
+##'
+##' @export
+stockIconFromObject = function(obj, ..., toolkit = guiToolkit()) {
+  out =  .stockIconFromClass (toolkit, obj, ...)
+  return(out)
+}
+
+##' generic for dispath
+##' @alias stockIconFromObject
+setGeneric( '.stockIconFromObject' ,
+           function(toolkit, obj,... )
+           standardGeneric( '.stockIconFromObject' ))
+
+
+
+
+
+
+
 ## returns a list with key the icon name
 ## and value the filepath
 
-## find the stock icons. This includes those added bia loadGWidgetIcons()
 
+
+
+
+## find the stock icons. This includes those added bia loadGWidgetIcons()
 gWidgetsIcons = list()
 assignInNamespace("gWidgetsIcons",gWidgetsIcons,ns="gWidgets")
 addedStockIcons = list()

@@ -2,6 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
+Changes for 0.0-43
+------------------
+* start to use roxygen for documentation
+* redid ghelp, ghelpbrowser
+ 
+Changes for 0.0-42
+------------------
+* minor doc fixes
+* new multiple argument for gfile
+
 Changes for 0.0-41
 -------------------
 * toolkitProvidesWidget: new method to test if a widget is provided by the toolkit

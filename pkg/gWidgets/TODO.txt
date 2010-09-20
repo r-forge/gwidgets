@@ -1,8 +1,7 @@
-* Wish: roxygen docs on methods; add classes
-* Add multi=FALSE to signature of gfile.
+* STARTED. Wish: roxygen docs on methods; add classes
+DONE * Add multi=FALSE to signature of gfile.
 * add use.table to gcheckboxgroup
 * integrate in column size into gtable
-* integrate into gtable a checkbox for selection
 DONE * fix ggenericwidget under tcltk -- print twice. gcommandline issue I believe.
 * gcommandline is not very good -- IT IS AWFUL. Do tcltk --- see
 * size argument in gcombobox as formal argument, we have it as ... now.

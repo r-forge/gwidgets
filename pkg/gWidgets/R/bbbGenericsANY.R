@@ -2,42 +2,9 @@
 ## ANY widgets are meant to work with any toolkit. They are compound widgets
 ## their methods are not inherited from the toolkit ones, but rather are made explicit here.
 
-## ID is used by the ANY widgets
-n=0;assignInNamespace("n",0,"gWidgets")
-getNewID = function() {                 # get new one, incremented
-  n = getFromNamespace("n",ns="gWidgets")
-  assignInNamespace("n",n+1,ns="gWidgets")
-  return(n+1)
-}
 
 ## how to make a generic widget here?
 
-setClass("gWidgetANY",
-         representation(
-                        toolkit="guiWidgetsToolkit",
-                        widget="ANY",  # could be RGtkObject, TclObject,....
-                        block="ANY",
-                        ID = "numeric"
-                        ),
-         prototype(
-                   toolkit =guiToolkit(),
-                   widget=NULL,
-                   block = NULL,
-                   ID = getNewID()
-                   )
-         ) 
-           
-
-## define a subclass
-setClass("gComponentANY",
-         contains="gWidgetANY",
-         prototype=prototype(new("gWidgetANY"))
-         )
-## define a subclass
-setClass("gContainerANY",
-         contains="gWidgetANY",
-         prototype=prototype(new("gWidgetANY"))
-         )
 
 
 ### Methods

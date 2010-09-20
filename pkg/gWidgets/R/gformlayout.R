@@ -3,6 +3,42 @@
 
 ## idea is taken from extjs www.extjs.com
 
+
+##' @include guiComponents.R
+
+##' Class for widget to layout form from a specification in a list
+setClass("gFormLayout",
+         contains="guiComponent",
+         prototype=prototype(new("guiComponent"))
+         )
+
+##' A constructor for a widget to layout a form from a specification in a list
+##'
+##' @export
+gformlayout <- function(
+                        lst, container = NULL,
+                        ... ,
+                        toolkit=guiToolkit()){
+  widget <- .gformlayout(toolkit,
+                         lst=lst, container=container ,...
+                         )
+  obj <- new( 'gFormLayout',widget=widget,toolkit=toolkit) 
+  return(obj)
+}
+
+
+##' generic for toolkit dispatch
+##' @alias gformlayout
+setGeneric( '.gformlayout' ,
+           function(toolkit,
+                    lst, 
+                    container = NULL, ... )
+           standardGeneric( '.gformlayout' ))
+
+
+
+##################################################
+## ANY implementation
 setClass("gFormLayoutANY",
          representation = representation("gComponentANY",
            lst="list"),
