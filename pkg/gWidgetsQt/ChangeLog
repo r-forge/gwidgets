@@ -1,3 +1,24 @@
+2010-09-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R: use qtutils device to make this widget
+
+2010-09-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: added drag and drop to widget.
+
+	* R/aabQtEvents.R (runHandler): added code to put in dnd into
+	widgets. Needs to use special gwClasses.
+
+2010-09-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: put in size() method
+
+	* R/gnotebook.R: fixed bug in [ method
+
+2010-09-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gpanedgroup.R: hack to get around no moveSplitter method
+
 2010-09-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gexpandgroup.R: replaced with customized class. Still can't

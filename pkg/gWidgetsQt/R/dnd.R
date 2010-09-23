@@ -20,7 +20,19 @@ setMethod(".adddropsource",
           function(obj, toolkit, targetType="text",
                    handler=NULL, action=NULL, ...) {
             w <- getWidget(obj)
-            w$setDragEnabled(TRUE)
+
+            if(exists("setDragEnabled", w) && !is.null(w$setDragEnabled))
+              w$setDragEnabled(TRUE)
+
+            ## match class?
+            if(grepl("^R::gWidgetsQt::gwQ",class(w)[1])) {
+              f <- function(obj, ...) handler(list(obj=obj), ...)
+              w$setDragHandler(f)
+            }
+                        
+
+            invisible()
+            
           })
 
 setMethod(".adddroptarget",
@@ -28,13 +40,21 @@ setMethod(".adddroptarget",
           function(obj, toolkit, targetType="text",
                    handler=NULL, action=NULL, ...) {
             w <- getWidget(obj)
-            w$setAcceptDrops(TRUE)
+            ## match class?
+            if(grepl("^R::gWidgetsQt::gwQ",class(w)[1])) {
+              f <- function(obj, value) handler(list(obj=obj, dropdata=value))
+              w$setDropHandler(f)
+            } else {
+              w$setAcceptDrops(TRUE)
+            }
+
+            invisible()
           })
 
 setMethod(".adddropmotion",
           signature(toolkit="guiWidgetsToolkitQt", obj="gWidgetQt"),
           function(obj, toolkit, 
                    handler=NULL, action=NULL, ...) {
-            ## no such
+            ## no such but could add: define motionHandler, then call...
           })
                     

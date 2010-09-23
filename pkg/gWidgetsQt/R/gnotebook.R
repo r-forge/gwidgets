@@ -116,7 +116,7 @@ setMethod(".dispose",
             for(i in inds) {
               j <- cur.pageno + i
               if(deleteOK(j)) {
-                gwidget <- try(findChildFromQWidget(obj, nb$widget(j-1)), silent=TRUE)
+                gwidget <- obj[j]
                 if(!inherits(gwidget, "try-error")) {
                   removeChild(obj, gwidget)
                   removeParent(gwidget)
@@ -270,8 +270,9 @@ setMethod(".leftBracket",
             
             if(missing(i))
               i = 1:length(x)
-            
-            lst <- sapply(i, function(j) findChildFromQWidget(x, nb$widget(j-1)))
+
+            lst <- getChildren(x)[i]
+#            lst <- sapply(i, function(j) findChildFromQWidget(x, nb$widget(j-1)))
             if(length(i) == 1)
               return(lst[[1]])
             else

@@ -15,10 +15,18 @@
 
 
 ## editable has entry widget that can be edited
+## setClass("gDroplistQt",
+##          contains="gComponentQt",
+##          prototype=prototype(new("gComponentQt"))
+##          )
+
 setClass("gDroplistQt",
-         contains="gComponentQt",
-         prototype=prototype(new("gComponentQt"))
+         contains="gEventWidgetQt",
+         prototype=prototype(new("gEventWidgetQt"))
          )
+
+## qtConstructor
+creategwClass("QComboBox")
 
 setMethod(".gdroplist",
           signature(toolkit="guiWidgetsToolkitQt"),
@@ -43,7 +51,10 @@ setMethod(".gdroplist",
             
 
             ## cb
-            cb <- Qt$QComboBox()
+##            cb <- Qt$QComboBox()
+            cb <- gwQComboBox()
+
+            
             if(as.logical(editable)) {
               cb$setEditable(TRUE)
               cb$setDuplicatesEnabled(FALSE)
@@ -65,7 +76,9 @@ setMethod(".gdroplist",
             
             obj <- new("gDroplistQt",block=cb, widget=cb,
               toolkit=toolkit, e = new.env(), ID=getNewID())
-
+            cb$setObject(obj)
+            
+            
             tag(obj,"coerce.with") <- coerce.with
 
             obj[] <- items

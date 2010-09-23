@@ -75,7 +75,10 @@ sapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
 sapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
 
 .ourClasses <- c("R::gWidgetsQt::WSBrowser",
-                "R::gWidgetsQt::ExpandContainer")
+                 "R::gWidgetsQt::ExpandContainer",
+                 "R::gWidgetsQt::OurTreeWidget",
+                 "R::gWidgetsQt::QtDevice"
+                 )
 
 sapply(.ourClasses, function(i) {
        setOldClass(i)

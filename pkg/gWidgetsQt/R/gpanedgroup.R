@@ -113,10 +113,9 @@ setReplaceMethod(".svalue",
                    if(0 <= value && value <= 1) {
                      w <- getWidget(obj)
                      total <- sum(w$sizes())
-                     out <- try(w$moveSplitter(as.integer(value * total), 0L), silent=TRUE)
-                     if(inherits(out, "try-error"))
-                       XXX("no moveSplitter method?")
-                     
+                     left <- floor(total*value)
+                     right <- total - left
+                     w$setSizes(as.integer(c(left, right)))
                    }
                    return(obj)
                  })

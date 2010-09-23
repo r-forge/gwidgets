@@ -56,17 +56,22 @@ do.coerce <- function(val, coerce.with) {
 #Paste = function(x,...) paste(x,...,sep="",collapse="")
 
 ## CONSTANTS
-xyToAnchor = function(anchor) {
-  m = rbind(
+xyToAnchor <- function(anchor) {
+  m <- rbind(
     c("nw","n","ne"),
     c("w","center","e"),
     c("sw","s","se")
     )
-  anchor = m[2 - anchor[2],2 + anchor[1]]
+  anchor <- m[2 - anchor[2],2 + anchor[1]]
   return(anchor)
 }
 
+##' take xy anchor value and convert to alignment
+##' @param anchor alignment specified as {-1,0,1}^2 value
 xyToAlign <- function(anchor=NULL) {
+  if(is.null(anchor))
+    return(0L)
+  
   halign <- list(Qt$Qt$AlignLeft, Qt$Qt$AlignHCenter, Qt$Qt$AlignRight)
   valign <- list(Qt$Qt$AlignBottom, Qt$Qt$AlignVCenter, Qt$Qt$AlignTop)
   align <- Qt$Qt$AlignCenter

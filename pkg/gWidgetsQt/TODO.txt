@@ -1,14 +1,15 @@
 TODO:
 ---------
+* put in mouse handlers into ggraphics. (click, rubber band?)
 * gexpandgroup: fix resize issues when collapsed
-* get bugs fixed for first version
 * DND: use QtEvent framework
-* gvarbrowser -- put in DND for dragging values
+* gdf: can improve significantly
 * gdf -- column clicks -- can do context menu, but how to get column?
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
-* write gdf using bigtable
 * ggraphics: Is this from qtpaint or qtdevice, seems like the latter
 
+DONE * * gvarbrowser -- put in DND for dragging values. R/serialized-data
+WORKING ON IT * get bugs fixed for first version
 DONE * pass gwidgets tests
 DONE aabQtEvent.R * $event -- how to override, virtual function. 
 DONE gbigtable (for now) * integerate in dataframe.R functions -- much faster

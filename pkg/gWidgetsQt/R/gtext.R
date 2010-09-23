@@ -19,6 +19,11 @@ setClass("gTextQt",
          prototype=prototype(new("gTextWidgetQt"))
          )
 
+
+## qtConstructor
+creategwClass("QTextEdit")
+
+
 setMethod(".gtext",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -33,11 +38,14 @@ setMethod(".gtext",
 
             ## options
 
-            txt <- Qt$QTextEdit()
+#            txt <- Qt$QTextEdit()
+            txt <- gwQTextEdit()
             
             obj <- new("gTextQt", block=txt, widget=txt, 
               toolkit=toolkit, ID=getNewID(), e = new.env())
+            txt$setObject(obj)
 
+            
             if(!is.null(text))
               svalue(obj) <- text
 

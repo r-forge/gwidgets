@@ -28,7 +28,53 @@ qsetMethod("setDigest", OurTreeWidgetItem, function(value) {
   this$digest <- value
 })
 
-                   
+##' A base tree widget which allows drag and drop
+qsetClass("OurTreeWidget", Qt$QTreeWidget, function(parent=NULL) {
+  super(parent)
+  this$dndStartPosition <- NULL
+})
+
+##' drag and drop
+qsetMethod("prepareDrag", OurTreeWidget, function(e) {
+  item <- itemAt(e$pos())
+  
+  getVal <- function(item)  path <- item$data(0, role=0)
+  path <- getVal(item)
+  while(!is.null(item <- item$parent())) {
+    path <- c(getVal(item), path)
+  }
+
+  obj <- get(path[1], envir=.GlobalEnv)
+  if(length(path) > 1)
+    obj <- obj[[path[-1]]]
+  
+  val <- list(varname=paste(path, collapse="$"), obj=obj)
+
+  md <- Qt$QMimeData()
+  md$setData("R/serialized-data", serialize(val, NULL))
+
+  drag <- Qt$QDrag(this)
+  drag$setMimeData(md)
+  
+  drag$exec()
+})
+
+qsetMethod("mousePressEvent", OurTreeWidget, function(e) {
+  if (e$buttons() == Qt$Qt$LeftButton)
+     this$dndStartPosition <- e$pos();
+   super("mousePressEvent", e)
+})
+
+qsetMethod("mouseMoveEvent", OurTreeWidget, function(e) {
+  if ((e$buttons() & Qt$Qt$LeftButton) && !is.null(dndStartPosition)) {
+    dist <- (e$x() - dndStartPosition$x())^2 +  (e$y() - dndStartPosition$y())^2
+    if (dist >= Qt$QApplication$startDragDistance()^2)
+      this$prepareDrag(e)
+  }
+  super("mouseMoveEvent",e)
+})
+
+  
 
 ##' Main wsbrowser class. Its a widget, but mostly centered around the tree
 qsetClass("WSBrowser", Qt$QWidget, function(parent=NULL) {
@@ -50,7 +96,7 @@ qsetClass("WSBrowser", Qt$QWidget, function(parent=NULL) {
   })
 
   ## tree widget
-  this$tr <- Qt$QTreeWidget()
+  this$tr <- OurTreeWidget()
   tr$setColumnCount(2)                    # name, class
   tr$setHeaderLabels(gettext(c("Name", "Class")))
 

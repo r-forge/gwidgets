@@ -19,7 +19,7 @@
 ## This is going to be much slower than using a corresponding signal, it
 ## it exists. In qtbase, events are handled at the class level, not the instance
 ## level, so we create a subclass to do our processing
-creategwClass <- function(cname) {
+creategwClass <- function(cname, constructor) {
   where <- parent.frame()               # what environment to define class
 
 
@@ -30,19 +30,34 @@ creategwClass <- function(cname) {
   newClassName <- sprintf("gw%s", cname)
   qtObj <- get(cname, envir=Qt)
 
-  qsetClass(newClassName, qtObj, function(parent=NULL) {
-    super(parent)
-    this$data <- c()
-  },
-            where=where)
+  if(missing(constructor)) {
+    constructor <- function(parent=NULL) {
+      super(parent)
+      this$data <- c()
+      
+      this$dndStartPosition <- NULL
+      this$dropHandler <- NULL            # function(obj, data) data is passed
+      this$dragHandler <- NULL            # function(obj, e) e is mouse event. Returns value to pass
+    }
+  }
+  
+  qsetClass(newClassName, qtObj, constructor, where=where)
+
+
+  ## add methods
+  NewClassObject <- get(newClassName)
 
   ## handler stuff
-  ## FUnction call to run a handler
-  runHandler <- function(obj, eventName, e, components=character()) {
+  ##' FUnction call to run a handler
+  ##' @param obj gWidgets object
+  ##' @param eventName name of event
+  ##' @param e mouse event passed in by Qt
+  ##' @param components
+  gwRunQtEventHandler <- function(obj, eventName, e, components=character()) {
     handlers <- tag(obj, ".eventHandlers")
     if(is.null(handlers)) 
       return()
-
+    
     handlers <- handlers[[eventName]]   # list of lists is handlers
     
     h <- list(obj=obj)
@@ -64,28 +79,26 @@ creategwClass <- function(cname) {
   }
     
 
-  ## add methods
-  newClassObject <- get(newClassName)
 
   ## method to set the gWidgets Object, should do check
   ## basic flow is 3-step:
   ## e = gwQLineEdit()
   ## obj = new("gEidtQt", block=e, widget=e, ..)
   ## e$setObject(obj)
-  qsetMethod("setObject", newClassObject, function(obj) {
+  qsetMethod("setObject", NewClassObject, function(obj) {
     ## obj should be gWidget object -- check
     this$data <- obj
   })
+
   ## method to get the gWidgets object
-  qsetMethod("getObject", newClassObject, function() {
+  qsetMethod("getObject", NewClassObject, function() {
     this$data 
   })
 
-  
   ## set an event handler
   ## called as follows:
   ## getWidget(obj)$setEventHandler("name", handler, action)
-  qsetMethod("setEventHandler", newClassObject, function(eventName, handler, action=NULL) {
+  qsetMethod("setEventHandler", NewClassObject, function(eventName, handler, action=NULL) {
     obj <- this$getObject()
     if(is.null(obj))
       return(NULL)
@@ -97,7 +110,7 @@ creategwClass <- function(cname) {
               handler=handler,
               action=action,
               id=id)
-
+    
     handlers <- tag(obj, ".eventHandlers")
     if(is.null(handlers))
       handlers <- list()
@@ -110,7 +123,7 @@ creategwClass <- function(cname) {
     return(id)
   })
 
-  qsetMethod("removeEventHandler", newClassObject, function(id) {
+  qsetMethod("removeEventHandler", NewClassObject, function(id) {
     obj <- this$getObject()
     if(is.null(obj))
       return(NULL)
@@ -125,7 +138,9 @@ creategwClass <- function(cname) {
     invisible()
   })
 
-  qsetMethod("blockEventHandler", newClassObject, function(id) {
+  ##' block an event handler
+  ##' @param id id from adding event handler
+  qsetMethod("blockEventHandler", NewClassObject, function(id) {
     obj <- this$getObject()
     if(is.null(obj))
       return(NULL)
@@ -146,7 +161,9 @@ creategwClass <- function(cname) {
     invisible()
   })
 
-  qsetMethod("unblockEventHandler", newClassObject, function(id) {
+  ##' unblock an event handler
+  ##' @param id id from addEventHandler
+  qsetMethod("unblockEventHandler", NewClassObject, function(id) {
     obj <- this$getObject()
     if(is.null(obj))
       return(NULL)
@@ -165,41 +182,113 @@ creategwClass <- function(cname) {
   })
 
 
-    
-
-
-
   ## The are various events that we have implemented
   ## we can pass in event values, see x,y below
-  qsetMethod("mousePressEvent", newClassObject, function(e) {
+  qsetMethod("mousePressEvent", NewClassObject, function(e) {
+    if(!is.null(dragHandler)) {
+      this$dndStartPosition <- e$pos()    # for drag and drop
+    }
+    
     obj <- this$getObject()
-    if(is.null(obj))
-      return(NULL)
-    runHandler(obj, "mousePressEvent", e, c("x","y"))
-    return(NULL)
+    if(!is.null(obj)) {
+      gwRunQtEventHandler(obj, "mousePressEvent", e, c("x","y"))
+    }
+
+    super("mousePressEvent", e)
   })
 
+  ##' set a function for handling a drag event
+  qsetMethod("setDragHandler", NewClassObject, function(f) {
+    this$dragHandler <- f               # function(obj, e)
+  })
+
+  ##' set up drag and drop event if present
+  qsetMethod("mouseMoveEvent", NewClassObject, function(e) {
+    if(!is.null(dragHandler)) {
+      if ((e$buttons() & Qt$Qt$LeftButton) && !is.null(dndStartPosition)) {
+        dist <- (e$x() - dndStartPosition$x())^2 +  (e$y() - dndStartPosition$y())^2
+        if (dist >= Qt$QApplication$startDragDistance()^2)
+          this$prepareDrag(e)
+      }
+    }
+    super("mouseMoveEvent", e)
+  })
+
+  
+  ##' prepare drag event. Requires dragHandler
+  qsetMethod("prepareDrag", NewClassObject, function(e) {
+    if(!is.null(this$dragHandler)) {
+      val <- dragHandler(this$getObject(), e)
+      md <- Qt$QMimeData()
+      md$setData("R/serialized-data", serialize(val, NULL))
+
+      drag <- Qt$QDrag(this)
+      drag$setMimeData(md)
+  
+      drag$exec()
+    }
+  })
+
+  ##' when we enter we change the color palette
+  qsetMethod("dragEnterEvent", NewClassObject, function(e) {
+    if(!is.null(this$dropHandler)) {
+      setForegroundRole(Qt$QPalette$Dark)
+      e$acceptProposedAction()
+    }
+
+    super("dragEnterEvent", e)
+  })
+  
+  ##' when we leave we return the palette
+  qsetMethod("dragLeaveEvent", NewClassObject, function(e) {
+    if(is.null(this$dropHandler)) return()
+    setForegroundRole(Qt$QPalette$WindowText)
+    e$accept()
+
+    super("dragLeaveEvent", e)    
+  })
+
+  ##' drop event calls dropHandler (set via setDropHandler)
+  qsetMethod("dropEvent", NewClassObject, function(e) {
+    if(!is.null(this$dropHandler)) {
+      setForegroundRole(Qt$QPalette$WindowText)  
+      md <- e$mimeData()
+      if(md$hasFormat("R/serialized-data")) {
+        data <- unserialize(md$data("R/serialized-data"))
+        this$dropHandler(this$getObject(), data)
+        setBackgroundRole(Qt$QPalette$Window)
+        e$acceptProposedAction()
+      }
+    }
+
+    super("dropEvent", e)
+  })
+  
+  ##' set a dropHandler. This implements drop area
+  ##' f <- function(obj, value)
+  qsetMethod("setDropHandler", NewClassObject, function(f) {
+    setAcceptDrops(TRUE)
+    this$dropHandler <- f
+  })
 
   ##' Close Event
   ##' Called when a widget is given close signal from parent
   ##' call event ignore to kill
   ##' We use if the handler returns FALSE we call event ignorm
   ##' Handler must return FALSE to not close window. (Can't be closed if never returns
-  qsetMethod("closeEvent", newClassObject, function(e) {
+  qsetMethod("closeEvent", NewClassObject, function(e) {
     obj <- this$getObject()
-    if(is.null(obj))
-      return(NULL)
-    out <- runHandler(obj, "closeEvent", e)
-    if(is.logical(out) && !out)
-      e$ignore()
-    else
-      e$accept()
-    return(NULL)
+    if(!is.null(obj)) {
+      out <- gwRunQtEventHandler(obj, "closeEvent", e)
+      if(is.logical(out) && !out)
+        e$ignore()
+      else
+        e$accept()
+    }
+    super("closeEvent", e)
   })
     
- 
-  
-}
+} 
 
 
 

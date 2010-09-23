@@ -20,10 +20,10 @@
 ##' To put back the event widget stuff, just uncomment ##XX comments.
 
 setClass("gWindowQt",
-         contains="gContainerQt",
-         prototype=prototype(new("gContainerQt"))
-##XX         contains="gEventWidgetQt",
-##XX         prototype=prototype(new("gEventWidgetQt"))
+#         contains="gContainerQt",
+#         prototype=prototype(new("gContainerQt"))
+         contains="gEventWidgetQt",
+         prototype=prototype(new("gEventWidgetQt"))
          )
 
 ## Qt constructor
@@ -46,17 +46,17 @@ setMethod(".gwindow",
             if(!is.null(parent)) {
               toplevel <- getTopLevel(parent)
               parentw <- getBlock(toplevel)
-              w <- Qt$QMainWindow(parentw)
+#              w <- Qt$QMainWindow(parentw)
               w <- gwQMainWindow(parentw)
             } else {
-              w <- Qt$QMainWindow()
+#              w <- Qt$QMainWindow()
               w <- gwQMainWindow()
             }
 
             ## main widget
             w1 <- Qt$QWidget()
-            w1$setSizePolicy(Qt$QSizePolicy$Expanding,
-                             Qt$QSizePolicy$Expanding)
+ #           w1$setSizePolicy(Qt$QSizePolicy$Expanding,
+ #                            Qt$QSizePolicy$Expanding)
             
             w$setCentralWidget(w1)
             lyt <- Qt$QVBoxLayout()
@@ -69,7 +69,8 @@ setMethod(".gwindow",
             w$setObject(obj)
 
             svalue(obj) <- title
-            size(obj) <- c(width=width, height=height)
+            if(!is.null(width))
+              size(obj) <- c(width=width, height=height)
             
             if (!is.null(handler)) {
               tag(obj, "handler.id") <- addhandlerdestroy(obj, handler=handler, action=action)
@@ -112,9 +113,7 @@ setMethod(".add",
 
               anchor <- getWithDefault(theArgs$anchor, NULL)
               lyt$addWidget(child, stretch=1, xyToAlign(anchor))
-##              callNextMethod()
             }
-            ## us there anything different here?
           })
 
 
@@ -165,6 +164,14 @@ setMethod(".svalue<-",
             w <- getBlock(obj)
             w$windowTitle <- as.character(value)
             return(obj)
+          })
+
+##' return size of main window
+setMethod(".size",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+          function(obj, toolkit, ...) {
+            w <- getBlock(obj)
+            c(width=w$size$width(), height=w$size$height())
           })
 
 ##' change size. The size() method is inherited from gContainerQt
@@ -230,8 +237,9 @@ setMethod(".addhandlerunrealize",
           })
 
 
-## setMethod(".addhandlerdestroy",
-##           signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
-##           function(obj, toolkit, handler, action=NULL, ...) {
-##             .addHandler(obj, toolkit, signal="destroy", handler, action, ...)
-##           })
+setMethod(".addhandlerdestroy",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerunrealize(obj, toolkit, handler, action, ...)
+#            .addHandler(obj, toolkit, signal="destroy", handler, action, ...)
+          })

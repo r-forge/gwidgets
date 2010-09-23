@@ -15,6 +15,13 @@
 
 ##XXX df[,] = 1 error
 
+
+## drag  interface. Taken from gvarbrowser
+
+
+
+
+
 setClass("gTableQt",
          contains="gTableViewQt",
          prototype=prototype(new("gTableViewQt"))

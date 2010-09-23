@@ -129,7 +129,8 @@ setMethod("noChildren", signature(obj="gWidgetQt"),
 findChildFromQWidget <- function(obj, widget) {
   l <- getChildren(obj)
   for(i in l) {
-    if(digest(getWidget(i)) == digest(widget))
+#    if(digest(getWidget(i)) == digest(widget))
+    if(identical(i, widget))
       return(i)
   }
   return(NA)

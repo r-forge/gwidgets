@@ -16,10 +16,16 @@
 
 ## class defined in aaaClasses for inheritance
 ## constructor
+
 setClass("gTextWidgetQt",
-         contains="gComponentQt",
-         prototype=prototype(new("gComponentQt"))
+         contains="gEventWidgetQt",
+         prototype=prototype(new("gEventWidgetQt"))
          )
+
+## setClass("gTextWidgetQt",
+##          contains="gComponentQt",
+##          prototype=prototype(new("gComponentQt"))
+##          )
 
 setClass("gEditQt",
          ## representation = representation("gComponentQt",
@@ -27,6 +33,10 @@ setClass("gEditQt",
          contains="gTextWidgetQt",
          prototype=prototype(new("gTextWidgetQt"))
          )
+
+## qtConstructor
+creategwClass("QLineEdit")
+
 
 setMethod(".gedit",
           signature(toolkit="guiWidgetsToolkitQt"),
@@ -51,7 +61,10 @@ setMethod(".gedit",
             }
 
            
-           entry <- Qt$QLineEdit()
+##           entry <- Qt$QLineEdit()
+           entry <- gwQLineEdit()
+
+           
            completer <- Qt$QCompleter()
            entry$setCompleter(completer)
            mod <- Qt$QStandardItemModel()
@@ -60,6 +73,8 @@ setMethod(".gedit",
            obj <- new("gEditQt",block=entry, widget=entry,
                       toolkit=toolkit, e=new.env(), ID=getNewID())
 #           ,coercewith=coerce.with)
+           entry$setObject(obj)
+           
            
            svalue(obj) <- text
            tag(obj, "coerce.with") <- coerce.with
@@ -178,8 +193,8 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gEditQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
-         #   .addHandler(obj, toolkit, signal="returnPressed", handler, action, ...)
-            .addHandler(obj, toolkit, signal="editingFinished", handler, action, ...)
+            .addHandler(obj, toolkit, signal="returnPressed", handler, action, ...)
+            #.addHandler(obj, toolkit, signal="editingFinished", handler, action, ...)
           })
 
 ## keystroke is called when widget display changes
