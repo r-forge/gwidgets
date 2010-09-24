@@ -14,7 +14,7 @@
 ##  http://www.r-project.org/Licenses/
 
 ##' ##' Graphics device
-##' Should use qtdevice(?) But can't get that to compile
+##' Uses qtutils work, but places within a class so we have access to mouse events
 
 setClass("gGraphicsQt",
          contains="gEventWidgetQt",
@@ -46,24 +46,52 @@ qsetMethod("addHandlerClicked", QtDevice, function(handler, action=NULL) {
 
 ##' raise on mouse click
 ##' Beef up -- locator function, rectangle selection
-##' XXX The x, y coordinates are not correct. How to fix??
+##' XXX The x, y coordinates are not correct (just wrong and don't account for scrollbars). How to fix??
 qsetMethod("mousePressEvent", QtDevice, function(e) {
   devSet()
+  this$lastClick <- e$pos()
+  this$buttonPressed <- TRUE
   if(!is.null(clickHandler)) {
     w <- this$width
     ht <- this$height
     h <- list(obj=this$data,
-              x=grconvertX(e$x()/w, from="ndc", to="user"),
+              x=grconvertX((e$x())/( w), from="ndc", to="user"),
               y=grconvertY((ht-e$y())/ht, from="ndc", to="user"),
-              e=e
+              w=w, h=ht, ex=e$x(), ey=e$y()
               )
     clickHandler(h)
   }
   super("mousePressEvent", e)
 })
 
+## This didn't work. Try to mimic work in qtdevice to get rubber band selection drawn 
+## qsetMethod("mouseMoveEvent", QtDevice, function(e) {
+##   this$currentPosition <- e$pos()
+##   super("mouseMoveEvent", e)
+## })
+
+## qsetMethod("mouseReleaseEvent", QtDevice, function(e) {
+##   this$lastRelease <- e$pos()
+##   if(this$buttonPressed) {
+##     this$buttonPressed <- FALSE
+##     update()                            # call paintEvent
+##   }
+##   super("mouseReleaseEvent", e)
+## })
+
+## qsetMethod("paintEvent", QtDevice, function(e) {
+  
+##   if(exists("buttonPressed", this) && !is.null(buttonPressed) && buttonPressed) {
+##     p <- Qt$QPainter(this)
+##     p$setBrush(Qt$QBrush(Qt$QColor(127, 127, 144, 31)))
+##     p$setPen(Qt$QColor(127, 127, 144, 255));
+##     p$drawRect(Qt$QRect(lastClick, currentPosition));
+##   }
+##   super("paintEvent", e)
+## })
+
 ##' only called for top-level windows
-##' doesn't work
+##' doesn't work. How to close device when window is destroyed
 qsetMethod("closeEvent", QtDevice, function(e) {
   dev.off(dev)
   e$accept()
@@ -140,7 +168,7 @@ qsetMethod("addActions", QtDevice, function() {
 
 })
 
-
+##' toolkit constructor for ggraphics widget
 setMethod(".ggraphics",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -183,7 +211,7 @@ setReplaceMethod(".visible",
                    return(obj)
                  })
 
-## save Current Page
+##' save Current Page
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gGraphicsQt"),
                  function(obj, toolkit, index=NULL,  ..., value) {
