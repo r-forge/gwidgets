@@ -1,6 +1,5 @@
 TODO:
 ---------
-* put in mouse handlers into ggraphics. (click, rubber band?)
 * gexpandgroup: fix resize issues when collapsed
 * DND: use QtEvent framework
 * gdf: can improve significantly
@@ -8,6 +7,7 @@ TODO:
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
 * ggraphics: Is this from qtpaint or qtdevice, seems like the latter
 
+DONE * put in mouse handlers into ggraphics. (click, rubber band?)
 DONE * * gvarbrowser -- put in DND for dragging values. R/serialized-data
 WORKING ON IT * get bugs fixed for first version
 DONE * pass gwidgets tests

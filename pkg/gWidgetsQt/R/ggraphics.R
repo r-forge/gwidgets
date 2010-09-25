@@ -15,12 +15,90 @@
 
 ##' ##' Graphics device
 ##' Uses qtutils work, but places within a class so we have access to mouse events
+##' TODO: Need to add means to close device when window is deleted
 
 setClass("gGraphicsQt",
          contains="gEventWidgetQt",
          prototype=prototype(new("gEventWidgetQt"))
          )
 
+##################################################
+
+##' make a class for a graphics scene so that we can override mouse events, etc.
+##' 
+qsetClass("OurQGraphicsScene", Qt$QGraphicsScene, function(parent=NULL) {
+  super(parent)
+  ## properties
+  this$lastClick <- NULL
+  this$buttonPress <- FALSE
+  this$clickHandler <- NULL
+  this$changeHandler <- NULL
+})
+
+
+
+##' add click handler
+##' Handler code is simple: Only one handler, use NULL to eliminate. tcltk like. Can make
+##' More complicated if need be
+qsetMethod("addHandlerClicked", OurQGraphicsScene, function(handler=NULL, action=NULL) {
+  this$clickHandler <- handler
+  this$clickAction <- action
+})
+
+##' changed returns h$x, h$y with x,y coodinates of rectange (lower left, upper right)
+qsetMethod("addHandlerChanged", OurQGraphicsScene, function(handler=NULL, action=NULL) {
+  this$changeHandler <- handler
+  this$changeAction <- action
+
+}) 
+
+##' call the clickHandler if present
+qsetMethod("mousePressEvent", OurQGraphicsScene, function(e) {
+  this$lastClick <- e$buttonDownScenePos(e$button())
+  this$buttonPress <- TRUE
+  if(!is.null(clickHandler)) {
+    w <- this$width()           
+    ht <- this$height()
+    x <- this$lastClick$x()
+    y <- this$lastClick$y()
+    h <- list(obj=this$data,
+              x=grconvertX(x/w, from="ndc", to="user"),
+              y=grconvertY((ht-y)/ht, from="ndc", to="user"),
+              action=this$clickHandlerAction
+              )
+    clickHandler(h)
+  }
+
+  super("mousePressEvent", e)
+})
+
+
+qsetMethod("mouseReleaseEvent", OurQGraphicsScene, function(e) {
+  this$lastRelease <- e$scenePos()
+  this$buttonPress <- FALSE
+   if(!is.null(changeHandler)) {
+     w <- this$width()           
+     ht <- this$height()
+     ## start
+     x1 <- this$lastClick$x()
+     y1 <- this$lastClick$y()
+     ## finish 
+     x2 <- this$lastRelease$x()
+     y2 <- this$lastRelease$y()
+     x <- c(x1,x2); y <- c(y1, y2)
+     h <- list(obj=this$data,
+               x=sort(grconvertX(x/w, from="ndc", to="user")),
+               y=sort(grconvertY((ht-y)/ht, from="ndc", to="user")),
+               action=this$changeHandlerAction
+               )
+     changeHandler(h)
+   }
+
+  super("mouseReleaseEvent", e)
+})
+
+
+##################################################
 
 ##' make a class for a graphics device. This allows
 ##' one to write methods for mouse handlers etc.
@@ -33,62 +111,14 @@ qsetMethod("setObject", QtDevice, function(obj) this$data <- obj)
 ##' set as current device
 qsetMethod("devSet", QtDevice, function() dev.set(dev))
 
-##' simple handler implementation
-##' We can only have one handler at a time. If this is non-NULL, we call it on a mouse click
-##' 
-qsetMethod("addHandlerClicked", QtDevice, function(handler, action=NULL) {
-  this$clickHandler <- handler
-  if(!is.null(handler))
-    this$clickAction <- action
-  else
-    this$clickAction <- NULL
-})
 
 ##' raise on mouse click
-##' Beef up -- locator function, rectangle selection
-##' XXX The x, y coordinates are not correct (just wrong and don't account for scrollbars). How to fix??
+##'
 qsetMethod("mousePressEvent", QtDevice, function(e) {
   devSet()
-  this$lastClick <- e$pos()
-  this$buttonPressed <- TRUE
-  if(!is.null(clickHandler)) {
-    w <- this$width
-    ht <- this$height
-    h <- list(obj=this$data,
-              x=grconvertX((e$x())/( w), from="ndc", to="user"),
-              y=grconvertY((ht-e$y())/ht, from="ndc", to="user"),
-              w=w, h=ht, ex=e$x(), ey=e$y()
-              )
-    clickHandler(h)
-  }
   super("mousePressEvent", e)
 })
 
-## This didn't work. Try to mimic work in qtdevice to get rubber band selection drawn 
-## qsetMethod("mouseMoveEvent", QtDevice, function(e) {
-##   this$currentPosition <- e$pos()
-##   super("mouseMoveEvent", e)
-## })
-
-## qsetMethod("mouseReleaseEvent", QtDevice, function(e) {
-##   this$lastRelease <- e$pos()
-##   if(this$buttonPressed) {
-##     this$buttonPressed <- FALSE
-##     update()                            # call paintEvent
-##   }
-##   super("mouseReleaseEvent", e)
-## })
-
-## qsetMethod("paintEvent", QtDevice, function(e) {
-  
-##   if(exists("buttonPressed", this) && !is.null(buttonPressed) && buttonPressed) {
-##     p <- Qt$QPainter(this)
-##     p$setBrush(Qt$QBrush(Qt$QColor(127, 127, 144, 31)))
-##     p$setPen(Qt$QColor(127, 127, 144, 255));
-##     p$drawRect(Qt$QRect(lastClick, currentPosition));
-##   }
-##   super("paintEvent", e)
-## })
 
 ##' only called for top-level windows
 ##' doesn't work. How to close device when window is destroyed
@@ -99,7 +129,7 @@ qsetMethod("closeEvent", QtDevice, function(e) {
 
 ##' initialize the scene for the view
 qsetMethod("initScene", QtDevice, function(width, height, pointsize, family="") {
-  this$rscene <- qsceneDevice(width, height, pointsize, family)
+  this$rscene <- qsceneDevice(width, height, pointsize, family, OurQGraphicsScene())
   this$setScene(rscene)
 
   ## properties
@@ -108,7 +138,7 @@ qsetMethod("initScene", QtDevice, function(width, height, pointsize, family="") 
   this$clickAction <- NULL
 
   ## setup widget
-  setDragMode(Qt$QGraphicsView$ScrollHandDrag)
+  setDragMode(Qt$QGraphicsView$RubberBandDrag) # do rubber banding. call addHandlerChanged to get coords
   setContextMenuPolicy(Qt$Qt$ActionsContextMenu)
 
   addActions()
@@ -177,9 +207,12 @@ setMethod(".ggraphics",
                    container=NULL,...) {
 
             force(toolkit)
+
+            theArgs <- list(...)
+            family <- getWithDefault(theArgs$family, "")
             
             v <- QtDevice()
-            v$initScene((width/dpi), (height/dpi), ps, "")
+            v$initScene((width/dpi), (height/dpi), ps, family)
 
             obj <- new("gGraphicsQt",
                        block=v, widget=v,
@@ -246,7 +279,7 @@ setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitQt",obj="gGraphicsQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
             v <- getWidget(obj)
-            v$addHandlerClicked(handler, action)
+            v$scene()$addHandlerClicked(handler, action)
             invisible()
           })
 
@@ -261,4 +294,7 @@ setMethod(".addhandlerclicked",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gGraphicsQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
+            v <- getWidget(obj)
+            v$scene()$addHandlerChanged(handler, action)
+            invisible()
           })
