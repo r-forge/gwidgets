@@ -546,11 +546,17 @@
 \alias{.visible<--methods}
 \alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gGridRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gLayoutRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.visible<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
-\alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.visible<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gRadioRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
+\alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 %%
 %% --  enabled --
 %%
@@ -602,7 +608,10 @@
 \alias{.size<--methods}
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
+\alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
 %%
 %% --  focus --
 %%

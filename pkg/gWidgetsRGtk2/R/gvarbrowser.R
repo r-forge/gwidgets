@@ -39,10 +39,25 @@ lsModels = function(envir=.GlobalEnv)  lsType(.models, envir)
 lsTs = function(envir=.GlobalEnv)  lsType(.ts, envir)
 lsFunctions = function(envir=.GlobalEnv)  lsType(.functions, envir)
 
+##' function to capture summary (in string) of object
+ourStr <- function(x) UseMethod("ourStr")
+ourStr.default <- function(x) ""        # say nothing if nothing good to say -- thanks Mom.
+ourStr.character <- ourStr.logical <- ourStr.numeric <- function(x) sprintf("length %s", length(x))
+ourStr.matrix <- function(x) sprintf("%s by %s", nrow(x), ncol(x))
+ourStr.data.frame <- function(x) sprintf("%s variables, %s observations", length(x), nrow(x))
+ourStr.list <- function(x) sprintf("%s components", length(x))
+ourStr.lm <- function(x) deparse(x$call)
 
 
+
+
+
+
+##' Make offspring data frame
 offspring = function(path=c(), data=NULL) {
+  emptyDf <- data.frame(names="",hasSubTree=FALSE,type="", summary="", stringsAsFactors=FALSE)
 
+  
   if(!is.null(data) && is.function(data)) data <- data()
 
   ## data is knownClass value. This checks through inheritance but still the
@@ -67,26 +82,31 @@ offspring = function(path=c(), data=NULL) {
   }
 
   if(length(x) == 0) {
-    return(data.frame(names="",hasSubTree=FALSE,type=""))
+    return(emptyDf)
   }
 
-  type <- c(); hasTree <- c(); newNames <- c()
+  objType <- newNames <- objSummary <- character(0)
+  hasTree <- logical(0);
     
-  for(i in 1:length(x)) {
+  for(i in seq_along(x)) {
     y <-  getObjectFromString(fullx[i])
     if(.inClass(y,data)) {
-      j <- length(type)+ 1
-      type[j] <- str2(y)
+      j <- length(objType)+ 1
+      objType[j] <- str2(y)
       hasTree[j] <- hasSubTree(y)
       newNames[j] <- x[i]
+      objSummary[j] <- ourStr(y)
     }
   }
   
-  if(length(type) == 0) {
-    return(data.frame(names="",hasSubTree=FALSE,type="", stringsAsFactors=TRUE))
+  if(length(objType) == 0) {
+    return(emptyDf)
   }
 
-  allValues <-  data.frame(names=I(newNames), hasSubTree=hasTree, type=I(type), stringsAsFactors=FALSE)
+  allValues <-  data.frame(names=I(newNames),
+                           hasSubTree=hasTree,
+                           type=I(objType),
+                           summary=I(objSummary), stringsAsFactors=FALSE)
   return(allValues)
   
 }
@@ -161,7 +181,7 @@ setMethod(".gvarbrowser",
             ## main tree
             tree = gtree(offspring=offspring,
               offspring.data=function() knownTypes[[svalue(filterPopup)]],
-              col.types=data.frame(Name="string",Type="string"),
+              col.types=data.frame(Name="string",Type="string",Summary="String"),
               icon.FUN = function(d,...) {
                 ## Allow user to change stock icon
                 FUN <- getWithDefault(getOption("gWidgetsStockIconFromClass"), stockIconFromClass)
@@ -203,15 +223,16 @@ setMethod(".gvarbrowser",
             tag(tree,"view")$SetEnableSearch(TRUE)
             tag(tree,"view")$SetHeadersClickable(TRUE)
 
-            obj = new("gVarbrowserRGtk",block=group, widget=tree, filter=filterPopup)
+            obj <- new("gVarbrowserRGtk",block=group, widget=tree, filter=filterPopup, toolkit=toolkit)
 
 
             ## override how we compare items. Default is just by name, here we want
             ## to include class
             tag(tree, "isStillThere") <- function(old, new) {
               if(length(old) && length(new)) {
-                (old[1] %in% new[,1, drop=TRUE]) &&
-                (old[2] %in% new[,3, drop=TRUE])
+                identical(any(ind <- (old[1] == new[,1, drop=TRUE])) &&
+                          (old[2] %in% new[which(ind),3, drop=TRUE]),
+                          TRUE)         # Tom Taverner change
               } else {
                 FALSE
               }

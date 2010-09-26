@@ -4,6 +4,7 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-69
 --------------------------
+* fix to gvarbrowser (Thanks Tom, wxffxw)
 * use RGtk2Extras now (name change) (Thanks TOm)
 * fix to gradio's [<- method
 * change to 3rd mouse popup and gtable (THanks Wincent)

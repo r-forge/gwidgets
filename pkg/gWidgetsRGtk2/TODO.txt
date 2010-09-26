@@ -1,3 +1,4 @@
+* TOm points out but in gvarbrowser on 9/24 check this out.
 DONE * Stephanie reports error with gvarbrowser -- likely in gtree. Fix it!
 * fix height on gcombobox -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.

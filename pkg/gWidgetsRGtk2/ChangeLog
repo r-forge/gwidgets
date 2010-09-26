@@ -1,3 +1,8 @@
+2010-09-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: Fixed bug in isStillThere, added summary
+	column (Thanks to Tom T. and wxffxw);
+
 2010-08-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R: Try to make OK button default button. Doesn't
