@@ -136,7 +136,51 @@ setClass("gVarbrowserRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
 
-## THe main object
+##' Toolkit constructor for gvarbrowser widget
+##'
+##' Call the update method to update the object
+##' 
+##' 
+##' @example
+##' Make a popup menu for actions. Issue: works with selection, but selection updated first by left click
+##' is needed.
+##' library(gWidgets)
+##' options(guiToolkit="RGtk2")
+##' v <- gvarbrowser(cont=gwindow("Object broser"), handler=function(h,...) {
+##' varname <- h$obj[]
+##' if(length(varname) == 1) {
+##' do.call("fix", list(varname))
+##' }
+##' })
+##' Helper function to get object from argument h passed in to menulist
+## getObjectFrom_h <- function(h) {
+##   varname <- h$action[]                 # note action, not obj
+##   obj <- get(varname[1], envir=.GlobalEnv)
+##   if(length(varname) > 1)
+##     obj <- obj[[varname[-1]]]
+##   obj
+## }
+
+## ##' a list of gaction items or separators
+## ml <- list(
+##            summary=gaction("summary...", action=v, handler=function(h,...) {
+##              obj <- getObjectFrom_h(h)
+##              print(summary(obj))
+##            }),
+##            plot=gaction("plot...", action=v, handler=function(h,...) {
+##              obj <- getObjectFrom_h(h)
+##              try(plot(obj), silent=TRUE)
+##            }),
+##            sep=gseparator(),
+##            remove=gaction("remove", action=v, handler=function(h,...) {
+##              varname <- h$action[]
+##              print(varname)
+##              if(gconfirm(sprintf("Really delete %s?", varname[1])))
+##                rm(list=varname[1], envir=.GlobalEnv)
+##            })
+##            )
+## add3rdMousePopupmenu(v, menulist=ml)
+
 setMethod(".gvarbrowser",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -231,7 +275,8 @@ setMethod(".gvarbrowser",
             tag(tree, "isStillThere") <- function(old, new) {
               if(length(old) && length(new)) {
                 identical(any(ind <- (old[1] == new[,1, drop=TRUE])) &&
-                          (old[2] %in% new[which(ind),3, drop=TRUE]),
+                          (old[2] %in% new[which(ind),3, drop=TRUE]) &&
+                          (old[3] %in% new[which(ind),4, drop=TRUE]), # for wxf
                           TRUE)         # Tom Taverner change
               } else {
                 FALSE
