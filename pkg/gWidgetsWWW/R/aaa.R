@@ -1006,6 +1006,7 @@ EXTStore$chosenCol <- NULL               # selected column
 ## coerce val to a JS array
 EXTStore$setData <- function(.,d) .$data <- d
 EXTStore$getData <- function(.) .$data
+EXTStore$dim <- function(.) dim(.$getData())
 EXTStore$setChosenCol <- function(.,value).$chosenCol <- value
 EXTStore$getChosenCol <- function(.).$chosenCol
 
@@ -1096,6 +1097,52 @@ EXTComponentWithStore$show <- function(.) {
 #
 #  .$..store$asCharacter()               # call into store
 #}
+
+
+##' Sub Trait for gdf
+EXTComponentDfStore <- EXTComponentWithStore$new()
+
+
+##' set values in store; ([<-)
+EXTComponentDfStore$setValues <- function(., i, j, ..., value) {
+
+  if(missing(i))  i <- seq_len(nrow(.$..store$data))
+  if(missing(j))  j <- seq_len(ncol(.$..store$data))
+
+  d <- .$..store$getData()
+  d[i,j] <- value
+  .$..store$setData(d)
+  if(exists("..shown", envir=., inherits=FALSE)) {
+    cat(.$setValuesJS(i,j,value), file=stdout())
+  }
+}
+
+##' write java script to set the values
+EXTComponentDfStore$setValuesJS <- function(., i,j,value) {
+  if(missing(i) && missing(j)) {
+    .$..store$replaceStore()
+    return()
+  }
+  ## make value have i,j
+  if(!is.matrix(value) || !is.data.frame(value))
+    value <- data.frame(value=value, stringsAsFactors=FALSE)
+  
+  ## set i,j elements of store
+  ## get record (getAt)
+  ## set record by column name
+  ## commit record
+  out <- String() + "\n"
+  for(row in seq_along(i)) {
+    out <- out + sprintf("rec = %s.getAt(%s);", .$..store$asCharacter(), i[row] - 1)
+    for(col in seq_along(j)) {
+      out <- out + sprintf("rec.set('%s', '%s');", names(.)[j[col]], escapeQuotes(value[row,col]))
+    }
+    out <- out + "rec.commit();" + "\n"
+  }
+
+  cat(out, file=stdout())
+}
+  
 
 
 ### Some widgets render better in a panel

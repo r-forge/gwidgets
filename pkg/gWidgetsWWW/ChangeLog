@@ -1,3 +1,8 @@
+2010-10-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTComponentDfStore$setValues): made Trait so that gdf
+	has [<- method that works
+
 2010-08-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* inst/Examples/ex-clt.R (makePlot): fix to example -- was making

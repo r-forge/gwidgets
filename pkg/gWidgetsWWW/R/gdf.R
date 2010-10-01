@@ -13,12 +13,13 @@
 ## names<-, names for headers
 ## integrate -- filter fun: maybe never
 
+     
 gdf <- function(items = NULL, name = deparse(substitute(items)),
                 do.subset = FALSE,
                 container = NULL, ...) {
 
   
-  widget <- EXTComponentWithStore$new(toplevel=container$toplevel,
+  widget <- EXTComponentDfStore$new(toplevel=container$toplevel,
                                       ..name = name,
                                       ..do.subset = do.subset
                                       )

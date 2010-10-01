@@ -1,4 +1,5 @@
 ## TODO for gWidgetsWWW
+* [<- for i,j and dgf
 * update to ext 3.2
 (A firefox thing) * size of text in gcombobox is too big. How to change?
 * update googlemaps to new API (disabled for now)

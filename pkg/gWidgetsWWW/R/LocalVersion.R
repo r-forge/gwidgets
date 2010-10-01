@@ -477,7 +477,7 @@ localRunHandler <- function(id, context=NULL, sessionID) {
       stop("Tried too many times")
     
     out <- try({
-      if(!is.null(context))
+      if(!is.null(context) || context == "")
         e$runHandler(id, ourFromJSON(context))
       else
         e$runHandler(id)

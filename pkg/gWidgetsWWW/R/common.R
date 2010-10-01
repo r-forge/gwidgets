@@ -123,7 +123,9 @@ unescapeURL <- function(x) {
 
 ##' replace ' with \\'
 ##' Also can replace ' with &143; type thingy
-escapeQuotes <- function(x) {
+escapeQuotes <- function(x) UseMethod("escapeQuotes")
+escapeQuotes.default <- function(x) x
+escapeQuotes.character <- function(x) {
   for(i in 1:length(x)) {
     chars <- unlist(strsplit(x[i],""))
     ind <- grep("'", chars)
