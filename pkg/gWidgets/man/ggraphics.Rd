@@ -5,7 +5,7 @@
 		   notebook to wrap plots in}
 \description{
 	If a toolkit provides a graphics device, such as the
-	cairoDevice package does for GTK, this constructor makes
+	cairoDevice package does for GTK+ or qtutils for Qt, this constructor makes
 	devices that can then be embedded in other widgets. The
 	notebook interface is one such example.
 }
@@ -46,7 +46,12 @@ first argument \code{h} has the additional values \code{h\$x} and
 are returned using "usr" coordinates (see \code{help("par")}). (This was
 in NDC coordinates)
 
-For \pkg{gWidgetsRGtk2} there is also rubber-band selection implemented. The \code{addHandlerChanged} method can be used to call a handler when the selection is completed. See the example for how this can do something similar to "brushing".
+For \pkg{gWidgetsRGtk2} and \pkg{gWidgetsQt} there is also rubber-band
+selection implemented. The \code{addHandlerChanged} method can be used
+to call a handler when the selection is completed. The \code{x} and
+\code{y} components of \code{h} record the lower left and upper right
+points of the rectange. See the example for how this can do something
+similar to "brushing".
 
 
 }
@@ -59,9 +64,9 @@ win <- gwindow("Graphics example")
 ggraphics(ps=6, container=win)
 hist(rnorm(100))
 
-## This is for gWidgetsRGtk2 only (along with cairoDevice)
+## This is for gWidgetsRGtk2  (along with cairoDevice) or qtutils
 library(gWidgets)
-options(guiToolkit="RGtk2")
+options(guiToolkit="RGtk2") ## "Qt"
 
 w <- gwindow("brush example", visible=FALSE)
 g <- ggroup(cont=w)

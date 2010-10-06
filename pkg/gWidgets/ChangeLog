@@ -1,3 +1,8 @@
+2010-10-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ghelp.R (.findHelpPage): cleaned up code thanks to Josef L. and
+	his textConnection snippet
+
 2010-09-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ghelp.R: reworked this, made work for all three toolkits

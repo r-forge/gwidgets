@@ -20,6 +20,14 @@ ghelp <- function(
 }
 
 
+##' API
+##' add, character -- add page character=c(topic), c(topic,package) "package:::topic"
+##' add, list -- add page, list(topic, package=NULL)
+##' svalue: return list(topic=topic, package=package)
+##' length: number of pages
+##' dispose: remove current page
+
+
 ##' generic for toolkit dispatch
 ##' @alias ghelp
 setGeneric( '.ghelp' ,
@@ -96,31 +104,31 @@ setMethod(".add",
 
             ## error check
             if(!is.character(topic) || length(topic) > 1 || length(topic) == 0) {
-              warning("Adios, adding to ghelp needs a valid topic. You tried",topic,"\n")
-              return()
+              warning(sprintf("Adding to ghelp needs a valid topic. You tried %s.\n",topic))
+              return(NULL)
             }
 
-            ## are we already present?
-            if(n <- .length(obj, toolkit)) {
-              for(i in 1:n) {
-                l <- list(topic=tag(nb[i],"topic"), package=tag(nb[i],"package"))
-                if(l$topic == topic && (
-                     (is.null(package) && is.null(l$package)) ||
-                     l$package == package)) {
-                  svalue(nb) <- i
-                  return()
-                }
-              }
-            }
+            l <- .findHelpPage(topic, package)
 
+            x <- l$x
+            topic <- l$topic; package <- l$package
 
-
-            
-            x <- .findHelpPage(topic, package)
-
-            
             
             if(!is.null(x)) {
+              ## are we already present?
+              if(n <- .length(obj, toolkit)) {
+                for(i in 1:n) {
+                  l <- list(topic=tag(nb[i],"topic"), package=tag(nb[i],"package"))
+                  if(l$topic == topic && (
+                       (is.null(package) | is.null(l$package)) ||
+                       l$package == package)) {
+                    svalue(nb) <- i
+                    return(NULL)
+                  }
+                }
+              }
+
+              ## good to go
               nb <- obj@widget
               t <- gtext(cont=nb, label=topic, expand=TRUE)
               tag(t, "topic") <- topic
@@ -128,9 +136,9 @@ setMethod(".add",
               svalue(nb) <- length(nb)
               .insertHelpPage(t, x)
             }
-
-            return()
-            })
+            
+            return(NULL)
+          })
 
 ##' returns list of topic and package of current page
 setMethod(".svalue",
@@ -177,10 +185,15 @@ setMethod(".dispose",
   if(length(out) == 0) return(NULL)
   
   pkgname <-  basename(dirname(dirname(out)))
-  temp <- tools::Rd2txt(utils:::.getHelpFile(out), out = tempfile("Rtxt"), package=pkgname)
-  x <- readLines(temp)
-  unlink(temp)
-  return(x)
+
+  ## thanks to Josef L for this
+  help.txt <- "" ## keep R CMD check happy  
+  help.con <- textConnection("help.txt", "w", local = TRUE)
+  tools::Rd2txt(utils:::.getHelpFile(out), out=help.con, package=pkgname,
+                width=80L)
+  close(help.con)
+  
+  return(list(x=help.txt,topic=topic, package=pkgname))
 }
 
 ##' insert help page into text object
@@ -327,6 +340,11 @@ ghelpbrowser <- function(
   return(obj)
 }
 
+
+##' API:
+##' visible<-, logical. Display or hide sidebar
+##' size<-, set size of window
+##' size, size of window
 
 ##' generic for toolkit dispatch
 ##' @alias ghelpbrowser
