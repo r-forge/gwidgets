@@ -114,7 +114,7 @@ setMethod(".dispose",
             }
             obj@e$childComponents <- children
 
-            if(cur.pageno > 0) {        # error if no pages
+            if(cur.pageno > 0 && length(children)) {        # error if no pages
               if(cur.pageno <= length(obj))
                 svalue(obj) <- cur.pageno
               else
@@ -213,7 +213,7 @@ setMethod(".add",
             
             ## closebutton
             ## closebutton
-            file = system.file("images/cancel.gif",package="gWidgets")
+            file <- system.file("images/cancel.gif",package="gWidgets")
             closeb <- tcl("image","create","photo",file=file)
             
             doCloseButton <- FALSE
@@ -232,10 +232,16 @@ setMethod(".add",
 
 
             ##
-            if(doCloseButton) {
-              packingOptions$image=closeb
-              packageOptions$compount = "right"
-            }
+            ## Can't do close buttons until we can identify when a tab click is on the icon
+            ## We should be able to: nb identify element x y should work, as in
+            ## tkbind(nb, "<Button-1>", function(x,y) {
+            ##      tcl(nb, "identify", "element", x, y)
+            ## })
+            ## however this failes, only identify works and we can't sort out label from image
+            ## if(doCloseButton) {
+            ##   packingOptions$image=closeb
+            ##   packingOptions$compound = "right"
+            ## }
             
             if(is.null(index)) {
               f <- function(...)

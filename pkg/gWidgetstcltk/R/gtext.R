@@ -151,7 +151,7 @@ setReplaceMethod(".svalue",
                      value <- paste(value, collapse="\n")
                    tkinsert(getWidget(obj),"end",value)
 
-                   tksee(getWidget(obj),"end")
+                   tksee(getWidget(obj),"0.0")
                    
                    return(obj)
                  })

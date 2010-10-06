@@ -849,7 +849,8 @@ setMethod(".add",
 
             
             argList = list(getBlock(value))
-
+            argList$fill <- theArgs$fill
+            
             ## expand. use fill, expand didn't
             if(!is.null(theArgs$expand) && theArgs$expand) {
               argList$expand <- TRUE
@@ -857,10 +858,9 @@ setMethod(".add",
                 argList$fill = "both"
             }
 
-            ## if anchor, then set expand=TRUE, no fill
+            ## if anchor spcified, then set expand=TRUE
             if(!is.null(theArgs$anchor)) {
               argList$expand <- TRUE
-              argList$fill <- NULL      # no fill
               argList$anchor <- xyToAnchor(theArgs$anchor)
             }
             
@@ -870,6 +870,10 @@ setMethod(".add",
               argList$side = "top"
 
             ## call tkpack
+            cat("tlpack with")
+            print(argList)
+                
+            
             do.call("tkpack",argList)
 
             tcl("update","idletasks")

@@ -1,4 +1,14 @@
+2010-10-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (ladd): changed what is shown after text is added. Now
+	moves to top, not bottom
+
+	* R/aaaGenerics.R: fixed error with fill argument to add method
+	for containers.
+
 2010-09-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R: bug fix for closebuttons=TRUE
 
 	* R/gpanedgroup.R: bug fix in svalue() method
 

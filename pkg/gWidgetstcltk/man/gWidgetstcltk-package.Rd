@@ -118,8 +118,10 @@ in
 }
 
 The paned window can be adjusted manually or using the \code{svalue}
-method. The \code{delete} method can be used to delete a widget. It may
-be added back with the \code{add} method.  \cr
+method. The \code{svalue} method uses the current window size. If the
+widget is not realized, the method will not work as expected, so call
+this after showing the GUI. The \code{delete} method can be used to
+delete a widget. It may be added back with the \code{add} method.  \cr
 
 
 \bold{The basic widgets or components:} (These may also be known as controls)
