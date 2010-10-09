@@ -120,26 +120,27 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 
   }
 
-  ## we don't have a good means for visible<-. Instead we have this
-  ## filter proto method 
-  widget$filter <- function(., colname, regex) {
-    if(!exists("..shown",envir=., inherits=FALSE)) {
-      ## "Can only filter once object is shown"
-      out <- ""
-    }
+  ## ## we don't have a good means for visible<-. Instead we have this
+  ## ## filter proto method
+  ## XXX moved out to widget with store
+  ## widget$filter <- function(., colname, regex) {
+  ##   if(!exists("..shown",envir=., inherits=FALSE)) {
+  ##     ## "Can only filter once object is shown"
+  ##     out <- ""
+  ##   }
 
-    if(missing(colname) || !colname %in% names(.$..store$data))  {
-       ## Need colname to match one of the names of the data set
-      out <- ""
-    }
+  ##   if(missing(colname) || !colname %in% names(.$..store$data))  {
+  ##      ## Need colname to match one of the names of the data set
+  ##     out <- ""
+  ##   }
 
-    if(missing(regex) || regex=="") {
-      out <- sprintf("o%s.getStore().clearFilter();", .$ID)
-    } else {
-      out <- sprintf("o%s.getStore().filter('%s','%s');", .$ID, colname, regex)
-    }
-    cat(out, file=stdout())
-  }
+  ##   if(missing(regex) || regex=="") {
+  ##     out <- sprintf("o%s.getStore().clearFilter();", .$ID)
+  ##   } else {
+  ##     out <- sprintf("o%s.getStore().filter('%s','%s');", .$ID, colname, regex)
+  ##   }
+  ##   cat(out, file=stdout())
+  ## }
   
 
   

@@ -191,6 +191,10 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     return(out)
   }
 
+  ## we don't have a good means for visible<-. Instead we have this
+  ## filter proto method 
+
+  
   widget$footer <- function(.) {}
   
   

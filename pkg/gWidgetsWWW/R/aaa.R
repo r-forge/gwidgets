@@ -1091,6 +1091,34 @@ EXTComponentWithStore$show <- function(.) {
   .$Cat(.$..store$show())
   get("show",EXTComponent)(.)       # call up
 }
+
+##' visible<- is note implement, use $filter instead
+EXTComponentWithStore$setVisibleJS <- function(., ...) {}
+
+##' filter is used to filter our values matching regular expression in the given column
+##' @param . component with store
+##' @param colname name of column to match regular expression agains
+##' @param regex regular expression to match against, If empty, skip
+EXTComponentWithStore$filter <- function(., colname, regex) {
+    if(!exists("..shown",envir=., inherits=FALSE)) {
+      ## "Can only filter once object is shown"
+      out <- ""
+    }
+
+    if(missing(colname) || !colname %in% names(.$..store$data))  {
+       ## Need colname to match one of the names of the data set
+      out <- ""
+    }
+
+    if(missing(regex) || regex=="") {
+      out <- sprintf("o%s.getStore().clearFilter();", .$ID)
+    } else {
+      out <- sprintf("o%s.getStore().filter('%s','%s');", .$ID, colname, regex)
+    }
+    cat(out, file=stdout())
+  }
+  
+
 ## get name of store to paste into JS code
 ## This made adding the widget not work! replaced
 #EXTComponentWithStore$asCharacter <- function(.) {
