@@ -33,7 +33,9 @@
 \alias{.length,gHelpANY-method}
 \alias{names<-,gWidgetANY-method}
 \alias{names,gWidgetANY-method}
+\alias{.size,gHelpbrowserANY-method}
 \alias{size<-,gWidgetANY-method}
+\alias{.size<-,gHelpbrowserANY,ANY,numeric-method}
 \alias{.svalue<-,gCommandlineANY-method}
 \alias{.svalue<-,gAddargANY-method}
 \alias{.svalue<-,gBivariateANY-method}
@@ -62,6 +64,7 @@
 \alias{update,gWidgetANY-method}
 \alias{visible<-,gWidgetANY-method}
 \alias{visible,gWidgetANY-method}
+\alias{.visible<-,gHelpbrowserANY,ANY,logical-method}
 \alias{isExtant,gWidgetANY-method}
 
 \alias{.gsvg,ANY-method}

@@ -57,7 +57,13 @@ gnotebook(tab.pos = 3, closebuttons = FALSE, dontCloseThese = NULL, container = 
    returns a single widget or list of widgets.
 
    For some toolkits, the \code{"[<-"} method may be used to replace a widget on a notebook page.
-  
+ 
+ The \code{addHandlerChanged} method passes the component
+ \code{pageno} when the page index returned by \code{svalue} within
+ the handler refers to the tab before it was changed. The following
+ could be used to get the right one in a portable way:
+ \code{if(is.null(h$pageno)) svalue(h$obj) else h$pageno}
+
 }
 % \value{}
 % \references{}

@@ -21,7 +21,9 @@
 \alias{add,guiComponent-method}
 \alias{add,guiContainer-method}
 \alias{addSpace,guiWidget-method}
+\alias{addSpace,gGroup-method}
 \alias{addSpring,guiWidget-method}
+\alias{addSpring,gGroup-method}
 \alias{adddropmotion,guiWidget-method}
 \alias{adddropsource,guiWidget-method}
 \alias{adddroptarget,guiWidget-method}
@@ -70,8 +72,11 @@
 \alias{unblockHandler,guiWidget-method}
 \alias{removeHandler,guiWidget-method}
 \alias{defaultWidget,guiWidget-method}
+\alias{defaultWidget,gButton-method}
 \alias{defaultWidget<-,guiWidget-method}
+\alias{defaultWidget<-,gButton-method}
 \alias{delete,guiWidget-method}
+\alias{delete,guiContainer-method}
 \alias{dim,guiWidget-method}
 \alias{dimnames,guiWidget-method}
 \alias{dimnames<-,guiWidget-method}
@@ -79,13 +84,15 @@
 \alias{enabled,guiWidget-method}
 \alias{enabled<-,guiWidget-method}
 \alias{focus,guiWidget-method}
-\alias{focus<-,guiWidget-method}
+\alias{focus,guiComponent-method}
+\alias{focus<-,guiComponent-method}
 \alias{font,guiWidget-method}
 \alias{font<-,guiWidget-method}
 \alias{id,guiWidget-method}
 \alias{id<-,guiWidget-method}
 \alias{insert}
 \alias{insert,guiComponent-method}
+\alias{insert,gText-method}
 \alias{length,guiWidget-method}
 \alias{names,guiWidget-method}
 \alias{names<-,guiWidget-method}
@@ -97,6 +104,7 @@
 \alias{tag,guiWidget-method}
 \alias{tag<-,guiWidget-method}
 \alias{tooltip<-,guiWidget-method}
+\alias{tooltip<-,guiComponent-method}
 \alias{update,guiWidget-method}
 \alias{visible,guiWidget-method}
 \alias{visible<-,guiWidget-method}
@@ -134,8 +142,10 @@
 \alias{getToolkitWidget}
 \alias{getToolkitWidget,guiWidget-method}
 \alias{redo,guiWidget-method}
+\alias{redo,guiComponent-method}
 \alias{redo,gWidgetANY-method}
 \alias{undo,guiWidget-method}
+\alias{undo,guiComponent-method}
 \alias{undo,gWidgetANY-method}
 
 \title{Methods for gWidgets instances}
@@ -178,7 +188,7 @@
       is set by index.
     }
     
-  
+    
     \item{ \code{[(x,i,j,...,drop=TRUE)]}:}{ 
       For widgets where selection is a choice from a collection of items,
       the \code{svalue} method refers to the choice and the square bracket
@@ -211,14 +221,15 @@
     }{
       Used to check if widget is visible or not. When setting the
       visibility, \code{value} should be a logical. "Visibility"
-      differs from widget to widget. For \code{gwindow} it refers
+      differs from widget to widget. For \code{gwindow}, like most other widgets, it refers
       to whether the base container is shown or not. For the
       dataframe-like widgets \code{gdf} and \code{gtable}
-      visibility refers to which rows are shown.
+      visibility refers to which rows are shown. For \code{gexpandgroup} it sets whether the container displays its children or not.
+
     }
     
     \item{
-      \code{visible(obj ...)}
+      \code{isExtant(obj ...)}
     }{
       Used to check if a gwindow object is extant (not been destroyed). An R
       object can point to a window that can no longer be shown, as it may
@@ -236,16 +247,7 @@
     }
     
     
-    \item{\code{isExtant(obj, ...)}
-    }{
-
-      Method to check if widget is still usable. Useful to check if a
-      widget has been destroyed and can no longer have methods called on
-      it -- even if the R object is still extant, the underlying GUI
-      object may not be.
-
-    }
-
+   
     \item{ \code{focus(obj,...)} or \code{focus<-(obj,...,value)}:
     }{
       method to check if a widget has focus (for keyboard input), or to force focus on a widget.
@@ -334,10 +336,17 @@
       For the containers (\code{gwindow}, \code{ggroup}, ...) adding
       adds a widget to be packed in. For the parent container
       produced by \code{gwindow} only one item can be added. For
-      groups, this is not the case. For \code{ggroup}, \code{gframe}
-      and \code{gexpandgroup} the extra argument \code{expand=TRUE}
-      will cause the widget to take up all possible space within the
-      container.
+      groups, this is not the case. 
+
+      For \code{ggroup}, \code{gframe} and \code{gexpandgroup} the
+      extra argument \code{expand=TRUE} will cause the widget to take
+      up all possible space within the container. The widget can grow
+      to fill the space. The argument \code{fill}, with values
+      \code{"x"}, \code{"y"}, or \code{"both"} indicate which
+      direction the widget should grow. The argument \code{anchor}
+      takes a value with x-y coordinates in {-1,0,1} by {-1,0,1)
+      indicating where to anchor the widget if it does not grow in
+      both directions.
       
       For the components, \code{add} has different meanings. For
       notebooks (\code{gnotebook}, ...) \code{add} is used to add
@@ -363,14 +372,14 @@
 	  a logical indicating if a newline should be  added after the
 	  text
 	}
-      
+	
 	\item{where}{
 	  An indicator of where to place the text: "beginning",
 	  "ending", or "at.cursor", although the latter may not be
 	  implemented.
 	}
       }
-    }
+    }}
   
     \item{\code{delete(obj, widget,...)}:
     }{

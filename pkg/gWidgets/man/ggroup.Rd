@@ -49,7 +49,7 @@ gexpandgroup(text = "", markup = FALSE, horizontal=TRUE, handler = NULL, action 
 
 	The \code{gexpandgroup} containers has an optional label and a
 	trigger to click  on which toggles the display of the the child widgets.
-
+	By default, the child widgets are not shown. Using the \code{visible<-} method to adjust.
   
 	The containers pack in child widgets from either left to right
 	(when \code{horizontal=TRUE}) or from top to bottom (when
