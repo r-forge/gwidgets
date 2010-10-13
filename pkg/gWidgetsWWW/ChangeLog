@@ -1,3 +1,13 @@
+2010-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTComponentWithStore$filter): call to RegExp to
+	actually use regular expressions.
+
+2010-10-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTComponentWithStore$filter): Moved $filter from
+	gtable out so that gdf can use the code.
+
 2010-10-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaa.R (EXTComponentDfStore$setValues): made Trait so that gdf

@@ -1113,7 +1113,7 @@ EXTComponentWithStore$filter <- function(., colname, regex) {
     if(missing(regex) || regex=="") {
       out <- sprintf("o%s.getStore().clearFilter();", .$ID)
     } else {
-      out <- sprintf("o%s.getStore().filter('%s','%s');", .$ID, colname, regex)
+      out <- sprintf("o%s.getStore().filter('%s',RegExp('%s'));", .$ID, colname, regex)
     }
     cat(out, file=stdout())
   }

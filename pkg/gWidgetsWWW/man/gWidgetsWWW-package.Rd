@@ -360,6 +360,12 @@ The communication between \R\/ and the browser works as
   row names. One could add these to \code{items} first as a character
   vector to edit. and then take them off again. \cr
 
+  There is no \code{visible<-} method to restrict the rows that are
+  shown by a specification of a logical vector. However, a proto method
+  \code{filter} is available to filter by a column name and regular
+  expression after the widget is shown. The
+  \code{ex-gtable} example has a sample usage.
+
 
   The \code{gtree} widget needs writing.
   \cr
