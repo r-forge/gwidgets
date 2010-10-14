@@ -362,11 +362,16 @@ setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gNotebookRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             if(missing(i))
-              i = 1:length(x)
-            if(i == 0 || i > length(x)) {
+              i = seq_along(x)
+
+            i <- i[i <= length(x)]
+            i <- i[i > 0]
+
+            if(length(i) == 0) {
               warning("No widget for that index")
-              return()
-            }              
+              return(NULL)
+            }
+           
 
             if(length(i) > 1) {
               lst = sapply(i,function(j)

@@ -281,16 +281,24 @@ setMethod(".update",
                 FALSE
             }
             isStillThere <- getWithDefault(tag(obj, "isStillThere"), isStillThere)
+
+
             
             ## loop over values in the treestore, if not in newchildren, remove
-            i = 0
-            remove.these = c()
+            i <- 0
+            remove.these <- c()
             iter = tag(obj,"store")$GetIterFromString(i)
             while(iter$retval) {
-              treeValue = tag(obj,"store")$GetValue(iter$iter,0+tag(obj,"iconFudge"))$value
-              treeValueType = tag(obj,"store")$GetValue(iter$iter,0+ 1 +tag(obj,"iconFudge"))$value
-              if(isStillThere(c(treeValue, treeValueType), newvalues)) {
-                stillThere <- c(stillThere, treeValue)
+              n <- ncol(newchildren) - is.null(tag(obj, "hasOffspring"))
+              old <- sapply(1:n, function(i) {
+                tag(obj,"store")$GetValue(iter$iter, i - 1 + tag(obj,"iconFudge"))$value
+              })
+#              treeValue <- tag(obj,"store")$GetValue(iter$iter,0  +tag(obj,"iconFudge"))$value
+#              treeValueType <- tag(obj,"store")$GetValue(iter$iter,0+ 1 +tag(obj,"iconFudge"))$value
+
+#              if(isStillThere(c(treeValue, treeValueType), newvalues)) {
+              if(isStillThere(old, newvalues)) {
+                stillThere <- c(stillThere, old[1])
               } else {
                 ## need to delete
                 remove.these = c(remove.these, i)
@@ -298,6 +306,9 @@ setMethod(".update",
               i = i + 1
               iter = tag(obj,"store")$GetIterFromString(i)
             }
+
+
+            
             if(length(remove.these)>0) {
               for(i in rev(sort(remove.these))) {
                 iter = tag(obj,"store")$GetIterFromString(i)

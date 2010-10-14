@@ -71,6 +71,7 @@ as.gWidgetsRGtk2.GtkVBox <- as.gWidgetsRGtk2.GtkHBox <-
 
 ## for gGroup
 ## methods of expand, anchor
+## ... arguments: expand, fill, anchor, padding
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
@@ -78,10 +79,10 @@ setMethod(".add",
             parent <- getWidget(obj)
             child <- getBlock(value)
             childWidget <- getWidget(value)
+
             theArgs <- list(...)
             
-            ## anchor is tricky. If block is able do it.
-            ## If not, try in the widget
+            ## anchor argument
             if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
               anchor <- theArgs$anchor ## anchor is in [-1,1]^2
               anchor <- (anchor+1)/2      # [0,1]
@@ -90,25 +91,22 @@ setMethod(".add",
               setXYalign(child, childWidget, anchor)
             }
 
-            ## paddign
+            ## padding
             if(is.null(theArgs$padding))
               theArgs$padding=0
-            ## names lookup seemed to take a bit of time, is try faster?
-##             ## can't do this for gtkEntry
-##             if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
-##               child['xalign'] <- anchor[1]
-##             else if('xalign' %in% names(childWidget)
-##                     && class(childWidget)[1] != "GtkEntry")
-##               childWidget['xalign'] <- anchor[1]
-
-##             if('yalign' %in% names(child)) 
-##               child['yalign'] <- anchor[2]
-##             else if('yalign' %in% names(childWidget))
-##               childWidget['yalign'] <- anchor[2]
 
             ## expand
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-            parent$packStart(child, expand, TRUE, theArgs$padding) # expand to fill if TRUE
+
+            ## fill argument, only valid whn expand=TRUE
+            fill <- TRUE
+            if(expand) {
+              if(!is.null(theArgs$fill) &&
+                 (theArgs$fill == "x" || theArgs$fill == "y"))
+                fill <- FALSE
+            }
+            
+            parent$packStart(child, expand, fill, theArgs$padding) 
             
 
             
@@ -144,9 +142,20 @@ setMethod(".add",
               ## in gtkstuff
               setXYalign(child, childWidget, anchor)
             }
-            
+
+            ## expand?
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-            parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
+
+            ## fill argument, only valid whn expand=TRUE
+            fill <- TRUE
+            if(expand) {
+              if(!is.null(theArgs$fill) &&
+                 (theArgs$fill == "x" || theArgs$fill == "y"))
+                fill <- FALSE
+            }
+
+            ## pack it in
+            parent$packStart(child, expand=expand, fill=fill, padding=0) # expand to fill if TRUE
             
             
           })

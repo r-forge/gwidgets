@@ -655,8 +655,6 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="GtkTreeView"),
                  function(x, toolkit, i, j, ..., value) {
-                   gwCat("DEBUG: call leftBracket<- on gtkTreeView: deprecate?\n")
-                   
                    gridObj = tag(x,"gridObj")
                    if(missing(i) && missing(j))
                      gridObj[,,...] <- value

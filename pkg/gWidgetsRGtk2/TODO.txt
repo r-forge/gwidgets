@@ -1,10 +1,10 @@
-* TOm points out but in gvarbrowser on 9/24 check this out.
-DONE * Stephanie reports error with gvarbrowser -- likely in gtree. Fix it!
-* fix height on gcombobox -- sizes to fill in x axis (sizePolicy like Qt?)
+* fix height on gcombobox, buttons -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.
 * no tag<- methods for gaction?
 * svalue<- for gtable calls changed twice
-
+DONE * give space for size grip
+DONE * TOm points out but in gvarbrowser on 9/24 check this out.
+DONE * Stephanie reports error with gvarbrowser -- likely in gtree. Fix it!
 FIXED * tooltip in gaction -- broken?
 DONE* fix delete with gradio, [<- method to reduce length
 DONE * DONE gvarbrowser: customize groups, icons, update should consider more

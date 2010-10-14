@@ -17,6 +17,7 @@ setMethod(".gframe",
 
             frame = gtkFrameNew()
 
+
             obj <- as.gWidgetsRGtk2(frame, horizontal=horizontal,...)
 
             ##            group = ggroup(horizontal=horizontal, ...) # for horizontal, spacing etc.

@@ -120,6 +120,7 @@ setMethod(".ggraphics",
               env <- w$getData("env")
               ## remove draggin
               env$dragging <- FALSE
+              daClearRectangle(w)       # tidy up
               return(FALSE)
             })
             
@@ -192,7 +193,10 @@ setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
                  function(obj, toolkit, ..., value) {
                    if(is.logical(value) == TRUE) {
-                     dev.set(tag(obj,"device"))
+                     da <- obj@widget
+                     devnum <- da$GetData(".devnum")
+                     if(!is.null(devnum))
+                       dev.set(devnum)
                    }
                    return(obj)
                  })

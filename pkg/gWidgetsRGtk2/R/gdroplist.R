@@ -28,10 +28,13 @@ setMethod(".gdroplist",
             }
             
             doIcons = ifelse(ncol(items) >= 2, TRUE, FALSE)
-            if(doIcons)
-              types = c(data="gchararray",icons="gchararray")
-            else
-              types = c(dataonly="gchararray")
+            if(ncol(items) == 3) {
+              types <- c(data="gchararray",icons="gchararray", tooltip="gchararray")
+            } else if(ncol(items) == 2) {
+              types <- c(data="gchararray",icons="gchararray")
+            } else {
+              types <- c(dataonly="gchararray")
+            }
             
             theArgs = list(...)
             
@@ -47,8 +50,10 @@ setMethod(".gdroplist",
             if(editable) {
               store = gtkListStoreNew(types)
               combo <- gtkComboBoxEntryNewWithModel(store, 0)
+             
+              
               ## now add icon if there
-              if(doIcons) {
+              if(ncol(items)  >= 2) {
                 ## icon renderer
                 cellrenderer = gtkCellRendererPixbufNew()
                 combo$PackStart(cellrenderer, expand=FALSE)
@@ -84,6 +89,19 @@ setMethod(".gdroplist",
               combo$AddAttribute(cellrenderer,"text", 0)
             }
 
+            ## add tooltip if there
+            if(ncol(items) >= 3) {
+              ## no easy way. Thought that we could do the following, but
+              ## it doesn't work. Tooltip is on combobox when not expanded for searching
+              ## combo['has-tooltip'] <-TRUE
+              ## gSignalConnect(combo, "query-tooltip", function(w, x, y, bool, tool, ...) {
+              ##   ## look up text from w, x, y
+              ##   tool$setText("text")
+              ##   TRUE
+              ## })
+            }
+
+            
             obj <- as.gWidgetsRGtk2(combo)
             
 ##             obj = new("gDroplistRGtk",block=combo,widget=combo, toolkit=toolkit)
@@ -356,6 +374,9 @@ setReplaceMethod(".leftBracket",
                 if(doIcons)
                   store$SetValue(iter$iter, column = 1,
                                  allIcons[[as.character(items[j,2])]]) # convert to name
+                if(ncol(items) >= 3) {
+                  store$setValue(iter$iter, column =2, items[j,3])
+                }
               }
             }
             

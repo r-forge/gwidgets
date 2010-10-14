@@ -271,7 +271,7 @@ setMethod(".gvarbrowser",
 
 
             ## override how we compare items. Default is just by name, here we want
-            ## to include class
+            ## to include class and summary
             tag(tree, "isStillThere") <- function(old, new) {
               if(length(old) && length(new)) {
                 identical(any(ind <- (old[1] == new[,1, drop=TRUE])) &&
