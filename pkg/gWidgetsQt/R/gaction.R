@@ -52,7 +52,9 @@ setMethod(".gaction",
               XXX("Implement shortcuts")
             }
             if(!is.null(handler))
-              qconnect(a, "triggered", function(checked, h) {
+              qconnect(a, "triggered", function(h,...) {
+                if(!is.list(h))
+                  h <- ..1
                 handler(h)
               }, user.data=list(obj=a, action=action))
 

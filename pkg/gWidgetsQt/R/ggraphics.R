@@ -86,7 +86,7 @@ qsetMethod("mouseReleaseEvent", OurQGraphicsScene, function(e) {
      x2 <- this$lastRelease$x()
      y2 <- this$lastRelease$y()
      x <- c(x1,x2); y <- c(y1, y2)
-     h <- list(obj=this$data,
+     h <- list(obj=this$data,           # XXX not right
                x=sort(grconvertX(x/w, from="ndc", to="user")),
                y=sort(grconvertY((ht-y)/ht, from="ndc", to="user")),
                action=this$changeHandlerAction
@@ -225,6 +225,10 @@ setMethod(".ggraphics",
             if(!is.null(container))
               add(container, obj, ...)
 
+            ## raise device on click
+            addhandlerclicked(obj, handler=function(h,...) {
+              v$devSet()
+            })
             
             invisible(obj)
 
@@ -239,7 +243,8 @@ setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gGraphicsQt"),
                  function(obj, toolkit, ..., value) {
                    if(is.logical(value) == TRUE) {
-                     dev.set(tag(obj,"device"))
+                     widget <- getWidget(obj)
+                     widget$devSet()
                    }
                    return(obj)
                  })

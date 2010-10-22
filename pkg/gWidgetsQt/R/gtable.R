@@ -192,7 +192,7 @@ setMethod(".leftBracket",
               j <- 1:d[2]
 
             if(d[1] == 0)
-              return(items[0,j])
+              return(items[0,j, drop=drop])
 
             if(missing(i))
               i <- 1:d[1]
@@ -289,7 +289,6 @@ setReplaceMethod(".leftBracket",
                 value <- data.frame(value, stringsAsFactors=FALSE)
               if(!is.data.frame(value))
                 value <- data.frame(value, stringsAsFactors=FALSE)
-              print(dim(value))
               
               if((length(i) != dim(value)[1]) &&
                  (length(j) != dim(value)[2])) {

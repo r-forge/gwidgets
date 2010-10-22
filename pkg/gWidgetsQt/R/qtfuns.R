@@ -209,7 +209,7 @@ setTableWidgetFromDataFrame <- function(tbl, df, flags=c("selectable", "editable
 
   tbl$clear()
 
-  if(M==0 || N==0)
+  if(N==0)
     return()
 
   
@@ -297,6 +297,17 @@ getTableWidgetRowNames <- function(tbl) {
 getValueFromTableWidget <- function(tbl, colClasses=c("character")) {
 
   M <- tbl$rowCount; N <- tbl$columnCount
+  if(N == 0) {
+    return(data.frame(character(0), stringsAsFactors=FALSE))                        # no columns
+  } else if(M == 0) {
+    colClasses <- rep(colClasses, length=N)        # recycle
+    d <- as.data.frame(lapply(1:N, function(i) character(0)), stringsAsFactors=FALSE)
+    for(j in 1:N) 
+      d[,j] <- if(colClasses[j] == "factor") d[,j] else as(d[,j], colClasses[j])
+    return(d)
+  }
+
+  ## carry on
   out <- matrix(character(M*N), nrow=M)
   colClasses <- rep(colClasses, length=N)        # recycle
   
@@ -307,7 +318,10 @@ getValueFromTableWidget <- function(tbl, colClasses=c("character")) {
     })
   })
   df <- as.data.frame(lapply(1:N, function(j) {
-    as(out[,j], colClasses[j])
+    if(colClasses[j] == "factor")
+      factor(out[,j])
+    else
+      as(out[,j], colClasses[j])
   }), stringsAsFactors=FALSE)
 
   colNames <- sapply(1:N, function(j) {
@@ -318,6 +332,12 @@ getValueFromTableWidget <- function(tbl, colClasses=c("character")) {
       item$text()
   })
   names(df) <- make.names(colNames)
+
+  rowNames <- sapply(1:M, function(i) {
+    tbl$verticalHeaderItem(i-1)$text()
+  })
+  rownames(df) <- rowNames
+  
   return(df)
 }
 

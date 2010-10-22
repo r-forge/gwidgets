@@ -60,6 +60,7 @@ setOldClass("RQtObject")
                "QScrollArea", "QAbstractScrollArea",
                "QComboBox",
                "QTextEdit",
+               "QToolButton",
                "QCalendarWidget",
                "QAction",
                "QTableWidget", "QTableWidgetSelectionRange", "QTableView",
@@ -720,18 +721,21 @@ setMethod(".add",
             theArgs <- list(...)
             expand <- getWithDefault(theArgs$expand, FALSE)
             anchor <- getWithDefault(theArgs$anchor, NULL)
-            if(!is.null(anchor) && anchor)
-              expand <- TRUE
+            ## if(!is.null(anchor) && anchor)
+            ##   expand <- TRUE
 
-            fill <- getWithDefault(theArgs$fill, "both") # x, y
+            ## by setting default_fill attr to something besides x,y,both we bypass
+            default_fill <- getWithDefault(tag(value, "default_fill"), "both") # x, y
+            fill <- getWithDefault(theArgs$fill, default_fill) 
+
             if(is.null(anchor)) {
-              if(fill == "x")
+              if(fill == "y")
                 child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
                                     Qt$QSizePolicy$Expanding)
-              else if(fill == "y")
+              else if(fill == "x")
                 child$setSizePolicy(Qt$QSizePolicy$Expanding,
                                     Qt$QSizePolicy$Fixed)
-              else                  # default is fill = "both" when no anchor, but expand
+              else if(fill == "both")           # default is fill = "both" when no anchor, but expand
                 child$setSizePolicy(Qt$QSizePolicy$Expanding,
                                     Qt$QSizePolicy$Expanding)
             }
@@ -742,20 +746,17 @@ setMethod(".add",
             if(is(child,"QWidget")) {
               ## adding a child widget
               ## we need child, stretch and alignment
-              align <- xyToAlign(anchor)
-#              halign <- list(Qt$Qt$AlignLeft, Qt$Qt$AlignHCenter, Qt$Qt$AlignRight)
-#              valign <- list(Qt$Qt$AlignBottom, Qt$Qt$AlignVCenter, Qt$Qt$AlignTop)
-#              align <- Qt$Qt$AlignCenter
-#              if(is.numeric(anchor) && length(anchor) >= 2) {
-#                align <- halign[[anchor[1] + 2]] | valign[[anchor[2] + 2]]
-#              }
+
               ## stretch
               if(as.logical(expand))
                 stretch <- 2L
               else
                 stretch <- 0L
-
-              parent$addWidget(child, stretch, align)
+              ## alignment?
+              if(!is.null(anchor))
+                parent$addWidget(child, stretch, xyToAlign(anchor))
+              else
+                parent$addWidget(child, stretch)
               child$update()
               child$updateGeometry()
             } else if(is(child, "QLayout")) {
@@ -1313,7 +1314,7 @@ setMethod("add3rdmousepopupmenu",signature(obj="gWidgetQt"),
 setMethod(".add3rdmousepopupmenu",
           signature(toolkit="guiWidgetsToolkitQt",obj="gWidgetQt"),
           function(obj, toolkit, menulist,action=NULL, ...) {
-            m <- .gmenu(toolkit, menulist, popup=TRUE)
+            m <- gmenu(menulist, popup=TRUE)
             add(obj, m)
           })
 

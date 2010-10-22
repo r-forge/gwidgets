@@ -48,13 +48,11 @@ setMethod(".gbutton",
             button <- gwQPushButton()
             
             ## properties
-            button$setSizePolicy(Qt$QSizePolicy$Fixed, # don't like expansion in x direction
-                                 Qt$QSizePolicy$Fixed)
-
-            
             obj <- new("gButtonQt",
               block=button, widget=button, toolkit=toolkit,  e=new.env(), ID=getNewID())
             button$setObject(obj)
+
+            tag(obj, "default_fill") <- "y" # don't like expansion in x direction
             
             svalue(obj) <- text
             

@@ -26,7 +26,7 @@ setMethod(".adddropsource",
 
             ## match class?
             if(grepl("^R::gWidgetsQt::gwQ",class(w)[1])) {
-              f <- function(obj, ...) handler(list(obj=obj), ...)
+              f <- function(obj, ...) handler(list(obj=obj, action=action), ...)
               w$setDragHandler(f)
             }
                         
@@ -42,7 +42,11 @@ setMethod(".adddroptarget",
             w <- getWidget(obj)
             ## match class?
             if(grepl("^R::gWidgetsQt::gwQ",class(w)[1])) {
-              f <- function(obj, value) handler(list(obj=obj, dropdata=value))
+              f <- function(obj, value) {
+                if(is.list(value))
+                  value <- value[[1]]
+                handler(list(obj=obj, dropdata=value))
+              }
               w$setDropHandler(f)
             } else {
               w$setAcceptDrops(TRUE)

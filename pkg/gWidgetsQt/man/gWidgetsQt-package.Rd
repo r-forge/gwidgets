@@ -20,8 +20,7 @@ Unrealize handler is working. Overrides dispose method though.
 If you use a \code{gwindow} instance as a container and pass in the argument \code{do.dockwidget=TRUE} then a the child will be added within a dock widget on the right side of the parent window. Dock widgets can be "undocked".
 
 ggroup:
-Need to implement scrollbars
-Need to implement spacing
+Need to implement scrollbars, Qt$QScrollArea isn't right (it needs to be populated with children prior to parenting)
 Need to implement drag motion raise
 
 
@@ -34,10 +33,10 @@ glayout:
 gnotebook:
 
 gexpandgroup:
-Rolled my own. using a button to check, should have  trigger icon.
+Rolled my own. using a button to check, should have  trigger icon. Resizing is awful.
 
 gsplitter:
-svalue<- isn't working. No moveSplitter method?
+Must size window before using svalue<-
 
 WIDGETS
 ------
@@ -100,23 +99,25 @@ Doesn't like labels, etc:
 svg("file.svg");
 hist(rnorm(100));
 dev.off();
-gsvg("file.svg",cont=T)
+gsvg("file.svg",cont=gwindow())
 
 METHODS:
 ---------------
-removeHandler, blockHandler, unblockHandler:
-only work for all handlers for a widget, not by ID.
+removeHandler, blockHandler, unblockHandler: workin for base widgets. 
 
 addHandlerKeystroke: needs event
 addHandlerRightClick: not there
 
-## some widgets have events, most use signal. Eventually to get drag and
-   drop, I need to use the event approach for all of them
+some widgets have events, most use signal. Eventually to get drag and
+drop, I need to use the event approach for most of them
 
 
 addHandlerIdle: working
+
 font<-: working
+
 tooltip<-: working
+
 size<-: sets Minimum size of widget
 
 

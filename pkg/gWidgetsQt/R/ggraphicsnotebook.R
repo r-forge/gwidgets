@@ -27,13 +27,49 @@ setMethod(".ggraphicsnotebook",
                    width=dpi*6, height=dpi*6,dpi=75,
                    container = NULL,
                    ...) {
-            ## ... passed onto gnotebook
 
-
-            
             force(toolkit)
+
+            ## ... passed onto gggroup
+
+            newGraph <- function(...) {
+              ggraphics(cont=nb,  width=width, height=height, dpi=dpi,
+                        label=sprintf("device", ""))
+              svalue(nb) <- length(nb)
+            }
+
+            closeCurrent <- function(...) {
+              dispose(nb)
+            }
             
-            return(.glabel(toolkit, "No ggraphics available in gWidgetsQt (yet)", cont=container))
+            acts <- list(new=gaction("New device", handler=newGraph),
+                         close=gaction("Close device", handler=closeCurrent)
+                         )
+
+            g <- ggroup(cont = container, horizontal=FALSE, ...)
+            bg <- ggroup(cont=g)
+            sapply(acts, function(i) gbutton(action=i, cont=bg, expand=FALSE, anchor=c(-1,0)))
+            addSpring(bg)
+            
+            nb <- gnotebook(cont=g, expand=TRUE)
+            ## raise device on change
+            addHandlerChanged(nb, function(h,...) {
+              curDevice <- nb[h$pageno]
+              if(!is.null(curDevice))
+                visible(curDevice) <- TRUE
+            })
+            newGraph()
+            
+            obj <- new("gGraphicsNotebookQt",
+                       block=g, widget=nb,
+                       toolkit=toolkit,
+                       e=new.env(), ID=getNewID()
+                       )
+
+                         
+            
+            
+            return(obj)
             
           })
           

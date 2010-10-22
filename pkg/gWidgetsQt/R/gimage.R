@@ -46,7 +46,7 @@ setMethod(".gimage",
             lab$setObject(obj)
             
             if(dirname != "" && dirname != "stock")
-              file <- paste(dirname, filename, sep=.Platform$file.Sep)
+              file <- paste(dirname, filename, sep=.Platform$file.sep)
             else 
               file <- filename
 

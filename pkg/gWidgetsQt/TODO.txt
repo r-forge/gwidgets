@@ -1,12 +1,18 @@
 TODO:
 ---------
+* dnd with gcombobox?
+* need to have gbigtable standard for gtable. Michael has changes to incorporate
+* settingn child gwindow transient to parent fails as destroyed event
+not given
 * gexpandgroup: fix resize issues when collapsed
 * DND: use QtEvent framework
 * gdf: can improve significantly
 * gdf -- column clicks -- can do context menu, but how to get column?
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
-* ggraphics: Is this from qtpaint or qtdevice, seems like the latter
+* gmenu under OS X, is odd.
 
+DONE (qtutils) * ggraphics: Is this from qtpaint or qtdevice, seems like the latter
+DONE * ggraphics notebook needs writing 
 DONE * put in mouse handlers into ggraphics. (click, rubber band?)
 DONE * * gvarbrowser -- put in DND for dragging values. R/serialized-data
 WORKING ON IT * get bugs fixed for first version

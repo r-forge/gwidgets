@@ -269,10 +269,14 @@ setMethod(".leftBracket",
 
             
             if(missing(i))
-              i = 1:length(x)
+              i = seq_along(x)
 
+            
             lst <- getChildren(x)[i]
-#            lst <- sapply(i, function(j) findChildFromQWidget(x, nb$widget(j-1)))
+
+            if(length(lst) == 0)          # can't get what isn't there
+              return(NULL)
+            
             if(length(i) == 1)
               return(lst[[1]])
             else
@@ -318,12 +322,12 @@ setMethod(".addhandlerchanged",
           })
 
 
-## h$tab for tab
+## h$pageno for tab
 setMethod(".addhandlerexpose",
           signature(toolkit="guiWidgetsToolkitQt",obj="gNotebookQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
             f <- function(tab, h, ...) {
-              h$tab <- tab
+              h$tab <- h$pageno <- tab + 1 # 0-based
               handler(h)
             }
             ID <- .addhandler(obj, toolkit, "currentChanged", f, action, ...)

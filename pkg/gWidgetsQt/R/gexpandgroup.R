@@ -113,7 +113,7 @@ setMethod(".gexpandgroup",
 
 
             names(obj) <- text
-            visible(obj) <- TRUE
+            visible(obj) <- FALSE       # default -- don't show
             
             if(!is.null(handler)) {
               addHandlerChanged(obj, handler=handler, action=action)

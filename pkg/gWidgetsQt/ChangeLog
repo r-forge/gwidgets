@@ -1,3 +1,29 @@
+2010-10-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to adding popupmenu. Stil an issue with menus
+	under OS X.
+
+	* R/aabClasses.R: changed EventWidget from Container subclass to
+	Widget subclass
+
+2010-10-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added tag(obj, "default_fill") check to avoid
+	having widget fill with "both" when fill argument not
+	specified. (gedit, gbutton)
+
+	* R/dnd.R: fixed dnd from gvarbrowser
+
+2010-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphicsnotebook.R: implemented
+
+2010-10-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ghtml.R: added ghtml to pass off to gtext.
+
+	* R/gimage.R: fixed typo in file.sep
+
 2010-09-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggraphics.R: use qtutils device to make this widget

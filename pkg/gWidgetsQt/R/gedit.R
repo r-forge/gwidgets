@@ -63,7 +63,6 @@ setMethod(".gedit",
            
 ##           entry <- Qt$QLineEdit()
            entry <- gwQLineEdit()
-
            
            completer <- Qt$QCompleter()
            entry$setCompleter(completer)
@@ -78,7 +77,7 @@ setMethod(".gedit",
            
            svalue(obj) <- text
            tag(obj, "coerce.with") <- coerce.with
-
+           tag(obj, "default_fill") <- "x"
 
            ## XXX no width argument. Use size<- instead
            if(!is.null(width)) 

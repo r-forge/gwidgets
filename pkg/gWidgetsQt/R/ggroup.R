@@ -43,23 +43,28 @@ setMethod(".ggroup",
             gw <- Qt$QWidget()
             gw$setLayout(gp)
 
+            obj <- new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            
+                       e=new.env(), ID=getNewID()  
+                       )
+            
+
             
             ## implement scrollbars if asked. 
             if(use.scrollwindow == TRUE) {
-              width <- getWithDefault(theArgs$width, 400L)
-              height <- getWithDefault(theArgs$height, 400L)
-              gw$setMinimumSize(width, height)
+              ## width <- getWithDefault(theArgs$width, 400L)
+              ## height <- getWithDefault(theArgs$height, 400L)
+              ## gw$setMinimumSize(width, height)
 
+              ## JV: This doesn't work. It seems that I need to populate gw prior to placing
+              ## it insde the scroll area so that the size is correct.
               
               sb <- Qt$QScrollArea()
               sb$setWidget(gw)
-              gw <- sb
+
+
+              obj@block <- sb
             }
 
-            obj <- new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            
-            e=new.env(), ID=getNewID()  
-            )
-            
             tag(obj, "horizontal") <- as.logical(horizontal)
 
             svalue(obj) <- spacing

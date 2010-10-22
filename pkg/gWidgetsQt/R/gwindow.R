@@ -41,13 +41,28 @@ setMethod(".gwindow",
 
             force(toolkit)
 
-            ## make object
 
+            ##' helper to set x,y position
+            setPos <- function(w, pos) {
+              w$move(pos[1], pos[2])
+            }
+            
+            ## make window object w
             if(!is.null(parent)) {
-              toplevel <- getTopLevel(parent)
-              parentw <- getBlock(toplevel)
-#              w <- Qt$QMainWindow(parentw)
-              w <- gwQMainWindow(parentw)
+              if(is.numeric(parent)) {
+                ## specifies x,y coordinates
+                w <- gwQMainWindow()
+                w$move(parent[1], parent[2])
+              } else {
+                parentw <- getBlock(parent)
+                g <- parentw$geometry
+                pos <- c(g$x(), g$y()) + 20 # offset
+                w <- gwQMainWindow()
+                w$move(pos[1], pos[2])
+                
+                ## make transient ## isn't working as w does not get destroyed event
+                qconnect(parentw, "destroyed", function(...) w$close())
+              }
             } else {
 #              w <- Qt$QMainWindow()
               w <- gwQMainWindow()
@@ -135,6 +150,7 @@ setMethod(".add",
             w <- getBlock(obj)
             tb <- getBlock(value)
             w$addToolBar(tb)
+            visible(obj) <- TRUE
           })
 
 ## statusbar

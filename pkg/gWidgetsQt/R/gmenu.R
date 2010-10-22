@@ -22,16 +22,19 @@
 ## that make a depend on the context.
 
 
+##' class for menu bars
 setClass("gMenuQt",
          contains="gComponentQt",
          prototype=prototype(new("gComponentQt"))
          )
-setClass("gMenuItemQt",
-         contains="gComponentQt",
-         prototype=prototype(new("gComponentQt"))
-         )
+##' class for popup menus
 setClass("gMenuPopupQt",
          contains="gMenuQt",
+         prototype=prototype(new("gComponentQt"))
+         )
+##' A menu item
+setClass("gMenuItemQt",
+         contains="gComponentQt",
          prototype=prototype(new("gComponentQt"))
          )
 
@@ -64,9 +67,9 @@ setMethod(".gmenu",
               obj = new("gMenuQt", block=topMenu, widget=topMenu,
                 toolkit=toolkit, ID=getNewID(), e = new.env())
             }
-            
-            mapListToMenuBar(menulist, topMenu)
-            tag(obj, "menulist") <- menulist
+
+            if(!missing(menulist) && length(menulist))
+              svalue(obj) <- menulist
 
             if(!is.null(container) && !popup)
               add(container, obj,...)
@@ -80,7 +83,7 @@ setMethod(".gmenu",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitQt",obj="gMenuQt"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            tag(obj, "menulist")
+            tag(obj, "..menulist")
           })
 
 ## three cases for value: list, gMenuQt, guiWidget push down
@@ -90,17 +93,12 @@ setReplaceMethod(".svalue",
                            value="list"),
                  function(obj, toolkit, index=NULL, ..., value) {
 
-                   menulist = value            # value is a list
-                   if(!is.list(menulist))
-                     stop("value is not a menubar or a list")
-                   
-                   
-                   mb = getWidget(obj)
+                   menulist <- value            # value is a list
+                   mb <- getWidget(obj)
                    mb$clear()
                    mapListToMenuBar(menulist, mb)
 
-                   ## store for later?
-                   tag(obj,"menulist") <- menulist
+                   tag(obj,"..menulist") <- menulist
 
                    return(obj)
                  })
@@ -133,11 +131,7 @@ setMethod(".add",
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitQt", obj="gMenuQt", value="gMenuQt"),
           function(obj, toolkit,  value, ...) {
-            orig.list = svalue(obj)
-            add.list = svalue(value)
-            new.list = c(orig.list, add.list)
-            ## redoes menu XXX COuld make it just add if speed is an issue
-            svalue(obj) <- new.list
+            .add(obj, toolkit, svalue(value))
           })
 
 
@@ -145,8 +139,13 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkitQt",
                     obj="gMenuQt", value="list"),
           function(obj, toolkit,  value, ...) {
-            mb = getWidget(obj)
-            mapListToMenuBar(value, mb)
+            mb <- getWidget(obj)
+            orig.list <- svalue(obj)
+            add.list <- value
+            new.list <- c(orig.list, add.list)
+            ## redoes menu XXX COuld make it just add if speed is an issue
+            svalue(obj) <- new.list
+
           })
 
 ## Add in gWindow.
@@ -165,12 +164,12 @@ setMethod(".add",
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitQt", obj="guiWidget", value="gMenuPopupQt"),
           function(obj, toolkit,  value, ...) {
-            .add(obj@widget, toolkit, value@widget)
+            .add(obj@widget, toolkit, value)
           })
 
 
 setMethod(".add",
-          signature(toolkit="guiWidgetsToolkitQt", obj="gWidgetQt", value="gMenuPopupQt"),
+          signature(toolkit="guiWidgetsToolkitQt", obj="gComponentQt", value="gMenuPopupQt"),
           function(obj, toolkit,  value, ...) {
             w <- getWidget(obj)
            if(!is.null(w$setContextMenuPolicy))
@@ -178,20 +177,23 @@ setMethod(".add",
            else
              return()                   # cant do popup
 
-           lst <- svalue(value)
-           for(i in lst) {
-             act <- NULL
-             if(.isgSeparatorQt(i)) {
-               act <- Qt$QAction(Qt$QWidget())
-               act$setSeparator(TRUE)
-             } else if(.isgActionQt(i)) {
-               act <- getWidget(i)
-             } else if(is.list(i)) {
-               add(obj, i)
-             }
-             if(!is.null(act))
-               w$addAction(act)
-           }
+            mapListToMenuBar(svalue(value), w)
+            
+           ## lst <- svalue(value)
+           ## for(i in lst) {
+           ##   act <- NULL
+           ##   if(.isgSeparatorQt(i)) {
+           ##     act <- Qt$QAction(Qt$QWidget())
+           ##     act$setSeparator(TRUE)
+           ##   } else if(.isgActionQt(i)) {
+           ##     act <- getWidget(i)
+           ##   } else if(is.list(i)) {
+           ##     print("adding a list")
+           ##     .add(obj, toolkit, .gmenu(toolkit, i, popup=TRUE))
+           ##   }
+           ##   if(!is.null(act))
+           ##     w$addAction(act)
+           ## }
          })
 
 
@@ -279,17 +281,19 @@ setReplaceMethod(".leftBracket",
 ## helper functions
 
 makeSubMenu = function(lst, label, parentMenu) {
-  subMenu <- parentMenu$addMenu(label)
-  
+
+  subMenu <- Qt$QMenu()
+  parentMenu$addMenu(subMenu)
+  subMenu$setTitle(label)
+
+  ## use named list
   sapply(names(lst),function(i) {
     
     tmp <- lst[[i]]
     if(is.list(tmp) && !is.null(tmp$label))
       label <- tmp$label
     else
-      i
-
-    
+      label <- i
     
     
     if(.isgSeparatorQt(tmp)) {
@@ -313,6 +317,7 @@ makeSubMenu = function(lst, label, parentMenu) {
 
 
 mapListToMenuBar <- function(menulist, topMenu) {
+  
   if(!.isLeaf(menulist[[1]])) {
     sapply(names(menulist), function(i) 
            makeSubMenu(menulist[[i]],label=i,topMenu))
@@ -329,7 +334,9 @@ mapListToMenuBar <- function(menulist, topMenu) {
         tmp <- .leafToAction(tmp, label)
       }
       tmp <- getWidget(tmp)
-      topMenu$addAction(tmp)
+      if(is(tmp, "QAction")) {
+        topMenu$addAction(tmp)
+      } 
     })
   }
 }

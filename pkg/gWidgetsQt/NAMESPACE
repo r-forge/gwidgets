@@ -5,7 +5,7 @@ import(gWidgets)
 exportMethods(
 "[", 
 ".glabel", ".gbutton", ".gcheckbox", ".gradio", ".gdroplist",
-".gcheckboxgroup", ".gspinbutton", ".gslider", ".gedit", ".gtext",
+".gcheckboxgroup", ".gspinbutton", ".gslider", ".gedit", ".gtext", ".ghtml",
 ".gmenu", ".gtoolbar", ".gtable",  
 ".gfile", ".gfilebrowse", 
 ".gimage", ".gstatusbar", ".gseparator",

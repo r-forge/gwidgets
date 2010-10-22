@@ -47,9 +47,12 @@ qsetMethod("prepareDrag", OurTreeWidget, function(e) {
   obj <- get(path[1], envir=.GlobalEnv)
   if(length(path) > 1)
     obj <- obj[[path[-1]]]
-  
-  val <- list(varname=paste(path, collapse="$"), obj=obj)
 
+  ## oh what to return
+  val <- list(dropdata=paste(path, collapse="$"), obj=obj)
+  # val <- varname=paste(path, collapse="$")
+
+  
   md <- Qt$QMimeData()
   md$setData("R/serialized-data", serialize(val, NULL))
 

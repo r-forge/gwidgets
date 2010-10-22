@@ -17,6 +17,8 @@
 ##################################################
 ##
 ## we only implement what isn't shared with gtable 
+## TODO: 3rd mouse popup; addrow, add column, coerce types, write backend model an dput on light-weigth
+## gwidgets spin
 
 setClass("gDfQt",
          contains="gTableViewQt",
