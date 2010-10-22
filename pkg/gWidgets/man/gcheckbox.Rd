@@ -10,13 +10,14 @@ Constructor of widget to indicate whether a value is desired or not
 	value is desired or not.
 }
 \usage{
-gcheckbox(text, checked = FALSE, handler = NULL, action = NULL,
+gcheckbox(text, checked = FALSE, use.togglebutton=FALSE, handler = NULL, action = NULL,
 container = NULL, ..., toolkit = guiToolkit())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{text}{Text to show by box}
   \item{checked}{Logical indicating initial state of box}
+  \item{use.togglebutton}{Logical indicating if a toggle button should be used (depresses when \code{TRUE}) in place of a check box}
   \item{handler}{ Called when box is toggled.}
   \item{action}{ Passed to handler}
   \item{container}{ Optional container to attach widget to.}
@@ -41,7 +42,7 @@ container = NULL, ..., toolkit = guiToolkit())
 	method. This is called when the button is 
 	toggled. If one wishes to have the handler called only when
 	checked to indicate \code{TRUE}, say, one should check the state
-	of the widget in the handler.
+	of the widget in the handler (e.g., \code{if(svalue(h$obj))}).
 }
 %%\value{}
 %%\references{}

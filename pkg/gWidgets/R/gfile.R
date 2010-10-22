@@ -43,7 +43,7 @@ gfilebrowse <- function (
                          container = NULL, ..., toolkit = guiToolkit()) {
   widget <- .gfilebrowse (toolkit,
                           text=text, type=type, quote=quote, container=container, ...)
-  obj <- new('gFilebrowser',widget=widget,toolkit=toolkit) 
+  obj <- new('gFilebrowse',widget=widget,toolkit=toolkit) 
   return(obj)
 }
 

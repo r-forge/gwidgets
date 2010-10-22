@@ -1,205 +1,9 @@
 ##' @include guiComponents.R
 
-##' Class for a commandline widget
-setClass("gCommandline",
-         contains="guiComponent",
-         prototype=prototype(new("guiComponent"))
-         )
+## A widget to provide a simple command line
 
-##' constructor of widget for use as a command line
-##'
-##' @exports
-gcommandline =function(
-  command = "", assignto = NULL, useGUI = TRUE, useConsole = FALSE,
-  prompt = getOption("prompt"), width = 500, height = 0.6 * width,
-  container = NULL, ... ,
-  toolkit=guiToolkit()){
-  widget =  .gcommandline (toolkit,
-    command=command, assignto=assignto,
-    useGUI = useGUI, useConsole=useConsole,
-    prompt=prompt, width=width, height=height, container=container, ...
-    )
-  obj = new( 'guiComponent',widget=widget,toolkit=toolkit) 
-  return(obj)
-}
-
-
-##' generic for toolkit dispatch
-##' @alias gcommandline
-setGeneric( '.gcommandline' ,
-           function(toolkit,
-                    command = "", assignto = NULL,
-                    useGUI = TRUE, useConsole = FALSE,
-                    prompt = getOption("prompt"), width = 500,
-                    height = 0.6 * width, container = NULL, ... )
-           standardGeneric( '.gcommandline' ))
-
-
-##' gcommandline implementation for any toolkit
-setClass("gCommandlineANY",
-         representation=representation("gComponentANY",
-           editArea="guiWidgetOrNULL",
-           outputArea="guiWidgetOrNULL",
-           useGUI = "logical",
-           useConsole = "logical"
-           ),
-         contains="gComponentANY",
-         prototype=prototype(new("gComponentANY"))
-         )
-
-
-##' gcommandline constructor for ANY toolkit
-##' @alias gcommandline
-setMethod(".gcommandline",
-          signature(toolkit="ANY"),
-          function(toolkit,
-                   command = "", assignto=NULL,
-                   useGUI = TRUE, 
-                   useConsole = FALSE,
-                   prompt = getOption("prompt"),
-                   width = 500, height = 0.6 * width,
-                   container = NULL,
-                   ...) { 
-
-            force(toolkit)
-
-            .history = character()
-
-            
-            ## adjust command if need be
-            if(nchar(command) > 0 && !is.null(assignto))
-              command = addAssignto(command, assignto)
-
-
-            if(is(container,"logical") && container)
-              container = gwindow("gCommandLIne")
-          ##
-            if(useGUI == TRUE) {
-              
-              
-              ## the main widgets
-              group = do.call("ggroup", list(horizontal=FALSE, cont=container, expand=TRUE, width=width, height=height))
-              ## main objects
-              bgroup <- ggroup(horizontal=TRUE, cont = group)
-              pgroup = gpanedgroup(horizontal=FALSE, cont=group, expand=TRUE)
-
-              ## toolbar
-              openButton = gbutton("open",
-                handler = function(h,...) {
-                    gfile("Select a file to read into command line",
-                          type="open",
-                          handler = function(h,...) {
-                            file = h$file
-                            svalue(editArea) <- readLines(file)
-                          })
-                  }, cont = bgroup)
-              saveButton = gbutton("save",
-                handler = function(h,...) {
-                  sw = gwindow("Save buffer contents")
-                  group = ggroup(horizontal=FALSE, container=sw)
-                    saveFileName = gfilebrowse("",type="save", cont=group)
-                  
-                  tgroup = ggroup(cont=group);
-                  glabel("Save which values?", cont=tgroup)
-                  saveType = gradio(c("commands","output"),horizontal=TRUE,
-                    index=FALSE, cont=tgroup)
-                  gseparator(container=group)
-                  buttonGroup = ggroup(container=group)
-                  addSpring(buttonGroup)
-                    gbutton("save",handler=function(h,...) {
-                      filename = svalue(saveFileName)
-                      if(filename == "") {
-                        cat("Need file to save to\n")
-                        return()
-                      }
-                      if(svalue(saveType) == "commands")
-                        values = svalue(editArea)
-                      else
-                        values = svalue(outputArea) 
-                      writeLines(values, filename)
-                      dispose(sw)
-                    }, container=buttonGroup)
-                }, cont = bgroup)
-              historyButton = gbutton("history",
-                handler = function(h,...) {
-                  wh = gwindow("Command history")
-                  gh = ggroup(horizontal=FALSE, cont=wh)
-                  .history = tag(obj,"history") # obj is gcli object
-                  ##                    df = data.frame(history=.history, stringsAsFactors=FALSE)
-                    tbl = gtable(.history, handler=function(h,...) {
-                      svalue(editArea) <- as.character(svalue(tbl,drop=TRUE))
-                      dispose(wh)
-                    },
-                      cont=gh, expand=TRUE)
-                  tg = ggroup(cont=gh); addSpring(tg)
-                  gbutton("close",cont=tg,handler=function(h,...) dispose(wh))
-                }, cont = bgroup)
-              clearButton = gbutton("clear",
-                handler = function(h,...) svalue(editArea) <- "",
-                cont = bgroup
-                )
-              evaluateButton = gbutton("evaluate",
-                handler = function(h,...) evalEditArea(obj),
-                cont = bgroup)
-              
-              editArea = gtext("## Type commands here, then click on evaluate", container=pgroup, width=width)
-              outputArea = gtext("Output:", container=pgroup, width=width)
-              svalue(pgroup) <- 0.3
-              
-          ##            pg = gpanedgroup(outputArea, editArea, horizontal=FALSE)
-          ##            add(group, pg, expand=TRUE)
-          
-          obj = new("gCommandlineANY",
-            block=group,
-                widget = group,
-            toolkit=toolkit,
-            ID=getNewID(),
-            editArea = editArea,
-            outputArea = outputArea,
-            useGUI = useGUI,
-            useConsole = useConsole
-                )
-          
-          ## initialize history
-          tag(obj,"history")  <- c()
-        } else {
-          
-          obj = new("gCommandlineANY",
-            block=container,
-                widget = container,
-                toolkit=toolkit,
-                ID=getNewID(),
-                editArea = container,
-                outputArea = container,
-                useGUI = useGUI,
-                useConsole = useConsole
-                )
-            }
-
-            if(nchar(command) > 0 )
-              svalue(obj) <- command
-            
-            return(obj)
-              
-          })
-          
-## method to evaluate
-## obj is returned by .gcommandline
-evalEditArea = function(obj) {
-  
-  ## evaluate edit area, append results to outputArea
-  chunk = svalue(obj@editArea)
-  retVal = evalChunkReturnOutput(chunk)
-  if(! retVal$error) {
-    .history = tag(obj,"history")
-    .history <- c(.history, chunk)
-    if(length(.history) > 25) .history <- .history[2:26]
-    tag(obj,"history") <- .history
-  }
-  add(obj@outputArea, retVal$output)
-}
-
-
+##################################################
+## Helpers
 ## taken from Sweave
 ## takes a chunk, interweaves command and output
 evalChunkReturnOutput = function(chunk, prompt = getOption("prompt")) {
@@ -252,13 +56,226 @@ evalChunkReturnOutput = function(chunk, prompt = getOption("prompt")) {
 }
 
 
+### working functions
+
+
+## parse command(s) and make assingment on last one.
+addAssignto = function(command,assignto) {
+  assignto = make.names(assignto)
+  tmp = unlist(strsplit(command, ";"))
+  if(length(tmp)>1) {
+    command = paste(tmp[-length(tmp)], Paste(assignto,"<-",tmp[length(tmp)]), collapse=";", sep=";")
+  } else {
+    command =  Paste(assignto,"<-", command)
+  }
+  return(command)
+}
+
+
+
+##################################################
+
+##' Class for a commandline widget
+setClass("gCommandline",
+         contains="guiComponent",
+         prototype=prototype(new("guiComponent"))
+         )
+
+##' constructor of widget for use as a command line
+##'
+##' @exports
+gcommandline =function(
+  command = "", assignto = NULL, useGUI = TRUE, useConsole = FALSE,
+  prompt = getOption("prompt"), width = 500, height = 0.6 * width,
+  container = NULL, ... ,
+  toolkit=guiToolkit()){
+  widget =  .gcommandline (toolkit,
+    command=command, assignto=assignto,
+    useGUI = useGUI, useConsole=useConsole,
+    prompt=prompt, width=width, height=height, container=container, ...
+    )
+  obj = new( 'guiComponent',widget=widget,toolkit=toolkit) 
+  return(obj)
+}
+
+
+##' generic for toolkit dispatch
+##' @alias gcommandline
+setGeneric( '.gcommandline' ,
+           function(toolkit,
+                    command = "", assignto = NULL,
+                    useGUI = TRUE, useConsole = FALSE,
+                    prompt = getOption("prompt"), width = 500,
+                    height = 0.6 * width, container = NULL, ... )
+           standardGeneric( '.gcommandline' ))
+
+
+##' gcommandline implementation for any toolkit
+setClass("gCommandlineANY",
+         representation=representation("gComponentANY",
+           commandBox="guiWidgetOrNULL",
+           outputBox="guiWidgetOrNULL",
+           histList="guiWidgetOrNULL",
+           useGUI = "logical",
+           useConsole = "logical"
+           ),
+         contains="gComponentANY",
+         prototype=prototype(new("gComponentANY"))
+         )
+
+
+##' gcommandline constructor for ANY toolkit
+##' @alias gcommandline
+setMethod(".gcommandline",
+          signature(toolkit="ANY"),
+          function(toolkit,
+                   command = "", assignto=NULL,
+                   useGUI = TRUE, 
+                   useConsole = FALSE,
+                   prompt = getOption("prompt"),
+                   width = 500, height = 0.6 * width,
+                   container = NULL,
+                   ...) { 
+
+            force(toolkit)
+
+            .history = character()
+
+            
+            ## adjust command if need be
+            if(nchar(command) > 0 && !is.null(assignto))
+              command = addAssignto(command, assignto)
+
+
+            if(is(container,"logical") && container)
+              container = gwindow("gCommandLIne")
+          ##
+            if(useGUI == TRUE) {
+              
+              pg <- gpanedgroup(cont=container, horizontal=FALSE, expand=TRUE)
+              g <- ggroup(horizontal=FALSE, expand=FALSE, cont=pg)
+              bg <- ggroup(cont=g, horizontal=TRUE)
+              addSpring(bg)
+              history <- gcheckbox("history", use.togglebutton=TRUE, cont=bg)
+              clear <- gbutton("clear", cont=bg)
+              evalCmd <- gbutton("evaluate", cont=bg)
+              
+              commandBox <- gtext("## Type commands here:\n", cont=g, expand=TRUE)
+              size(commandBox) <- c(width, floor(height/3))
+              
+              outputBox <- gtext("", cont=pg, expand=TRUE, fill="both")
+              svalue(pg) <- 0.33
+              
+              ## History
+              histWindow <- gwindow("History", parent=container, visible=FALSE)
+              addHandlerUnrealize(histWindow, handler=function(h,...) {
+                showHistory(FALSE)
+                FALSE                                 # don't close just hide
+              })
+              histg <- ggroup(horizontal=FALSE, cont=histWindow)
+              glabel("History of recent commands", cont=histg)
+              histList <- gtable(data.frame(commands=character(0), stringsAsFactors=FALSE), cont=histg, expand=TRUE)
+              histbg <- ggroup(cont=histg)
+              addSpring(histbg)
+              gbutton("cancel", cont=histbg, handler=function(h,...) {
+                svalue(history) <- FALSE
+                visible(histWindow) <- FALSE # for tcltk
+                focus(commandBox) <- TRUE
+              })
+              
+              showHistory <- function(bool) {
+                visible(histWindow) <- bool
+              }
+              
+              addHandlerDoubleclick(histList, handler=function(h, ...) {
+                svalue(commandBox) <- svalue(h$obj)
+                focus(commandBox) <- TRUE
+              })
+              
+              
+              ## handlers
+              addHandlerChanged(history, handler=function(h, ...) {
+                showHistory(svalue(h$obj))
+              })
+              
+              
+              ## clear
+              addHandlerChanged(clear, handler=function(h,...) {
+                svalue(commandBox) <- ""
+                focus(commandBox) <- TRUE
+              })
+              
+              ## evaluate
+              evaluateCommand <- function(...) {
+                cmd <- svalue(commandBox)
+                ## update history list
+                tmp <- histList[,, drop=TRUE]
+                tmp <- c(cmd, tmp)
+                histList[] <- data.frame(commands=tmp, stringsAsFactors=FALSE)
+                ## evaluate command, update outputbox
+                out <- evalChunkReturnOutput(cmd)
+                if(!out$error) {
+                  insert(outputBox, out$output)
+                } else {
+                  ## an errow, now what
+                  insert(outputBox, out$output, font.attr=c(color="red"))
+                }
+                ## clearm move focus to commandBox
+                dispose(commandBox) 
+                focus(commandBox) <- TRUE
+              }
+              
+              addHandlerChanged(evalCmd, handler=evaluateCommand)
+              
+              
+              
+              
+              obj = new("gCommandlineANY",
+                block=pg,
+                widget = pg,
+                toolkit=toolkit,
+                ID=getNewID(),
+                commandBox=commandBox,
+                outputBox=outputBox,
+                histList=histList,
+                useGUI = useGUI,
+                useConsole = useConsole
+                )
+              
+          ## initialize history
+          tag(obj,"history")  <- c()
+        } else {
+          
+          obj = new("gCommandlineANY",
+            block=container,
+                widget = container,
+                toolkit=toolkit,
+                ID=getNewID(),
+                editArea = container,
+                outputArea = container,
+                useGUI = useGUI,
+                useConsole = useConsole
+                )
+            }
+
+            if(nchar(command) > 0 )
+              svalue(obj) <- command
+            
+            return(obj)
+              
+          })
+          
+
+
 ##' return all previous, or just the index most recent
 setMethod(".svalue",
           signature(toolkit="ANY",obj="gCommandlineANY"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             theArgs = list(...);
+
+            histList <- obj@histList
+            commandHistory <- histList[,1,drop=TRUE]
             
-            commandHistory = tag(obj,"history")
             if(length(commandHistory) == 0)
               return(c())
             if(is.null(index)) {
@@ -281,22 +298,15 @@ setReplaceMethod(".svalue",
                      command = addAssignto(command, assignto)
                    }
                    if(obj@useGUI)
-                     svalue(obj@editArea,font.attr = "monospace") <-  command 
+                     svalue(obj@commandBox,font.attr = "monospace") <-  command 
 
                    ## add to history
                    tag(obj, "history", replace=FALSE) <- command
 
                    retVal = evalChunkReturnOutput(command)
 
-                   if(! retVal$error) {
-                     .history = tag(obj,"history")
-                     .history <- c(.history, command)
-                     if(length(.history) > 25) .history <- .history[2:26]
-                     tag(obj,"history") <- .history
-                   }
-
                    if(obj@useGUI)
-                     add(obj@outputArea, retVal$output)
+                     add(obj@outputBox, retVal$output)
 
                    if(obj@useConsole) {
                      cat(retVal$output)
@@ -315,27 +325,13 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="ANY",x="gCommandlineANY"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            history = tag(x, "history")
+            
+            histList <- x@histList
+            commandHistory <- histList[,1,drop=TRUE]
 
             if(missing(i))
-              return(history)
+              return(commandHistory)
             else
-              history(i)
+              commandHistory(i)
           })
-
-### working functions
-
-
-## parse command(s) and make assingment on last one.
-addAssignto = function(command,assignto) {
-  assignto = make.names(assignto)
-  tmp = unlist(strsplit(command, ";"))
-  if(length(tmp)>1) {
-    command = paste(tmp[-length(tmp)], Paste(assignto,"<-",tmp[length(tmp)]), collapse=";", sep=";")
-  } else {
-    command =  Paste(assignto,"<-", command)
-  }
-  return(command)
-}
-
 

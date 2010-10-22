@@ -144,7 +144,7 @@ setMethod(".ggenericwidget",
             if(!is.null(lst$arguments)) {
               frame = gframe(text="Arguments",
                 horizontal=FALSE, cont=mainGroup,
-                anchor=c(-1,0), expand=TRUE)
+                anchor=c(-1,0), expand=TRUE, fill="x")
               font(frame) <- c(weight="bold", size="small")
 
               group = ggroup(horizontal=FALSE, container=frame)
@@ -207,7 +207,7 @@ setMethod(".ggenericwidget",
             ## do we assignto?
             assignto = NULL                       # initialize
             if(!is.null(lst$assignto)) {
-              frame = gframe("Assign output to:",cont=mainGroup, anchor=c(-1,0), expand=TRUE)
+              frame = gframe("Assign output to:",cont=mainGroup, anchor=c(-1,0), expand=TRUE, fill="x")
               font(frame) <- c(weight="bold")
               
               assignto = gedit("",container=frame)
