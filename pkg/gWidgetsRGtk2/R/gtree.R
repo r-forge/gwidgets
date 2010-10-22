@@ -5,7 +5,7 @@ setClass("gTreeRGtk",
 
 ## offspring takes two argument
 
-## map a list to a tree
+##' toolkit constructor for gtree
 setMethod(".gtree",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,

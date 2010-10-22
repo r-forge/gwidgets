@@ -1,3 +1,8 @@
+2010-10-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: add option use.togglebutton=TRUE to use toggle
+	button in place of checkbox.
+
 2010-10-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtree.R (isStillThere): fixes to this -- again.
