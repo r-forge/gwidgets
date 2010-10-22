@@ -55,6 +55,6 @@ setClass("gTableViewQt",
 
 ## widget for handling events
 setClass("gEventWidgetQt",
-         contains="gWidgetQt",
-         Prototype=prototype(new("gWidgetQt"))
+         contains="gComponentQt",
+         Prototype=prototype(new("gComponentQt"))
          )
