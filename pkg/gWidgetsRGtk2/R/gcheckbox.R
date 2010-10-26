@@ -123,6 +123,8 @@ gtogglebutton <- function(text, checked=FALSE, handler=NULL, action=NULL,
   if(!missing(text))
     obj[] <- text
 
+  svalue(obj) <- checked
+  
   if(!is.null(handler))
     addHandlerChanged(obj, handler=handler, action=action)
 
