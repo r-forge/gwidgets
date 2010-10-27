@@ -1,5 +1,7 @@
 2010-10-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/gslider.R: fix bug in check for integer values
+
 	* R/gmenu.R: fix to adding popupmenu. Stil an issue with menus
 	under OS X.
 

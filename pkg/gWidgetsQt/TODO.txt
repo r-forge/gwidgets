@@ -1,10 +1,11 @@
 TODO:
 ---------
-* dnd with gcombobox?
+* fix gmenu: both mani menubar and popups (doesn't show up; no submenus)
 * need to have gbigtable standard for gtable. Michael has changes to incorporate
 * settingn child gwindow transient to parent fails as destroyed event
 not given
 * gexpandgroup: fix resize issues when collapsed
+* dnd with gcombobox?
 * DND: use QtEvent framework
 * gdf: can improve significantly
 * gdf -- column clicks -- can do context menu, but how to get column?

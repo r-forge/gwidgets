@@ -31,7 +31,8 @@ setMethod(".gslider",
 
 
             ## slider is for integer only
-            if(!all.equal(by, as.integer(by)) || !all.equal(from, as.integer(from))) {
+            if(!isTRUE(all.equal(by, as.integer(by))) || 
+               !isTRUE(all.equal(from, as.integer(from)))) {
               cat("Slider is for integer values only. Using a spinbutton")
               obj <- .gspinbutton(toolkit,
                            from, to, by, value, handler, action, container, ...)

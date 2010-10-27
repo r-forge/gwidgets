@@ -545,7 +545,7 @@ setMethod(".gtableWithFilter",
               ## set up droplist
               filterPopup[] <- c("",sort(unique(as.character(items[,filter.column]))))
               svalue(filterByLabel) <- paste("Filter by",names(items)[filter.column],"==",sep=" ", collapse=" ")
-            } else {
+            } else if(filter.FUN != "manual") {
               ## set up droplist
               filterPopup[] <- c("",filter.labels)
             }

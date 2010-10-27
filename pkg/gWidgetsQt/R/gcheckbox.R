@@ -31,7 +31,7 @@ setMethod(".gcheckbox",
 
             ## do we use a toggle button
             if(use.togglebutton)
-              return(gtogglebutton(toolkit, text, checked, use.togglebutton, handler, action, container, ...))
+              return(gtogglebutton(toolkit, text, checked, handler, action, container, ...))
             
             check <- Qt$QCheckBox()
             
@@ -145,7 +145,6 @@ setClass("gToggleButtonQt",
          )
 gtogglebutton <- function(toolkit,
                           text, checked=FALSE,
-                          use.togglebutton=FALSE,
                           handler=NULL, action=NULL,
                           container=NULL,...) {
 
