@@ -1,3 +1,9 @@
+2010-10-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R (addHandler): for glabel and gimage -- both use event
+	boxes -- put in check to see if widget is sensitive to events when
+	calling a handler.
+
 2010-10-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (idleHandler): hacks to add in auto update

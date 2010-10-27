@@ -122,7 +122,11 @@ setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gImageRGtk"),
           function(obj, toolkit,
                    signal, handler, action=NULL, ...) {
-            .addHandler(obj@block, toolkit, signal, handler, action, ...)
+            f <- function(h,...) {
+              if(h$obj@widget['sensitive'])
+                handler(h,...)
+            }
+            .addHandler(obj@block, toolkit, signal, f, action, actualobj=obj, ...)
           })
 
 

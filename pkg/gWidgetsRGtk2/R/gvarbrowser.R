@@ -121,14 +121,6 @@ hasSubTree = function(x) {
     return(FALSE)
 }
 
-## in common.R
-## getObjectFromString = function(string, envir=.GlobalEnv) {
-##   out = try(eval(parse(text=string), envir=envir), silent=TRUE)
-##   if(inherits(out, "try-error"))
-##     return(NA)
-##   return(out)
-## }
-
 
 setClass("gVarbrowserRGtk",
          representation(filter="guiComponent"),

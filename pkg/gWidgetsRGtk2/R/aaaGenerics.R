@@ -411,6 +411,17 @@ setMethod("enabled",signature(obj="gWidgetRGtk"),
             return(NA)
             .enabled(obj, obj@toolkit,...)
           })
+
+setMethod(".enabled",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            widget <- getWidget(obj)
+            if("sensitive" %in% names(widget))
+              widget['sensitive']
+            else
+              TRUE
+          })
+
 setMethod(".enabled",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
           function(obj, toolkit, ...) {

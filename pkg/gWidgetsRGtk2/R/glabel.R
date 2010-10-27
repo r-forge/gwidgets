@@ -152,14 +152,18 @@ setMethod(".rotatelabel",
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
-            ID = .addHandler(obj@block, toolkit, signal, handler, action, actualobj=obj,...)
+            f <- function(h,...) {
+              if(h$obj@widget['sensitive'])
+                handler(h,...)
+            }
+            ID = .addHandler(obj@block, toolkit, signal, f, action, actualobj=obj,...)
             invisible(ID)
           })
 
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            .addHandler(obj@block, toolkit, signal="button-press-event",
+            .addHandler(obj, toolkit, signal="button-press-event",
                         handler=handler, action=action, actualobj=obj,...)
           })
 
