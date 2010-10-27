@@ -25,8 +25,8 @@ setMethod(".gcheckboxgroup",
             lst = list()
             n = length(items)
             for(i in 1:n) {
-              newItem = gcheckbox(items[i], checked=checked[i], cont=group)
-              lst[[ as.character(items[i]) ]] = newItem
+              newItem <- gcheckbox(items[i], checked=checked[i], cont=group, anchor=c(-1,0))
+              lst[[ as.character(items[i]) ]] <- newItem
             }
   
 
@@ -44,7 +44,8 @@ setMethod(".gcheckboxgroup",
 
             
             ## make combination widget with all the values
-            obj = new("gCheckboxgrouptcltk",block=group, widget=group, toolkit=toolkit, coercewith = coerce.with, e = new.env())
+            obj = new("gCheckboxgrouptcltk", block=group, widget=group,
+              toolkit=toolkit, coercewith = coerce.with, e = new.env())
   
             tag(obj, "items") <- items
             tag(obj, "itemlist") <- lst

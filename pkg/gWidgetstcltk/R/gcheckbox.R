@@ -8,6 +8,7 @@ setMethod(".gcheckbox",
           signature(toolkit="guiWidgetsToolkittcltk"),
           function(toolkit,
                    text, checked=FALSE,
+                   use.togglebutton=FALSE,
                    handler=NULL, action=NULL,
                    container=NULL,...) {
             
@@ -16,33 +17,36 @@ setMethod(".gcheckbox",
             if(missing(text)) text = ""
 
             if(is(container,"logical") && container)
-              container = gwindow()
+              container <- gwindow()
             if(!is(container,"guiWidget")) {
               warning("Container is not correct. No NULL containers possible\n" )
               return()
             }
             
-            tt = getWidget(container)
-            gp = ttkframe(tt)
+            theArgs <- list(...)
 
-            ## widget
-            check = ttkcheckbutton(gp)
-            theLabel = ttklabel(gp, text=text)
-            ## configure
-            tclVar = tclVar(as.numeric(checked))
-            tkconfigure(check,variable=tclVar)
-            ## layout
-            tkgrid(check, theLabel)
-            tkgrid.configure(check,stick="e")
-            tkgrid.configure(theLabel,stick="w")
+
+            tt <- getWidget(container)
+ #           gp = ttkframe(tt)
+
+
             
-            obj = new("gCheckboxtcltk",block=gp, widget=check,
+            ## widget use toolbutton or not?
+            ## http://wiki.tcl.tk/17899
+            if(use.togglebutton) {
+              check <- ttkcheckbutton(tt, text=text, style="Toolbutton")
+            } else {
+              check <- ttkcheckbutton(tt, text=text)
+            }
+#            theLabel = ttklabel(gp, text=text)
+            ## configure
+            tclVar <- tclVar(as.numeric(checked))
+            tkconfigure(check,variable=tclVar)
+
+            obj <- new("gCheckboxtcltk",block=check, widget=check,
               toolkit=toolkit, ID=getNewID(), e = new.env())
 
-            tag(obj,"check") <- check
             tag(obj,"tclVar") <- tclVar
-            tag(obj,"label") <- theLabel
-            tag(obj,"labelText") <- text
             
             ## add to container
             add(container, obj,...)
@@ -73,8 +77,10 @@ setReplaceMethod(".svalue",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gCheckboxtcltk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            theLabel <- tag(x,"labelText")
-            return(theLabel)
+            ## theLabel <- tag(x,"labelText")
+            widget <- getWidget(x)
+            val <- tclvalue(tkcget(widget, "-text"))
+            return(val)
           })
             
 setMethod("[",
@@ -86,9 +92,8 @@ setMethod("[",
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gCheckboxtcltk"),
           function(x, toolkit, i, j, ..., value) {
-            tag(x,"labelText") <- as.character(value[1])
-            label = tag(x,"label")
-            tkconfigure(label, text=as.character(value[1]))
+            widget <- getWidget(x)
+            tkconfigure(widget, text=paste(value, collapse="\n"))
             return(x)
           })
 

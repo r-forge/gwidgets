@@ -1,5 +1,6 @@
 TODO:
 ---------
+* gtable: mess with _, , stuff and single column
 * implement svalue( index=TRUE) (give index as "a:b:c") and
   svalue(obj) <- index
 ** Bug with gfile being opened from a button -- button stays depressed

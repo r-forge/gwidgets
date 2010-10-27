@@ -28,7 +28,7 @@ setMethod(".gimage",
               return()
             }
 
-
+            ## XXX pushed this into svalue method -- otherwise we repeat
             
 ##             ## get filename
 ##             iconFile = NULL
@@ -78,29 +78,31 @@ setMethod(".gimage",
             ## returned by findIcon()
             ## for non stock, we need to make. For this we need iconFile -- path
             ## and make a image id
-            iconFile <- NULL
-            imageID <- ""
-            if(dirname == "stock") {
-              imageID <- findIcon(filename)
-            } else {
-              if(dirname != "") {
-                iconFile = paste(dirname,filename,sep=.Platform$file.sep)
-              } else {
-                iconFile = filename
-              }
-              imageID = paste("::gimage::",filename,sep="")
-              if(!is.null(iconFile) && file.exists(iconFile)) {
-                x = try(tcl("image","create","photo",imageID,file=iconFile),silent=TRUE)
-                ## now try as bitmap
-                if(inherits(x,"try-error")) {
-                  x = try(tcl("image","create","bitmap",imageID,file=iconFile),silent=TRUE)
-                }
-                if(inherits(x,"try-error")) {
-                  cat(gettext("gimage had issues. Only gif, ppm and xbm files  in gWidgetstcltk\n"))
-                  imageID <- ""
-                }
-              }
-            }
+
+            
+            ## iconFile <- NULL
+            ## imageID <- ""
+            ## if(dirname == "stock") {
+            ##   imageID <- findIcon(filename)
+            ## } else {
+            ##   if(dirname != "") {
+            ##     iconFile = paste(dirname,filename,sep=.Platform$file.sep)
+            ##   } else {
+            ##     iconFile = filename
+            ##   }
+            ##   imageID = paste("::gimage::",filename,sep="")
+            ##   if(!is.null(iconFile) && file.exists(iconFile)) {
+            ##     x = try(tcl("image","create","photo",imageID,file=iconFile),silent=TRUE)
+            ##     ## now try as bitmap
+            ##     if(inherits(x,"try-error")) {
+            ##       x = try(tcl("image","create","bitmap",imageID,file=iconFile),silent=TRUE)
+            ##     }
+            ##     if(inherits(x,"try-error")) {
+            ##       cat(gettext("gimage had issues. Only gif, ppm and xbm files  in gWidgetstcltk\n"))
+            ##       imageID <- ""
+            ##     }
+            ##   }
+            ## }
             
             ## implement size -- photo has width, height
             if (size != "") cat(gettext("gimage: size argument is currently ignored\n"))
@@ -109,15 +111,19 @@ setMethod(".gimage",
             tt <- getWidget(container)
             lab <- ttklabel(tt, text="")
 
-            if(imageID != "")
-              tkconfigure(lab, image=imageID)
+            ## if(imageID != "")
+            ##   tkconfigure(lab, image=imageID)
             
             obj = new("gImagetcltk", block=lab, widget=lab,
               toolkit=toolkit,ID=getNewID(),e = new.env()
               )
 
-            tag(obj,"filename") <- iconFile
-            tag(obj,"imageID") <- imageID
+            ## if file and dirnot empty (and dir not stock)
+            if(filename != "" && dirname != "" && dirname != "stock" )
+              filename <- paste(dirname, filename, sep=.Platform$file.sep)
+
+            if(filename != "")
+              svalue(obj) <- filename
             
             if(!is.null(handler)) {
               id = addhandlerclicked(obj, handler=handler, action=action)
@@ -134,7 +140,7 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gImagetcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             ## return name?
-            return(tag(obj,"filename"))
+            return(tag(obj,"..filename"))
           })
 
 setReplaceMethod(".svalue",
@@ -143,21 +149,23 @@ setReplaceMethod(".svalue",
                    ## value is a full filename or icon name
                    gWidgetstcltkIcons = getStockIcons()
 
-                   
-                   if(!file.exists(value)) {
+                   ## is a stock icon
+                   if(!is.null(gWidgetstcltkIcons[[value]])) {
                      imageID <- findIcon(value)
                      tkconfigure(getWidget(obj),image=imageID)
-                   } else {
-                     x = try(tcl("image","create","photo",tag(obj,"imageID"),file=value), silent=TRUE)
-                     if(inherits(x,"try-error")) {
-                       cat(gettext("Only gif and pnm files are possible in gWidgetstcltk\n"))
-                     } else {
-                       tkconfigure(getWidget(obj),image=tag(obj,"imageID"))
-                     }
-                     ## store dynamically, not with @filename
-                     tag(obj,"filename") <- value
-                   }
-                   
+                   } else if(file.exists(value)) {
+                    imageID <- sprintf("gWidgets::%s", value)
+                    x = try(tcl("image","create","photo", imageID,file=value), silent=TRUE)
+                    if(inherits(x,"try-error")) {
+                      cat(gettext("Only gif and pnm files are possible in gWidgetstcltk\n"))
+                    } else {
+                      tkconfigure(getWidget(obj),image=imageID)
+                    }
+                  }
+
+                   ## store dynamically, not with @filename
+                   tag(obj,"..filename") <- value
+
                    return(obj)
                  })
 

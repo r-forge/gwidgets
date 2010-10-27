@@ -67,7 +67,7 @@ setMethod(".gexpandgroup",
             tag(obj, "expandGroup") <- eg1
             tag(obj, "icon") <- icon
             tag(obj, "label") <- label
-            tag(obj, "state") <- TRUE
+            tag(obj, "state") <- FALSE
             tag(obj, "rightArrow") <- rightArrow
             tag(obj, "downArrow") <- downArrow
 
@@ -82,6 +82,9 @@ setMethod(".gexpandgroup",
             addHandlerClicked(icon, handler=changeState)
             addHandlerClicked(label, handler=changeState)
 
+
+            visible(obj) <- FALSE       # initial state
+            
             ## must take care of closing/opening
             if(!is.null(handler)) {
               addHandlerChanged(obj, handler=handler, action=action)

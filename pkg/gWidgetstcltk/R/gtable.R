@@ -98,7 +98,9 @@ setClass("gTabletcltk",
   ## deal with visible
   visible <- rep(visible, length=m)
   items <- items[visible,,drop=FALSE]
-  m <- dim(items)[1]
+
+  d <- dim(items)
+  m <- d[1]; n <- d[2]
 
   ## if icons, we create
   if(!is.null(icons)) {
@@ -110,7 +112,8 @@ setClass("gTabletcltk",
   if(m > 0) {
     sapply(1:m, function(i) {
       values <- as.character(unlist(items[i,]))
-#      values <- paste("{",values,"}", sep="")  ## JV 9/9/09 -- was needed, why not now?
+      if(n == 1)
+        values <- paste("{",values,"}", sep="")  ## needed for single column. o/w splits on , and +
       if(!is.null(icons)) {
         tcl(tr,"insert","","end",
             values = values,

@@ -53,28 +53,49 @@ setMethod(".ggroup",
               tkgrid.rowconfigure(block, 0, weight=1)
 
               ## call in autoscroll
-              tcl("autoscroll", xscr)
-              tcl("autoscroll", yscr)
+#              tcl("autoscroll", xscr)
+#              tcl("autoscroll", yscr)
               
               
               ## Set up frame
               gp <- ttkframe(widget)
-              tcl(widget,"create","window",0,0,anchor="nw",window=gp)
-                                        #tkgrid(gp, row = 0, column = 0, sticky="news")
+              gpID <- tcl(widget,"create","window",0,0,anchor="nw",window=gp)
               tkgrid.columnconfigure(widget,0,weight=1)
               tkgrid.rowconfigure(widget,0,weight=1)
 
+              ## give an initial size
+              gpwidth <- getWithDefault(theArgs$width, 300)
+              gpheight <- getWithDefault(theArgs$height, 300)
+              if(horizontal)
+                tkitemconfigure(widget, gpID, height=gpheight)
+              else
+                tkitemconfigure(widget, gpID, width=gpwidth)
+              
               tcl("update","idletasks")
 
 
-              tkbind(widget,"<Configure>",function() {
-                bbox <- tcl(widget,"bbox","all")
-                tcl(widget,"config",scrollregion=bbox)
-              })
+              ## tkbind(widget,"<Configure>",function() {
+              ##   bbox <- tcl(widget,"bbox","all")
+              ##   tcl(widget,"config",scrollregion=bbox)
+              ## })
 
               tkbind(gp,"<Configure>",function() {
                 bbox <- tcl(widget,"bbox","all")
                 tcl(widget,"config",scrollregion=bbox)
+              })
+
+              
+              tkbind(widget, "<Configure>", function(W) {
+                width <- as.numeric(tkwinfo("width", W))
+                height <- as.numeric(tkwinfo("height", W))
+                
+                gpwidth <- as.numeric(tkwinfo("width", gp))
+                gpheight <- as.numeric(tkwinfo("height", gp))
+                
+                if(gpwidth < width && !horizontal)
+                  tkitemconfigure(widget, gpID, width=width)
+                if(gpheight < height && horizontal)
+                  tkitemconfigure(widget, gpID, height=height)
               })
             } else {
               gp <- ttkframe(tt)
@@ -98,7 +119,7 @@ setMethod(".ggroup",
             ##  tkxview.moveto(widget,1)
             ##  tkyview.moveto(widget,1)
             ## }
-##            .tag(obj,toolkit, i="scrollable.widget") <- widget
+            .tag(obj,toolkit, i="scrollable.widget") <- widget
             obj@e$i <- widget
 
             ## attach to container if there

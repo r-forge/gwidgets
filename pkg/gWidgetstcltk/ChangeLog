@@ -1,3 +1,24 @@
+2010-10-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gimage.R: moved code into svalue<- method. Fix bug if no image
+	initially specified.
+
+2010-10-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdf.R: fixed bug in svalue (doubled up); svalue<- implemented
+	(index=TRUE needed)
+
+2010-10-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: added use.togglebutton feature
+
+2010-10-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.populateTable): fix to single column tables to
+	avoid splitting on , or +
+
+	* R/aaaGenerics.R: fixed focus<- method for tkwin
+
 2010-10-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (ladd): changed what is shown after text is added. Now

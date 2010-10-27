@@ -41,13 +41,13 @@ setMethod(".gbutton",
               ## not stock
               button <- ttkbutton(tt, text=text)
             } else {
-              button = ttkbutton(tt, text=text, image=icon,
+              button <- ttkbutton(tt, text=text, image=icon,
                 compound=compound)
             }
 
             obj <- new("gButtontcltk",
-              block=button, widget=button, toolkit=toolkit,ID=getNewID(),
-              e = new.env())
+                       block=button, widget=button,
+                       toolkit=toolkit,ID=getNewID(), e = new.env())
             
             ## add gp to container
             add(container, obj, ...)

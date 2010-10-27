@@ -351,6 +351,14 @@ setReplaceMethod("focus",signature(obj="gWidgettcltk"),
             return(obj)
           })
 
+setReplaceMethod("focus",signature(obj="tcltkObject"),
+          function(obj, ..., value) {
+            if(as.logical(value))
+              tkfocus(obj)
+            obj
+          })
+
+
 setReplaceMethod(".focus",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ..., value) {
@@ -860,7 +868,7 @@ setMethod(".add",
 
             ## if anchor spcified, then set expand=TRUE
             if(!is.null(theArgs$anchor)) {
-              argList$expand <- TRUE
+#              argList$expand <- TRUE
               argList$anchor <- xyToAnchor(theArgs$anchor)
             }
             
@@ -870,17 +878,13 @@ setMethod(".add",
               argList$side = "top"
 
             ## call tkpack
-            cat("tlpack with")
-            print(argList)
-                
-            
             do.call("tkpack",argList)
 
             tcl("update","idletasks")
 
-            if(!is.null(widget <- .tag(value,toolkit,"scrollable.widget"))) {
+            if(!is.null(widget <- .tag(obj,toolkit, "scrollable.widget"))) {
               ## get scrollbars to add to end etc.
-              tcl("event","generate",getWidget(value),"<Configure>")
+              tcl("event","generate",getWidget(obj),"<Configure>")
               tkxview.moveto(widget,1)
               tkyview.moveto(widget,1)
             }

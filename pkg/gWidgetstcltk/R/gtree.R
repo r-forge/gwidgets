@@ -350,6 +350,7 @@ setMethod(".update",
             ## add children
             .treeAddOffspring(tr, parent="", os, whichHaveOffspring,
                               icons=icons)
+            invisible()
           })
 
 ## index returns the indices
@@ -482,7 +483,7 @@ setReplaceMethod(".size",
                    
                    ## set width
                    sapply(2:n, function(j) {
-                     tcl(tr, "column", j - 2, "-width",widths[j])
+                     tcl(tr, "column", j - 2, width=widths[j], stretch=TRUE, anchor="w")
                    })
                    tcl(tr,"column","#0","-width", widths[1])
                    

@@ -169,11 +169,10 @@ setMethod(".dispose",
           })
 
 
-### Add method is a workhorse for this class. Value can be
+### insert (was add) method is a workhorse for this class. Value can be
 ## * a line of text
 ## * a vector of lines of text
-## need to do where value of "point"
-## add, as a method, needs to have a consistent signature. I'
+## need to do where value of "at.cursor"
 
 ## add text
 setMethod(".insert",
@@ -187,6 +186,7 @@ setMethod(".insert",
                  do.newline=do.newline, ...)
           })
 
+## should be .insert, but legacy
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gTexttcltk",value="character"),
           function(obj, toolkit, value,  ...) {

@@ -168,7 +168,7 @@ setMethod(".svalue",
 
             ## top col x, bottom col y
             curSel <- sapply(strsplit(as.character(tcl(tktable,"curselection")),","), as.numeric)
-            indices <- curSel[1,]
+            indices <- list(rows=sort(unique(curSel[1,])), columns=sort(unique(curSel[2,])))
                            
             if(!is.null(index) && index == TRUE)
               return(indices)
@@ -176,7 +176,7 @@ setMethod(".svalue",
             ## Now a value
             if(missing(drop) || is.null(drop)) drop = FALSE
 
-            return(obj[indices,,drop=drop])
+            return(obj[indices$rows, indices$columns, drop=drop])
 
           })
           
@@ -185,11 +185,24 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gGridtcltk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   tktable <- getWidget(obj)
                    if(!is.null(index) && index == FALSE) {
-                     ## notthing to do
+                     return(obj)
+                   } else if(!is.numeric(value) || !is.list(value)) {
+                     ## not a value. Clear
+                     tcl(tktable, "selection", "clear", "all")                     
+                     return(obj)
                    } else {
-                     ## set row to be highlighted
-                     cat("svalue: not implemented\n")
+                     d <- dim(obj); m <- d[1]; n <- d[2]
+                     if(!is.list(value)) {
+                       ## assume values is rows
+                       value <- list(rows=value, columns=seq_len(n))
+                     }
+                     tcl(tktable, "selection", "clear", "all")
+                     for(i in value[[1]])
+                       for(j in value[[2]])
+                         if(1 <= i & i <= m & 1 <= j & j <= n)
+                           tcl(tktable, "selection", "set", sprintf("%s,%s", i,j))
                    }
                    return(obj)
                  })
@@ -364,7 +377,6 @@ setReplaceMethod(".names",
 .gDfaddPopupMenu <- function(obj) {
   ## global variables to record row, column of menu popup
   x0 <- NA; y0 <- NA
-  classes <- tag(obj,"classes")
   tktable <- getWidget(obj)
   
   menu <- tkmenu(tktable)
@@ -451,15 +463,20 @@ setReplaceMethod(".names",
   tkadd(menu,"separator")
   tkadd(menu,"command",label=gettext("Insert Variable"), command = function() {
     ind <- getWhere()
-    tcl(tktable,"insert","cols",ind[2])
-    tag(obj,"classes") <- insert(classes, ind[2], "character")
+    tcl(tktable,"insert", "cols", ind[2])
+    classes <- tag(obj, "classes")
+    tag(obj,"classes") <- insert(classes, ind[2]+1, "character")
+
+    val <- ginput("New variable name:", parent=obj)
+    if(!is.na(val))
+      names(obj)[ind[2] + 1] <- val
   })
   tkadd(menu,"command",label=gettext("Delete Variable"), command = function() {
     ind <- getWhere()
     if(columnEmpty(ind[2]) || confirmDelete())
       tcl(tktable,"delete","cols",ind[2])
+    tag(obj, "classes") <- tag(obj, "classes")[-ind[2]]
   })
-  
   tkadd(menu,"command",label=gettext("Insert Case"), command = function() {
     ind <- getWhere()
     tcl(tktable,"insert","rows",ind[1])
@@ -475,7 +492,8 @@ setReplaceMethod(".names",
   setClass <- function(type) {
     ind <- getWhere()
     tclvalue(typeVar) <- type
-    classes[ind[2]] <<- type
+    classes <- tag(obj,"classes")
+    classes[ind[2]] <- type
     tag(obj,"classes") <- classes
     formatColumn(col=ind[2], type=type)
   }
@@ -580,16 +598,30 @@ tclArrayToDataFrame <- function(ta, tktable, classes) {
                   silent=TRUE)
     if(inherits(l[[j]], "try-error")) l[[j]] <- vals ## character
   }
+  ind <- which(classes == "character")
+  if(length(ind)) {
+    ## convert NA to ""
+    for(i in ind) {
+      tmp <- l[[i]]
+      tmp[is.na(tmp)] <- ""
+      l[[i]] <- tmp
+    }
+  }
+  
   df <- as.data.frame(l)
   ## fix character -- turned to factor above through as.data.frame
-  ind <- classes == "character"
-  if(any(ind)) {
-    ind <- which(ind)
+  if(length(ind)) {
     df[,ind] <- as.character(df[,ind])
   }
   ## dimnames
-  colnames(df) <- sapply(1:d[2], function(j) tclvalue(ta[[0,j]]))
-  rownames(df) <- sapply(1:d[1], function(i) tclvalue(ta[[i,0]]))
+  getTclValueWithDefault <- function(val, default) {
+    if(is.null(val))
+      default
+    else
+      tclvalue(val)
+  }
+  colnames(df) <- sapply(1:d[2], function(j) getTclValueWithDefault(ta[[0,j]], sprintf("X%s",j)))
+  rownames(df) <- sapply(1:d[1], function(i) getTclValueWithDefault(ta[[i,0]], as.character(i)))
   return(df)
 }
 

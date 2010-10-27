@@ -60,8 +60,10 @@ setMethod(".gseparator",
 
             ## add gp to container. Fixe expand argument to be TRUE
             theArgs$expand = TRUE
-##            do.call(add, c(list(obj=container, value=obj), theArgs))
-            add(container, obj, ...)
+            theArgs$obj <- container
+            theArgs$value <- obj
+            do.call("add", theArgs)
+#            add(container, obj, ...)
 
 
             invisible(obj)

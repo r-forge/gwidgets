@@ -25,6 +25,9 @@ knownTypes = list(
   "all" = NULL
   )
 
+
+
+
 ## list of some type
 lsType = function(type, envir=.GlobalEnv) {
   x = with(.GlobalEnv, sapply(ls(), function(i) class(get(i))))
@@ -120,19 +123,19 @@ setMethod(".gvarbrowser",
                 values = h$obj[]
                 value = paste(values, collapse = "$")
                 if (!is.null(action))
-                        print(do.call(h$action, list(svalue(value))))
+                  print(do.call(h$action, list(svalue(value))))
               }
             }
 
             ## begin
-            group = ggroup(horizontal=FALSE, container=container,...)
-            filterGroup = ggroup(container=group)
+            group <- ggroup(horizontal=FALSE, container=container,...)
+            filterGroup <- ggroup(container=group)
             glabel("Filter by:",container=filterGroup)
-            filterPopup = gdroplist(names(knownTypes), container=filterGroup)
+            filterPopup <- gdroplist(names(knownTypes), container=filterGroup)
             svalue(filterPopup) <- "data sets"
             
             ## main tree
-            tree = gtree(offspring=offspring,
+            tree <- gtree(offspring=offspring,
               offspring.data=knownTypes[[svalue(filterPopup)]],
               col.types=data.frame(Name="string",Type="string"),
               icon.FUN = function(d,...) {
@@ -141,6 +144,18 @@ setMethod(".gvarbrowser",
               container = group, expand=TRUE
               )
 
+
+            obj <- new("gVarbrowsertcltk",block=group, widget=tree, filter=filterPopup,
+                       toolkit=toolkit,ID=getNewID(), e = new.env())
+            
+            
+            gbutton("update", cont=group, align=c(-1,0),
+                    action=obj,
+                    handler=function(h,...) {
+                      update(h$action)
+                    })
+            
+            
             ## update the tree this way
             addhandlerclicked(filterPopup,
                               handler = function(h,...) {
@@ -151,37 +166,34 @@ setMethod(".gvarbrowser",
                               },
                               action=tree)
             
-            ## add an idle handler for updating tree every  second
-            idleid = addhandleridle(tree, interval=1000, handler = function(h,...) {
-              key = svalue(filterPopup)
-              offspring.data = knownTypes[[key]]
-              ## need to iron update out in gtree -- leave offspring open
-              ##              update(h$obj, offspring.data = offspring.data)
-            })
+            ## ## add an idle handler for updating tree every  second
+            ## idleid = addhandleridle(tree, interval=5000, handler = function(h,...) {
+            ##   key = svalue(filterPopup)
+            ##   offspring.data = knownTypes[[key]]
+            ##   update(h$obj, offspring.data = offspring.data)
+            ## })
 
-##             addhandlerunrealize(tree, handler = function(h,...) {
-##               removeHandler(h$obj, h$action)
-##             },action=idleid)
+            ## addhandlerunrealize(tree, handler = function(h,...) {
+            ##   removeHandler(h$obj, h$action)
+            ## },action=idleid)
             
-            
+            # tag(obj, "idle.id") <- idleid
+            # To remove
+            ## removeHandler(obj@widget, tag(obj, "idle.id"))
             
             ## drop handler
             adddropsource(tree,handler=function(h,...) {
-              
               values = h$obj[]
               values = sapply(values, untaintName)
               return(paste(values,collapse="$"))
             })
 
-            ## RGtk2 stuff
-##            tag(tree,"view")$SetEnableSearch(TRUE)
-##            tag(tree,"view")$SetHeadersClickable(TRUE)
 
-            obj = new("gVarbrowsertcltk",block=group, widget=tree, filter=filterPopup)
-
+            
             if(!is.null(handler)) {
-              id = addhandlerdoubleclick(tree,
+              id <- addhandlerdoubleclick(tree,
                 handler=handler, action=action)
+              tag(obj, "handler.id") <- id
             }
             
             ## all done
@@ -190,7 +202,17 @@ setMethod(".gvarbrowser",
 
 ### methods
 ## push methods and handlers down to tree in this case
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkittcltk",object="gVarbrowsertcltk"),
+          function(object,toolkit,...) {
+            tree <- object@widget@widget
+            filterPopup <- object@filter
+            offspring.data <- knownTypes[[svalue(filterPopup)]]
+                        
+            .update(tree, toolkit, offspring.data=offspring.data)
 
+          })
+            
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gVarbrowsertcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
