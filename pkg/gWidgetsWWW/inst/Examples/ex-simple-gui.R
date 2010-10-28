@@ -37,6 +37,7 @@ gmenu(menuList, cont=w)
 ## simple two pane layout
 ## a commandline and frame
 g <- ggroup(cont=w)
+glabel("", cont=g)                      # XXX done so label scripts are preloaded. Not optimal
 gcommandline(cont=g,  graphic_size=c(800,500))
 
 
@@ -89,7 +90,7 @@ handlers$refresh <- function(...) {
 handlers$str <- function(...) {
   val <- svalue(workspaceTable)
   if(val != "") {
-    galert(val)
+    galert(val, parent=w)
     obj <- get(val, envir=.GlobalEnv)
     out <- capture.output(str(obj))
     out <- sprintf("<code>%s</code>", paste(out, collapse="<br>"))
@@ -100,7 +101,7 @@ handlers$str <- function(...) {
     gbutton("dismiss", cont=g, handler=function(h,...) dispose(w2))
     visible(w2) <- TRUE
   } else {
-    galert("Select a value")
+    galert("Select a value", parent=w)
   }
 }
 
@@ -108,11 +109,11 @@ handlers$rm <- function(...) {
   val <- svalue(workspaceTable)
   if(val != "") {
     rm(list=val, envir=.GlobalEnv)
-    galert(sprintf("Removed %s from workspace", val))
+    galert(sprintf("Removed %s from workspace", val), parent=w)
     handlers$refresh()
     sapply(buttons[-1], function(i) enabled(i) <- FALSE)
   } else {
-    galert("Select a value")
+    galert("Select a value", parent=w)
   }
 }
 
@@ -149,7 +150,7 @@ loadPackageDialog <- function() {
   tbl <- gtable(out, cont=g); size(tbl) <- c(400, 400)
   addHandlerDoubleclick(tbl, handler=function(h,...) {
     i <- svalue(h$obj)
-    galert(sprintf("Loading package %s", i), delay=1)
+    galert(sprintf("Loading package %s", i), delay=1, parent=w)
     do.call("require", list(i))
     dispose(w1)
   })
@@ -166,7 +167,7 @@ loadDataSetDialog <- function() {
   tbl <- gtable(out, cont=g); size(tbl) <- c(400, 400)
   addHandlerDoubleclick(tbl, handler=function(h,...) {
     i <- svalue(h$obj, index=TRUE)
-    galert(sprintf("load data %s in package %s", out[i,2], out[i,1]), delay=1)
+    galert(sprintf("load data %s in package %s", out[i,2], out[i,1]), delay=1, parent=w)
     do.call("data", list(out[i,2], package=out[i,1]))
     dispose(w1)
   })
@@ -274,7 +275,7 @@ aboutDialog <- function() {
               "The idea is to show how the widgets can be combined to produce",
               "some familiar looking dialogs.",
               "The main text boxes are for issuing commands. When a command is typed,",
-              "either clicking 'Evaluate' or the ENTER key will being the commands evaluation.",
+              "either clicking 'Evaluate' or the ENTER key will initiate the commands evaluation.",
               sep=" "),
         cont=g)
   gbutton("dismiss", cont=g, handler=function(...) dispose(w1))

@@ -1,3 +1,18 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
 ## make an action
 ## want to be able to use as
 ## a) menu/tool item as in Ext
@@ -18,8 +33,10 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
     window <- parent$toplevel
   
   ## make a class
-  widget = EXTAction$new(label=label,tooltip=tooltip, icon=icon, handler=handler)
+  widget <- EXTAction$new(label=label,tooltip=tooltip, icon=icon, handler=handler)
   class(widget) <- c("gAction",class(widget))
+
+  widget$toplevel <- parent$toplevel
   widget$setValue(value = label)
   widget$window <- window
   
@@ -52,14 +69,17 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
   ## svalue to set text
   ## enabled to en/dis-able
   widget$setValueJS <- function(.,...) {
-    out <- String() +
-      .$asCharacter() + '.setText(' + shQuoteEsc(svalue(.)) + ');'
+    out <- sprintf("%s.setText(%s)", .$asCharacter(), shQuoteEsc(svalue(.)))
+    ## out <- String() +
+    ##   .$asCharacter() + '.setText(' + shQuoteEsc(svalue(.)) + ');'
     return(out)
   }
 
   widget$setEnabledJS <- function(.,...) {
-    out <- String() +
-      .$asCharacter() + '.setDisabled(' + tolower(as.character(!.$..enabled)) + ');'
+    val <-  tolower(as.character(!.$..enabled))
+    out <- sprintf("%s.setDisabled(%s)", .$asCharacter(), val)
+    ## out <- String() +
+    ##   .$asCharacter() + '.setDisabled(' + tolower(as.character(!.$..enabled)) + ');'
     return(out)
   }
 

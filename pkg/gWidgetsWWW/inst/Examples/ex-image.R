@@ -1,13 +1,16 @@
+## need w to be global!
+w <- NULL
+
 makeErrorPage <- function(msg="") {
-  w <- gwindow("Error")
+  w <<- gwindow("Error")
   ghtml(sprintf("Error: %s", msg), cont=w)
   visible(w) <- TRUE
 }
 
 if(!capabilities()['png']) {
-  makeErrorPage("Need png driver to work")
+  makeErrorPage("This demo needs a png driver to work")
 } else if(!require(lattice, quietly=TRUE, warn=FALSE)) {
-  makeErrorPage("Need lattice package")
+  makeErrorPage("This demo uses the lattice package")
 } else {
                 
   makePlot <- function(fileName, width, height) {
@@ -20,7 +23,7 @@ if(!capabilities()['png']) {
   width <- 500; height <- 300
   
   
-  w <- gwindow("Using Cairo plus gimage")
+  w <<- gwindow("Using Cairo plus gimage")
   g <- ggroup(horizontal = FALSE, cont = w)
   b <- gbutton("Make new plot", cont = g, handler = function(h,...) {
     if(file.exists(fileName))

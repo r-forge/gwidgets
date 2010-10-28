@@ -77,7 +77,7 @@ derived by work of Romain Francois's highlight package
 \examples{
 	\dontrun{
 	localServerStart()	# opens browser with files in working directory
-	localServerOpen(file="Examples/ex-widgets.R", package="gWidgetsWWW")
+	localServerOpen(file="Examples/ex-index.R", package="gWidgetsWWW")
 	}
 }
 

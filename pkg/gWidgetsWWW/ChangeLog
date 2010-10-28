@@ -1,3 +1,10 @@
+2010-10-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTContainer$addJS): put in code to queue up JS code
+	rather than cat it out. This will allow us to pass values from R
+	to the browser by queuing up requests then periodically querying
+	from the browser to events.
+
 2010-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaa.R (EXTComponentWithStore$filter): call to RegExp to

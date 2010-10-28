@@ -1,5 +1,12 @@
 ## TODO for gWidgetsWWW
-* [<- for i,j and dgf
+* scripts issue: glabel in gsubwindow doesn't work. Should I preload
+these? Simple JS call and cleans up code
+DONE * actions in general don't seem to be working well (menu, ex-actions)
+* gbutton and actions in subwindows 
+* integrate hanging events.
+DONE * change JS handlers to return strings, not cat it out. Then we could
+do something different in local thing
+DONE * [<- for i,j and dgf
 * update to ext 3.2
 (A firefox thing) * size of text in gcombobox is too big. How to change?
 * update googlemaps to new API (disabled for now)

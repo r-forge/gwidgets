@@ -1,10 +1,24 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
 require(proto, quietly=TRUE)
-#require(filehash, quietly=TRUE)
-#require(digest, quietly=TRUE)
 
 ## Three main classes
-## EXTWidget and its subclasses EXTComponent, EXTContainer
-
+## EXTWidget
+##   EXTComponent
+##   EXTContainer
 
 ## The double dot is meant to indicate an instance variable/method as
 ## opposed to a "class" variable/method. It seems that proto does not
@@ -55,37 +69,64 @@ EXTWidget <-
 
 ### methods
 
+
+##' has a slot? mapping of exists. From mutatr
+##' 
+##' @param key name of slot
+##' @return logical
+EXTWidget$has_slot <- function(., key) exists(key, envir=.)
+
+##' is slot local to object (not inherited)
+##' 
+##' @param key name of slot
+##' @return logical
+EXTWidget$has_local_slot <- function(., key) exists(key, envir=., inherits=FALSE)
+
 ## used to display to STDOUT or a file for debugging
-## XXX Should we use .$file <- stdout()???
-## this isn't working for dialogs
-EXTWidget$Cat <- function(.,...) {
-  cat(...,"\n", file=.$file, append=TRUE)
+## or puts onto JS queue
+##' @param ... pasted together to form a string
+##' @param queue to we push onto JSQueue or print out. (Pushing is used if returning JS)
+EXTWidget$Cat <- function(.,..., queue=FALSE) {
+  out <- paste(..., collapse="\n")
+  if(queue)
+    .$addJSQueue(out)
+  else
+    cat(out, file=.$file, append=TRUE)
 }
-EXTWidget$test <- function(.,...) .$Cat("alert('test message');")
 
 ## Cat either a string or function
-EXTWidget$showPart <- function(.,part) {
+##' Helper to cat out part of webpge
+##' @param part name of part or function defining part
+##' @param queue passed to Cat method of .
+##' @return will print out page or queue it
+EXTWidget$showPart <- function(.,part, queue=FALSE) {
   ## part may be property of function. This checks
   if(!is.null(part))
     if(is.function(part))
-      .$Cat(part())
+      .$Cat(part(), queue=queue)
     else
-      .$Cat(part)
+      .$Cat(part, queue=queue)
 }
 
 ## instead of pasting "o" in front of ID
 ## we have Ext Object "o" + ID and DOM object "ID" to consider
 ## XXX This is misnamed (toString?)
+
+##' Represent object as character
+##'
+##' The character is usually the name of the object in EXT.
+##' @return a character
 EXTWidget$asCharacter <- function(.) {String('o') +  .$ID}
 
-## simple function to call an Ext method on the corresponding object
+##' simple function to call an Ext method on the corresponding object
+##'
+##' @param methodname name of method
+##' @param args arguments -- a string!
+##' @return a string, JS, to call method
 EXTWidget$callExtMethod <- function(., methodname, args) {
   if(missing(args))
-    args <- '();'
-  else
-    args <- String('(') + args + ');'
-  out <- String() +
-    .$asCharacter() + "." + methodname + args
+    args <- ""
+  out <- sprintf("%s.%s(%s)", .$asCharacter(), methodname, args)
   return(out)
 }
 
@@ -96,6 +137,11 @@ EXTWidget$callExtMethod <- function(., methodname, args) {
 
 ## Here we have getValue, setValue for svalue, svalue<-
 ## svalue, svalue<-
+
+##' EXT widget for svalue
+##'
+##' @param index see svalue
+##' @param drop see svalue
 EXTWidget$getValue <- function(., index=NULL,drop=NULL, ...) {
   if(exists("..shown",envir=.,inherits=FALSE)) {
      ## get from widget ID
@@ -119,9 +165,14 @@ EXTWidget$getValue <- function(., index=NULL,drop=NULL, ...) {
   return(out)
 }
 
-## have we shown the widget? if so, we set in document too
-## We need to also assign to .$ID in . as otherwise
-## we don't get the getValue right
+##' Set the widget value
+##'
+##' have we shown the widget? if so, we set in document too
+##' We need to also assign to .$ID in . as otherwise
+##' we don't get the getValue right
+##' @param index see \code{svalue<-}
+##' @param value what will be set
+##' @return sets value quietly, Adds to JS queue if apt
 EXTWidget$setValue <- function(., index=NULL, ..., value) {
   ## override locally if desired
   if(exists("..setValue",envir=., inherits=FALSE)) {
@@ -144,7 +195,7 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
   }
   ## now process if shown
   if(exists("..shown",envir=., inherits=FALSE)) 
-    cat(.$setValueJS(index=index,...),file=stdout())
+    .$addJSQueue(.$setValueJS(index=index, ...))
 
  }
 ## create javascript code to write Javascript to set
@@ -152,25 +203,30 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
 ## properties setValueMethod, 
 EXTWidget$setValueJSAttribute = "innerHTML"
 
-## this uses the DOM value -- not the Ext widget. EXTComponent
-## overrides this.
+
+
+##' Method call to create JavaScript to set a value
+##'
 EXTWidget$setValueJS <- function(.,...) {
   if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
-
   
   ## default method to set the value using setValue
   value <- .$..data                     # don't use svalue here
   
+  ##' this uses the DOM value -- not the Ext widget. EXTComponent
+  ##' overrides this.
+  out <- sprintf("var widget= EXT.get(%s).%s = %s;", shQuote(.$ID), .$setValueJSAttribute, shQuote(value))
+  ## out <- String('var widget = ') +
+  ##   'EXT.get(' + shQuote(.$ID) + ');' +
+  ##     'widget.' + .$setValueJSAttribute + '= ' + shQuote(value) + ';\n'
   
-  out <- String('var widget = ') +
-    'EXT.get(' + shQuote(.$ID) + ');' +
-      'widget.' + .$setValueJSAttribute + '= ' + shQuote(value) + ';\n'
-  
-  return(out)                              # to browser, not file
+  return(out)                            
 }
 
 
-## function to coerce values using either coerce.with or ..coerce.with
+##' method to coerce values using either coerce.with or ..coerce.with
+##'
+##' @param values can override or take \code{..values} from object
 EXTWidget$coerceValues <- function(.,values = .$..values) {
   coerce.with = NULL
   if(exists("..coerce.with", envir=., inherits=FALSE))
@@ -191,22 +247,47 @@ EXTWidget$coerceValues <- function(.,values = .$..values) {
 ## getValues = [; setValues = [<-
 ## [, [<-
 
+##' method for \code{[}
 EXTWidget$getValues <- function(., ...) .$..values
+
+##' method for \code{[<-}
+##' @param i ignored -- XXX FIX THIS
+##' @param j ignored -- XXX fix this
+##' @param ... passed to setValuesJS
+##' @param value value to set
+##' @return adds to JS queue if shown
 EXTWidget$setValues <- function(.,i,j,...,value) {
   ## XXX Need to include i,j
   .$..values <- value
-  if(exists("..shown",envir=., inherits=FALSE))
-    cat(.$setValuesJS(...), file=stdout())
+  ##if(exists("..shown",envir=., inherits=FALSE))
+    ## cat(.$setValuesJS(...), file=stdout())
+  if(.$has_local_slot("..shown"))
+    .$addJSQueue(.setValuesJS(...))
 }
+
+##' call to set values via JS
+##' @param ... passed to local function
 EXTWidget$setValuesJS <- function(.,...) {
-  if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)  
-  return("")                               # cat javascript to set values
+  if(.$has_local_slot("..setValuesJS"))
+    .$..setValuesJS(...)
+#  if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)  
+#  return("")                               # cat javascript to set values
 }
 
 ## length, dim -- issue with recursion if given full name
+
+##' length method for gWidget
+##' @param x gWidgets instance.
 length.gWidget <- function(x) {. = x; .$.length()}
+
+##' EXT length method
 EXTWidget$.length <- function(.) {vals <- .$..values; length(vals)}
+
+##' dim method for gWidget
+##' @param x gWidget object
 dim.gWidget <- function(x) {. = x; .$.dim()}
+
+##' EXT dim method
 EXTWidget$.dim <- function(.) {vals <- .$..values; dim(vals)}
 
 ## names, names<-
@@ -214,7 +295,7 @@ EXTWidget$getNames <- function(.) .$names
 EXTWidget$setNames <- function(.,value) {
   .$..names <- value
   if(exists("..shown",envir=., inherits=FALSE)) {
-    cat(.$setNamesJS(), file=stdout())
+    .$addJSQueue(.$setNamesJS())
   }
 }
 EXTWidget$setNamesJS <- function(.) {}    # set names
@@ -225,7 +306,8 @@ EXTWidget$getVisible <- function(.) return(.$..visible )
 EXTWidget$setVisible <- function(.,value) {
   .$..visible <- as.logical(value)
   if(exists("..shown",envir=., inherits=FALSE)) {
-    cat(.$setVisibleJS(), file=stdout())
+    ## cat(.$setVisibleJS(), file=stdout())
+    .$addJSQueue(.$setVisibleJS())
   }
 }
 EXTWidget$setVisibleJS <- function(.) {
@@ -244,8 +326,8 @@ EXTWidget$setVisibleJS <- function(.) {
 EXTWidget$getEnabled <- function(.) return(.$..enabled )
 EXTWidget$setEnabled <- function(.,value) {
   .$..enabled <- as.logical(value)
-  if(exists("..shown",envir=., inherits=FALSE)) 
-    cat(.$setEnabledJS(), file=stdout())
+  if(.$has_local_slot("..shown"))
+    .$addJSQueue(.$setEnabledJS())
 }
 EXTWidget$setEnabledJS <- function(.) {
   if(exists("..enabled", envir=., inherits=FALSE))
@@ -254,24 +336,16 @@ EXTWidget$setEnabledJS <- function(.) {
     value <- TRUE
 
   ## which method
-  method <- ifelse(value, "enable", "disable")
-
-  out <- String() +
-    'o' + .$ID + '.' + method + '();' + '\n'
-  
-##   ## uses DOM
-##   out <- String() +
-##     'var widget = ' +
-##       'Ext.get(' + shQuote(.$ID) + ');\n' +
-##        'widget.' + method + ';\n'
+  out <- sprintf("%s.%s()\n", .$asCharacter(), ifelse(value, "enable", "disable"))
   return(out)
 }
 
 
- ## ..style covers fonts, size, and others
- ## font uses this
- EXTWidget$setFont <- function(.,value) {
- }
+## ..style covers fonts, size, and others
+## font uses this
+EXTWidget$setFont <- function(.,value) {
+  
+}
 ## XXX integrate with setStylesJS
 EXTWidget$setStyleJS <- function(.,styles = NULL) {
   ## styles
@@ -345,6 +419,10 @@ EXTWidget$getSize <- function(.) {
 ## the function is recursive, as some options may be given as
 ## object literals in Ext
 
+##' Create a list of standard configuration options
+##'
+##' Can be overridden, subclasses, ...
+##' @return a list with the options. List is passed to mapRtoObjectLiteral
 EXTWidget$ExtStdCfgOptions <- function(.) {
   out <- list(
               "renderTo"=String("Ext.getBody()"),
@@ -425,9 +503,25 @@ EXTWidget$mapRtoObjectLiteral <- function(.,values,doBraces=TRUE) {
 ## There are several stages.
 ## header and footer are used to wrap the object if desired
 
-## The header and footer are blank
-EXTWidget$header <- EXTWidget$footer <- EXTWidget$separator <- function(.) return("")
+##' header for a widget.
+##'
+##' Meant to be overridden in subclass
+##' @return returns text to be placed in the header
+EXTWidget$header <- function(.) return("")
 
+##' footer for the widget
+##'
+##' Meant to be overriddent in subclass
+##' @return returns text to be placed in the header
+EXTWidget$footer <- function(.) return("")
+
+##' widget separator
+EXTWidget$separator <- function(.) return("")
+
+##' Method to write out the constructor
+##'
+##' Assumes property \code{ExtConstructor} is set
+##' @return string container JS code for constructor
 EXTWidget$writeConstructor <- function(.) {
   out <- String() +
 ### var creates a *local* variable -- issues with safari here
@@ -463,14 +557,16 @@ EXTWidget$writeConstructor <- function(.) {
 ## code to write out transport function
 ## called in writeHandlers
 EXTWidget$transportValue <- function(.,...) {
-  out <- String() +
-    'var value = o' + .$ID + '.' +
-      .$getValueJSMethod + '();\n'
+  ## out <- String() +
+  ##   'var value = o' + .$ID + '.' +
+  ##     .$getValueJSMethod + '();\n'
+  out <- sprintf("var value = o%s.%s();\n", .$ID, .$getValueJSMethod)
   return(out)
 }
 EXTWidget$transportFUN <- function(.) {
-  out <- String() +
-    '_transportToR(' + shQuote(.$ID) +', Ext.util.JSON.encode({value:value}));'
+  out <- sprintf("_transportToR(%s, Ext.util.JSON.encode({value:value}) );\n", shQuote(.$ID))
+  ## out <- String() +
+  ##   '_transportToR(' + shQuote(.$ID) +', Ext.util.JSON.encode({value:value}));'
   return(out)
 }
 
@@ -491,7 +587,9 @@ EXTWidget$writeTransport <- function(.,ext="",signal=NULL) {
 ## value can be a URL (isURL == TRUE) or a string or a character vector which
 ## gets pasted together to be a string
 EXTWidget$tooltipWidth <- 200
-EXTWidget$tooltipAutoHide <- TRUE # override to 
+EXTWidget$tooltipAutoHide <- TRUE # override to
+
+##' method to write out tooltip padded with \code{tooltip<-} method.
 EXTWidget$writeTooltip <- function(.) {
   out <- String()
   ## tooltip
@@ -529,14 +627,14 @@ EXTWidget$writeTooltip <- function(.) {
 
 ## show object, including catting it
 ## called by Show
-EXTWidget$show <- function(.) {
+EXTWidget$show <- function(., queue=FALSE) {
   out <- String("\n") +
     .$writeConstructor() +
       .$setStyleJS(styles=.$style) +
           .$writeTooltip() +
             .$writeHandlersJS()           # includes transport
   
-  .$Cat(out)
+  .$Cat(out, queue=queue)
 }
 
 
@@ -566,18 +664,20 @@ EXTComponent$Show <- function(.,...) {        # wraps Show
   ## add in any instance specific scripts
   ## component specific scripts written out once in gwindow
   if(exists("..scripts",envir=., inherits=FALSE)) 
-    .$showPart(.$..scripts)
+    .$showPart(.$..scripts, ...)
   
   ## make an object with method?
-  if(exists("..header",envir=.,inherits=FALSE))  .$showPart(.$..header)
-  .$showPart(.$header)
+  if(exists("..header",envir=.,inherits=FALSE))  .$showPart(.$..header, ...)
+  .$showPart(.$header, ...)
 
   
-  .$show()                      # show self
-  .$..shown <- TRUE             # set shown (rendered)
+  .$show(...)                   # show self
   
-  if(exists("..footer",envir=.,inherits=FALSE))  .$showPart(.$..footer)
-  .$showPart(.$footer)
+  if(exists("..footer",envir=.,inherits=FALSE))  .$showPart(.$..footer, ...)
+  .$showPart(.$footer, ...)
+
+  .$..shown <- TRUE             # set shown (rendered)
+
 }
 
 
@@ -609,18 +709,6 @@ EXTComponent$setValueJS <- function(.,...) {
 
 
 EXTComponent$setNamesJS <- function(.) {}    # set names
-## get from EXTWidget
-## EXTComponent$setVisibleJS <- function(.) {
-##   if(exists("..setVisibleJS", envir=., inherits=FALSE))
-##     .$..setVisibleJS()
-  
-##   if(.$..visible)
-##     method = "hide"
-##   else
-##     method = "show"
-##   .$callExtMethod(method)
-## }
-
 
 ## Different components
 
@@ -658,10 +746,11 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
    tmp <- tmp + ');'
 
    ## need to do transport
-   
-   tmp1 <- String() +
-     "var value = escape("+ "o" + .$ID + ".getValue());" + 
-       "_transportToR('" + .$ID + "', Ext.util.JSON.encode({value:value}));" + "\n"
+   tmp1 <- sprintf("var value = escape(o%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));\n",
+                   .$ID, shQuote(.$ID))
+   ## tmp1 <- String() +
+   ##   "var value = escape("+ "o" + .$ID + ".getValue());" + 
+   ##     "_transportToR('" + .$ID + "', Ext.util.JSON.encode({value:value}));" + "\n"
 
    ## wrap inside conditional
    if(!is.null(handler$args$key)) {
@@ -755,17 +844,17 @@ EXTContainer$add <- function(.,child,...) {
        
        .$toplevel$scripts <- scripts
 
-       
+       ### XXX JV -- need to update for new way of handling JS .$addJSQueue...
        if(exists("..shown", envir=.$toplevel, inherits=FALSE) && .$toplevel$..shown) {
          ## need to cat this script out now,
          ## This prevents things being defined in subwindows
          ## for first time
          i <- scripts[[class(child)[1]]]
          if(is.list(i))
-           cat(i$FUN(i$obj), file=stdout())
-         else if(is.character(i))
-           cat(i, file=stdout())
-        }
+           i <- i$FUN(i$obj)
+         ## show now
+         .$Cat(i, queue=.$has_local_slot("..shown"))
+       }
      }
    }
    
@@ -777,18 +866,22 @@ EXTContainer$add <- function(.,child,...) {
 
    if(exists("..shown",envir=., inherits=FALSE)) {
      if(!inherits(child,"gSubwindow")) {
-       child$Show()
-       cat(.$addJS(child))
+       child$Show(queue=TRUE)
+       .$addJSQueue(.$addJS(child))
      }
    }
-   
  }
+
+
 ## write out JS to add child after things have been shown
 ## this is likely not perfect
 EXTContainer$addJS <- function(.,child) {
-  out <- String() +
-    .$asCharacter() + '.add(' + child$asCharacter() + ');' +
-      .$asCharacter() + '.doLayout();'
+  out <- sprintf("%s.add(%s); %s.doLayout();",
+                 .$asCharacter(), child$asCharacter(), .$asCharacter())
+
+  ## out <- String() +
+  ##   .$asCharacter() + '.add(' + child$asCharacter() + ');' +
+  ##     .$asCharacter() + '.doLayout();'
 
   return(out)
 }
@@ -797,14 +890,13 @@ EXTContainer$addJS <- function(.,child) {
 EXTContainer$delete <- function(., widget) {
   ## remove widget from obj
   if(exists("..shown", envir=., inherits=FALSE)) {
-    cat(.$deleteJS(widget))
+    ## cat(.$deleteJS(widget))
+    .$addJSQueue(.$deleteJS(widget))
   }
 }
 
 EXTContainer$deleteJS <- function(., widget) {
-  out <- String() +
-    .$asCharacter() + '.remove(' + widget$asCharacter() + ');'
-  cat(out)
+  sprintf("%s.remove(%s);", .$asCharacter(), widget$asCharacter())
 }
       
 
@@ -847,7 +939,7 @@ EXTContainer$ExtStdCfgOptions <- function(.) {
 ## Containers have children to show too.
 ## also a separator is possible to display between the children,
 ## although this should go
-EXTContainer$Show <- function(.) {
+EXTContainer$Show <- function(., queue=FALSE) {
   ## css -- use createStyleSheet method of Ext JS to write out
   if(exists("css",envir=., inherits=FALSE)) {
     out <- String() 
@@ -860,7 +952,7 @@ EXTContainer$Show <- function(.) {
     ## wrap in EXT JS function
     if(nchar(out)) {
       out <- String('Ext.util.CSS.createStyleSheet("') + out + '");'
-      .$Cat(out)
+      .$Cat(out, queue=queue)                        # these are printed out
     }
   }
 
@@ -874,20 +966,21 @@ EXTContainer$Show <- function(.) {
       else if(is.character(i))
         out <- out + i
     }
-    .$Cat(out)
+    .$Cat(out, queue=queue)
   }
 
 
   ## now show container
-  if(exists("..header",envir=.,inherits=FALSE))  .$showPart(.$..header)
-  .$showPart(.$header)
+  if(exists("..header",envir=.,inherits=FALSE))
+    .$showPart(.$..header, queue=queue)
+  .$showPart(.$header,queue=queue)
 
   
   ## write out actions if present
   if(exists("..actions", envir = ., inherits = FALSE)) {
     if(length(.$..actions) > 0) {
       for(i in .$..actions) {
-        i$Show();
+        i$Show(queue=queue);
         i$..shown <- TRUE
       }
     }
@@ -898,24 +991,24 @@ EXTContainer$Show <- function(.) {
   children <- .$children
   if((n <- length(children)) > 0) {
     for(i in 1:n) {
-      children[[i]]$Show()              # Show children
+      children[[i]]$Show(queue=queue)              # Show children
       if(i < n) {
         if(exists("..separator",envir=.,inherits=FALSE))
-          .$showPart(.$..separator)       # widget specific
-        .$showPart(.$separator)
+          .$showPart(.$..separator, queue=queue)       # widget specific
+        .$showPart(.$separator, queue=queue)
       }
     }
   }
 
-  .$show()                      # show self
+  .$show(queue=queue)                      # show self
   .$..shown <- TRUE                     # set shown
 
   ## handlers ## gwindow only
   if(exists("..setHandlers",envir=.,inherits=FALSE)) # gwindow only
-     .$showPart(.$..setHandlers)
+     .$showPart(.$..setHandlers, queue=queue)
 
-  if(exists("..footer",envir=.,inherits=FALSE))  .$showPart(.$..footer)
-  .$showPart(.$footer)
+  if(exists("..footer",envir=.,inherits=FALSE))  .$showPart(.$..footer, queue=queue)
+  .$showPart(.$footer, queue=queue)
 
 }
 
@@ -975,14 +1068,14 @@ EXTContainer$makeItems <- function(.) {
 
 ## overritde EXTWidget$show, as
 ## unlike a EXTComponent, here we need to add in the items too
-EXTContainer$show <- function(.) {
+EXTContainer$show <- function(., queue=FALSE) {
   out <- String() +
     'o' + .$ID + '= new ' + .$ExtConstructor + '({' + '\n' +
         .$mapRtoObjectLiteral(doBraces=FALSE) +
           ',' + '\n' +
             'items:[' +.$makeItems() +
-              ']\n' + '});' 
-  .$Cat(out)
+              ']\n' + '});'
+  .$Cat(out, queue=queue)
 }
 
 ##################################################
@@ -990,9 +1083,9 @@ EXTContainer$show <- function(.) {
 ## Some widget have a data store associated with them
 ## eg. gcombobox, gtable, gdf 
 
-EXTStore <- proto()
-EXTStore$new <- function(.) {
-  obj <- .$proto()
+EXTStore <- EXTWidget$new() ##proto()
+EXTStore$new <- function(., toplevel=NULL) {
+  obj <- .$proto(toplevel=toplevel)
   class(obj) <- c("gWidgetStore",class(obj))
   invisible(obj)
 }
@@ -1023,12 +1116,12 @@ EXTStore$fieldNames <- function(.) {names(.$data)}
 EXTStore$makeFields <- function(.) {
   .$asJSArray(.$fieldNames())
 }
-EXTStore$show <- function(.) {
+EXTStore$show <- function(., queue=FALSE) {
   out <- .$asCharacter() + '= new Ext.data.ArrayStore({' +
     'fields:  ' + .$makeFields() + ',' + '\n' +
       'data: ' + .$asJSArray() +
         '\n' + '});' + '\n'
-  return(out)
+  .$Cat(out, queue=queue)
 }
 
 ## replace the store with this data frame
@@ -1067,8 +1160,8 @@ EXTComponentWithStore$getNames <- function(.)
 EXTComponentWithStore$setValues <- function(.,i,j,...,value) {
   ## XXX need to include i,j stuff
   .$..store$data <- value
-  if(exists("..shown",envir=., inherits=FALSE))
-    cat(.$setValuesJS(...), file=stdout())
+  if(.$has_local_slot("..shown"))
+    .$addJSQueue(.$setValuesJS(...))
 }
 EXTComponentWithStore$setValuesJS <- function(.) {
   if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)
@@ -1087,9 +1180,9 @@ EXTComponentWithStore$asJSArray <- function(.,...) {
   .$..store$asJSArray(...)
 }
 ## show needs to show store and component
-EXTComponentWithStore$show <- function(.) {
-  .$Cat(.$..store$show())
-  get("show",EXTComponent)(.)       # call up
+EXTComponentWithStore$show <- function(., queue=FALSE) {
+  .$..store$show(queue=queue)
+  get("show",EXTComponent)(., queue=queue)       # call up
 }
 
 ##' visible<- is note implement, use $filter instead
@@ -1110,12 +1203,16 @@ EXTComponentWithStore$filter <- function(., colname, regex) {
       out <- ""
     }
 
+    ## should check for regex via ^/(.*)/$ but instead we just assume a regular expression
+
+    
     if(missing(regex) || regex=="") {
       out <- sprintf("o%s.getStore().clearFilter();", .$ID)
     } else {
       out <- sprintf("o%s.getStore().filter('%s',RegExp('%s'));", .$ID, colname, regex)
     }
-    cat(out, file=stdout())
+    .$addJSQueue(out)
+#    cat(out, file=stdout())
   }
   
 
@@ -1141,7 +1238,8 @@ EXTComponentDfStore$setValues <- function(., i, j, ..., value) {
   d[i,j] <- value
   .$..store$setData(d)
   if(exists("..shown", envir=., inherits=FALSE)) {
-    cat(.$setValuesJS(i,j,value), file=stdout())
+    ##cat(.$setValuesJS(i,j,value), file=stdout())
+    .$addJSQueue(.$setValuesJS(i,j,value))
   }
 }
 
@@ -1168,7 +1266,8 @@ EXTComponentDfStore$setValuesJS <- function(., i,j,value) {
     out <- out + "rec.commit();" + "\n"
   }
 
-  cat(out, file=stdout())
+  ##cat(out, file=stdout())
+  .$addJSQueue(out)
 }
   
 
@@ -1351,13 +1450,9 @@ delete.gWidget <- function(obj, widget, ...) {
 "enabled<-" <- function(obj,...,value) UseMethod("enabled<-")
 "enabled<-.gWidget" <- function(obj,..., value) {
   . <- obj
-  if(missing(value)) value <- TRUE
-  .$..enabled <- as.logical(value)
+  .$setEnabled(value)
 
-  if(exists("..shown", envir=., inherits=FALSE))
-    cat(obj$setEnabledJS(), file=stdout())
-  
-  return(obj)
+  obj
 }
 
 
@@ -1370,7 +1465,8 @@ delete.gWidget <- function(obj, widget, ...) {
   if(exists("dispose", envir=.)) {
     .$dispose()
   } else if(exists("..shown",envir=., inherits=FALSE)) {
-    cat(.$callExtMethod("hide"), file=stdout())
+    ##cat(.$callExtMethod("hide"), file=stdout())
+    .$addJSQueue(.$callExtMethod("hide"))
   }
 }
 
@@ -1383,7 +1479,8 @@ delete.gWidget <- function(obj, widget, ...) {
   if(value) .$..focus <- TRUE
   
   if(exists("..shown",envir=., inherits=FALSE) && value)
-    cat(.$callExtMethod("focus",tolower(as.character(value))), file=stdout())
+    ##cat(.$callExtMethod("focus",tolower(as.character(value))), file=stdout())
+    .$addJSQueue(.$callExtMethod("focus",tolower(as.character(value))))
 
   return(obj)
 }
@@ -1402,7 +1499,7 @@ tag.gWidget <- function(obj, key, ...)  {
 }
 
 
- ## visible, visible<-
+## visible, visible<-
 visible <- function(obj) UseMethod("visible")
 visible.gWidget <- function(obj) obj$getVisible()
 "visible<-" <- function(obj,...,value) UseMethod("visible<-")
@@ -1494,7 +1591,8 @@ visible.gWidget <- function(obj) obj$getVisible()
     .$..style <- c(.$..style,value)
   
   if(exists("..shown",., inherits=FALSE)) {
-    cat(.$setStyleJS(), file=stdout())
+    ##cat(.$setStyleJS(), file=stdout())
+    .$addJSQueue(.$setStyleJS())
    }
   
   return(obj)
@@ -1503,10 +1601,11 @@ visible.gWidget <- function(obj) obj$getVisible()
 ## we use print for gwindow and gsubwindow as a more natural alias
 ## than $Show() i.e. after storing objects into the toplevel window or
 ## its subwindos, we need to be able to show the contents to the
-## brower. This is done with th eproto method $#Show(), which here is
+## brower. This is done with the proto method $#Show(), which here is
 ## aliased to theprint method of the proto objects.
 print.gWindow <- print.gSubwindow <- function(x,...) {
-  . = x; .$Show()
+  . = x;
+  .$Show()
 }
   
 
@@ -1519,7 +1618,7 @@ print.gWindow <- print.gSubwindow <- function(x,...) {
   if(isURL(value)) {
     obj$..tooltip <- value
   } else {
-      obj$..tooltip <- value
+    obj$..tooltip <- value
   }
   return(obj)
 }
@@ -1590,6 +1689,48 @@ runHandler <- function(obj, id, context) {
   }
   return(lst$handler(h))
 }
+
+
+
+##' the Javascript queue
+##'
+##' When a handler is called there are two parts: one internal to the
+##' R session, one to create javascript to output to the browser. This
+##' queue stores the latter. Depending on how gWidgetsWWW is run it
+##' either returns a string (help server) qor cats out a string
+##' (RApache)
+
+##' Add string to current queue
+##' @param . EXTWidget
+##' @param x code from xxxJS (setValueJS, ...), String() class
+##' @return void
+EXTWidget$addJSQueue <- function(., x) {
+  parent <- .$toplevel
+  curQueue <- parent$JSQueue
+  if(length(curQueue) == 0)
+    curQueue <- x
+  else
+    curQueue <- c(curQueue, x)
+  parent$JSQueue <- curQueue
+}
+
+##' run the queue. Called by gwindow::runHandler, and by hanging event (ala r-studio)
+##'
+##' @param . EXTWidget
+##' @return clears queue, then returns string with handlers pasted together
+EXTWidget$runJSQueue <- function(.) {
+  parent <- .$toplevel
+  curQueue <- parent$JSQueue
+  if(is.null(curQueue))
+    out <- ""
+  else
+    out <- paste(curQueue, collapse="\n")
+  
+  parent$JSQueue <- character(0)        # clear queue
+  return(out)
+}
+
+  
 
 
 ## code to write out JS for the handlers on a object
@@ -1670,9 +1811,15 @@ EXTWidget$writeHandlerFunction <- function(., signal, handler) {
   return(out)
 }
 
+
+
+
+
 ## write out a single handler passed as a list
 ## the special case signal=idle is different
-EXTWidget$writeHandlerJS <- function(.,signal,handler=NULL) {
+EXTWidget$writeHandlerJS <- function(.,signal="",handler=NULL) {
+  if(is.null(signal))                   # errors?
+    return()
   out <- String()
   if(signal == "idle") {
     out <- out +
@@ -1793,12 +1940,12 @@ EXTWidget$addHandler <- function(., signal, handler, action=NULL,
   ##    1) set the transport function (if necessary)
   ##    2) write the handler
 
-  if(!exists("..shown", envir=., inherits = FALSE)) {
-    ## all done here
-  } else {
+  if(exists("..shown", envir=., inherits = FALSE)) {
     ## need to write out the JS to show the handler
-#    cat(.$writeHandlerJS(signal, lst), file=stdout())          # a single handler
-    cat(.$writeHandlerJS(signal, lst))          # a single handler
+    ## cat(.$writeHandlerJS(signal, lst))          # a single handler
+    out <- .$writeHandlerJS(signal, lst)
+    .$addJSQueue(out)
+    ##cat(out)
   }
     
   ## we return the ID

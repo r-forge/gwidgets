@@ -95,7 +95,6 @@ if(!is.null(POST) && !is.null(POST$type)) {
     require(gWidgetsWWW, quietly=TRUE)
 
     ## may need to quiet down via sink
-    sink(f <- tempfile())
     if(is.null(POST$context)) {
       out <- try(e[[w]]$runHandler(POST$id), silent=TRUE)
     } else {
@@ -105,22 +104,18 @@ if(!is.null(POST) && !is.null(POST$type)) {
       context <- try(fromJSON(as.character(POST$context)), silent=TRUE)
       out <- try(e[[w]]$runHandler(POST$id, context), silent=TRUE)
     }
-    sink()
     
     if(exists("sessionDBIlogfile"))
       cat(sessionID, "ran handler", "\n", file=sessionDBIlogfile, append=TRUE)
 
 
     if(inherits(out, "try-error")) {
-      unlink(f)
       sendError(db, out)
     } else {
       ## read out
       setContentType("text/plain")
-      out <- try(readLines(f), silent=TRUE)
       if(!inherits(out,"try-error"))
         cat(out)
-      unlink(f)
       ## store session
       db[[sessionID]] <- e
     }

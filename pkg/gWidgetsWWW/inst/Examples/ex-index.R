@@ -56,12 +56,12 @@ makeLinks <- function(i,f) {
   g1 <- ggroup(cont = f)
   b <- gbutton("Source", cont = g1, handler = function(h,...) {
     i <- h$action
-    galert(i)
+    galert(i, parent=w)
     w1 <- gwindow("Source", parent = w)
     g1 <- ggroup(cont = w1, horizontal=FALSE)
     Rfile <- paste(dir,i, sep=.Platform$file.sep)
     ghtml(paste("<pre>",
-                paste(readLines(Rfile), collapse="\n<br />"),
+                paste(readLines(Rfile), collapse="<br />"),
                 "</pre>", sep=""), cont = g1)
     gseparator(cont = g1)
     gbutton("dismiss", cont = g1, handler = function(h,...) {

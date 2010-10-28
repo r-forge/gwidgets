@@ -18,7 +18,8 @@ mlist <- list(file = list(
                 open = alist$open,
                 save = alist$save,
                 "save as..." = alist$save.as,
-                quit = alist$quit),
+                quit = alist$quit
+                ),
               edit = list(
                 cut = alist$cut
                 )

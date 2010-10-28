@@ -1,3 +1,19 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
+
 ## Simple interface to googlemaps
 
 ## Can show a map with some programmatic markup possible
@@ -215,7 +231,7 @@ widget$makeMarkers <- function(.) {
           'new GLatLng(' + latlng[1] + ',' + latlng[2] + '));'
 
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$setValue(value = latlng)
   }
@@ -226,7 +242,7 @@ widget$makeMarkers <- function(.) {
         .$gmapID() + '.setZoom(' + zoom + ');'
 
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$..zoomLevel <- zoom
 
@@ -241,7 +257,7 @@ widget$makeMarkers <- function(.) {
             shQuoteEsc(myHTML) + ');'
 
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$..runCmds <- c(.$..runCmds, out)
   }
@@ -292,7 +308,7 @@ widget$makeMarkers <- function(.) {
       .$gmapID() + '.addOverlay(marker);'
     
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$..runCmds <- c(.$..runCmds, out)
   }
@@ -330,7 +346,7 @@ widget$makeMarkers <- function(.) {
       .$gmapID() + '.addOverlay(polyline);'
 
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$..runCmds <- c(.$..runCmds, out)
   }
@@ -381,7 +397,7 @@ widget$makeMarkers <- function(.) {
       .$gmapID() + '.addOverlay(polygon);'
 
     if(exists("..shown", envir=., inherits = FALSE))
-      cat(out)
+      .$addJSQueue(out)
     else
       .$..runCmds <- c(.$..runCmds, out)
   }

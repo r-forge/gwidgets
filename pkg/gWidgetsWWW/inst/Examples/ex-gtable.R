@@ -49,5 +49,5 @@ cb <- gcombobox(c("<All>", unique(mtcars$cyl)), cont=f, handler=function(h,...) 
 
 
 ##
-gstatusbar("Powered by gWidgets and Rapache", cont=w)
+gstatusbar("Powered by gWidgets and RApache", cont=w)
 visible(w) <- TRUE

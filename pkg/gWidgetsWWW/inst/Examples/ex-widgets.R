@@ -30,7 +30,7 @@ widget = gbutton("button", cont=g)
 g = gexpandgroup("ghtml", cont=g1)
 ##widget = ghtml(asURL("ex-widgets.txt"), cont=g)
 ## \" preferred to ' here, as it gets properly escaped when widget is produced
-widget = ghtml("Can be <b>marked</b><em>up</em> or a <a href=\"http://www.r-project.org\">url</a>",
+widget = ghtml("Can be <b>marked</b> <em>up</em> or a <a href=\"http://www.r-project.org\">url</a>",
   cont=g)
 
 g = gexpandgroup("gcheckbox", cont=g1)

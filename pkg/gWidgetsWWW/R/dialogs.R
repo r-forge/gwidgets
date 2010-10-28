@@ -1,10 +1,25 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
+
 ##################################################
 ## Dialogs
 ## Dialogs are called from a handler. They output
 ## javascript code only.
 ## The respond to the handler
 
-### XXX for some reason, dialogs don't call other dialogs?
 ## parent can be a container or a widget
 .gshowdialog <- function(type=c("message","confirm","input"),
                         message, text, title=type,
@@ -79,11 +94,9 @@
     lst[["defaultTextHeight"]] <- widget$..defaultTextHeight
   }
   
-  out <- String() +
-    'Ext.MessageBox.show(' + widget$mapRtoObjectLiteral(lst) + ');' + '\n';
-
-  return(out)
-
+  out <- sprintf("Ext.MessageBox.show(%s);\n",
+                 widget$mapRtoObjectLiteral(lst))
+  widget$addJSQueue(out)
 }
 
 gmessage <- function(message, title="message",
@@ -95,8 +108,7 @@ gmessage <- function(message, title="message",
   out <- .gshowdialog(type="message",message=message,
                title=title, icon=icon,parent=parent,
                handler=handler, action=action, ...)
-  cat(out)
-  invisible(out)
+  
 }
 
 gconfirm <- function(message, title="Confirm",
@@ -105,11 +117,9 @@ gconfirm <- function(message, title="Confirm",
                      handler = NULL,
                      action = NULL,...) {
   ## parent must be non-NULL
-  out <- .gshowdialog(type="confirm",message=message,
+  .gshowdialog(type="confirm",message=message,
                       title=title, icon=icon,parent=parent,
                       handler=handler, action=action,...)
-  cat(out)
-  invisible(out)
 }
 
 ## input -- can't figure out how to get handler the value of input
@@ -122,8 +132,6 @@ ginput <- function(message, text="", title="Input",
   out <- .gshowdialog(type="input",message=message,
                       title=title, icon=icon,parent=parent,
                       handler=handler, action=action,...)
-  cat(out, file=stdout())
-  invisible(out)
 }
   
 
@@ -148,10 +156,17 @@ galert <- function(message, title = "message", delay=3, parent=NULL) {
   ## parent not used here
   if(missing(message))
     message <- ""
+
+  if(is.null(parent)) {
+    parent <- gwindow("XXXX")
+  }
+  
+  
   out <- String() +
     'Ext.example.msg(' + shQuoteEsc(title) + ',' +
       shQuoteEsc(message) + ',' + delay + ');'
 
-  cat(out)
-  invisible(out)
+  parent$addJSQueue(out)
+#  cat(out)
+#  invisible(out)
 }

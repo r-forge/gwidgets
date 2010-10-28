@@ -1,4 +1,23 @@
-##' Environment to hold different sessions
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
+
+
+##'
+##'
+##' ##' Environment to hold different sessions
 assign("..gWidgets_sessionEnv", new.env(), envir=.GlobalEnv)
 
 ##' remove session form list to free up space
@@ -456,67 +475,21 @@ localRunHandler <- function(id, context=NULL, sessionID) {
   ret <- list(out="", retval=OK)
   
   e <- getBaseObjectFromSessionID(sessionID)
+  ## sanity checks
   if(is.null(e)) {
     ret$out <- "alert('No session for this id');"
     ret$retval <- ERROR
-  } else if(sink.number() > 10) {
-    ret$out <- sprintf("alert('too many sinks: %s');", sink.number())
-    ret$retval <- ERROR
   } else {
-    f <- tempfile()
-    ## XXX There is an issue with SIGPIPE presumably related to the way we open a file to capture the output
-    ## of the handler call. The handlers return javascript catted out. so we need to get it some way.
-    ## This attempt to tey and open is not so great -- doesn't work.
-    ctr <- 1
-    tmp <- try(sink(f), silent=TRUE)
-    while(inherits(tmp, "try-error") && ctr < 20) {
-      ctr <- ctr + 1
-      tmp <- try(sink(f), silent=TRUE)
-    }
-    if(ctr >= 20)
-      stop("Tried too many times")
-    
-    out <- try({
-      if(!is.null(context) || context == "")
-        e$runHandler(id, ourFromJSON(context))
-      else
-        e$runHandler(id)
-    }, silent=TRUE)
-    
-    if(inherits(out, "try-error")) {
-      sink(NULL)
-      ret$out <- sprintf("Error: %s", as.character(out))
-      ret$retval <- ERROR
-    } else {
-      sink(NULL)
-      cat("\n", file=f, append=TRUE)
-      ret$out <- paste(readLines(f), collapse="\n")
-    }
-    
-    unlink(f)
+    ## runHandler calls methods which first send javascript to the queue
+    ## then we run the queue
+    if(!(is.null(context) || context == ""))
+      ret$out <- e$runHandler(id, ourFromJSON(context))
+    else
+      ret$out <- e$runHandler(id)
   }
   return(ret)
 }
 
-## out <- tryCatch({
-## tc <- textConnection("textfromconnection", open="w")
-## sink(file=tc)
-## if(nchar(context))
-##   e$runHandler(id, ourFromJSON(context))
-## else
-##   e$runHandler(id)
-## sink()
-## close(tc)
-      ## paste(textfromconnection,sep="",collapse="")
-## }, error=function(e) {
-    ##   sink()
-##   close(tc)
-##   cat('ERROR1: ')
-##   cat(paste(paste(textfromconnection, "\n", collapse=""), '\n', e),"\n")
-##   ""
-## }, finally= {})
-#}
-#}
 
 
 ## find file and run from package
@@ -607,7 +580,8 @@ makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
                if(script) {
                  "</script>"
                },
-               "<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
+                ## XXX This gives issues with the canvas example. Not sure why
+                ## "<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
                "</body>",
                "</html>",
                sep="\n")
@@ -657,293 +631,3 @@ localServerRestart <- restartRpadServer <- function() .Deprecated("",msg="No lon
 ##   port <- get("RpadPort", envir = .RpadEnv)
 ##   browseURL(sprintf("http://127.0.0.1:%s/%s", port, file))
 ## }
-
-##' function to test if using local server
-##' @export
-## gWidgetsWWWIsLocal <- function() {
-##   TRUE ## XXX fix me
-##   exists(".RpadEnv", envir=.GlobalEnv) && get("RpadLocal", envir=.RpadEnv)
-## }
-
-
-##################################################
-##
-## Stuff left over from Rpad days.
-## Not needed with merge to using dynamic help server
-
-## ## The Tcl variable RpadTclResults is set to pass information back into the
-## ## web server
-## ## This is supposed to signal an error, but doesn't seem to be correct.
-## RpadAssignValue <- function(id, value, sessionID) {
-##   e <- getBaseObjectFromSessionID(sessionID)
-##   retval <- "419"                         # expectation failed
-##   if(is.null(e)) {
-##     cat("Error: can't find session for", sessionID, "\n")
-##   } else {
-##     out <- ourFromJSON(value)
-##     if(is.list(out)) {
-##       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
-##       if(!inherits(tmp, "try-error"))
-##         retval <- "200"                   # all good
-##     }
-##   }
-##   .Tcl(paste("set RpadTclResults {", escapeBrackets(retval), "}", sep=""))
-##   return("")
-## }
-
-
-## RpadRunHandler <- function(id, context="", sessionID) {
-##   e <- getBaseObjectFromSessionID(sessionID)
-##   if(is.null(e)) {
-##     .Tcl(paste("set RpadTclResults {alert('session has expired');}", sep="")) # return "" if fails
-##   } else {
-## results <- tryCatch({
-##       tc <- textConnection("textfromconnection", open="w")
-##       sink(file=tc)
-##       if(nchar(context))
-##         e$runHandler(id, ourFromJSON(context))
-##       else
-##         e$runHandler(id)
-##       sink()
-##       close(tc)
-##       results <- paste(textfromconnection,sep="",collapse="")
-## #      results <- gsub("\n","\\n",results)
-##       .Tcl(paste("set RpadTclResults {", escapeBrackets(results), "}", sep=""))
-##     }, error=function(e) {
-##       sink()
-##       close(tc)
-##       cat('ERROR1: ')
-##       cat(paste(paste(textfromconnection, "\n", collapse=""), '\n', e),"\n")
-##       .Tcl("set RpadTclResults {}") # return "" if fails
-##     }, finally= {})
-##   }
-## }
-
-## RpadSourceScript <- function(file) {
-##   file <- gsub("\\.\\.","", file)
-##   if(!length(grep("[rR]$",file)))
-##     file <- paste(file, ".R", sep="")
-##   if(file.exists(paste(getwd(),file, sep=.Platform$file.sep))) {
-##     results <- tryCatch({
-##       tc <- textConnection("textfromconnection",open="w")
-##       sink(file=tc)
-##       source(file)
-##       sink()
-##       close(tc)
-##       formattedresults <- paste(textfromconnection,"\n",sep="",collapse="")
-##       ## Now we add some stuff to formatted results
-##       ## header
-##       out <-  String() + makegWidgetsWWWPageHeader()
-##       if(!is.null(getOption("gWidgetsWWWGoogleAPI"))) {
-##         out <- out +
-##           paste("<script type='text/javascript' src=http://maps.google.com/maps?file=api&v=2&key=",
-##                 getOption("gWidgetsWWWGoogleAPI"),
-##                 "&sensor=false></script>", sep="")
-##       }
-##       out <- out + "<script type='text/javascript'>" +
-##         formattedresults +
-##           "</script>"
-##       options("gWidgetsWWWGoogleAPI"=NULL) # must set in each script
-##       .Tcl(paste("set RpadTclResults {", escapeBrackets(out), "}", sep=""))
-##     }, error=function(e) {
-##       sink()
-##       close(tc)
-##       cat('ERROR1: ')
-##       cat(paste(paste(textfromconnection, "\n", collapse=""), '\n', e),"\n")
-##       .Tcl(paste("set RpadTclResults {}", sep="")) # return "" if fails
-##     }, finally= {})
-##   } else {
-##     ## can't find the file
-##     cat("Error1: can't find file", file, "in directory", getwd())
-##     .Tcl("set RpadTclResults {}")
-##   }
-## }
-
-
-## RpadRunFromPackage <- function(file, package) {
-##   filename <- system.file(file, package=package)
-##   if(!file.exists(filename)) {
-##     ## return error
-##     out <- paste("HTTP/1.1 404 File Not Found","\n",
-##                  "Date:", date(),
-##                  "Connection: close" , "\n\n", sep="")
-##   } else {
-##     ## modify this, and put text into results
-##     output <- list(header="HTTP/1.1 200 Data follows",
-##                    contentType="text/html")
-    
-##     ## is it a directory?
-##     if(file.info(filename)$isdir) {
-##       files <- list.files(filename, pattern="R$")
-      
-##       results <- "Choose a file<br><UL>"
-##       results <- paste(results,
-##                        paste("<LI><A href=/custom/gw/gWidgetsWWWRunFromPackage/",
-##                              paste(file,files,sep="/"),
-##                              "?package=",package,
-##                              ">",files,"</A></LI>",
-##                              sep="", collapse=""),
-##                        "</UL>", sep="")
-##       results <- makegWidgetsWWWpage(results, script=FALSE)
-##     } else {
-##       ## it's a file
-##       baseFile <- basename(filename)
-##       ext <- rev(unlist(strsplit(baseFile,"\\.")))[1]
-      
-##       ## we need to treat some types of files differently
-##       if(ext == "R") {
-##         ## source, then output as javascript
-##         results <- tryCatch({
-##           tc <- textConnection("textfromconnection",open="w")
-##           sink(file=tc)
-##           source(filename)
-##           sink()
-##           close(tc)
-##           formattedresults <- paste(textfromconnection,"\n",sep="",collapse="")
-##           makegWidgetsWWWpage(formattedresults)
-##         }, error=function(e) {
-##           sink()
-##           close(tc)
-##           cat('ERROR1: ')
-##           cat(paste(paste(textfromconnection, "\n", collapse=""), '\n', e),"\n")
-##         }, finally= {})
-##       } else {
-##         ## just change contentType
-##         output$contentType <- mimeTypes(ext)
-##         results <- paste(readLines(filename), collapse="\n", warn=FALSE)
-##       }
-##     }
-##     out <- paste(output$header,
-##                  output$contentType,
-##                  "",
-##                  results,
-##                  sep="\n")
-    
-    
-##     ## set the variable then return
-##     .Tcl(paste("set RpadTclResults {",
-##                escapeBrackets(paste(out, collapse="\n"))
-##                , "}", sep=""))
-##     return()
-##   }
-## }
-  
-
-## "processRpadCommands" <-
-## function() {
-##   require("tcltk")
-##   commands <- tclvalue(.Tcl("set user(R_commands)"))
-##   textcommands <- textConnection(commands)
-
-##   results <- tryCatch({
-##     tc <- textConnection("textfromconnection",open="w")
-##     sink(file=tc)
-##     guiSource(textcommands)
-##     sink()
-##     close(tc)
-##     textfromconnection
-##   }, error=function(e) {
-##     sink()
-##     close(tc)
-##     cat('ERROR1: ')
-##     paste(paste(textfromconnection, "\n", collapse=""), '\n', e)},
-##                       finally=close(textcommands))
-##   formattedresults <- paste(results,"\n",sep="",collapse="")
-##   .Tcl(paste("set RpadTclResults {", escapeBrackets(formattedresults), "}", sep=""))
-## }
-
-##################################################
-## functions to start/stop the server
-
-## "Rpad" <-
-## function(file = "", defaultfile = "LocalDefault.Rpad", port = 8079) {
-##     startRpadServer(defaultfile, port)
-##     if(file=="")
-##       file <- "/custom/gw/gWidgetsWWWRunFromPackage/basehtml/makeIndex.R?package=gWidgetsServer"
-##     browseURL(paste("http://127.0.0.1:", port, file, sep = ""))
-## }
-
-
-
-
-## "startRpadServer" <-
-## function(defaultfile = "index.gWWW", port = 8079) {
-##     require("tcltk")
-##     ## This is the main function that starts the server
-##     ## This function implements a basic http server on 'port'
-##     ## The server is written in Tcl.
-##     ## This way it is not blocking the R command-line!
-
-##     if (!require("tcltk")) stop("package tcltk required for the local Rpad http server")
-
-##     ## Need to set some variables
-##     ## we set this values, as they are used by the scripts
-##     ## These files are under basehtml in the main directory
-
-##     getOptionWithDefault <- function(x, default) {
-##       x <- getOption(x)
-##       if(is.null(x))
-##         x <- default
-##       return(x)
-##     }
-##     ## TODO(JV): Make this smarter, for now gWidgetsWWW server uses global variables
-##     ## so this must too
-##     assignOption <- function(x, default) {
-##       a <- getOptionWithDefault(x, default)
-##       assign(x, a, envir=.GlobalEnv)
-##     }
-##     assignOption("extjsBaseUrl",'/ext')
-##     assignOption("gWidgetsWWWimageUrl",'/images/')
-    
-##     ## directory and baseurl for static html files, images, svg graphics, ...
-##     ## This needs to be writeable by the web server process
-##     ## May need to unlink files that accumulate here!
-##     assignOption("gWidgetsWWWStaticDir", paste(getwd(),"/",sep=""))
-##     assignOption("gWidgetsWWWStaticUrlBase","/")
-
-##     ## set in key= prop of ggoglemaps
-## #    options("gWidgetsWWWGoogleAPI"="ABQIAAAAYpRTbDoR3NFWvhN4JrY1ahS5eHnalTx_x--TpGz1e2ncErJceBS7FrNBqzV5DPxkpbheIzZ9nTJPsQ") ## key for 127.0.0.1:8079
-##     options("gWidgetsWWWGoogleAPI"=NULL)
-##     assignOption("gWidgetsWWWGoogleAPI","NULL")
-##     assignOption("gWidgetsWWWRunGoogle","FALSE") # ## Set to TRUE to show google
-    
-##     ## Load in session code -- not needed for local server
-##     assignOption("sessionSecretKey", "abcdefg")
-    
-##     ## gWidgets AJAX setup
-##     ## this is needed to handle www <--> R interface
-##     assignOption("gWidgetsWWWAJAXurl", "/gWidgetsWWWAJAX")
-    
-
-##     ## Rpad uses environment to keep values, We place in global environment
-##     e <- new.env()
-##     assign(".RpadEnv", e, envir=.GlobalEnv)
-##     assign("RpadLocal", TRUE, envir = e)
-##     assign("RpadDir",   ".",  envir = e)
-##     assign("RpadPort",  port, envir = e)
-
-##     tclfile <- system.file( "tcl", "mini1.1.tcl", package = "gWidgetsWWW")
-##     htmlroot <- system.file("basehtml",package = "gWidgetsWWW")
-##     tcl("source", tclfile)
-##     tcl("Httpd_Server", htmlroot, port, defaultfile)
-##     return(TRUE)
-## }
-
-## "stopRpadServer" <-
-## function() {
-##     require("tcltk")
-##     e <- .RpadEnv
-##     assign("RpadLocal", FALSE, envir = e)
-##     assign("RpadDir",   NULL,  envir = e)
-##     assign("RpadPort",  NULL, envir = e)
-
-##     .Tcl("close $Httpd(listen)")
-##     .Tcl("unset Httpd")
-## }
-
-## "restartRpadServer" <-
-## function() {
-##   stopRpadServer()
-##   startRpadServer()
-## }
-

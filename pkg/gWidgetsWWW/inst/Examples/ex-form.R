@@ -33,8 +33,7 @@ bg <- ggroup(cont = g)
 gbutton("ok", cont = bg, handler = function(h,...) {
   vals <- svalue(f)
   out <- paste(capture.output(str(vals)), collapse="<br>")
-#  out <- paste(names(vals),unlist(vals), sep="=", collapse="<br>")
-  galert(out)
+  galert(out, parent=w)
   
 })
 

@@ -1,5 +1,5 @@
 Package: gWidgetsWWW
-Version: 0.0-21
+Version: 0.0-22
 Title: Toolkit implementation of the gWidgets API for use with web pages
 Author: John Verzani
 Maintainer: John Verzani <jverzani@gmail.com>
@@ -15,6 +15,6 @@ Description: Port of the gWidgets API to program dynamic websites.
  	     The Ext JavaScript libararies (www.extjs.com) are used to create and manipulate the
 	     widgets dynamically.  
 License: GPL (>= 3)
-URL: http://www.math.csi.cuny.edu/gWidgetsWWW
+URL: http://gwidgets.r-forge.r-project.org/
 LazyLoad: FALSE
 

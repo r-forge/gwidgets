@@ -1,3 +1,27 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
+
+##' widget to display svg files
+##'
+##' @param f filename
+##' @param width width of widget in pixels
+##' @param height heightof widget in pixels
+##' @param container parent container
+##' @param ... passed to add method of parent container
+##' @export
 gsvg <- function(f, width=480, height=400,
 ##                 handler = NULL, action = NULL,
                  container = NULL,...) {
@@ -64,7 +88,8 @@ gsvg <- function(f, width=480, height=400,
             "width=" + .$..width + " " +
               "height=" + .$..height + " " +
                 "type=\"image/svg+xml\">';"
-      cat(out)
+      .$addJSQueue(out)
+      ## cat(out)
     } else {
       return("")
     }
@@ -85,8 +110,3 @@ gsvg <- function(f, width=480, height=400,
   
 }
 
-
-## ggraphics is a pass through for gcanvas
-ggraphics <- function(width = 480, height=400, container=NULL, ...) {
-  gcanvas(width=width, height=height, container=container, ...)
-}

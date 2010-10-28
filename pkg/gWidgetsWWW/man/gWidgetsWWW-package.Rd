@@ -414,14 +414,14 @@ The communication between \R\/ and the browser works as
   \bold{Dialogs:}\cr  
 
   
-  The \code{galert(title = "", message = "", delay=3)} dialog is specific to
-  \pkg{gWidgetsWWW}. It creates a quick alert that pops down from the
-  top of the web page. It has a \code{title} and \code{message} argument
-  for the message and \code{delay} in seconds to specify the time the
-  dialog appears.
-   \cr
+  The \code{galert(title = "", message = "", delay=3, parent=NULL)}
+  dialog is specific to \pkg{gWidgetsWWW}. It creates a quick alert
+  that pops down from the top of the web page. The \code{parent}
+  should be the top-level window object. Otherwise, this constructor
+  has a \code{title} and \code{message} argument for the message and
+  \code{delay} in seconds to specify the time the dialog appears.  \cr
   
-  The other dialogs have a \code{parent} argument that must be
+  The other dialogs, as well, have a \code{parent} argument that must be
   specified. This allows handlers, etc. to be registered. Visually, the
   dialogs will appear to "pop-up" from the component specified.
   \cr
@@ -620,7 +620,7 @@ The communication between \R\/ and the browser works as
   If you do this, and think your code should be integrated into the main
   code, please share it.
 }
-\author{ John Verzani <gwidgetsrgtk@gmail.com> }
+\author{ John Verzani <jverzani@gmail.com> }
 
 % \references{}
 \keyword{ package }

@@ -1,3 +1,19 @@
+##  Copyright (C) 2010 John Verzani
+##
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  A copy of the GNU General Public License is available at
+##  http://www.r-project.org/Licenses/
+
+
 ## XXX would like to integrate layout manager into this
 ## Should be a big panel with menubar and toolbar and statusbar areas
 ## ... contains width=, height= for gsubwindow call
@@ -34,12 +50,15 @@ gwindow <- function(title="title",file="",visible=TRUE,
   w$doLoadingText <- gWidgetsWWWIsLocal() # do we print a message when calling a handler
   w$loadingText <- gettext("Loading...")  # prints when a handler is called to indicate a request.
   ##  w$..visible <- FALSE
+
+
   
   w$setValue(value=title)
   ## XXX handle cat to STDOUT
    w$file <- file; unlink(file)
   
   w$jscriptHandlers <- list()        # handlers in parent winoow
+  w$JSQueue <- character()           # output of JS handlers
   w$toplevel <- w
   w$..IDS <- c()
   w$..blocked_handlers <- c()           # IDs of handlers not to call
@@ -63,8 +82,12 @@ gwindow <- function(title="title",file="",visible=TRUE,
         for(i in names(context))
           h[[i]] <- context[[i]]
       }
-      return(lst$handler(h))
+      ## XXX changed to use queue
+      out <- lst$handler(h)             # add to JS Queue
+      assign("tmp", lst$handler, envir=.GlobalEnv)
+#      return(lst$handler(h))
     }
+    .$runJSQueue()                      # run the queue
   }
 
 
@@ -320,6 +343,9 @@ gwindow <- function(title="title",file="",visible=TRUE,
     invisible(w)
  }
 
+### XXXXXX -- handler code not working since we updated ----
+
+
 ## gsubwindow
 ## a subwindow appears on top of a regular window
 ## style properties width, height (size) and x, y are used
@@ -345,16 +371,6 @@ handler = NULL, action=NULL, container=NULL,...) {
   widget$addAction <- function(., action) 
      .$..actions <- c(.$..actions, action)
 
-  ## visible
-  widget$setVisible <- function(., value) {
-    .$..visible <- as.logical(value)
-    if(exists("..shown",envir=., inherits=FALSE)) {
-      cat(.$setVisibleJS(), file=stdout())
-    } else {
-      if(as.logical(value))
-        print(.)
-    }
-  }
 
   widget$dispose <- function(.) visible(.) <- FALSE
 
@@ -364,8 +380,21 @@ handler = NULL, action=NULL, container=NULL,...) {
   
     out <-  String() +
       'o' + .$ID + '.setTitle(' + shQuote(.$..data) + ');' + '\n'
-    cat(out, file=stdout())
+  ##cat(out, file=stdout())
+  .$addJSQueue(out)
   }
+
+
+  ## visible
+  widget$setVisible <- function(., value) {
+    value <- as.logical(value)
+    .$..visible <- value
+    if(exists("..shown", envir=., inherits=FALSE))
+      .$addJSQueue(.$setVisibleJS())
+    else 
+      .$Show(queue=TRUE)
+  }
+
   ## odd inheritance here
   widget$setVisibleJS <- function(.) {
     if(exists("..setVisibleJS", envir=., inherits=FALSE))
@@ -375,7 +404,8 @@ handler = NULL, action=NULL, container=NULL,...) {
     method <- ifelse(.$..visible, "show", "hide")
     out <- String() + 
       'o' + .$ID + '.' + method + '();'
-    cat(out, file=stdout())
+    ##cat(out, file=stdout())
+    .$addJSQueue(out)
   }
 
 
@@ -423,7 +453,7 @@ handler = NULL, action=NULL, container=NULL,...) {
     if(visible(.))
       out <-  out + 'o' + .$ID + '.show();' + '\n'
 
-    .$Cat(out)
+    ##.$Cat(out)
   }
 
   ## we don't add. The subwindow prints out
