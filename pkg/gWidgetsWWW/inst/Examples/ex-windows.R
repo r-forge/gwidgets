@@ -4,7 +4,6 @@ ghtml(paste("Illustration of state of modal dialogs and subwindows. Modal dialog
             "are used with a handler (gconfirm).",
             "Subwindows are created by gwindow with the argument parent=toplevel_window.",
             sep=" "), cont = g)
-glabel("", cont=g)                      # XXX to add script. Remove when fixed
 g1 <- gexpandgroup("Quick message dialog",cont=g)
 b1 <- gbutton("galert", cont=g1, handler = function(h,...) {
   galert("for quick transient messages", title="galert dialog", parent=w)

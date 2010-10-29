@@ -4,6 +4,7 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+* moved js code from widgets into standalong file. Compressed by compress.R
 * internal change to how handlers are evaluated. Trying to cut down on
 SIGPIPE error
 * bug fixes

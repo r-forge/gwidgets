@@ -37,7 +37,6 @@ gmenu(menuList, cont=w)
 ## simple two pane layout
 ## a commandline and frame
 g <- ggroup(cont=w)
-glabel("", cont=g)                      # XXX done so label scripts are preloaded. Not optimal
 gcommandline(cont=g,  graphic_size=c(800,500))
 
 

@@ -240,29 +240,6 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
     return(out)
   }
 
-  ## make some renderes
-  widget$scripts <- function(.) {
-    out <- String()
-    ## text is red or black depending
-    out <- out + "\n" +
-      'gtableNumeric = function(val) { ' +
-        'return \'<span style="color:red">\' + val + \'</span>\';' +
-          '};' + '\n'
-    out <- out +
-      'gtableInteger = function(val) { ' +
-        'return \'<span style="color:red">\' + val + \'</span>\';' +
-          '};' + '\n'
-    out <- out +
-      'gtableLogical = function(val) { ' +
-        'return \'<span style="color:black">\' + val + \'</span>\';' +
-          '};' + '\n'
-    out <- out +
-      'gtableIcon = function(val) { ' +
-        'return \'<img src="\' + val + \'"/>\';' +
-          '};' + '\n'
-
-    return(out)
-  }
 
   
   widget$makeColumnModel <- function(.) {

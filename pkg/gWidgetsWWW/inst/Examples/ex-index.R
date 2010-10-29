@@ -2,48 +2,50 @@ w <- gwindow("gWidgetsWWW")
 g <- ggroup(cont = w, horizontal=FALSE)
 ghtml("<h1>gWidgetsWWW</h1>", cont = g)
 f <- gexpandgroup("About", cont = g)
-ghtml(paste(
-            "The gWidgets package provides an API to abstract the interface to a",
-            "few of the available GUI toolkits avaiilable through R. The",
-            "gWidgetsWWW package provides an implementation of the gWidgets",
-            "API for use with through the web. That is, using just R commands, interactive",
-            "GUIs can be produced.",
-            "<p><br>",
-            "The current status of the project is still experimental. The package",
-            "does not have much testing as of yet. As of version 0-0.16 Firefox, Safari, IE and Opera",
-            "basically work, although some widgers -- gcanvas, gsvg -- are browser dependent.",
-            "<p><br>",
-            "To create a web GUI a means must be provided to callback to the web",
-            "server when the user initiates an action and then the web server",
-            "responds with commands to manipulate the",
-            "user's page.",
-            "<p><br>",
-            "The package uses the dynamic help server for development and stand alone use.",
-            "<p><br>",
-            "To serve web pages to a wider communituy, the",
-            "RApache package <A",
-            "href=http://biostat.mc.vanderbilt.edu/rapache/>url</A>, which embeds",
-            "an R process within the Apache web server, is used so that callbacks",
-            "from the browser to the web server can be processed through R.",
-            "<p><br>",
-            "To return instructions to the page, javascript is used so that the entire",
-            "page need not be reloaded, as javascript can manipulate elements on",
-            "the page. The javascript code is simplified by using the ext",
-            "javascript libraries <A",
-            "href=http://www.extjs.com>extjs.com</a>. These are included with",
-            "the package.",
-            "<p><br>To make an interactive GUI in gWidgets can be",
-            "as easy as creating the following script:",
-            "<br><p><code><br>",
-            "w <- gwindow('simple interactive GUI with one button', visible=FALSE)","<br>",
-            "g <- ggroup(cont=w)","<br>",
-            "b <- gbutton('click me', cont=g, handler=function(h,...) {","<br>",
-            "  &nbsp;gmessage('hello world', parent=b)","<br>",
-          "})","<br>",
-            "visible(w) <- TRUE", "<br>",
-            "</code><br>",
-            sep=" "),
-      cont = f)
+msg <- readLines(textConnection("The gWidgets package provides an API to abstract the interface to a
+few of the available GUI toolkits avaiilable through R. The
+gWidgetsWWW package provides an implementation of the gWidgets
+API for use through a web browser. That is, using just R commands interactive
+GUIs can be produced quite easily.
+<p><br>
+The current status of the project is still experimental. The package
+does not have much testing as of yet. As of version 0-0.16 Firefox, Safari, IE and Opera
+basically work, although some widgets -- gcanvas, gsvg -- are browser dependent.
+<p><br>
+To create an interactive web GUI three things are done:
+<ul>
+<li>* A web page is layed out. This is done with gWidgets components</li>
+<li>* A means to call back to the web server is needed. This is done using gWidgets handlers<li>
+<li>* A means for the R process in the web server to manipulate the components of the web page.
+This is done using JavaScript commands that are created by the gWidgets methods.</li>
+</ul>
+<p><br>
+The package uses the dynamic help server for development and stand alone use.
+<p><br>
+To serve web pages to a wider community, the
+RApache package
+<A href=http://biostat.mc.vanderbilt.edu/rapache/>url</A>, which embeds
+an R process within the Apache web server, is used so that callbacks
+from the browser to the web server can be processed through R.
+<p><br>
+The javascript code is simplified by using the ext
+javascript libraries 
+<a href=http://www.extjs.com>extjs.com</a>. These are included with
+the package.
+<p><br>To make an interactive GUI in gWidgets can be
+as easy as creating the following script:
+<br>
+<p>
+<code>
+w <- gwindow('simple interactive GUI with one button', visible=FALSE)<br />
+g <- ggroup(cont=w)<br />
+b <- gbutton('click me', cont=g, handler=function(h,...) {<br />
+  &nbsp;gmessage('hello world', parent=b)<br />
+})<br />
+visible(w) <- TRUE<br />
+</code>
+</p>"))
+ghtml(paste(msg, collapse=" "), cont=f)
 
 
 
