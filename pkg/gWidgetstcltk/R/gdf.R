@@ -169,15 +169,18 @@ setMethod(".svalue",
             ## top col x, bottom col y
             curSel <- sapply(strsplit(as.character(tcl(tktable,"curselection")),","), as.numeric)
             indices <- list(rows=sort(unique(curSel[1,])), columns=sort(unique(curSel[2,])))
-                           
-            if(!is.null(index) && index == TRUE)
-              return(indices)
+            drop <- getWithDefault(drop, TRUE)
+            index <- getWithDefault(index, FALSE)
             
-            ## Now a value
-            if(missing(drop) || is.null(drop)) drop = FALSE
-
-            return(obj[indices$rows, indices$columns, drop=drop])
-
+            if(index) {
+              if(drop) {
+                return(indices$rows)
+              } else {
+                return(indices)
+              }
+            } else {
+              return(obj[indices$rows, indices$columns, drop=drop])
+            }
           })
           
           

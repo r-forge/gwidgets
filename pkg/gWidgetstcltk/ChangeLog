@@ -1,3 +1,8 @@
+2010-10-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R (.toCharacter.numeric): put round argument in
+	constructor for Liviu
+
 2010-10-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gimage.R: moved code into svalue<- method. Fix bug if no image

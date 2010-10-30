@@ -20,34 +20,41 @@ setClass("gTabletcltk",
 }
 
 ## covert a dta frame into a character based on
-.toCharacter <- function(x,width,...) UseMethod(".toCharacter")
-.toCharacter.default <- function(x,width,...) as.character(x)
-.toCharacter.integer <- function(x,width,...) {
+.toCharacter <- function(x,width=NULL,...) UseMethod(".toCharacter")
+.toCharacter.default <- function(x,width=NULL,...) as.character(x)
+.toCharacter.integer <- function(x,width=NULL,...) {
  if(missing(width)) width <- max(nchar(as.character(x))) + 2  
-  format(x, justify="right", width=width)
+  format(x, justify="right", digits=width)
 }
-.toCharacter.numeric <- function(x,width,...) {
+.toCharacter.numeric <- function(x,width=NULL,...) {
   if(missing(width)) width <- max(nchar(as.character(x))) + 2
-  format(x,trim=FALSE, width=width, justify="right")
+  format(x,trim=FALSE, digits=width, justify="right")
 }
-.toCharacter.factor <- function(x,width,...) {
+.toCharacter.factor <- function(x,width=NULL,...) {
   if(missing(width)) width <- max(nchar(as.character(x))) + 2
   .toCharacter(as.character(x),width,...)
 }
-.toCharacter.logical <- function(x,width,...) {
-  if(missing(width)) width <- 7
+.toCharacter.logical <- function(x,width=NULL,...) {
+  if(is.null(width))
+    width <- 7
+  width <- max(7, width)
   format(as.character(x), justify="centre", width=width)
 }
-.toCharacter.data.frame <- function(x,width,...) {
+.toCharacter.data.frame <- function(x,width=NULL,...) {
   nms <- names(x)
-  df <- as.data.frame(lapply(x,function(i) .toCharacter(i)),
+  df <- as.data.frame(lapply(x,function(i) .toCharacter(i, width)),
                       stringsAsFactors=FALSE)
   names(df) <- nms
   return(df)
 }
-.toCharacter.matrix <- function(x, width, ...) {
+.toCharacter.matrix <- function(x, width=NULL, ...) {
   .toCharacter(as.data.frame(x), width, ...)
 }
+
+## pass in argument
+## function(x, width, ...)
+toCharacter <- getWithDefault(options("gw_toCharacter"), .toCharacter)
+
 
 
 .populateTable <- function(tr, items, visible, icons=NULL, nms=names(items),
@@ -87,10 +94,9 @@ setClass("gTabletcltk",
     if(fresh)
       tcl(tr,"column",0,width=1, stretch=FALSE) # override below if needed
 
-    
     ## set widths/names of other columns if present
     for(j in 1:n) {
-      tcl(tr,"column", j , width=widths[j], stretch=TRUE, anchor="w") 
+      tcl(tr,"column", j , width=widths[j], stretch=TRUE)
       tcl(tr,"heading", j, text=nms[j])
     }
   }
@@ -110,6 +116,7 @@ setClass("gTabletcltk",
   }
 
   if(m > 0) {
+    ## add in values
     sapply(1:m, function(i) {
       values <- as.character(unlist(items[i,]))
       if(n == 1)
@@ -128,6 +135,19 @@ setClass("gTabletcltk",
   }
 }
 
+## set anchor of columns for justification
+.setAnchors <- function(tr, items) {
+  anchorStyle <- function(x) UseMethod("anchorStyle")
+  anchorStyle.default <- function(x) "center"
+  anchorStyle.numeric <- function(x) "e"
+  anchorStyle.character <- function(x) "w"
+
+  ## set anchorStyle
+  for(j in 1:ncol(items)) 
+    tcl(tr,"column", j , anchor=anchorStyle(items[,j,drop=TRUE]))
+}
+
+  
 ## clear the children. Should also remove row count
 .clearColumns <- function(tr) {
   vals <- tcl(tr,"children","")
@@ -260,6 +280,8 @@ setMethod(".gtable",
             else
               "red"
             tag(obj,"visible") <- NULL
+
+            tag(obj, "round") <- getWithDefault(theArgs$round, NULL)
             
             
             ## font -- fixed unless overridden
@@ -277,9 +299,10 @@ setMethod(".gtable",
             else
               icon.FUN(items)
 
-            .populateTable(tr, .toCharacter(items), TRUE, icons,names(items),
+            .populateTable(tr, .toCharacter(items, tag(obj, "round")), TRUE, icons,names(items),
                            getSizeFrom=width)
 
+            .setAnchors(tr, items)
 
             size(obj) <- c(width, height)
 
@@ -396,7 +419,7 @@ setReplaceMethod(".leftBracket",
               items <- as.data.frame(value, stringsAsFactors=FALSE)
               tag(x,"items") <- items
 
-              .populateTable(widget, .toCharacter(items), visible(x),
+              .populateTable(widget, .toCharacter(items, tag(x, "round")), visible(x),
                              icon.FUN(items), names(items),fresh=FALSE, doWidths=FALSE,
                              getSizeFrom=size(x)[1])
               return(x)
@@ -421,7 +444,7 @@ setReplaceMethod(".leftBracket",
             ## size is okay
             items[i,j] <- value
             tag(x,"items") <- items     # set
-            citems <- .toCharacter(items)
+            citems <- .toCharacter(items, tag(x, "round"))
             allChildren <- .allChildren(widget)
 
             ## add row by row (i)

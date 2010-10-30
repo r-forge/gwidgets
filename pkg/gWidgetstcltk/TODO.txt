@@ -1,7 +1,8 @@
 TODO:
 ---------
+* gtable: select rectangle
 * gtable: mess with _, , stuff and single column
-* implement svalue( index=TRUE) (give index as "a:b:c") and
+* gree: implement svalue( index=TRUE) (give index as "a:b:c") and
   svalue(obj) <- index
 ** Bug with gfile being opened from a button -- button stays depressed
    after gfile is closed -- THIS IS A TK BUG
