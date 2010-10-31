@@ -29,3 +29,35 @@ setGeneric( '.gcheckboxgroup' ,
                     items, checked = FALSE, horizontal = FALSE,
                     handler = NULL, action = NULL,
                     container = NULL, ... ) standardGeneric( '.gcheckboxgroup' )) 
+
+
+
+##' svalue method for checkboxgroup
+##'
+##' Main property of checkbox group are the states. 
+##' @param obj object
+##' @param index If \code{TRUE} returns indices of those checked. Otherwise a logical vector.
+##' @param drop ignored
+##' @return logical vector or vector of indices
+##' @exports
+setMethod("svalue", signature(obj="gCheckboxGroup"),
+          function(obj, index=NULL, drop=NULL, ... ) {
+            .svalue(obj@widget, obj@toolkit, ...,index=index, drop=drop)            
+          })
+
+
+
+
+##' set state for checkbox
+##'
+##' @param obj
+##' @param index if \code{TRUE} the indices are expected. If \code{FALSE} logical vector.
+##' @param ... ignored
+##' @param value numeric or logical depending on \code{index}
+##' @return void
+##' @exports
+setReplaceMethod("svalue", signature(obj="gCheckboxGroup"),
+          function(obj, index=NULL, ...,value) {
+            .svalue(obj@widget, obj@toolkit, index=index, ...) <- value
+            return(obj)
+          })

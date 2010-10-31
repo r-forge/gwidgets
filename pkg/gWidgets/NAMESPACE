@@ -34,12 +34,14 @@ exportClasses("guiWidgetsToolkit",
               "gWidgetANY","gComponentANY","gContainerANY","guiDialog",
               "guiWidgetOrNULL",
               "guiDialog", "gAction", "gButton", "gCalendar", "gCheckbox","gCheckboxGroup",
-              "gCombobox","gCommandline", "gCommandlineANY", "gDf", "gDfNotebook", "gEdit",
+              "gCombobox","gCommandline", "gCommandlineANY",  "gDfNotebook", "gEdit",
               "gExpandGroup", "gFilebrowse", "gFormLayout","gFormLayoutANY", "gFrame", "gGenericWidget",
-              "gGenericWidgetANY", "gGraphics", "gGraphicsNotebook", "gGroup", "gHelp", "gHelpBrowser",
+              "gGenericWidgetANY", "gGraphics", "gGraphicsNotebook",
+              "gGridComponent", "gDf",  "gTable",
+              "gGroup", "gHelp", "gHelpBrowser",
               "gHelpANY", "gHelpbrowserANY", "gHtml", "gImage", "gLabel", "gLayout", "gMenu", "gNotebook",
               "gPanedGroup", "gRadio", "gSeparator", "gSlider", "guiComponentRangeSelector", "gSpinbutton",
-              "gStatusbar", "gSvg", "gTable", "gText", "gToolbar", "gTree",
+              "gStatusbar", "gSvg", "gText", "gToolbar", "gTree",
               "guiComponentWithItems", "gVarBrowser", "gWindow"
               )
 

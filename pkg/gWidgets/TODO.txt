@@ -1,14 +1,14 @@
-* STARTED. Wish: roxygen docs on methods; add classes
-DONE * Add multi=FALSE to signature of gfile.
-* add use.table to gcheckboxgroup
-* integrate in column size into gtable
-DONE * fix ggenericwidget under tcltk -- print twice. gcommandline issue I believe.
+* STARTED. Wish list: roxygen docs on methods; add classes
+* integrate in column size into gtable 
 * gcommandline is not very good -- IT IS AWFUL. Do tcltk --- see
 * size argument in gcombobox as formal argument, we have it as ... now.
 * methods in docs -- work on API
-DIBE * fix ghelp to work with windows -- RPAD?
 * visible API (not visible<-) with set is wanky, Should deprecate, but need with gbasicdialog
 * gtable -- help page -- check this
+DONE * Add multi=FALSE to signature of gfile.
+DONE * add use.table to gcheckboxgroup
+DONE * fix ggenericwidget under tcltk -- print twice. gcommandline issue I believe.
+DONE * fix ghelp to work with windows.
 DONE * Write API for these guys, even if they aren't implemented
 DONE  * gaction (in gWidgetsWWW)
 DONE  * galert -- like gmessage only appears differently (gWidgetsWWW has implementation)
@@ -28,14 +28,10 @@ DONE * gwindow -- add in menu, toolbar, contentPane, statusbar
   others need implementing
 DONE * gframe, gexpandgroup should get a horizontal= argument
 DONE * FIX FONTS!! weight <-> style
-DID getToolkitWidget * export .getWidget, .getBlock, .getParent (Michaels request)
-
-
-
+DONE getToolkitWidget * export .getWidget, .getBlock, .getParent (Michaels request)
 DONE * pmg -- close buttons in linux -- read e-mail
 DONE? * ggroup == on.dragmotion -- not working under windows, linux OK
   (my guess is that is liew in getWindow()$Raise()
-
 DONE ***** gdf -- error with editing see 20 vs 22
 
 

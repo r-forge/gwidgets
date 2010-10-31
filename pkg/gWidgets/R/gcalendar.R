@@ -30,3 +30,36 @@ setGeneric( '.gcalendar' ,
                     handler=NULL, action=NULL, container = NULL,
                     ... )
            standardGeneric( '.gcalendar' ))
+
+
+
+##' svalue method for gcalendar
+##'
+##' Main property of calendar is the date
+##' @param obj object
+##' @param index ignored
+##' @param drop ignored
+##' @return character. The date, after formatting.
+##' @exports
+setMethod("svalue", signature(obj="gCalendar"),
+          function(obj, index=NULL, drop=NULL, ... ) {
+            .svalue(obj@widget, obj@toolkit, ...,index=index, drop=drop)            
+          })
+
+
+
+
+##' set date
+##'
+##' @param obj
+##' @param index ignored
+##' @param ... ignored
+##' @param value character. Should be in format for calendar widget
+##' @return void
+##' @exports
+setReplaceMethod("svalue", signature(obj="gCalendar"),
+          function(obj, index=NULL, ...,value) {
+            .svalue(obj@widget, obj@toolkit, index=index, ...) <- value
+            return(obj)
+          })
+

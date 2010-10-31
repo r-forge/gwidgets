@@ -11,7 +11,7 @@ ghtml(x, handler = NULL, action = NULL, container = NULL, ..., toolkit = guiTool
 }
 \arguments{
   \item{x}{url or HTML-marked up character string to load into widget.}
-  \item{handler}{Handles a click on a URL. The default is to open the
+  \item{handler}{(In theory, not implemented yet) Handles a click on a URL. The default is to open the
      clicked url in the widget. To override, the first argument,
      a list \code{h}, has component \code{h\$url} containing the url.}
   \item{action}{ Passed along to the  handler as \code{h\$action}}
@@ -25,7 +25,7 @@ ghtml(x, handler = NULL, action = NULL, container = NULL, ..., toolkit = guiTool
 
   The \code{svalue} method returns the current url or character string.
 
-  The \code{svalue<-} method loads the current url or character string
+  The \code{svalue<-} method loads a url or character string
   in the widget.
 
 }

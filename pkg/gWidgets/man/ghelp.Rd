@@ -42,7 +42,7 @@ ghelpbrowser(title = "Help browser", maxTerms=100, width=1000, height=600, ..., 
 % \references{}
 % \author{}
 % \note{}
-% \seealso{}
+\seealso{The \pkg{helpr} package provides a much better interface to R's help pages.}
 \examples{
 \dontrun{
   w <- gwindow("Help browser", visible=FALSE)

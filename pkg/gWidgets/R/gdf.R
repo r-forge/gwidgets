@@ -1,9 +1,9 @@
-##' @include guiComponents.R
+##' @include gtable.R
 
 ##' Class for a data frame editor
 setClass("gDf",
-         contains="guiComponent",
-         prototype=prototype(new("guiComponent"))
+         contains="gGridComponent",
+         prototype=prototype(new("gGridComponent"))
          )
 
 ##' Constructor for a data frame editor
@@ -29,3 +29,7 @@ setGeneric( '.gdf' ,
                     do.subset = FALSE,      container = NULL, ... )
            standardGeneric( '.gdf' ))
 
+
+## methods
+## addHandlerChanged, addHandlerClicked, addHandlerDoubleClicked
+## addHandlerColumnClicked, addHandlerColumnDoubleClicked

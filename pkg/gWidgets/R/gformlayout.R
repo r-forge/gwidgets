@@ -91,7 +91,7 @@ setMethod(".leftBracket",
 ## return a list of values
 setMethod(".svalue",
           signature(toolkit="ANY",obj="gFormLayoutANY"),
-          function(obj, toolkit, index=NULL, drop=NULL, ..) {
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
             return(lapply(obj[], svalue))
           })
 

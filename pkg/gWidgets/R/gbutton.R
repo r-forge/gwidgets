@@ -26,6 +26,39 @@ setGeneric( '.gbutton' , function(toolkit,
 
 ################ methods ##################################
 
+##' svalue method for button
+##'
+##' Main property of a button is the label
+##' @param obj object
+##' @param index ignored
+##' @param drop ignored
+##' @return character. String on button
+##' @exports
+setMethod("svalue", signature(obj="gButton"),
+          function(obj, index=NULL, drop=NULL, ... ) {
+            .svalue(obj@widget, obj@toolkit, ...,index=index, drop=drop)            
+          })
+
+
+
+
+##' set label in a button
+##'
+##' @param obj
+##' @param index ignored
+##' @param ... ignored
+##' @param value character. If string matches stock icon name, then an icon will be added to button.
+##' @return void
+##' @exports
+setReplaceMethod("svalue", signature(obj="gButton"),
+          function(obj, index=NULL, ...,value) {
+            .svalue(obj@widget, obj@toolkit, index=index, ...) <- paste(value, collapse="\n")
+            return(obj)
+          })
+
+
+
+
 ################## defaultWidget ################################
 ##' Generic to check if a button is the default button
 setGeneric("defaultWidget",function(obj, ...) standardGeneric("defaultWidget"))
