@@ -127,23 +127,33 @@ setMethod(".svalue",
           function(obj, toolkit, index=NULL, drop=NULL,...) {
 
             tbl <- getWidget(obj)
+            chosencol <- getWithDefault(tag(obj,"chosencol"), 1)
+
             index <- getWithDefault(index, FALSE)
             drop <- getWithDefault(drop, TRUE)
-            chosencol <- getWithDefault(tag(obj,"chosencol"), 1)
+
             
             ## get selected rows indices
             ## ind is right, no need to account for visible
             ind <- getTableWidgetSelection(tbl, as.rectangle=TRUE)
+
+
             if(is.null(ind))
               return(ind)
-            ind <- ind$rows
-            
+
             if(index) {
-              return(ind)
-            } else if(drop) {
-              return(obj[ind, chosencol, drop=TRUE])
+              if(drop) {
+                ## index=TRUE, drop=TRUE
+                return(ind$rows)
+              } else {
+                ## index=TRUE, drop=FALSE
+                return(ind)
+              }
             } else {
-              return(obj[ind,,drop=drop])
+              if(drop)
+                return(obj[ind$rows, chosencol, drop=drop])
+              else
+                return(obj[ind$rows, , drop=drop])
             }
           })
 
@@ -161,7 +171,10 @@ setReplaceMethod(".svalue",
                    chosencol <- getWithDefault(tag(obj,"chosencol"), 1)
                    
                    if(index) {
-                     setTableWidgetSelection(tbl, rows=value, full.row=TRUE)
+                     if(is.list(value))
+                       setTableWidgetSelection(tbl, rows=value[[1]], columns=value[[2]], full.row=FALSE)
+                     else
+                       setTableWidgetSelection(tbl, rows=value, full.row=TRUE)
                    } else {
                      items <- obj[,chosencol, drop=TRUE]
                      if(value %in% items) {

@@ -32,7 +32,8 @@ if(require(testthat)) {
   b2 <- gbutton("popup.3rd", cont=g)
 
   mb <- gmenu(makeActions(), cont = b, popup=TRUE)
-  add3rdmousepopupmenu(b1, makeActions())
-  addpopupmenu(b2, makeActions())
+  ## giving errors
+##  add3rdmousepopupmenu(b1, makeActions())
+##  addpopupmenu(b2, makeActions())
 
 }

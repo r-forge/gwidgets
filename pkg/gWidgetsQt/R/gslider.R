@@ -29,17 +29,16 @@ setMethod(".gslider",
 
             force(toolkit)
 
-
             ## slider is for integer only
-            if(!isTRUE(all.equal(by, as.integer(by))) || 
-               !isTRUE(all.equal(from, as.integer(from)))) {
-              cat("Slider is for integer values only. Using a spinbutton")
-              obj <- .gspinbutton(toolkit,
-                           from, to, by, value, handler, action, container, ...)
-              return(obj)
+            if(length(from) == 1) {
+              x <- seq(from, to, by)
+            } else {
+              x <- from
             }
 
-         
+            
+            x <- sort(unique(x))
+  
             if(as.logical(horizontal)) {
               ## ENUMS
               slider <- Qt$QSlider()
@@ -49,16 +48,24 @@ setMethod(".gslider",
               slider <- Qt$QSlider(Qt$Qt$Vertical)
               slider$setTickPosition(Qt$QSlider$TicksLeft) 
             }
-            slider$setTickInterval(as.integer(5*by))
+            
+            slider$setMinimum(1L)
+            slider$setMaximum(length(x))
+            slider$setPageStep(1+floor(length(x)/5))
+            slider$setSingleStep(1L)
             
             obj <- new("gSliderQt",block=slider, widget=slider,
                        toolkit=toolkit)
-
-            slider$setMinimum(as.integer(from))
-            slider$setMaximum(as.integer(to))
-            slider$setPageStep(as.integer(by))
-            slider$setSingleStep(as.integer(by))
-            svalue(obj) <- value
+            
+            tag(obj, "..byIndexValues") <- x
+            svalue(obj) <- value[1]
+            
+            ## don't know how to get tooltip, or some such, without reimplemetingn paint
+            addhandlerchanged(obj, handler=function(h,...) {
+              tooltip(obj) <- format(svalue(obj), digits=3)
+            })
+            tooltip(obj) <- format(svalue(obj), digits=3)
+            
             
             if(!is.null(container))
               add(container, obj,...)
@@ -76,19 +83,40 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitQt",obj="gSliderQt"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             w <- getWidget(obj)
-            w$value
+            ind <- w$value
+            if(!is.null(index) && index)
+              return(ind)
+            else
+              return(tag(obj, "..byIndexValues")[ind])
           })
 
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gSliderQt"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   w <- getWidget(obj)
-                   w$setValue(as.integer(value[1]))
+                   if(is.null(index) || !index) {
+                     ## value is a value, must match
+                     value <- as.character(match(value, tag(obj, "..byIndexValues")))
+                   }
+                   value <- value[1]
                    
+                   w <- getWidget(obj)
+                   if(!is.na(value)) {
+                     value <- as.integer(value)
+                     n <- length(tag(obj, "..byIndexValues"))
+                     if(value >= 1L && value <= n)
+                       w$setValue(value)
+                   }
+
                    return(obj)
                  })
 
 
+
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitQt",x="gSliderQt"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            tag(x, "..byIndexValues")
+          })
 
 ## Method to replace values of spin button
 setReplaceMethod("[",
@@ -98,39 +126,31 @@ setReplaceMethod("[",
                    return(x)
                  })
 
+##' replace values.
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitQt",x="gSliderQt"),
           function(x, toolkit, i, j, ..., value) {
+            if(!missing(i) || !missing(j)) {
+              cat(gettext("No replacement for single values"))
+              return()
+            }
+            
             obj <- x
-            w <- getWidget(obj)
-
-            ## check that value is a regular sequence
-            if(length(value) <=1) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            if(length(value) > 2 &&
-               !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            ## get current value, increment
+            widget <- getWidget(obj)
             curValue <- svalue(obj)
-            inc <- head(diff(value), n=1)
-            tol <- sqrt(.Machine$double.eps) * 10
-            if(!all.equal(inc, as.integer(inc + tol))) {
-              warning("Increment must be an integer")
-            }
 
-            w$setMinimum(as.integer(min(value)))
-            w$setMaximum(as.integer(max(value)))
-            w$setSingleStep(as.integer(inc))
-            w$setPageStep(as.integer(inc))
-            svalue(w) <- curValue
+            value <- sort(unique(value))
+            tag(obj, "..byIndexValues") <- value
+            
+            widget$setMinimum(1L)
+            widget$setMaximum(length(value))
+
+            svalue(obj) <- curValue
+
+
             ## all done
             return(obj)
           })
-
 
 
 
@@ -146,3 +166,5 @@ setMethod(".addhandlerchanged",
             ID <- .addhandler(obj, toolkit, "valueChanged", f, action, ...)
             return(ID)
           })
+
+

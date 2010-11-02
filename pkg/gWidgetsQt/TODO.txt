@@ -1,5 +1,6 @@
 TODO:
 ---------
+* select by rectange in gtable
 * fix gmenu: both mani menubar and popups (doesn't show up; no submenus)
 * need to have gbigtable standard for gtable. Michael has changes to incorporate
 * settingn child gwindow transient to parent fails as destroyed event

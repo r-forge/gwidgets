@@ -29,11 +29,11 @@ setMethod(".gspinbutton",
             force(toolkit)
 
             ## coerce to integer if meant to be
-            if(all.equal(from, as.integer(from)))
+            if(isTRUE(all.equal(from, as.integer(from))))
               from <- as.integer(from)
-            if(all.equal(to, as.integer(to)))
+            if(isTRUE(all.equal(to, as.integer(to))))
               to <- as.integer(to)
-            if(all.equal(by, as.integer(by)))
+            if(isTRUE(all.equal(by, as.integer(by))))
               by <- as.integer(by)
             
             if(is.integer(by) && is.integer(from))
@@ -42,8 +42,8 @@ setMethod(".gspinbutton",
               sb <- Qt$QDoubleSpinBox()
 
             ## digits?
-            if(digits !=0)
-              XXX("implement digits")
+##            if(digits !=0)
+##              XXX("implement digits")
             
             obj = new("gSpinbuttonQt",block=sb, widget=sb,
               toolkit=toolkit)
@@ -103,7 +103,7 @@ setReplaceMethod(".leftBracket",
               return(x)
             }
             if(length(value) > 2 &&
-               !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
+               !isTRUE(all.equal(diff(diff(value)), rep(0, length(value) - 2)))) {
               warning("Can only assign a vector with equal steps, as produced by seq")
               return(x)
             }

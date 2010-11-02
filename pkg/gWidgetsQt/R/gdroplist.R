@@ -60,7 +60,7 @@ setMethod(".gdroplist",
               cb$setDuplicatesEnabled(FALSE)
             }
             ## expand in x, not y
-            cb$setSizePolicy(Qt$QSizePolicy$Expanding,
+            cb$setSizePolicy(Qt$QSizePolicy$Fixed,
                              Qt$QSizePolicy$Fixed)
 
             ## process
@@ -80,7 +80,8 @@ setMethod(".gdroplist",
             
             
             tag(obj,"coerce.with") <- coerce.with
-
+            tag(obj, "default_fill") <- "x"
+            
             obj[] <- items
             svalue(obj, index=TRUE) <- selected
 

@@ -19,6 +19,7 @@
 ## This is going to be much slower than using a corresponding signal, it
 ## it exists. In qtbase, events are handled at the class level, not the instance
 ## level, so we create a subclass to do our processing
+
 creategwClass <- function(cname, constructor) {
   where <- parent.frame()               # what environment to define class
 
@@ -59,17 +60,16 @@ creategwClass <- function(cname, constructor) {
       return()
     
     handlers <- handlers[[eventName]]   # list of lists is handlers
-    
+    blockedHandlers <- getWithDefault(tag(obj, ".blockedHandlers"), numeric())
+
     h <- list(obj=obj)
     if(length(components))
       for(i in components)
         h[[i]] <- get(i, e)()           # might need to change
-
-    blockedHandlers <- getWithDefault(tag(obj, ".blockedHandlers"), numeric())
-
-    out <- sapply(handlers, function(i) {
+    
+    out <- lapply(handlers, function(i) {
       if(i$eventName == eventName) {
-        if(!i$id %in% blockedHandlers) {
+        if(length(blockedHandlers) == 0 || !i$id %in% blockedHandlers) {
           h$action <- i$action
           i$handler(h)
         }
@@ -185,7 +185,7 @@ creategwClass <- function(cname, constructor) {
   ## The are various events that we have implemented
   ## we can pass in event values, see x,y below
   qsetMethod("mousePressEvent", NewClassObject, function(e) {
-    if(!is.null(dragHandler)) {
+    if(!is.null(this$dragHandler)) {
       this$dndStartPosition <- e$pos()    # for drag and drop
     }
     
@@ -204,9 +204,9 @@ creategwClass <- function(cname, constructor) {
 
   ##' set up drag and drop event if present
   qsetMethod("mouseMoveEvent", NewClassObject, function(e) {
-    if(!is.null(dragHandler)) {
-      if ((e$buttons() & Qt$Qt$LeftButton) && !is.null(dndStartPosition)) {
-        dist <- (e$x() - dndStartPosition$x())^2 +  (e$y() - dndStartPosition$y())^2
+    if(!is.null(this$dragHandler)) {
+      if ((e$buttons() & Qt$Qt$LeftButton) && !is.null(this$dndStartPosition)) {
+        dist <- (e$x() - this$dndStartPosition$x())^2 +  (e$y() - this$dndStartPosition$y())^2
         if (dist >= Qt$QApplication$startDragDistance()^2)
           this$prepareDrag(e)
       }
@@ -218,7 +218,7 @@ creategwClass <- function(cname, constructor) {
   ##' prepare drag event. Requires dragHandler
   qsetMethod("prepareDrag", NewClassObject, function(e) {
     if(!is.null(this$dragHandler)) {
-      val <- dragHandler(this$getObject(), e)
+      val <- this$dragHandler(this$getObject(), e)
       md <- Qt$QMimeData()
       md$setData("R/serialized-data", serialize(val, NULL))
 
@@ -232,7 +232,7 @@ creategwClass <- function(cname, constructor) {
   ##' when we enter we change the color palette
   qsetMethod("dragEnterEvent", NewClassObject, function(e) {
     if(!is.null(this$dropHandler)) {
-      setForegroundRole(Qt$QPalette$Dark)
+      this$setForegroundRole(Qt$QPalette$Dark)
       e$acceptProposedAction()
     }
 
@@ -242,7 +242,7 @@ creategwClass <- function(cname, constructor) {
   ##' when we leave we return the palette
   qsetMethod("dragLeaveEvent", NewClassObject, function(e) {
     if(is.null(this$dropHandler)) return()
-    setForegroundRole(Qt$QPalette$WindowText)
+    this$setForegroundRole(Qt$QPalette$WindowText)
     e$accept()
 
     super("dragLeaveEvent", e)    
@@ -251,12 +251,12 @@ creategwClass <- function(cname, constructor) {
   ##' drop event calls dropHandler (set via setDropHandler)
   qsetMethod("dropEvent", NewClassObject, function(e) {
     if(!is.null(this$dropHandler)) {
-      setForegroundRole(Qt$QPalette$WindowText)  
+      this$setForegroundRole(Qt$QPalette$WindowText)  
       md <- e$mimeData()
       if(md$hasFormat("R/serialized-data")) {
         data <- unserialize(md$data("R/serialized-data"))
         this$dropHandler(this$getObject(), data)
-        setBackgroundRole(Qt$QPalette$Window)
+        this$setBackgroundRole(Qt$QPalette$Window)
         e$acceptProposedAction()
       }
     }
@@ -267,7 +267,7 @@ creategwClass <- function(cname, constructor) {
   ##' set a dropHandler. This implements drop area
   ##' f <- function(obj, value)
   qsetMethod("setDropHandler", NewClassObject, function(f) {
-    setAcceptDrops(TRUE)
+    this$setAcceptDrops(TRUE)
     this$dropHandler <- f
   })
 

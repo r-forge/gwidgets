@@ -24,6 +24,7 @@
 \alias{[,gTableQt-method}
 \alias{[,gTableViewQt-method}
 \alias{[,gTableWithFilterQt-method}
+\alias{[,gToggleButtonQt-method}
 \alias{[,gToolbarQt-method}
 \alias{[,gTreeQt-method}
 \alias{[,gVarbrowserQt-method}
@@ -109,6 +110,11 @@
 %%
 \alias{.gtext-methods}
 \alias{.gtext,guiWidgetsToolkitQt-method} 
+%%
+%% --  .ghtml --
+%%
+\alias{.ghtml-methods}
+\alias{.ghtml,guiWidgetsToolkitQt-method} 
 %%
 %% --  .gmenu --
 %%
@@ -307,6 +313,7 @@
 \alias{.svalue,gSvgQt,guiWidgetsToolkitQt-method}
 \alias{.svalue,gTextQt,ANY,ANY,guiWidgetsToolkitQt-method}
 \alias{.svalue,gToolbarQt,ANY,ANY,guiWidgetsToolkitQt-method}
+\alias{.svalue,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.svalue,gTreeQt,ANY,ANY,guiWidgetsToolkitQt-method}
 \alias{.svalue,gVarbrowserQt,ANY,ANY,guiWidgetsToolkitQt-method}
 \alias{.svalue,gAddargQt,ANY,ANY,guiWidgetsToolkitQt-method}
@@ -404,9 +411,11 @@
 \alias{.leftBracket,gNotebookQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gRadioQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,QtDataFrame,guiWidgetsToolkitQt-method}
+\alias{.leftBracket,gSliderQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gTableViewQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gTableWithFilterQt,guiWidgetsToolkitQt-method}
+\alias{.leftBracket,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gToolbarQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gTreeQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket,gVarbrowserQt,guiWidgetsToolkitQt-method} 
@@ -431,6 +440,7 @@
 \alias{.leftBracket<-,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket<-,gTableViewQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket<-,gTableWithFilterQt,guiWidgetsToolkitQt-method}
+\alias{.leftBracket<-,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.leftBracket<-,gToolbarQt,guiWidgetsToolkitQt-method} 
 %%
 %% --  add --
@@ -451,6 +461,7 @@
 \alias{.add,gContainerQt,guiWidgetsToolkitQt,RQtObject-method}
 \alias{.add,gContainerQt,guiWidgetsToolkitQt,gGraphicsQt-method}
 \alias{.add,gContainerQt,guiWidgetsToolkitQt,gMenuQt-method}
+\alias{.add,gComponentQt,guiWidgetsToolkitQt,gMenuPopupQt-method}
 \alias{.add,gDfNotebookQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.add,gDfNotebookQt,guiWidgetsToolkitQt,character-method}
 \alias{.add,gDfNotebookQt,guiWidgetsToolkitQt,data.frame-method}
@@ -582,17 +593,17 @@
 %% --  .visible<- --
 %%
 \alias{.visible<--methods}
-\alias{.visible<-,gWidgetQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gBigTableQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gContainerQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gExpandgroupQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gGraphicsQt,guiWidgetsToolkitQt-method}
+\alias{.visible<-,gWidgetQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.visible<-,gBigTableQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.visible<-,gContainerQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.visible<-,gExpandgroupQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.visible<-,gGraphicsQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.visible<-,gGridQt,guiWidgetsToolkitQt-method}
 \alias{.visible<-,gLayoutQt,guiWidgetsToolkitQt-method}
 \alias{.visible<-,gTableQt,ANY-method}
 \alias{.visible<-,gTableQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gTableViewQt,guiWidgetsToolkitQt-method}
-\alias{.visible<-,gWindowQt,guiWidgetsToolkitQt-method}
+\alias{.visible<-,gTableViewQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.visible<-,gWindowQt,guiWidgetsToolkitQt,ANY-method}
 %%
 %% --  enabled --
 %%
@@ -647,15 +658,15 @@
 %%
 \alias{.size<--methods}
 \alias{.size<-,gWidgetQt,guiWidgetsToolkitQt-method}
-\alias{.size<-,gWindowQt,guiWidgetsToolkitQt-method}
-\alias{.size<-,gComponentQt,guiWidgetsToolkitQt-method}
-\alias{.size<-,gContainerQt,guiWidgetsToolkitQt-method}
+\alias{.size<-,gWindowQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.size<-,gComponentQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.size<-,gContainerQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.size<-,gButtonQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gEditQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gGridQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gImageQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gNotebookQt,guiWidgetsToolkitQt-method}
-\alias{.size<-,gSeparatorQt,guiWidgetsToolkitQt-method}
+\alias{.size<-,gSeparatorQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.size<-,gSpinbuttonQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gTableWithFilterQt,guiWidgetsToolkitQt-method}
@@ -897,6 +908,7 @@
 \alias{.addhandlerchanged,gEditQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gEventWidgetQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gExpandgroupQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerchanged,gGraphicsQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gGridQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gSubsetbyQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gLabelQt,guiWidgetsToolkitQt-method}
@@ -913,6 +925,7 @@
 \alias{.addhandlerchanged,gImageQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gTableWithFilterQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerchanged,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerchanged,gVarbrowserQt,guiWidgetsToolkitQt-method}
 %%
 %% --  addhandlerkeystroke --
@@ -950,6 +963,7 @@
 \alias{.addhandlerclicked,gCheckboxgroupTableQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gDfQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gDroplistQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerclicked,gExpandgroupQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gEventWidgetQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gGraphicsQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gGridQt,guiWidgetsToolkitQt-method}
@@ -960,7 +974,9 @@
 \alias{.addhandlerclicked,gSpinbuttonQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gTableWithFilterQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerclicked,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerclicked,gTreeQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerclicked,gVarbrowserQt,guiWidgetsToolkitQt-method}
 %%
 %% --  addhandlerdoubleclick --
 %%
@@ -979,6 +995,7 @@
 \alias{.addhandlerdoubleclick,gTreeQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerdoubleclick,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.addhandlerdoubleclick,gTableWithFilterQt,guiWidgetsToolkitQt-method} 
+\alias{.addhandlerdoubleclick,gVarbrowserQt,guiWidgetsToolkitQt-method} 
 %%
 %% --  addhandlerrightclick --
 %%
@@ -1270,6 +1287,7 @@
 \alias{.names,gNotebookQt,guiWidgetsToolkitQt-method}
 \alias{.names,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.names,gTableViewQt,guiWidgetsToolkitQt-method}
+\alias{.names,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.names,gTreeQt,guiWidgetsToolkitQt-method}
 
 %%
@@ -1292,6 +1310,7 @@
 \alias{.names<-,gTableQt,ANY-method}
 \alias{.names<-,gTableViewQt,ANY-method}
 \alias{.names<-,gTableWithFilterQt,ANY-method}
+\alias{.names<-,gToggleButtonQt,guiWidgetsToolkitQt-method}
 \alias{.names<-,gTreeQt,guiWidgetsToolkitQt-method}
 %%
 %% --  .undo --
@@ -1329,6 +1348,7 @@
 \alias{[<-,gTableQt-method}
 \alias{[<-,gTableViewQt-method}
 \alias{[<-,gTableWithFilterQt-method}
+\alias{[<-,gToggleButtonQt-method}
 \alias{[<-,gToolbarQt-method}
 
 %% -- dimnames

@@ -729,13 +729,13 @@ setMethod(".add",
             fill <- getWithDefault(theArgs$fill, default_fill) 
 
             if(is.null(anchor)) {
-              if(fill == "y")
+              if(expand && fill == "y")
                 child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
                                     Qt$QSizePolicy$Expanding)
-              else if(fill == "x")
+              else if(expand && fill == "x")
                 child$setSizePolicy(Qt$QSizePolicy$Expanding,
                                     Qt$QSizePolicy$Fixed)
-              else if(fill == "both")           # default is fill = "both" when no anchor, but expand
+              else if(expand && fill == "both")           # default is fill = "both" when no anchor, but expand
                 child$setSizePolicy(Qt$QSizePolicy$Expanding,
                                     Qt$QSizePolicy$Expanding)
             }
