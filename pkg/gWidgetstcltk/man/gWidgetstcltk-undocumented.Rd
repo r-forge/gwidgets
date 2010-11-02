@@ -5,7 +5,7 @@
 \alias{runHandlerFor}
 \alias{str2}
 
-%% These were copied from gWidgetsrRGtk2
+%% These were copied from gWidgetsRGtk2
 \alias{[-methods}
 \alias{[,gWidgettcltk-method}
 \alias{[,gCheckboxtcltk-method}
@@ -240,7 +240,7 @@
 \alias{.getStockIcons-methods}
 \alias{.getStockIcons,guiWidgetsToolkittcltk-method} 
 %%
-%% -- stockIconFromClass, Object{
+%% -- stockIconFromClass, Object
 \alias{.stockIconFromClass-methods}
 \alias{.stockIconFromClass,guiWidgetsToolkittcltk-method}
 \alias{.stockIconFromObject-methods}
@@ -382,6 +382,7 @@
 \alias{.leftBracket,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gRadiotcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,tcltkDataFrame,guiWidgetsToolkittcltk-method}
+\alias{.leftBracket,gSlidertcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gTabletcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gTableWithFiltertcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gToolbartcltk,guiWidgetsToolkittcltk-method}
@@ -546,16 +547,16 @@
 %% --  .visible<- --
 %%
 \alias{.visible<--methods}
-\alias{.visible<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gEdittcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gExpandgrouptcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gGraphicstcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gGridtcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gLayouttcltk,guiWidgetsToolkittcltk-method}
+\alias{.visible<-,gWidgettcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gEdittcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gExpandgrouptcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gGraphicstcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gGridtcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gLayouttcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.visible<-,gTabletcltk,ANY-method}
-\alias{.visible<-,gTabletcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,gWindowtcltk,guiWidgetsToolkittcltk-method}
-\alias{.visible<-,tkwin,guiWidgetsToolkittcltk-method} 
+\alias{.visible<-,gTabletcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,gWindowtcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.visible<-,tkwin,guiWidgetsToolkittcltk,ANY-method} 
 %%
 %% --  enabled --
 %%
@@ -607,20 +608,27 @@
 %% --  .size<- --
 %%
 \alias{.size<--methods}
-\alias{.size<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
-\alias{.size<-,gWindowtcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gWidgettcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.size<-,gWindowtcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gComponenttcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gComponenttcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gContainertcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gContainertcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gButtontcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gButtontcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gEdittcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gEdittcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gGridtcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gGridtcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gImagetcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gImagetcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.size<-,gSeparatortcltk,guiWidgetsToolkittcltk-method}
-\alias{.size<-,gSpinbuttontcltk,guiWidgetsToolkittcltk-method}
-\alias{.size<-,gTabletcltk,guiWidgetsToolkittcltk-method}
-\alias{.size<-,gTableWithFiltertcltk,guiWidgetsToolkittcltk-method}
-\alias{.size<-,gTreetcltk,guiWidgetsToolkittcltk-method}
+\alias{.size<-,gSeparatortcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.size<-,gSpinbuttontcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.size<-,gTabletcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.size<-,gTableWithFiltertcltk,guiWidgetsToolkittcltk,ANY-method}
+\alias{.size<-,gTreetcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.size<-,gVarbrowsertcltk,guiWidgetsToolkittcltk-method}
 
 
@@ -641,6 +649,7 @@
 \alias{focus<--methods}
 \alias{focus<-,guiWidget-method}
 \alias{focus<-,gWidgettcltk-method} 
+\alias{focus<-,tcltkObject-method} 
 %%
 %% --  .focus<- --
 %%

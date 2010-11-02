@@ -209,8 +209,7 @@ ideal, but avoids needing to have a separate library (eg. Tktable)
 installed.  If the hidden argument \code{round} is passed to the
 constructor, this will be passed to the \code{format} function's
 \code{digits} argument when formatting numeric values for display.
-
-  \cr
+\cr
 
 Sizing is an issue. There may be a bug in the widget regarding
 horizontal scrolling (for Mac OS X anyways, where this is being

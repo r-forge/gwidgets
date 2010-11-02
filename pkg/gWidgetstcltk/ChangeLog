@@ -1,3 +1,8 @@
+2010-11-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R (modifyLabel): added from=vector argument where
+	values are run through sort(unique(...))
+
 2010-10-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtable.R (.toCharacter.numeric): put round argument in

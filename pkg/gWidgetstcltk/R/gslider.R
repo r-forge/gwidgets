@@ -15,51 +15,51 @@ setMethod(".gslider",
                    container=NULL, ...) {
             force(toolkit)
 
-
+            ## if from a single value, then from, to ,by specify sequence
+            if(length(from) == 1)
+              x <- seq(from, to, by)
+            else
+              x <- from
             
-            ## if by < 1, call gspinbutton
-            if(by < .99) {
-              cat(gettext("gslider in tcltk is integer only, using gspinbutton instead\n"))
-              obj = gspinbutton(
-                from, to, by, value, digits = 1,
-                handler, action,container,..., toolkit)
-              return(obj@widget)        # return gWidgettcltk; not gWidget
-            }
-
-
+            ## x needs sorting, make unique
+            x <- sort(unique(x))                  # do I need to do for different types
+            ind <- seq_along(x)
+            value <- which(as.character(value) == as.character(x))
+            
+  
             if(is(container,"logical") && container)
               container = gwindow()
             if(!is(container,"guiWidget")) {
               warning("Container is not correct. No NULL containers possible\n" )
               return()
             }
-
             
+  
             if(horizontal)
-              orientation = "horizontal"
+              orientation <- "horizontal"
             else
-              orientation = "vertical"
-
+              orientation <- "vertical"
+            
             tt <- getWidget(container)
-            gp <- ttkframe(tt)
             SliderValue <- tclVar(as.character(value))
-
-            ## missing?
-##             ttkscale <- function(parent, ...) tkwidget(parent,"ttk::scale", ...) 
-##             slider <- ttkscale(gp, from=from, to=to,
-##                                variable = SliderValue,
-##                                orient = orientation)
+            
             ## use old school
-            slider <- tkscale(gp, from=from, to=to,
-                              showvalue=TRUE, variable=SliderValue,
-                              resolution=by, orient=orientation)
+            slider <- tkscale(tt, from=1L, to=length(x),
+                              showvalue=FALSE, variable=SliderValue,
+                    resolution=1L, orient=orientation)
             
-            tkgrid(slider,row=0, column=0, sticky="news")
-            tkgrid.columnconfigure(gp,0, weight=1)
+            obj <- new("gSlidertcltk",block=slider, widget=slider,
+                       toolkit=toolkit, ID=getNewID(), e = new.env())
+            tag(obj,"..tclVar") <- SliderValue
+            tag(obj, "..byIndexValues") <- x
+
+            ## modify label
+            modifyLabel <- function() {
+              tkconfigure(slider, label=format(svalue(obj), digts=3))
+            }
+            modifyLabel()
+            tkbind(slider, "<Motion>", modifyLabel)
             
-            obj <- new("gSlidertcltk",block=gp, widget=slider,
-              toolkit=toolkit, ID=getNewID(), e = new.env())
-            tag(obj,"tclVar") <- SliderValue
             
             add(container, obj,...)
             
@@ -67,7 +67,7 @@ setMethod(".gslider",
               id <- addhandlerchanged(obj, handler, action)
             }
             
-            invisible(obj)
+            return(obj)
           })
 
 
@@ -75,18 +75,41 @@ setMethod(".gslider",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gSlidertcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            rbValue = tag(obj,"tclVar")
-            return(as.numeric(tclvalue(rbValue)))
+            rbValue = tag(obj,"..tclVar")
+            val <- as.numeric(tclvalue(rbValue))
+            if(is.null(index) || !index) {
+              x <- tag(obj, "..byIndexValues")
+              val <- x[val]
+            }
+            return(val)
           })
 
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gSlidertcltk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   tclvalue(tag(obj,"tclVar")) <- as.character(value)
+                   ## can set by index or match
+                   if(is.null(index) || index==FALSE) {
+                     value <- as.character(match(value, tag(obj, "..byIndexValues")))
+                   } else {
+                     value <- as.character(value)
+                   }
+
+                   n <- length(tag(obj, "..byIndexValues"))
+                   if(!is.na(value) &&
+                      value >= 1 &&
+                      value <= n) 
+                     tclvalue(tag(obj,"..tclVar")) <- value
+                   ## update label
+                   tkconfigure(getWidget(obj), label=format(svalue(obj), digts=3))
                    return(obj)
-                 })
+               })
 
-
+##' return values
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gSlidertcltk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            tag(x, "..byIndexValues")
+          })
 
 ## Method to replace values of spin button
 setReplaceMethod("[",
@@ -96,33 +119,22 @@ setReplaceMethod("[",
                    return(x)
                  })
 
+
+
+## Method to replace values of spin button
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gSlidertcltk"),
           function(x, toolkit, i, j, ..., value) {
             obj <- x
             widget <- getWidget(obj)
+            curVal <- svalue(obj)
 
-            ## check that value is a regular sequence
-            if(length(value) <=1) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            if(length(value) > 2 &&
-               !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            ## get current value, increment
-            curValue <- svalue(obj)
-            inc <- head(diff(value), n=1)
-            tol <- sqrt(.Machine$double.eps) * 10
-            if(!all.equal(inc, as.integer(inc + tol))) {
-              warning("Increment must be an integer")
-            }
-            tkconfigure(widget, from=min(value), to =max(value), resolution=inc)
-            tcl(widget,"set", curValue)
+            value <- sort(unique(value))
+            tag(obj, "..byIndexValues") <- value
+            tkconfigure(widget, from=1, to=length(value))
 
-            ## all done
+            svalue(obj) <- curVal
+            
             return(obj)
           })
 
@@ -136,3 +148,7 @@ setMethod(".addhandlerchanged",
           function(obj, toolkit, handler, action=NULL, ...) {
             .addHandler(obj,toolkit, signal="<ButtonRelease-1>",handler,action)
           })
+
+
+
+
