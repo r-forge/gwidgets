@@ -127,6 +127,11 @@ Port of gWidgets API to RGtk2
   this can be used to update a data frame.
 }
 
+The \code{gbasicdialog} constructor can be used both ways. The hidden
+argument \code{buttons} can take values \code{ok}, \code{yes},
+\code{cancel}, \code{close}, \code{no}, with a default of \code{c("ok","cancel")}.
+
+	
   \bold{Methods:}\cr
   
   The \code{font} method is not implemented. 

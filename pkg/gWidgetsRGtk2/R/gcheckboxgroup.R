@@ -388,7 +388,7 @@ setMethod(".svalue",
             if(index) {
               return(which(vals))       # return indices
             } else {
-              vals
+              obj[vals]                 # vals is logical
             }
           })
 

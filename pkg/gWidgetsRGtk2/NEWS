@@ -4,6 +4,7 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-69
 --------------------------
+* overload from= argument for gslider to specify arbitrary sortable vector
 * bug fix for handlers when label, images not enabled
 * added use.togglebutton for gcheckbox
 * another fix to gvarbrowser (Thanks Tom, wxffxw)

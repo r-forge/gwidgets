@@ -16,14 +16,32 @@ setMethod(".gslider",
                    container=NULL, ...) {
 
             force(toolkit)
-            
+
+            if(length(from) == 1)
+              x <- seq(from, to, by)
+            else
+              x <- from
+
+            x <- sort(unique(x))
+  
             if (horizontal)
-              scale <- gtkHScaleNewWithRange(from, to, by)
-            else scale <- gtkVScaleNewWithRange(from, to, by)
-            scale$setValue(value)
-
-            obj <- as.gWidgetsRGtk2(scale)
-
+              widget <- gtkHScaleNewWithRange(1L, length(x), 1L)
+            else
+              widget <- gtkVScaleNewWithRange(1L, length(x), 1L)
+            
+  
+  
+            obj <- new("gSliderRGtk",block=widget, widget=widget,
+                       toolkit=guiToolkit("RGtk2"))
+            
+            tag(obj, "..byIndexValues") <- x
+            svalue(obj) <- value[1]
+            
+            gSignalConnect(widget, "format-value", function(widget, value, ...) {
+              format(tag(obj, "..byIndexValues")[as.integer(value)], digits=3)
+            })
+            
+            obj <- as.gWidgetsRGtk2(widget)
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -38,6 +56,7 @@ setMethod(".gslider",
             invisible(obj)
           })
 
+##' coercoe gtkwidget into scale widget so that methods can work
 as.gWidgetsRGtk2.GtkHScale <- as.gWidgetsRGtk2.GtkVScale <-
   function(widget,...) {
     obj <- new("gSliderRGtk",block=widget, widget=widget,
@@ -46,21 +65,39 @@ as.gWidgetsRGtk2.GtkHScale <- as.gWidgetsRGtk2.GtkVScale <-
   }
 
 ### methods
+
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gSliderRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            obj@widget$getValue()
+            ind <- obj@widget$getValue()
+            if(!is.null(index) && index)
+              return(ind)
+            else
+              return(tag(obj, "..byIndexValues")[ind])
           })
 
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gSliderRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   obj@widget$setValue(value)
+                   if(is.null(index) || !index) {
+                     ## value is a value, must match
+                     value <- as.character(match(value, tag(obj, "..byIndexValues")))
+                   }
+                   getWidget(obj)$setValue(value)
+
+                   ## update label?
                    return(obj)
                  })
 
+##' return values
+##' @param i, j, drop ignored
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gSliderRGtk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            tag(x, "..byIndexValues")
+          })
 
-## Method to replace values of sping button
+##' non-essential method to dispatch done to leftBracket
 setReplaceMethod("[",
                  signature(x="gSliderRGtk"),
                  function(x, i, j,..., value) {
@@ -68,35 +105,28 @@ setReplaceMethod("[",
                    return(x)
                  })
 
+
+
+
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gSliderRGtk"),
           function(x, toolkit, i, j, ..., value) {
             obj <- x
             widget <- getWidget(obj)
-
-            ## check that value is a regular sequence
-            if(length(value) <=1) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            if(length(value) > 2 &&
-               !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            ## get current value, increment
             curValue <- svalue(obj)
-            inc <- head(diff(value), n=1)
 
-            widget$setRange(min(value), max(value))
-            widget$setIncrements(inc, inc) # button 1, button 2
-            widget$setValue(curValue)
+            value <- sort(unique(value))
+            tag(obj, "..byIndexValues") <- value
+            
+            widget$setRange(1, length(value))
+            widget$setIncrements(1L, 1L) # button 1, button 2
+
+            svalue(obj) <- curValue
 
 
             ## all done
             return(obj)
           })
-
 
 
 
@@ -106,3 +136,4 @@ setMethod(".addhandlerchanged",
           function(obj, toolkit, handler, action=NULL, ...) {
             addhandler(obj, "value-changed", handler, action,...)
           })
+

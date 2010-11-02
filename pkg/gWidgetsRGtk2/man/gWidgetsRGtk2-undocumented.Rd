@@ -385,6 +385,8 @@
 \alias{.leftBracket,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,RGtkDataFrame,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gToggleButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gToolbarRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gTreeRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -406,6 +408,7 @@
 \alias{.leftBracket<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gToggleButtonRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.leftBracket<-,gToolbarRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  add --
@@ -568,6 +571,7 @@
 %%
 \alias{.enabled-methods}
 \alias{.enabled,GtkWindow,guiWidgetsToolkitRGtk2-method} 
+\alias{.enabled,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  enabled<- --
 %%

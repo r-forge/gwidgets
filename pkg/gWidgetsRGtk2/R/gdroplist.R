@@ -3,6 +3,11 @@ setClass("gDroplistRGtk",
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
+
+##' Combobox widget
+##' @param items vector of names; 1-column data.frame of names; 2-column names, icons; 3-column names, icons, tooltip
+##' @param selected index of initial, 0 if blank
+##' @param editible -- are we editable?
 setMethod(".gdroplist",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,

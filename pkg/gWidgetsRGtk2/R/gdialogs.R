@@ -255,14 +255,41 @@ setMethod(".gbasicdialog",
               parent <- gtkWindowNew(show=FALSE)
             }
             
-            
-            
-            dlg = gtkDialog(title,
-              parent=parent,
-              c("modal"),
-              "gtk-ok", GtkResponseType["ok"],
-              "gtk-cancel", GtkResponseType["cancel"])
-            dlg$SetTitle(title)
+            ## button order
+            theArgs <- list(...)
+            buttons <- getWithDefault(theArgs$buttons, c("ok","cancel"))
+
+            buttonMap <- function(name) {
+              if(name == "ok")
+                list("gtk-ok", GtkResponseType["ok"])
+              else if(name =="yes")
+                list("gtk-yes", GtkResponseType["ok"])
+              else if(name == "cancel")
+                list("gtk-cancel", GtkResponseType["cancel"])
+              else if(name == "close")
+                list("gtk-close", GtkResponseType["close"])
+              else if(name =="no")
+                list("gtk-no", GtkResponseType["cancel"])
+              else
+                list("gtk-yes", GtkResponseType["ok"])
+            }
+
+            l <- list(title=title, parent=parent, flags=c("modal"))
+            for(i in buttons) {
+              m <- buttonMap(i)
+              l[[length(l) + 1]] <- m[[1]]
+              l[[length(l) + 1]] <- m[[2]]
+            }
+
+            dlg <- do.call("gtkDialog", l)
+              
+            ## dlg = gtkDialog(title,
+            ##   parent=parent,
+            ##   c("modal"),
+            ##   "gtk-ok", GtkResponseType["ok"],
+            ##   "gtk-cancel", GtkResponseType["cancel"]
+            ##   )
+            ## dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
             
@@ -327,13 +354,39 @@ setMethod(".gbasicdialognoparent",
               parent <- gtkWindowNew(show=FALSE)
             }
             
-                        
-            dlg = gtkDialog(title,
-              parent=parent,
-              flags = 0,
-              "gtk-ok", GtkResponseType["ok"],
-              "gtk-cancel", GtkResponseType["cancel"],
-              show=FALSE)
+              ## button order
+            theArgs <- list(...)
+            buttons <- getWithDefault(theArgs$buttons, c("ok","cancel"))
+
+            buttonMap <- function(name) {
+              if(name == "ok")
+                list("gtk-ok", GtkResponseType["ok"])
+              else if(name =="yes")
+                list("gtk-yes", GtkResponseType["ok"])
+              else if(name == "cancel")
+                list("gtk-cancel", GtkResponseType["cancel"])
+              else if(name == "close")
+                list("gtk-close", GtkResponseType["close"])
+              else if(name =="no")
+                list("gtk-no", GtkResponseType["cancel"])
+              else
+                list("gtk-yes", GtkResponseType["ok"])
+            }
+
+            l <- list(title=title, parent=parent, flags=c("modal"))
+            for(i in buttons) {
+              m <- buttonMap(i)
+              l[[length(l) + 1]] <- m[[1]]
+              l[[length(l) + 1]] <- m[[2]]
+            }
+
+            dlg <- do.call("gtkDialog", l)
+            ## dlg = gtkDialog(title,
+            ##   parent=parent,
+            ##   flags = 0,
+            ##   "gtk-ok", GtkResponseType["ok"],
+            ##   "gtk-cancel", GtkResponseType["cancel"],
+            ##   show=FALSE)
             dlg$SetTitle(title)
             dlg$setDefaultResponse(GtkResponseType["ok"])
             
