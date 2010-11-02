@@ -67,11 +67,11 @@ gfile <- function(text="Choose a file",
     return(out)
   }
                  
-  widget$scripts <- function(.) {
-    f <- system.file("javascript","ext.ux.form.fileuploadfield.js", package="gWidgetsWWW")
-    out <- paste(readLines(f), collapse="\n")
-    return(out)
-  }
+  ## widget$scripts <- function(.) {
+  ##   f <- system.file("javascript","ext.ux.form.fileuploadfield.js", package="gWidgetsWWW")
+  ##   out <- paste(readLines(f), collapse="\n")
+  ##   return(out)
+  ## }
   
   ## methods
 #  widget$getValueJSMethod <- "getValue"

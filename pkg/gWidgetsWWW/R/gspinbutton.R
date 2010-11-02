@@ -89,19 +89,19 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
     return(out)
   }
   
-  widget$scripts <- function(.) {
-    out <- String()
+  ## widget$scripts <- function(.) {
+  ##   out <- String()
 
-    ## These should be in a javascript directory on the web server,
-    ## but this is easier (slower too as it doesn't cache)
-    f <- system.file("javascript","ext.ux.spinner.js", package="gWidgetsWWW")
-    out <- out + "\n" + paste(readLines(f), collapse="\n")
+  ##   ## These should be in a javascript directory on the web server,
+  ##   ## but this is easier (slower too as it doesn't cache)
+  ##   f <- system.file("javascript","ext.ux.spinner.js", package="gWidgetsWWW")
+  ##   out <- out + "\n" + paste(readLines(f), collapse="\n")
     
-    f <- system.file("javascript","ext.ux.spinnerformfield.js", package="gWidgetsWWW")
-    out <- out + "\n" + paste(readLines(f), collapse="\n")
+  ##   f <- system.file("javascript","ext.ux.spinnerformfield.js", package="gWidgetsWWW")
+  ##   out <- out + "\n" + paste(readLines(f), collapse="\n")
     
-    return(out)
-  }
+  ##   return(out)
+  ## }
   
   ## methods
   widget$getValueJSMethod <- "getValue"

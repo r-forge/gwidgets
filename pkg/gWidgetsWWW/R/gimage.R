@@ -32,13 +32,13 @@ gimage <- function(filename = "", dirname = "",  size = "",
     filename <- String(dirname) + filename
   widget$setValue(value=filename)
 
-
-  widget$scripts <- function(.) {
-    f <- system.file("javascript","ext.ux.imageBox.js", package="gWidgetsWWW")
-    out <- paste(readLines(f, warn=FALSE), collapse="\n")
+  ## moved in js file
+  ## widget$scripts <- function(.) {
+  ##   f <- system.file("javascript","ext.ux.imageBox.js", package="gWidgetsWWW")
+  ##   out <- paste(readLines(f, warn=FALSE), collapse="\n")
     
-    return(out)
-  }
+  ##   return(out)
+  ## }
       
   widget$setValueJSMethod = "setValue"
   widget$getValueJSMethod = "setValue"
