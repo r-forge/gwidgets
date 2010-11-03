@@ -1,5 +1,6 @@
 TODO:
 ---------
+* gspinbox: like gslider, make spin over sortable vectors.
 * gtable: select rectangle
 * gtable: mess with _, , stuff and single column
 * gree: implement svalue( index=TRUE) (give index as "a:b:c") and

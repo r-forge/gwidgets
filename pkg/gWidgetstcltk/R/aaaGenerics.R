@@ -866,11 +866,9 @@ setMethod(".add",
                 argList$fill = "both"
             }
 
-            ## if anchor spcified, then set expand=TRUE
-            if(!is.null(theArgs$anchor)) {
-#              argList$expand <- TRUE
-              argList$anchor <- xyToAnchor(theArgs$anchor)
-            }
+            ## the default anchor. -1,1 or NW makes layouts nicer looking IMHO
+            defaultAnchor <- getWithDefault(getOption("gw:tcltkDefaultAnchor"), c(-1, 1))
+            argList$anchor <- xyToAnchor(getWithDefault(theArgs$anchor, defaultAnchor))
             
             if(obj@horizontal)
               argList$side = "left"
@@ -912,10 +910,12 @@ setMethod(".addSpring",
             tt <- getBlock(obj)
             blankLabel <- ttklabel(tt,text=" ")
 
-            if(obj@horizontal)
-              tkpack(blankLabel,expand=TRUE,fill="y",side="left")
-            else
-              tkpack(blankLabel,expand=TRUE,fill="x",side="top")
+            if(obj@horizontal) {
+              ## doesn't work!
+              tkpack(blankLabel, expand=TRUE, fill="x", side="left")
+            } else {
+              tkpack(blankLabel, expand=TRUE, fill="y", side="top")
+            }
             invisible()
           })
 

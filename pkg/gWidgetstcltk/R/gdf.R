@@ -321,7 +321,7 @@ setMethod(".dimnames",
             toVector <- function(i) sapply(i, function(j) paste(j, collapse=" "))
             
             d <- dim(x)
-            dimnames <- list(rownames=make.names(toVector(sapply(1:d[1], function(i) tktable.get(tktable, i, 0)))),
+            dimnames <- list(rownames=make.row.names(toVector(sapply(1:d[1], function(i) tktable.get(tktable, i, 0)))),
                              colnames=toVector(sapply(1:d[2], function(j) tktable.get(tktable, 0, j))))
             dimnames
           })
@@ -333,7 +333,7 @@ setReplaceMethod(".dimnames",
                    
                    if(!is.list(value))
                      stop("value is a list with first element the row names, and second the column names")
-                   rnames = make.names(value[[1]])
+                   rnames = make.row.names(value[[1]])
                    cnames = value[[2]]
                    d = dim(x)
                    if(is.null(rnames) || length(rnames) != d[1])
@@ -464,6 +464,7 @@ setReplaceMethod(".names",
     transformVariable(ind[2])
   })
   tkadd(menu,"separator")
+  ##
   tkadd(menu,"command",label=gettext("Insert Variable"), command = function() {
     ind <- getWhere()
     tcl(tktable,"insert", "cols", ind[2])
@@ -480,16 +481,41 @@ setReplaceMethod(".names",
       tcl(tktable,"delete","cols",ind[2])
     tag(obj, "classes") <- tag(obj, "classes")[-ind[2]]
   })
+
+  tkadd(menu,"command",label=gettext("Rename Variable"), command = function() {
+    ind <- getWhere()
+    j <- ind[2]
+    oldName <- names(obj)[j]
+    val <- ginput("New variable name:", oldName, icon="question", parent=obj)
+    if(!is.na(val))
+      names(obj)[j] <- val
+  })
+
+  
   tkadd(menu,"command",label=gettext("Insert Case"), command = function() {
     ind <- getWhere()
     tcl(tktable,"insert","rows",ind[1])
+
+    val <- ginput("New case name:", parent=obj)
+    if(is.na(val)) 
+      val <- "NA"                       # fill in
+    rownames(obj)[ind[1] + 1] <- val
+
   })
   tkadd(menu,"command",label=gettext("Delete Case"), command = function() {
     ind <- getWhere()
     if(rowEmpty(ind[1]) || confirmDelete())
       tcl(tktable,"delete","rows",ind[1])
   })
-  
+  tkadd(menu,"command",label=gettext("Rename case"), command = function() {
+    ind <- getWhere()
+    i <- ind[1] 
+    oldName <- rownames(obj)[i]
+    val <- ginput("New case name:", oldName, icon="question", parent=obj)
+    if(!is.na(val))
+      rownames(obj)[i] <- val
+  })
+
   tkadd(menu,"separator")
 
   setClass <- function(type) {
@@ -515,14 +541,17 @@ setReplaceMethod(".names",
   popupCommand <- function(x,y,X,Y) {
     ## before popping up we have some work to do
     x0 <<- x; y0 <<- y;
-    classMenuItems <- 7:12
+    classMenuItems <- 7:12 + 2
     ind <- getWhere() ## row, column
     ## fix menu basd on where
     tkentryconfigure(menu, 0, state=ifelse(ind[2]==0,"disabled","normal"))
     tkentryconfigure(menu, 2, state=ifelse(ind[2]==0,"disabled","normal"))
     tkentryconfigure(menu, 3, state=ifelse(ind[2]==0,"disabled","normal"))
-    tkentryconfigure(menu, 4, state=ifelse(ind[1]==0,"disabled","normal"))
+    tkentryconfigure(menu, 4, state=ifelse(ind[2]==0,"disabled","normal"))
     tkentryconfigure(menu, 5, state=ifelse(ind[1]==0,"disabled","normal"))
+    tkentryconfigure(menu, 6, state=ifelse(ind[1]==0,"disabled","normal"))
+    tkentryconfigure(menu, 7, state=ifelse(ind[1]==0,"disabled","normal"))
+
     for(i in classMenuItems)
       tkentryconfigure(menu, i, state=ifelse(ind[2]==0,"disabled","normal"))
 
@@ -624,7 +653,7 @@ tclArrayToDataFrame <- function(ta, tktable, classes) {
       tclvalue(val)
   }
   colnames(df) <- sapply(1:d[2], function(j) getTclValueWithDefault(ta[[0,j]], sprintf("X%s",j)))
-  rownames(df) <- sapply(1:d[1], function(i) getTclValueWithDefault(ta[[i,0]], as.character(i)))
+  rownames(df) <- make.row.names(sapply(1:d[1], function(i) getTclValueWithDefault(ta[[i,0]], as.character(i))))
   return(df)
 }
 
@@ -638,6 +667,6 @@ tclArrayToDataFrame <- function(ta, tktable, classes) {
 make.row.names <- function(x) {
   dups = duplicated(x)
   if(any(dups))
-    x[dups] <- make.names(x,unique=TRUE)[dups]
+    x[dups] <- make.unique(x)[dups]
   return(unlist(x))
 }

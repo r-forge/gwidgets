@@ -1,8 +1,8 @@
 ## expander group, like a group, only expands, contracts if requested
 ## inherits from ggroup, see ggroup's arguments: horizontal, spacing, container
 setClass("gExpandgrouptcltk",
-         contains="gContainertcltk",
-         prototype=prototype(new("gContainertcltk"))
+         contains="gGrouptcltk",
+         prototype=prototype(new("gGrouptcltk"))
          )
 
 
@@ -59,7 +59,7 @@ setMethod(".gexpandgroup",
 
 #            obj = new("gExpandgrouptcltk",block = eg1, widget = eg,
 
-            obj = new("gExpandgrouptcltk",block = cg, widget = eg,
+            obj = new("gExpandgrouptcltk",block = cg, widget = eg, horizontal=horizontal,
               toolkit = toolkit, ID = getNewID(), e = new.env())
 
 
