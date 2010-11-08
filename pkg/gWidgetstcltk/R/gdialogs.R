@@ -114,6 +114,7 @@ tcltkDialog = function(
   }
   
   gp <- ttkframe(f)
+
   OK.but     <-ttkbutton(gp,text="   OK   ",command=onOK, state="active")
   Cancel.but <-ttkbutton(gp,text=" Cancel ",command=onCancel)
 
@@ -162,6 +163,14 @@ setMethod(".gmessage",
               l$parent <- getWidget(parent)
 
             out <- do.call("tkmessageBox",l)
+
+            
+            if(is.logical(out) && out  && !is.null(handler)) {
+              h = list()
+              h$obj=NULL; h$action=action
+              handler(h)
+            }
+            
             return(out)
             
             ## ## old
@@ -216,6 +225,13 @@ setMethod(".gconfirm",
                           "yes"=TRUE,
                           "no" = FALSE,
                           FALSE)
+
+            if(val && !is.null(handler)) {
+              h = list()
+              h$obj=NULL; h$action=action
+              handler(h)
+            }
+            
             return(val)
 
             ## return(tcltkDialog(

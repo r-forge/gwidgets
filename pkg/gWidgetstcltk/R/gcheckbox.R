@@ -34,9 +34,9 @@ setMethod(".gcheckbox",
             ## widget use toolbutton or not?
             ## http://wiki.tcl.tk/17899
             if(use.togglebutton) {
-              check <- ttkcheckbutton(tt, text=text, style="Toolbutton")
+              check <- ttkcheckbutton(tt, text=as.character(text), style="Toolbutton")
             } else {
-              check <- ttkcheckbutton(tt, text=text)
+              check <- ttkcheckbutton(tt, text=as.character(text))
             }
 #            theLabel = ttklabel(gp, text=text)
             ## configure

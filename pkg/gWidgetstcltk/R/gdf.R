@@ -526,6 +526,7 @@ setReplaceMethod(".names",
     tag(obj,"classes") <- classes
     formatColumn(col=ind[2], type=type)
   }
+  
   typeVar <- tclVar("numeric")          # for selecting type via radiobutton
   tkadd(menu, "radiobutton", label="numeric", variable=typeVar, command=function() setClass("numeric"))
   tkadd(menu, "radiobutton", label="integer", variable=typeVar, command=function() setClass("integer"))

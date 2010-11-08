@@ -448,6 +448,7 @@ assignInNamespace("tcltkStockIcons", list(), ns="gWidgetstcltk")
 ## return string for tk functions based on stock icon nmae
 ## eg: findIcon("quit") -> "::stockicon::quit.gif" else ""
 findIcon <- function(stockname) {
+  stockname <- as.character(stockname)
   tcltkStockIcons <- getStockIcons()
   if(!is.null(tcltkStockIcons[[stockname, exact=TRUE]])) {
     iconName <- paste("::stockicon::", stockname, sep="")

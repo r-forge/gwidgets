@@ -47,19 +47,19 @@ setMethod(".gseparator",
               orient <- "horizontal"
             else
               orient <- "vertical"
-            sep <- ttkseparator(gp, orient=orient)
+            sep <- ttkseparator(tt, orient=orient)
 
             if(horizontal)
-              tkpack(sep, expand=TRUE, fill="x")
+              tkpack(sep)#, expand=TRUE, fill="x")
             else
-              tkpack(sep, expand=TRUE, fill="y")
+              tkpack(sep)#, expand=TRUE, fill="y")
             
-            obj = new("gSeparatortcltk", block=gp, widget=sep,
+            obj = new("gSeparatortcltk", block=sep, widget=sep,
               toolkit=toolkit, ID=getNewID(), e = new.env())
 
 
             ## add gp to container. Fixe expand argument to be TRUE
-            theArgs$expand = TRUE
+#            theArgs$expand = TRUE
             theArgs$obj <- container
             theArgs$value <- obj
             do.call("add", theArgs)

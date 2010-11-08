@@ -1,3 +1,8 @@
+2010-11-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: call as.character on text before display -- fix
+	bug when logical
+
 2010-11-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R: fixed bug in addSpring. Still doesn't work horizontally

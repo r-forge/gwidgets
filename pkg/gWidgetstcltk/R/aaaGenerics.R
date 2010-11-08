@@ -859,6 +859,7 @@ setMethod(".add",
             
             argList = list(getBlock(value))
             argList$fill <- theArgs$fill
+            argList$expand <- theArgs$expand
             
             ## expand. use fill, expand didn't
             if(!is.null(theArgs$expand) && theArgs$expand) {
