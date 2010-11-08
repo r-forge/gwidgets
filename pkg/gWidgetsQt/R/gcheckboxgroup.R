@@ -323,7 +323,7 @@ setMethod(".svalue",
             if(index) {
               return(which(vals))       # return indices
             } else {
-              vals
+              obj[vals]                 # values from labels, not T,F
             }
           })
 

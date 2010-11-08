@@ -39,6 +39,8 @@ setMethod(".ggroup",
             else
               gp <- Qt$QVBoxLayout()
 
+            gp$setMargin(0L)
+            
             ## put layout into a wudget
             gw <- Qt$QWidget()
             gw$setLayout(gp)

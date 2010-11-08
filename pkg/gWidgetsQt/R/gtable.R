@@ -78,7 +78,9 @@ setMethod(".gtable",
             ## if filtering we call a different constructor
             ## we are filtering if filter.FUN or filter.column is
             ## not null *UNLESS* filter.FUN = "manual"
-            if(!is.null(filter.column) || !is.null(filter.labels) || !is.null(filter.FUN)) {
+            if(!is.null(filter.column) || !is.null(filter.labels) ||
+               (!is.null(filter.FUN) && !is.character(filter.FUN))
+                ) {
               obj <- .gtableWithFilter(toolkit,
                                        items=items,
                                        multiple = multiple,

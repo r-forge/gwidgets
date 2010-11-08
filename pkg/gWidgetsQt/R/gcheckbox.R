@@ -101,7 +101,7 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitQt",x="gCheckboxQt"),
           function(x, toolkit, i, j, ..., value) {
             w <- getWidget(x)
-            w$setText(value[1])
+            w$setText(format(value[1]))
 
             return(x)
           })
@@ -161,7 +161,7 @@ gtogglebutton <- function(toolkit,
   add(container, obj, ...)
 
   if(!is.null(handler)) {
-    id <- addHandlerChanged(obj, handler=handler, action=action)
+    id <- addhandlerchanged(obj, handler=handler, action=action)
     tag(obj, "handler.id") <- id
   }
 
