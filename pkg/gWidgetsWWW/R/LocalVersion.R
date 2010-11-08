@@ -122,10 +122,18 @@ processBasehtmlFile <- function(path, query, ...) {
 
   if(!file.exists(f))
     return(makeErrorPage(sprintf("Can't find %s", f)))
-  
+
+  ## see https://code.google.com/speed/page-speed/docs/caching.html
+  ## doesn't seem to work with firefox
+  temp <- "%a %b %e %Y %H:%M:%S GMT%z (%Z)"
+
+  cacheControl <- "Cache-Control: max-age=31536000"
+  expires <- sprintf("Expires: %s", format(Sys.time() + 60*60*24, temp))
+  lastModified <- sprintf("Last-Modified: %s", format(file.info(f)$mtime, temp))
+
   list(file=f, 
        "content-type" = mime_type(f),
-       "headers" = NULL,
+       "headers" = c(cacheControl, expires, lastModified),
        "status code"=200L
        )
 

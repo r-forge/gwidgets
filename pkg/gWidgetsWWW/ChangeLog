@@ -1,3 +1,8 @@
+2010-11-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (processBasehtmlFile): added headers to cache
+	basehtml file
+
 2010-10-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaa.R (EXTContainer$addJS): put in code to queue up JS code

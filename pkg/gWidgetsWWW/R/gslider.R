@@ -16,6 +16,8 @@
 
 ## others
 ## propert ..length is added
+
+## TODO: from being a vecto argument and using indices for slider...
 gslider <- function(from = 0, to = 100, by = 1, value = from,
                     horizontal = TRUE,
                     handler = NULL, action = NULL, container = NULL, ...) {
