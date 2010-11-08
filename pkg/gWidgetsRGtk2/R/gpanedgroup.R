@@ -47,9 +47,9 @@ as.gWidgetsRGtk2.GtkHPaned <- as.gWidgetsRGtk2.GtkVPaned <-
 
     ## already a child?
     if(!is.null(child <- widget$GetChild1()))
-      add(leftgroup,child,expand=TRUE)
+      add(leftgroup,child,expand=TRUE, fill="both")
     if(!is.null(child <- widget$GetChild2()))
-      add(rightgroup,child,expand=TRUE)
+      add(rightgroup,child,expand=TRUE, fill="both")
     
     widget$Pack1(leftgroup@widget@block)#, resize=FALSE, shrink=FALSE)
     widget$Pack2(rightgroup@widget@block)#, resize=FALSE, shrink=FALSE)
@@ -72,10 +72,10 @@ setMethod(".add",
               ctr = 0
 
             if(ctr == 0) {
-              add(tag(obj,"leftgroup"), value, expand=TRUE)
+              add(tag(obj,"leftgroup"), value, expand=TRUE, fill="both")
               ctr = 1
             } else if(ctr ==1) {
-              add(tag(obj,"rightgroup"), value, expand=TRUE)
+              add(tag(obj,"rightgroup"), value, expand=TRUE, fill="both")
               ctr = 2
             } else {
               gwCat(gettext("Can only add two widgets to a gpanedgroup\n"))

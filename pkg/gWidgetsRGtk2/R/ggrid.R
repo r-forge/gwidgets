@@ -403,7 +403,7 @@ setMethod(".ggrid",
             sw <- gtkScrolledWindowNew()
             sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
             sw$Add(view)
-            add(group,sw, expand=TRUE)
+            add(group,sw, expand=TRUE, fill="both")
 
             ## properties
             if(multiple) {

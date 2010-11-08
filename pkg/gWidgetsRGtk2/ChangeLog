@@ -1,3 +1,10 @@
+2010-11-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R: packed in alignment widget
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): fixes to ".add" method and fill argument
+
 2010-11-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gslider.R (gsliderindex): changed so that can use vector of

@@ -168,7 +168,7 @@ setMethod(".add",
           function(obj, toolkit, value, ...) {
             ## should fix expand=TRUE here
 #            .add(obj, toolkit, getBlock(value),...)
-            add(tag(obj,"contentPane"), value, expand=TRUE) # no ...
+            add(tag(obj,"contentPane"), value, expand=TRUE, fill="both") # no ...
           })
 
 setMethod(".add",

@@ -28,11 +28,13 @@ setMethod(".gslider",
               widget <- gtkHScaleNewWithRange(1L, length(x), 1L)
             else
               widget <- gtkVScaleNewWithRange(1L, length(x), 1L)
+
+
             
-  
-  
-            obj <- new("gSliderRGtk",block=widget, widget=widget,
-                       toolkit=guiToolkit("RGtk2"))
+            obj <- as.gWidgetsRGtk2(widget)
+            
+            ## obj <- new("gSliderRGtk",block=align, widget=widget,
+            ##            toolkit=guiToolkit("RGtk2"))
             
             tag(obj, "..byIndexValues") <- x
             svalue(obj) <- value[1]
@@ -40,8 +42,6 @@ setMethod(".gslider",
             gSignalConnect(widget, "format-value", function(widget, value, ...) {
               format(tag(obj, "..byIndexValues")[as.integer(value)], digits=3)
             })
-            
-            obj <- as.gWidgetsRGtk2(widget)
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -59,8 +59,16 @@ setMethod(".gslider",
 ##' coercoe gtkwidget into scale widget so that methods can work
 as.gWidgetsRGtk2.GtkHScale <- as.gWidgetsRGtk2.GtkVScale <-
   function(widget,...) {
-    obj <- new("gSliderRGtk",block=widget, widget=widget,
-               toolkit=guiToolkit("RGtk2"))
+    ## not sure why, but alignment isn't right for me.
+    if(0 && is.null(widget$parent)) {
+      align <- gtkAlignmentNew(.5, .5, 0, 0)
+      align$add(widget)
+      obj <- new("gSliderRGtk",block=align, widget=widget,
+                 toolkit=guiToolkit("RGtk2"))
+    } else {
+      obj <- new("gSliderRGtk",block=widget, widget=widget,
+                 toolkit=guiToolkit("RGtk2"))
+    }
     return(obj)
   }
 

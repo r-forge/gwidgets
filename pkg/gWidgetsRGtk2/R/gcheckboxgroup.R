@@ -272,6 +272,8 @@ setMethod(".gcheckboxgrouptable",
 
             
             tbl <- gtkTreeViewNew(TRUE)
+            tbl$SetRulesHint(TRUE)      # shade
+            
             store <- rGtkDataFrame(.makeItems())
             tbl$setModel(store)
             tbl$setHeadersVisible(FALSE)

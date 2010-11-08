@@ -20,8 +20,9 @@ setMethod(".ggroup",
               group <- gtkVBoxNew(homogeneous=FALSE, spacing=spacing)
             
             ## let breath a little
-            group$SetBorderWidth(2)
+            group$SetBorderWidth(0L)
 
+            
             ## do we pack into a scroll window?
             theArgs = list(...)
             if(use.scrollwindow == TRUE) {
@@ -29,7 +30,6 @@ setMethod(".ggroup",
               sw = gtkScrolledWindowNew()
               sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
               sw$AddWithViewport(group)
-              
               obj = new("gGroupRGtk", block=sw, widget=group, toolkit=toolkit)
             } else {
               obj = new("gGroupRGtk", block=group, widget=group, toolkit=toolkit)
@@ -75,14 +75,15 @@ as.gWidgetsRGtk2.GtkVBox <- as.gWidgetsRGtk2.GtkHBox <-
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
-
             parent <- getWidget(obj)
             child <- getBlock(value)
             childWidget <- getWidget(value)
-
+            
             theArgs <- list(...)
             
             ## anchor argument
+            if(!is.null(theArgs$align))
+              theArgs$anchor <- theArgs$align
             if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
               anchor <- theArgs$anchor ## anchor is in [-1,1]^2
               anchor <- (anchor+1)/2      # [0,1]
@@ -98,12 +99,17 @@ setMethod(".add",
             ## expand
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
 
-            ## fill argument, only valid whn expand=TRUE
-            fill <- TRUE
-            if(expand) {
-              if(!is.null(theArgs$fill) &&
-                 (theArgs$fill == "x" || theArgs$fill == "y"))
-                fill <- FALSE
+            fill <- expand
+            if(!is.null(theArgs$fill)) {
+              if(theArgs$fill == "both") {
+                fill <- TRUE
+              } else {
+                horizontal <- is(obj@widget, "GtkHBox")
+                if(theArgs$fill == "x" && horizontal)
+                  fill <- TRUE
+                else if(theArgs$fill == "y" && !horizontal)
+                  fill <- TRUE
+              }
             }
             
             parent$packStart(child, expand, fill, theArgs$padding) 
@@ -133,6 +139,9 @@ setMethod(".add",
             childWidget <- getWidget(value)
             theArgs <- list(...)
 
+            ## anchor argument
+            if(!is.null(theArgs$align))
+              theArgs$anchor <- theArgs$align
             if(!is.null(theArgs$anchor)) {
               anchor <- theArgs$anchor ## anchor is in [-1,1]^2
               anchor <- (anchor+1)/2      # [0,1]
@@ -147,11 +156,22 @@ setMethod(".add",
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
 
             ## fill argument, only valid whn expand=TRUE
-            fill <- TRUE
-            if(expand) {
-              if(!is.null(theArgs$fill) &&
-                 (theArgs$fill == "x" || theArgs$fill == "y"))
-                fill <- FALSE
+
+            ## fill only valid when expand is TRUE.
+            ## when horizontal=TRUE (left to right, we always fill top top bottom ("y") so only x counts
+            ## if horizontal=FALSE, only "y" counts
+
+            fill <- expand
+            if(!is.null(theArgs$fill)) {
+              if(theArgs$fill == "both") {
+                fill <- TRUE
+              } else {
+                horizontal <- is(obj@widget, "GtkHBox")
+                if(theArgs$fill == "x" && horizontal)
+                  fill <- TRUE
+                else if(theArgs$fill == "y" && !horizontal)
+                  fill <- TRUE
+              }
             }
 
             ## pack it in
