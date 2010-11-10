@@ -80,52 +80,71 @@ setMethod(".add",
             childWidget <- getWidget(value)
             
             theArgs <- list(...)
-            
-            ## anchor argument
+
+
+            ## get expand, anchor, fill
+            expand <- getWithDefault(theArgs$expand, FALSE)
             if(!is.null(theArgs$align))
               theArgs$anchor <- theArgs$align
-            if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
-              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+            anchor <- getWithDefault(theArgs$anchor, NULL)
+            if(!is.null(anchor)) {       # put in [0,1]^2
               anchor <- (anchor+1)/2      # [0,1]
               anchor[2] <- 1 - anchor[2]     # flip yalign
-              ## in gtkstuff
-              setXYalign(child, childWidget, anchor)
             }
+            fill <- getWithDefault(theArgs$fill, "both") # x, y or both
 
-            ## padding
-            if(is.null(theArgs$padding))
-              theArgs$padding=0
-
-            ## expand
-            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-
-            fill <- expand
-            if(!is.null(theArgs$fill)) {
-              if(theArgs$fill == "both") {
-                fill <- TRUE
-              } else {
-                horizontal <- is(obj@widget, "GtkHBox")
-                if(theArgs$fill == "x" && horizontal)
-                  fill <- TRUE
-                else if(theArgs$fill == "y" && !horizontal)
-                  fill <- TRUE
+            ## we do things differently if there is a gtkAlignment for a block
+            if(is(child, "GtkAlignment")) {
+              if(expand && (fill =="both" || fill == "x")) {
+                child['xscale'] <- 1
               }
+
+              if(expand && (fill == "both" || fill == "y")) {
+                child['yscale'] <- 1
+              }
+
+              if(!is.null(anchor)) {
+                child['xalign'] <- anchor[1]
+                child['yalign'] <- anchor[2]
+              }
+              parent$packStart(child, expand=expand, fill=TRUE, padding=0)
+            } else {
+              ## anchor argument
+              if(!is.null(anchor))
+                setXYalign(child, childWidget, anchor)
+
+
+              ## padding
+              if(is.null(theArgs$padding))
+                theArgs$padding=0
+              
+              fill <- expand
+              if(!is.null(theArgs$fill)) {
+                if(theArgs$fill == "both") {
+                  fill <- TRUE
+                } else {
+                  horizontal <- is(obj@widget, "GtkHBox")
+                  if(theArgs$fill == "x" && horizontal)
+                    fill <- TRUE
+                  else if(theArgs$fill == "y" && !horizontal)
+                    fill <- TRUE
+                }
+              }
+              
+              parent$packStart(child, expand, fill, theArgs$padding) 
             }
+              
+              
+            ## This is an example of the pack_start() method.
             
-            parent$packStart(child, expand, fill, theArgs$padding) 
+            ##   box.pack_start(child, expand, fill, padding)
             
-
+            ## box is the box you are packing the object into; the first argument is the child object to be packed. The objects will all be buttons for now, so we'll be packing buttons into boxes.
             
-## This is an example of the pack_start() method.
-
-##   box.pack_start(child, expand, fill, padding)
-
-## box is the box you are packing the object into; the first argument is the child object to be packed. The objects will all be buttons for now, so we'll be packing buttons into boxes.
-
-## The expand argument to pack_start() and pack_end() controls whether the widgets are laid out in the box to fill in all the extra space in the box so the box is expanded to fill the area allotted to it (True); or the box is shrunk to just fit the widgets (False). Setting expand to False will allow you to do right and left justification of your widgets. Otherwise, they will all expand to fit into the box, and the same effect could be achieved by using only one of pack_start() or pack_end().
-
-## The fill argument to the pack methods control whether the extra space is allocated to the objects themselves (True), or as extra padding in the box around these objects (False). It only has an effect if the expand argument is also True.
-
+            ## The expand argument to pack_start() and pack_end() controls whether the widgets are laid out in the box to fill in all the extra space in the box so the box is expanded to fill the area allotted to it (True); or the box is shrunk to just fit the widgets (False). Setting expand to False will allow you to do right and left justification of your widgets. Otherwise, they will all expand to fit into the box, and the same effect could be achieved by using only one of pack_start() or pack_end().
+            
+            ## The fill argument to the pack methods control whether the extra space is allocated to the objects themselves (True), or as extra padding in the box around these objects (False). It only has an effect if the expand argument is also True.
+            
             
           })
 
@@ -139,45 +158,58 @@ setMethod(".add",
             childWidget <- getWidget(value)
             theArgs <- list(...)
 
-            ## anchor argument
+            ## get expand, anchor, fill
+            expand <- getWithDefault(theArgs$expand, FALSE)
             if(!is.null(theArgs$align))
               theArgs$anchor <- theArgs$align
-            if(!is.null(theArgs$anchor)) {
-              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+            anchor <- getWithDefault(theArgs$anchor, NULL)
+            if(!is.null(anchor)) {       # put in [0,1]^2
               anchor <- (anchor+1)/2      # [0,1]
               anchor[2] <- 1 - anchor[2]     # flip yalign
-              ## property
-              
-              ## in gtkstuff
-              setXYalign(child, childWidget, anchor)
             }
+            fill <- getWithDefault(theArgs$fill, "") # "", x, y or both
 
-            ## expand?
-            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-
-            ## fill argument, only valid whn expand=TRUE
-
-            ## fill only valid when expand is TRUE.
-            ## when horizontal=TRUE (left to right, we always fill top top bottom ("y") so only x counts
-            ## if horizontal=FALSE, only "y" counts
-
-            fill <- expand
-            if(!is.null(theArgs$fill)) {
-              if(theArgs$fill == "both") {
-                fill <- TRUE
-              } else {
-                horizontal <- is(obj@widget, "GtkHBox")
-                if(theArgs$fill == "x" && horizontal)
-                  fill <- TRUE
-                else if(theArgs$fill == "y" && !horizontal)
-                  fill <- TRUE
+            ## we do things differently if there is a gtkAlignment for a block
+            childBlock <- getBlock(value)
+            if(is(childBlock, "GtkAlignment")) {
+              if(expand && (fill =="both" || fill == "x")) {
+                childBlock['xscale'] <- 1
               }
-            }
+              if(expand && (fill == "both" || fill == "y")) {
+                childBlock['yscale'] <- 1
+              }
 
-            ## pack it in
-            parent$packStart(child, expand=expand, fill=fill, padding=0) # expand to fill if TRUE
+              if(!is.null(anchor)) {
+                childBlock['xalign'] <- anchor[1]
+                childBlock['yalign'] <- anchor[2]
+              }
+              parent$packStart(child, expand=expand, fill=TRUE, padding=0)
+            } else {
             
-            
+              if(!is.null(anchor))
+                setXYalign(child, childWidget, anchor)
+              
+              ## fill only valid when expand is TRUE.
+              ## when horizontal=TRUE (left to right, we always fill top top bottom ("y") so only x counts
+              ## if horizontal=FALSE, only "y" counts
+              
+              fill <- expand
+              if(!is.null(theArgs$fill)) {
+                if(theArgs$fill == "both") {
+                  fill <- TRUE
+                } else {
+                  horizontal <- is(obj@widget, "GtkHBox")
+                  if(theArgs$fill == "x" && horizontal)
+                    fill <- TRUE
+                  else if(theArgs$fill == "y" && !horizontal)
+                    fill <- TRUE
+                }
+              }
+              
+              ## pack it in
+              parent$packStart(child, expand=expand, fill=fill, padding=0) # expand to fill if TRUE
+              
+            }
           })
 
 

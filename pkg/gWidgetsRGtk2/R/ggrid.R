@@ -631,12 +631,12 @@ setMethod(".leftBracket",
             
             ## handle missing values
             if(missing(i) && missing(j)) {
-              i = if(showVisible) which(visible(x)) else 1:nrow(x)
-              j = 1:n
+              i = if(showVisible) which(visible(x)) else seq_len(nrow(x))
+              j = seq_len(n)
             } else if (missing(i)) {
-              i = if(showVisible) which(visible(x)) else 1:nrow(x)
+              i = if(showVisible) which(visible(x)) else seq_len(nrow(x))
             } else if (missing(j)) {
-              j = 1:n
+              j = seq_len(n)
             }
             if(showVisible) 
               i = intersect(i,which(visible(x)))

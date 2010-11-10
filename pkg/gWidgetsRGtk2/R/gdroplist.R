@@ -180,7 +180,13 @@ as.gWidgetsRGtk2.GtkComboBox <- function(widget,...) {
 }
 
 .as.gWidgetsRGtk2.gdroplist <- function(widget) {
-  obj = new("gDroplistRGtk",block=widget,widget=widget,
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(.5, .5, 0, 0)
+    parent$add(widget)
+  }
+  
+  obj <- new("gDroplistRGtk",block=parent,widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
   store <- widget$GetModel()

@@ -47,9 +47,13 @@ setMethod(".gbutton",
 
 ## coerce gtk object
 as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
-  button <- widget
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(.5, .5, 0, 0)
+    parent$add(widget)
+  }
   obj <- new("gButtonRGtk",
-    block=button, widget=button, toolkit=guiToolkit("RGtk2"))
+    block=parent, widget=widget, toolkit=guiToolkit("RGtk2"))
   return(obj)
 }
 
