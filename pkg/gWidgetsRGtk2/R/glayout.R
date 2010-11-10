@@ -84,55 +84,63 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
           function(x, toolkit, i, j, ..., value) {
 
-            obj <- x
-            tbl <- getWidget(obj)
-            
             if(missing(i) || missing(j)) {
               cat(gettext("glayout: [ needs to have both i and j specified."))
               return(x)
             }
 
-            
             ## check that all is good
             if(is.character(value)) {
               ## wrap characters into labels
               value <- glabel(value,...)
             }
-            args <- list(...)
-            expand <- args$expand; if(is.null(expand)) expand <- FALSE
+
+            ## widgets
+            tbl <- getWidget(x)
+            child <- getBlock(value)
             
-            ## fix up widget alignment if asked via anchor
-            if(!is.null(args$anchor)) {
-              anchor <- args$anchor
-              anchor <- (anchor + 1)/2; anchor[2] <- 1 - anchor[2]
+            theArgs <- list(...)
 
-              child <- getBlock(value)
-              childWidget <- getWidget(value)
-              ## but not so fast, not all components have xalign, yalign
-              ## property
+            ## get expand, anchor, fill
+            expand <- getWithDefault(theArgs$expand, FALSE)
+            if(!is.null(theArgs$align))
+              theArgs$anchor <- theArgs$align
+            anchor <- getWithDefault(theArgs$anchor, NULL)
+            if(!is.null(anchor)) {       # put in [0,1]^2
+              anchor <- (anchor+1)/2      # [0,1]
+              anchor[2] <- 1 - anchor[2]     # flip yalign
+            }
+            fill <- getWithDefault(theArgs$fill, "both") # "", x, y or both
 
-              ## in gtkstuff 
-              setXYalign(child, childWidget, anchor)
+              ## we do things differently if there is a gtkAlignment for a block
+            if(is(child, "GtkAlignment")) {
+              if(expand && (fill =="both" || fill == "x")) {
+                child['xscale'] <- 1
+              }
+
+              if(expand && (fill == "both" || fill == "y")) {
+                child['yscale'] <- 1
+              }
+
+              if(expand && fill == "") {
+                child['xscale'] <- child['yscale'] <- 1
+              }
               
-              ## XXX this is slower
-##               if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
-##                 child['xalign'] <- anchor[1]
-##               else if('xalign' %in% names(childWidget)
-##                       && class(childWidget) != "GtkEntry") 
-##                 childWidget['xalign'] <- anchor[1]
-
-##               if('yalign' %in% names(child)) 
-##                 child['yalign'] <- anchor[2]
-##               else if('yalign' %in% names(childWidget)) 
-##                 childWidget['yalign'] <- anchor[2]
+              if(!is.null(anchor)) {
+                child['xalign'] <- anchor[1]
+                child['yalign'] <- anchor[2]
+              }
+            } else {
+              ## in gtkstuff 
+              setXYalign(child, getWidget(value), anchor)
             }
 
             ## fix up number of columns
-            d <- dim(obj)
+            d <- dim(x)
             nr <- max(j); nc <- max(i)
             if( nr > d[1] || nc > d[2])
               tbl$Resize(max(max(j), nr), max(max(i), nc))
-              
+            
             if(expand)
               opts <- c("fill","expand","shrink")
             else

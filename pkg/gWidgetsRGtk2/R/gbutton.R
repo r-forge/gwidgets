@@ -49,7 +49,7 @@ setMethod(".gbutton",
 as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
   parent <- widget$parent
   if(is.null(parent)) {
-    parent <- gtkAlignmentNew(.5, .5, 0, 0)
+    parent <- gtkAlignmentNew(xscale=1, yscale=0)
     parent$add(widget)
   }
   obj <- new("gButtonRGtk",

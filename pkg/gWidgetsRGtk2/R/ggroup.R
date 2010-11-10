@@ -103,6 +103,12 @@ setMethod(".add",
                 child['yscale'] <- 1
               }
 
+              
+              if(expand && fill == "") {
+                child['xscale'] <- child['yscale'] <- 1
+              }
+              
+
               if(!is.null(anchor)) {
                 child['xalign'] <- anchor[1]
                 child['yalign'] <- anchor[2]
@@ -178,6 +184,11 @@ setMethod(".add",
               if(expand && (fill == "both" || fill == "y")) {
                 childBlock['yscale'] <- 1
               }
+
+              if(expand && fill == "") {
+                child['xscale'] <- child['yscale'] <- 1
+              }
+              
 
               if(!is.null(anchor)) {
                 childBlock['xalign'] <- anchor[1]

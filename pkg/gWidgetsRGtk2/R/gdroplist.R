@@ -182,7 +182,7 @@ as.gWidgetsRGtk2.GtkComboBox <- function(widget,...) {
 .as.gWidgetsRGtk2.gdroplist <- function(widget) {
   parent <- widget$parent
   if(is.null(parent)) {
-    parent <- gtkAlignmentNew(.5, .5, 0, 0)
+    parent <- gtkAlignmentNew(xscale=1, yscale=0)
     parent$add(widget)
   }
   

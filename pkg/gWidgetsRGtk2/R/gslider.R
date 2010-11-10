@@ -57,10 +57,16 @@ setMethod(".gslider",
           })
 
 ##' coercoe gtkwidget into scale widget so that methods can work
-as.gWidgetsRGtk2.GtkHScale <- as.gWidgetsRGtk2.GtkVScale <-
-  function(widget,...) {
+as.gWidgetsRGtk2.GtkHScale <-  function(widget, ...) {
+  asgWidgetsRGtk2.SCALE(widget, yscale=0, ...)
+}
+as.gWidgetsRGtk2.GtkVScale <- function(widget, ...) {
+  asgWidgetsRGtk2.SCALE(widget, xscale=0, ...)
+}
+
+asgWidgetsRGtk2.SCALE <- function(widget,xscale=1, yscale=1, ...) {
     if(is.null(widget$parent)) {
-      align <- gtkAlignmentNew(.5, .5, 1, 1)
+      align <- gtkAlignmentNew(xscale=xscale, yscale=yscale)
       align$add(widget)
       obj <- new("gSliderRGtk",block=align, widget=widget,
                  toolkit=guiToolkit("RGtk2"))
