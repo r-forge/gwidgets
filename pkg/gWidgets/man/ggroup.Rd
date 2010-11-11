@@ -2,7 +2,7 @@
 \alias{ggroup}
 \alias{gframe}
 \alias{gexpandgroup}
-\title{Containers for packing in subsequent widgets}
+\title{Box containers for packing in subsequent widgets}
 \description{
 
 	Various box containers useful for laying out GUI controls. These
@@ -55,40 +55,57 @@ gexpandgroup(text = "", markup = FALSE, horizontal=TRUE, handler = NULL, action 
 	(when \code{horizontal=TRUE}) or from top to bottom (when
 	\code{horizontal=FALSE}).
 	
-	Child widgets are added to box containers through their \code{add}
-	method or through the containers use as the parent container
-	when a widget is constructed. This is done by using the
-	\code{container} argument of the widget.	
-	The \code{container} argument is optional for
-	\code{gWidgetsRGtk2} and \code{gWidgetsrJava}, but not the other
-	toolkits. It is suggested that it always be included for
-	portability. When it is not included, widgets are added to the
-	new group object through its add method. Otherwise, when a
+	Child widgets are added to box containers through their
+	\code{add} method or through the containers use as the parent
+	container when a widget is constructed. This is done by using
+	the \code{container} argument of the widget.  The
+	\code{container} argument is not optional for
+	\pkg{gWidgetstcltk}.  It is suggested that it always be included
+	for portability. When it is not included, widgets are added to
+	the new group object through its \code{add} method. Otherwise, when a
 	widget is created, the group is specified as the container and
-	the add method is then called.
+	the add method is then called implicitly, with the constructor's
+	\code{...} argument used to pass arguments to \code{add}.
 	
-	When the parent allocates space to a child widget is may be more
-	than the space needed by the child widget. Different types of
-	behavior are desirable for drawing the child. To have the widget
-	grow to fill the space, use the argument
-	\code{expand=TRUE}. (Growing is done in both x and y
-	directions. To anchor the widget into a portion of the space
-	provided, use the argument \code{anchor=c(a,b)} where \code{a}
+	When the parent allocates space to a child widget it
+	be possible to allocate more space than is requested by the
+	child widget. The child may then be
+	positioned in the available space by specifying the
+	\code{anchor=c(a,b)} argument to \code{add} where \code{a}
 	and \code{b} are values in -1,0,1 and specify the position using
 	Cartesian coordinates.
 
-	The \code{svalue<-} method can be used to adjust the border
-	width. By default it is 2 pixels.
+	If the argument \code{expand=TRUE} to \code{add} is given, then the space
+	available to the child expands.  The child widget can be
+	instructed to grow to fill the space. The \code{add} method's argument \code{fill},
+	with values \code{"both"}, \code{"x"}, \code{"y"} or \code{""},
+	instructs the child as to which direction to grow in. (The
+	\code{""} value says none.)
+
+	The implementation of \code{expand}, \code{anchor}, \code{fill}
+	varies with the underlying toolkit. The basic language comes
+	from \pkg{tcltk} and an attempt -- not entirely successful -- is
+	made to implement it in the \pkg{gWidgetsRGtk2} and
+	\pkg{gWidgetsQt} packages.
+
+	A child component may be deleted using \code{delete(parent,
+	child)}. TYpically the child may be replaced in the GUI, using \code{add}.
 	
-	The \code{spacing} value determines the number of pixels of
+	The \code{spacing} argument determines the number of pixels of
 	padding between each widget when packed in. This can be set when
 	the group is constructed, or later using \code{svalue<-}.
 
-	To put  space between just two widgets, the
-	\code{addSpace(obj, value, ...)}
-	method may be used where \code{value} is the number of pixels
-	of padding between the just packed widget, and the next one to
-	be packed.
+	The argument \code{use.scrollwindow = TRUE}
+	will add scrollbars around the box container. When the child
+	components require more size than is given to the container, the
+	scroll bars allow one to position the viewable area over the
+	child of interest. Again, not all toolkits do this equally well.
+	
+	
+	To put space between two adjoining widgets, the
+	\code{addSpace(obj, value, ...)}  method may be used where
+	\code{value} is the number of pixels of padding between the just
+	packed widget, and the next one to be packed.
 
 
 	The \code{addSpring(obj,...)} method will push the just packed
@@ -98,12 +115,13 @@ gexpandgroup(text = "", markup = FALSE, horizontal=TRUE, handler = NULL, action 
 	For \code{ggroup}, in \code{gWidgetsRGtk2} a few arguments add
 	to the container.  The argument \code{raise.on.dragmotion =
 	TRUE} will cause the group to jump to the foreground when a drag
-	action crosses it.  The argument \code{use.scrollwindow = TRUE}
-	will put the group
-	
+	action crosses it.
 	For \code{gframe} and \code{gexpandgroup} the label name can be
 	retrieved or adjusted with the \code{names} method.
 
+	For \code{gframe} and \code{gexpandgroup} the label can be
+	adjusted through the \code{names<-} method.
+	
 	For \code{gexpandgroup} the \code{visible} method can be used
 	to toggle the display programmatically.
 
@@ -150,6 +168,19 @@ gexpandgroup(text = "", markup = FALSE, horizontal=TRUE, handler = NULL, action 
   addSpring(group)				   
   gbutton("Help",handler=function(h,...) print("help"), container=group)
 
+
+  ## delete and add
+  w <- gwindow("Delete and add", visible=FALSE)
+  g <- ggroup(cont=w)
+  b <- gcheckbox("hide", checked=FALSE, cont=g)
+  l <- gedit("click checkbox to hide me", cont=g)
+  addHandlerClicked(b, handler=function(h,...) {
+     if(svalue(b))
+       delete(g, l)
+     else
+       add(g, l)
+  })
+  visible(w) <- TRUE
 }
 }
 \keyword{ interface }
