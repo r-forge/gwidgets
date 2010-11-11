@@ -162,6 +162,8 @@ setReplaceMethod(".leftBracket",
             } else if(is(child, "QLayout")) {
               parent$addLayout(child, min(i)-1, min(j)-1, length(i), length(j))
             }
+
+            child$show()
             
             ## record children, parent
             setParent(value, x)

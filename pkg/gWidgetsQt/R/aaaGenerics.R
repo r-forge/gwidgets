@@ -764,6 +764,8 @@ setMethod(".add",
               ## adding a layout
               parent$addLayout(child)
             }
+            ## show child
+            child$show()
             
             ## record children, parent
             setParent(value, obj)
@@ -822,7 +824,7 @@ setMethod(".delete",
               removeChild(obj, widget)
               child$hide()              # hide first
               parent$removeWidget(child)
-              child$setParent(NULL)     # really clear
+#              child$setParent(NULL)     # really clear
               ## API: If parent is 0, the new widget becomes a
               ## window. If parent is another widget, this widget
               ## becomes a child window inside parent. The new widget
