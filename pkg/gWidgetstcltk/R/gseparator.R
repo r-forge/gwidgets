@@ -41,7 +41,7 @@ setMethod(".gseparator",
               col = "black"
 
             tt <- getWidget(container)
-            gp <- ttkframe(tt)
+##            gp <- ttkframe(tt)
 
             if(horizontal)
               orient <- "horizontal"
@@ -49,10 +49,10 @@ setMethod(".gseparator",
               orient <- "vertical"
             sep <- ttkseparator(tt, orient=orient)
 
-            if(horizontal)
-              tkpack(sep)#, expand=TRUE, fill="x")
-            else
-              tkpack(sep)#, expand=TRUE, fill="y")
+            ## if(horizontal)
+            ##   tkpack(sep)#, expand=TRUE, fill="x")
+            ## else
+            ##   tkpack(sep)#, expand=TRUE, fill="y")
             
             obj = new("gSeparatortcltk", block=sep, widget=sep,
               toolkit=toolkit, ID=getNewID(), e = new.env())
