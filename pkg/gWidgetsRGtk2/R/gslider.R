@@ -37,6 +37,8 @@ setMethod(".gslider",
             ##            toolkit=guiToolkit("RGtk2"))
             
             tag(obj, "..byIndexValues") <- x
+            tag(obj, "default_fill") <- ifelse(horizontal, "x", "y")
+            
             svalue(obj) <- value[1]
             
             gSignalConnect(widget, "format-value", function(widget, value, ...) {

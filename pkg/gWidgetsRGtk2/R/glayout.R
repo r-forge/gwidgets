@@ -110,7 +110,9 @@ setReplaceMethod(".leftBracket",
               anchor <- (anchor+1)/2      # [0,1]
               anchor[2] <- 1 - anchor[2]     # flip yalign
             }
-            fill <- getWithDefault(theArgs$fill, "both") # "", x, y or both
+
+            default_fill <- getWithDefault(tag(value, "default_fill"), "both")
+            fill <- getWithDefault(theArgs$fill, default_fill) # "", x, y or both
 
               ## we do things differently if there is a gtkAlignment for a block
             if(is(child, "GtkAlignment")) {

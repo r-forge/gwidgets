@@ -115,10 +115,10 @@ setMethod(".gdroplist",
 ##             tag(obj,"combo") <- combo
 ##             tag(obj,"editable") <- editable
 
-            tag(obj,"items") <- items
-            tag(obj,"doIcons") <- doIcons
+            tag(obj, "items") <- items
+            tag(obj, "doIcons") <- doIcons
             tag(obj, "coerce.with") = coerce.with
-
+            tag(obj, "default_fill") <- "x"
             
             ## load up the store
             if(length(items) > 0) {

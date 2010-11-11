@@ -30,6 +30,7 @@ setMethod(".gbutton",
 #            obj <- new("gButtonRGtk",
 #              block=button, widget=button, toolkit=toolkit)
 
+            tag(obj, "default_fill") <- "x"
             ## add to container
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
