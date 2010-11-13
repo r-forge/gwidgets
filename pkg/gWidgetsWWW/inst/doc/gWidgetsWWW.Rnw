@@ -281,37 +281,46 @@ This sliver could be enlarged quite easily if desired. Using this requires the w
 
 \section{Installation}
 The local server is installed with the package. Just type
-\code{localServerStart} to begin, although this won't load a file.
+\code{localServerStart} to begin, although this won't load a file. For
+that try \code{localServerStart("Examples/ex-index.R", package='gWidgetsWWW')}.
 
-Installation of the outside server requires several steps:
+Installation of the RApache server requires several steps:
 \begin{enumerate}
-\item Install the \pkg{gWidgetsWWW} package from CRAN
-\item Install the RApache module. The RApache web page has installation information. This APache module is available for UNIX and MAC OS X. Windows users can use the author-provided vmware appliance (\url{www.vmware.com}).
-\item Configure the RApache module. A template is included with the variables that are set in this module. There are several little steps
-  \begin{itemize}
-  \item Specifying the URL for the extjs javascript libraries (below)
-  \item Specifying the script where the session file lives (the script is in the package)
-  \item Specifying where a web-server writable directory is by
-    absolute path and URL for holding the static files created by
-    \pkg{gWidgetsWWW}. (This is needed for creating graphics files.)
-  \item Specifying how files are turned into web pages. The easiest
-    way is the use the gWidgetsWWWrun script to specify directories
-    where the files are held and to use the appropriate URL. (In can
-    be as easy as specifying \code{run} as the script name, then
-    \url{run/file} will find the file \code{file.R} in one of the
-    directories and run that.
-    
-    The other option -- and both can be used -- is to use \pkg{brew},
-    as is described in the RApache manual. This requires using a brew
-    template. One is provided in the Examples directory.
-  \end{itemize}
+\item Install the RApache module. 
+  For Ubuntu or Debian machines there is a copy and paste script on
+  the RApache.net website
+\item Install the \pkg{gWidgetsWWW} package from CRAN. This must be
+  installed so that the webserver can run it.
 
-\item Install the ext javascript libraries so that they have a URL
-  specified above. These libraries are free to use for open-source
-  use (\url{http://www.extjs.com/license}) and can be
-  found at \url{www.extjs.com}. Version 3.0 or higher is needed. A copy of these libraries is included in the \code{basehtml/ext} directory of the package.
-\item Copy the button images from the \pkg{gWidgetsWWW} package to an images
-  URL. These files are in the \code{basehtml/images} directory of the package, once installed.
+\item The \pkg{gWidgetsWWW} has a \texttt{RApache.conf} file that must
+  be installed and configured. To install it with UBUNTU something
+  like this will work (provided you have permission)
+\begin{verbatim}
+> system(sprintf("cp %s /etc/apache2", 
+         system.file("templates/RApache.conf", package="gWidgetsWWW")))
+> system("cat 'Include /etc/apache2 RApache.conf' >> /etc/apache2/apache2.conf")
+\end{verbatim}
+  
+  To configure the \code{RApache.conf} file requires a few things:
+ \begin{itemize}
+
+ \item Specifying where the \code{mod\_R} apache module is. The default is for
+   an Ubuntu installation
+ \item Specifying where to find scripts to run through
+   \code{gWidgetsWWWrun}. The default is the set of examples, but this
+   should be changed to the directory (or directories) where you wish
+   to put the gWidgetsWWW scripts. The directory need not part of the
+   htdocs directory.
+  \item Or specifying where to find brew scripts
+    \pkg{gWidgetsWWW}. (This is needed for creating graphics files.)
+  \item Some other options have reasonable defaults, although many
+    have a hard coded path to the gWidgetsWWW package in them. If this
+    is not a standard place for an Ubuntu install these will need to
+    be changed to that given by:
+\begin{verbatim}
+> system.file("", package="gWidgetsWWW")
+\end{verbatim}
+  \end{itemize}
 \end{enumerate}
 
 
