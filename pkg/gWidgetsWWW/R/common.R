@@ -337,9 +337,12 @@ toJSArray.data.frame <- function(x,doBrackets=TRUE) {
 getStaticTmpFile <- function(ext="")  {
   if(gWidgetsWWWIsLocal()) {
     gWidgetsWWWStaticDir <- get("gWidgetsWWWStaticDir", envir=.GlobalEnv)
+  } else {
+    gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
   }
+
   try(dir.create(gWidgetsWWWStaticDir, showWarnings=FALSE), silent=FALSE)
-  out <- paste(tempfile(tmpdir=gWidgetsWWWStaticDir),ext, sep="")
+  out <- paste(tempfile(tmpdir=gWidgetsWWWStaticDir),ext, sep=".")
 #  out <- gsub("[/]{2,}","/",out)        # strip off doubles
   return(out)
 }
@@ -349,9 +352,14 @@ convertStaticFileToUrl <- function(val) {
   if(gWidgetsWWWIsLocal()) {
     gWidgetsWWWStaticDir <- get("gWidgetsWWWStaticDir", envir=.GlobalEnv)
     gWidgetsWWWStaticUrlBase <- get("gWidgetsWWWStaticUrlBase", envir=.GlobalEnv)
+  } else {
+    gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
+    gWidgetsWWWStaticUrlBase <- getOption("gWidgetsWWWStaticUrlBase")
   }
-  if(!grepl(gWidgetsWWWStaticUrlBase, val, fixed=TRUE))
-    val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
+  ## strip off static dir from val, append on static url base
+  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
+  ## if(!grepl(gWidgetsWWWStaticUrlBase, val, fixed=TRUE))
+  ##   val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
   ourURLencode(val)
 }
 
