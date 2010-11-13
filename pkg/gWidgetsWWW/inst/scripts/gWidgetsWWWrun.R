@@ -53,95 +53,94 @@ if(is.null(file))  {
   setContentType("text/html")
   ## set cache headers
   setHeader("Cache-Control", "max-age=31536000")
-  setHeader("Last-Modified", format(file.info(f)$mtime,"%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
+  setHeader("Last-Modified", format(file.info(file)$mtime,"%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
   setHeader("Expires", format(Sys.time() + 60*60*24, "%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
             
   out <- String() ## gWidgetsWWW is loaded in
   out <- out +
     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"' +
       '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
-        '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">'
-  out <- out +
+        '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">' +
+          '\n'
+  out <- out + "\n" +
     '<head>' +
-      '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+      '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' +
+        '\n'
+  
   out <- out +
-#    '<script type="text/javascript" src="' + extjsBaseUrl +'/adapter/ext/ext-base.js"></script>' +
-#      '<script type="text/javascript" src="' + extjsBaseUrl + '/ext-all.js"></script>' +
-        '<link rel="stylesheet" type="text/css" href="' + extjsBaseUrl + '/resources/css/ext-all.css">'
+    '<link rel="stylesheet" type="text/css" href="' + extjsBaseUrl + '/resources/css/ext-all.css">' +
+      '\n'
 
-  if(exists("gWidgetsWWWGoogleAPI") && !is.null(gWidgetsWWWGoogleAPI)) {
-    out <- out +
-      '<script type="text/javascript" src="http://www.google.com/jsapi?key=' +
-        gWidgetsWWWGoogleAPI + '"></script>' +
-          '<script type="text/javascript">  google.load("maps", "2"); </script>' + '\n'
-  }
+  ## if(exists("gWidgetsWWWGoogleAPI") && !is.null(gWidgetsWWWGoogleAPI)) {
+  ##   out <- out +
+  ##     '<script type="text/javascript" src="http://www.google.com/jsapi?key=' +
+  ##       gWidgetsWWWGoogleAPI + '"></script>' +
+  ##         '<script type="text/javascript">  google.load("maps", "2"); </script>' + '\n'
+  ## }
 
-  ### We removed the issue with IE by not adding button classes
-##   out <- out +
-##     '<script type="text/javascript">' +
-##       'function detectBrowser() {' +
-##         'var browser=navigator.appName;' +
-##           'var b_version=navigator.appVersion;' +
-##             'var version=parseFloat(b_version);' +
-##               'if (browser=="Microsoft Internet Explorer") {' +
-##                 'alert("gWidgetsWWW does not work with Internet Explorer. Try Google Chrome, Firefox, Opera, ...");' +
-##                   'return(false);' +
-##                   '}};' + '\n'
+  ## We removed the issue with IE by not adding button classes
+  ##   out <- out +
+  ##     '<script type="text/javascript">' +
+  ##       'function detectBrowser() {' +
+  ##         'var browser=navigator.appName;' +
+  ##           'var b_version=navigator.appVersion;' +
+  ##             'var version=parseFloat(b_version);' +
+  ##               'if (browser=="Microsoft Internet Explorer") {' +
+  ##                 'alert("gWidgetsWWW does not work with Internet Explorer. Try Google Chrome, Firefox, Opera, ...");' +
+  ##                   'return(false);' +
+  ##                   '}};' + '\n'
 
-##   ## override detect browser for testing
-##   out <- out +
-##     'function detectBrowser() {};'
-
-##   out <- out + '</script>'
+  ##   ## override detect browser for testing
+  ##   out <- out +
+  ##     'function detectBrowser() {};'
+  
+  ##   out <- out + '</script>'
 
 
   ## this is for processing code -- isn't working without Rpad
-##   out <- out +
-##     '<script type="text/javascript">' +
-##       paste(readLines(system.file("javascript","processing.js", package="gWidgetsWWW")), collapse="\n") +
-##         paste(readLines(system.file("javascript","processinginit.js", package="gWidgetsWWW")), collapse="\n") +
-##           '</script>'
+  ##   out <- out +
+  ##     '<script type="text/javascript">' +
+  ##       paste(readLines(system.file("javascript","processing.js", package="gWidgetsWWW")), collapse="\n") +
+  ##         paste(readLines(system.file("javascript","processinginit.js", package="gWidgetsWWW")), collapse="\n") +
+  ##           '</script>'
   
   out <- out +
-    '</head>'
+    '</head>' + '\n'
 
-  out <- out +
-#    '<body onload=detectBrowser() onunload=clearSession("' + sessionID + '")>'
-    '<body onunload=clearSession("' + sessionID + '")>' 
+#  out <- out +
+#    '<body onunload=clearSession("' + sessionID + '")>' 
 
   ## add throbber
   out <- out +
     paste(
           "<div id='loading'>",
           "<div class='loading-indicator'>gWidgetsWWW:<br /><span id='loading-msg'>Loading styles and images...</span></div>",
-          "</div>",
+          "</div>", "\n",
           "<span id='loading-msg'></span></div>",
           "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading Core API...';</script>",
+          "\n",
           "<script type='text/javascript' src='", extjsBaseUrl, "/adapter/ext/ext-base.js'></script>",
+          "\n",
           "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading UI Components...';</script>",
-          
+          "\n",
           "<script type='text/javascript' src='", extjsBaseUrl, "/ext-all.js'></script>",
-          "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",               
-          "<script type='text/javascript' src='/gWidgetsWWW.js'></script>",
+          "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
+          "\n",
+          "<script type='text/javascript' src='",gWidgetsWWWjsUrl, "'></script>",
           "<script type='text/javascript'>Ext.onReady(function(){Ext.get('loading').remove();});</script>",
+          "\n",
           sep="")
-  
-          ## This is now donw in gWindow
-##   out <- out +
-##     '<script type="text/javascript">' +
-##       'var sessionID="' + sessionID + '"' +
-##         '</script>'
-  out <- out +
-    '<script type="text/javascript">'
 
   cat(out)
   
+
+  ## print out web page by gWidgets
+  cat('<script type="text/javascript">\n')
   ## This wraps in try and eval so that values are stored in the session
   try(eval(substitute({
     source(file, local=TRUE)
   }), envir=..e))
-
-  cat("</script>")
+  cat("</script>\n")
 
 
 
