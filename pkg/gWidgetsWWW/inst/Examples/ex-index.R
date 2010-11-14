@@ -76,8 +76,8 @@ makeLinks <- function(i,f) {
       localServerOpen(sprintf("Examples/%s", i), package="gWidgetsWWW")
     })
   } else {
-    url <- paste("http://www.math.csi.cuny.edu/gWidgetsWWW/run/", i, sep="")
-    ghtml(paste("&nbsp;<A href=", url," target='_blank'>",i,"</A>", sep=""), cont = g1)
+    url <- sprintf("/gWidgetsWWWrun/%s", i)
+    ghtml(sprintf("&nbsp;<a href=%s target='_blank'>%s</a>",url, i), cont = g1)
   }
 }
 for(i in files) makeLinks(i,f)

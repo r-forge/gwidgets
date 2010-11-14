@@ -1,11 +1,12 @@
 <% 
+## This is a brew template to run a file
+## Brew files must go in directories listed in RApache.conf file (or its equivalent)
+
 ## This brew template assumes you are sourcing in a .R file with gWidgetsWWW commands
 ## Simply replace the file below and run
 file <- "/var/www/GUI/test.R"
-
-## Adjust this to find extjs libraries (www.extjs.com)
-if(!exists("extjsBaseUrl"))
-  extjsBaseUrl <- "/ext"	
+extjsBaseUrl <-getOption("extjsBaseUrl"); 
+gWidgetsWWWjsUrl <- getOption("gWidgetsWWWjsUrl") 
 %>
 
 <%
@@ -20,8 +21,10 @@ if(!exists("extjsBaseUrl"))
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <!-- Call in Ext and its style sheet -->
+
 <script type="text/javascript" src="<%= extjsBaseUrl %>/adapter/ext/ext-base.js"></script>
 <script type="text/javascript" src="<%= extjsBaseUrl %>/ext-all.js"></script>
+<script type='text/javascript' src='",<%= gWidgetsWWWjsUrl %>, "'></script>
 <link rel="stylesheet" type="text/css" href="<%= extjsBaseUrl %>/resources/css/ext-all.css">
 
 
