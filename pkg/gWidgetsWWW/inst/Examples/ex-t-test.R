@@ -1,5 +1,4 @@
 ## Build a t-test gui
-##require(Cairo) ## no X11 dependence
 
 w <- gwindow("t-test example")
 g <- ggroup(cont = w, horizontal = FALSE)
@@ -81,12 +80,13 @@ addHandlerClicked(doGraph, handler = function(h,...) {
   gseparator(cont = g1)
   gbutton("dismiss", cont=g1, handler = function(h,...) dispose(w1))
 
+  ## call within callback, otherwise may not be present
   require(RSVGTipsDevice, quietly=TRUE, warn=FALSE)
-  f <- getStaticTmpFile(ext=".svg")
-  devSVGTips(f)
+  devSVGTips(f <- getStaticTmpFile(ext=".svg"))
   df <- get(df, inherits=TRUE)
   hist(df[, var], main=var)
   dev.off()
+
   svalue(cv) <- convertStaticFileToUrl(f)
   
   ## show page

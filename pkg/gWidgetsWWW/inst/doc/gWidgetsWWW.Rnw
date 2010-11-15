@@ -292,19 +292,17 @@ Installation of the RApache server requires several steps:
 \item Install the \pkg{gWidgetsWWW} package from CRAN. This must be
   installed so that the webserver can run it.
 
-\item The \pkg{gWidgetsWWW} has a \texttt{RApache.conf} file that must
+\item The \pkg{gWidgetsWWW} has a \texttt{RApache-gWidgetsWWW.conf} file that must
   be installed and configured. To install it with UBUNTU something
   like this will work (provided you have permission)
 \begin{verbatim}
-> system(sprintf("cp %s /etc/apache2", 
-         system.file("templates/RApache.conf", package="gWidgetsWWW")))
-> system("cat 'Include /etc/apache2 RApache.conf' >> /etc/apache2/apache2.conf")
+> system(sprintf("cp %s /etc/apache2/conf.d", 
+         system.file("templates/RApache-gWidgetsWWW.conf", package="gWidgetsWWW")))
 \end{verbatim}
   
-  To configure the \code{RApache.conf} file requires a few things:
+  To configure the \code{RApache-gWidgetsWWW.conf} file requires a few things:
  \begin{itemize}
-
- \item Specifying where the \code{mod\_R} apache module is. The default is for
+\item Specifying where the \code{mod\_R} apache module is. The default is for
    an Ubuntu installation
  \item Specifying where to find scripts to run through
    \code{gWidgetsWWWrun}. The default is the set of examples, but this
