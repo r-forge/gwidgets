@@ -23,7 +23,7 @@ simpleMsg <- function(msg) {
 }
 
 findFile <- function(file) {
-  for(dir in gWidgetsWWWrunBaseDirectory) {
+  for(dir in getOption("gWidgetsWWWrunBaseDirectory")) {
     tmp <- paste(dir, file, ".R", sep="")
     if(file.exists(tmp))
       return(tmp)
@@ -39,7 +39,7 @@ file <- gsub("\\.R$", "", file)
 if(is.null(file))  {
   simpleMsg("No file specified.")
 } else if((file <- findFile(file)) == "") {
-  simpleMsg("Can't find file")
+  simpleMsg(sprintf("Can't find file %s", file))
 } else {
   ## create db file db
   if(!file.exists(sessionDbFile))
