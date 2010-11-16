@@ -28,7 +28,8 @@ simpleMsg <- function(msg) {
 ##' @return either the path of the file, or a length 0 character vector
 findFile <- function(file) {
   dirs <- getOption("gWidgetsWWWrunBaseDirectory")
-  dirs <- gsub("/{1,}$","",dirs)
+  dirs <- gsub("/{1,}$","",dirs) ## remove slashes
+  file <- gsub("^/{1,}","",file)	
   files <- file.path(dirs, paste(file, ".R", sep=""))
   ind <- sapply(files, file.exists)
   if(!any(ind))
