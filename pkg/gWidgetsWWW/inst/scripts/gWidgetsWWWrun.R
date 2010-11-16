@@ -24,7 +24,7 @@ simpleMsg <- function(msg) {
 
 findFile <- function(file) {
   for(dir in getOption("gWidgetsWWWrunBaseDirectory")) {
-    tmp <- paste(dir, file, ".R", sep="")
+    tmp <- file.path(dir, paste(file, ".R", sep="")) # Thanks Dirk
     if(file.exists(tmp))
       return(tmp)
   }
