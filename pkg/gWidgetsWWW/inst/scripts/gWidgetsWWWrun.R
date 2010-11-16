@@ -23,12 +23,13 @@ simpleMsg <- function(msg) {
 }
 
 findFile <- function(file) {
-  for(dir in getOption("gWidgetsWWWrunBaseDirectory")) {
-    tmp <- file.path(dir, paste(file, ".R", sep="")) # Thanks Dirk
-    if(file.exists(tmp))
-      return(tmp)
-  }
-  return("")
+  dirs <- getOption("gWidgetsWWWrunBaseDirectory")
+  files <- file.path(dir, paste(file, ".R", sep=""))
+  ind <- sapply(files, file.exists)
+  if(any(ind))
+    head(files[ind],n=1)                # first match
+  else
+    ""                                  # nothing
 }
 
 

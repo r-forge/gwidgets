@@ -1,3 +1,10 @@
+2010-11-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* inst/templates/RApache-gWidgetsWWW.conf: restructured: put in
+	defaults to match ubuntu installation of package (with sudo); need
+	only configure where gWidgetsWWWrun files are, and this defaults
+	to the Examples directory.
+
 2010-11-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/LocalVersion.R (processBasehtmlFile): added headers to cache

@@ -4,7 +4,8 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
-* simplified RApache configuration; fixed bug with static files
+* simplified RApache configuration; 
+* fixed bug with static files
 * moved js code from widgets into standalong file. Compressed by compress.R
 * internal change to how handlers are evaluated. Trying to cut down on
 SIGPIPE error
