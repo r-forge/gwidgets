@@ -1,19 +1,15 @@
 ## File to respond to requests like
 ## http://XXX.XXX.XXX/gWidgetsWWWrun/filename
+
 ## Requires a configuration in RApache like
 ## <Location /gWidgetsWWWrun>
 ##    SetHandler r-handler
 ##    RFileHandler /var/www/GUI/gWidgetsWWWrun.R
 ## </Location>
-## filename is found relative to gWidgetsWWWrunBaseDirectory
 
-## These should be configured in RApache config
-if(!exists("gWidgetsWWWrunBaseDirectory"))
-  gWidgetsWWWrunBaseDirectory <- "/var/www/GUI"
-
+## should be configured in rapache.conf
 if(!exists("extjsBaseUrl"))
   extjsBaseUrl <- "/ext"
-
 
 ####################################################
 ## nothing below here to adjust
