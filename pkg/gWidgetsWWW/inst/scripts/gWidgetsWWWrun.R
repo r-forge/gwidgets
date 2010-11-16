@@ -24,14 +24,12 @@ simpleMsg <- function(msg) {
 
 findFile <- function(file) {
   dirs <- getOption("gWidgetsWWWrunBaseDirectory")
+  dirs <- gsub("/{1,}$","",dirs)
   files <- file.path(dirs, paste(file, ".R", sep=""))
-  cat(files, file="/tmp/debug-findFile.R")
   ind <- sapply(files, file.exists)
-  if(any(ind))
-    head(files[ind],n=1)                # first match
-  else
-    ""                                  # nothing
+  return(head(files[ind], n=1))         # length = 0 if none
 }
+
 
 
 ## check that we have get data
@@ -40,8 +38,8 @@ if(is.null(file) || file == "/") file <- "/index"
 file <- gsub("\\.R$", "", file)
 if(is.null(file))  {
   simpleMsg("No file specified.")
-} else if((file <- findFile(file)) == "") {
-  simpleMsg(sprintf("Can't find file %s", file))
+} else if(length(file <- findFile(file)) == 0) {
+  simpleMsg(sprintf("Can't find file %s", SERVER$path_info))
 } else {
   ## create db file db
   if(!file.exists(sessionDbFile))
