@@ -25,6 +25,7 @@ simpleMsg <- function(msg) {
 findFile <- function(file) {
   dirs <- getOption("gWidgetsWWWrunBaseDirectory")
   files <- file.path(dir, paste(file, ".R", sep=""))
+  cat(files, file="/tmp/debug-findFile.txt")
   ind <- sapply(files, file.exists)
   if(any(ind))
     head(files[ind],n=1)                # first match
