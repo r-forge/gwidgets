@@ -22,12 +22,18 @@ simpleMsg <- function(msg) {
   cat("<html><body>",msg,"</body></html>")
 }
 
+##' find file among the directories specified in the RApache-gWidgetsWWW.conf file
+##'
+##' @param file filename with ".R" stripped off
+##' @return either the path of the file, or a length 0 character vector
 findFile <- function(file) {
   dirs <- getOption("gWidgetsWWWrunBaseDirectory")
   dirs <- gsub("/{1,}$","",dirs)
   files <- file.path(dirs, paste(file, ".R", sep=""))
   ind <- sapply(files, file.exists)
-  return(head(files[ind], n=1))         # length = 0 if none
+  if(!any(ind))
+    cat(files, file="/tmp/debug-findFile.txt")
+  return(head(files[ind], n=1))         # length == 0 if none
 }
 
 
