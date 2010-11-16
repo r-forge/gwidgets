@@ -1,0 +1,43 @@
+This directory contains a file to assist in configuring Apache to
+run gWidgetsWWW under rapache. The defaults are assuming a standard
+ubuntu installation of both apache and rapache (libapache2-mod-r-base).
+
+At a minimum the location of where files are looked for should be configured.
+The default searches in the directory /var/gWidgetsScripts and the Examples
+directory of the gWidgetsWWW install. The former is not created unless 
+you create it. It need not, and should not, be under the directories served
+by the web server (e.g. /var/www). The Examples directory is included just
+so examples will run without configuration. That directory should not be used
+to add files, as it will be overwritten when the package is reinstalled.
+
+
+To use this with ubuntu requires just a few steps:
+
+1) install gWidgetsWWW -- done if you are reading this likely
+2) add the rapache launchpad directory to the sources.list file by appending
+these lines to the file /etc/apt/sources.list:
+
+## add R http://cran.r-project.org/bin/linux/ubuntu/ 
+deb http://streaming.stat.iastate.edu/CRAN/bin/linux/ubuntu maverick/
+deb http://ppa.launchpad.net/jeffreyhorner/rapache/ubuntu lucid main
+
+We used a fixed CRAN site above, you should change as you see fit.
+
+3) install rapache and apache with these shell commands:
+
+sudo apt-get update
+sudo apt-get install libapache2-mod-r-base
+
+4) Copy the file RApache-gWidgetsWWW.conf to the directory 
+
+/etc/apache2/conf.d
+
+(or some other site) and configure it as necessary.
+
+5) restart the apache server
+
+To test, this should show the index:
+
+http://localhost/gWidgetsWWWrun/ex-index.R
+
+

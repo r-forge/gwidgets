@@ -2,7 +2,7 @@
 ## The GUI calls this as a form using an AJAX request
 ## This script returns javascript to be processed
 ## we limit the ability to call R from the browser to a) assignment to a gWidget
-## variable or b) to run ahandler by its id.
+## variable or b) to run a handler by its id.
 
 ## This script requires some packages and variables for keeping
 ## track of the session to be set
@@ -21,6 +21,7 @@ if(!is.null(POST) && !is.null(POST$type)) {
 
   
   type <- POST$type
+
   ## get session ID    
   sessionID <- POST$sessionID
 
@@ -134,17 +135,19 @@ if(!is.null(POST) && !is.null(POST$type)) {
     ## Could put in check to limit size of value, o/w the post
     ## data could be arbitrarily large
     if(length(grep("^gWidgetID", variable)) > 0) {
-      sink(type="message")                  # quiet RApache errors ## was tempfile()
+      ## had sink() call here, removed. Was it required?
       tmp <- e[[w]]
       out <- try(assign(variable, value, envir=tmp), silent=TRUE) ## not e[[w]] here.
+      e[[w]] <- tmp
+      
+      ## log errors
       if(inherits(out,"try-error")) {
         if(exists("sessionDBIlogfile"))
           cat(sessionID, "assign had error:", out, "\n", file=sessionDBIlogfile, append=TRUE)
       }
-      e[[w]] <- tmp
+
       ## save session
       db[[sessionID]] <- e
-      try(sink(NULL), silent=TRUE)
     } else {
       sendError(db, paste("var name ", variable, " is not acceptable"))
     }
