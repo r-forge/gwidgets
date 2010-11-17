@@ -3,7 +3,7 @@ run gWidgetsWWW under rapache. The defaults are assuming a standard
 ubuntu installation of both apache and rapache (libapache2-mod-r-base).
 
 At a minimum the location of where files are looked for should be configured.
-The default searches in the directory /var/gWidgetsScripts and the Examples
+The default searches in the directory /var/lib/gWidgetsWWW and the Examples
 directory of the gWidgetsWWW install. The former is not created unless 
 you create it. It need not, and should not, be under the directories served
 by the web server (e.g. /var/www). The Examples directory is included just

@@ -1,8 +1,9 @@
 w <- gwindow("Example of canvas device within gWidgetsWWW")
 g <- ggroup(cont = w, horizontal=FALSE)
-ghtml(paste("Example of using the canvas device with gWidgetsWWW. Requires HTML5-compliand browser to work.",
+ghtml(paste("Example of using the canvas device with gWidgetsWWW. Requires HTML5-compliant browser to work.",
             "<br>",
-            "The canvas device uses javascript to write the graphic, not an image. It is an alternative to the gsvg device, which requires its image to be loaded from a file.",
+            "The canvas device uses javascript to write the graphic, not an image.",
+            "It is an alternative to the gsvg device, which requires its image to be loaded from a file.",
             collapse="\n"),
 
             cont = g)
