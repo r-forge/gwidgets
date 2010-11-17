@@ -28,8 +28,6 @@ findFile <- function(file) {
   file <- gsub("^/{1,}","",file)	
   files <- file.path(dirs, paste(file, ".R", sep=""))
   ind <- sapply(files, file.exists)
-  if(!any(ind))
-    cat(files, file="/tmp/debug-findFile.txt")
   return(head(files[ind], n=1))         # length == 0 if none
 }
 

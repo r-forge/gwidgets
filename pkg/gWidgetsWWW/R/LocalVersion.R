@@ -116,13 +116,48 @@ processScript <- function(file, content_type="text/html") {
 ##' @param ... ignored
 ##' 
 processBasehtmlFile <- function(path, query, ...) {
-  f <- sprintf("/basehtml/%s", paste(path, collapse="/"))
+  f <- sprintf("/basehtml/%s", strip_slashes(paste(path, collapse="/")))
   f <- gsub("//","/", f)                # just in case
   f <- system.file(f, package="gWidgetsWWW")
 
   if(!file.exists(f))
     return(makeErrorPage(sprintf("Can't find %s", f)))
 
+  ## see https://code.google.com/speed/page-speed/docs/caching.html
+  ## doesn't seem to work with firefox
+  temp <- "%a %b %e %Y %H:%M:%S GMT%z (%Z)"
+
+  cacheControl <- "Cache-Control: max-age=31536000"
+  expires <- sprintf("Expires: %s", format(Sys.time() + 60*60*24, temp))
+  lastModified <- sprintf("Last-Modified: %s", format(file.info(f)$mtime, temp))
+
+  list(file=f, 
+       "content-type" = mime_type(f),
+       "headers" = c(cacheControl, expires, lastModified),
+       "status code"=200L
+       )
+
+}
+
+##' process file from static directory
+##' @param path path to file
+##' @param query query string (path?var1=x&var2=u) -> path=path; query=c(var1="x", var2="u")
+##' @param ... ignored
+##' 
+processStaticFile <- function(path, query, ...) {
+  cat(path, "\n", file="/tmp/debug-static.txt")
+  f <- sprintf("%s%s",.Platform$file.sep, Reduce(file.path, path))
+
+  cat(f, mime_type(f),"\n", file="/tmp/debug-static.txt", append=TRUE)
+
+#  if(grepl(gWidgetsWWWStaticDir, path))
+#    f <- path
+
+  if(!file.exists(f))
+    return(makeErrorPage(sprintf("Can't find %s", f)))
+
+
+  
   ## see https://code.google.com/speed/page-speed/docs/caching.html
   ## doesn't seem to work with firefox
   temp <- "%a %b %e %Y %H:%M:%S GMT%z (%Z)"
@@ -231,6 +266,7 @@ processExternalRun <- function(path, query, ...) {
 processAJAX <- function(path, query, ...) {
   query <- list(...)[[1]]               # query passed in body, not query (POST info)
 
+  
   ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
   if(is.raw(query)) {
     out <- rawToChar(query)
@@ -310,10 +346,17 @@ gw.httpd.handler <- function(path, query, ...) {
   path <- gsub(sprintf("^/custom/%s/",url_base), "", path)
   path <- unlist(strsplit(path, "/"))
 
+  cat("dispatch", "\n", file="/tmp/log.txt")
+  cat(path[1], "\n", file="/tmp/log.txt", append=TRUE)
+  cat(path[-11], "\n", file="/tmp/log.txt", append=TRUE)
+  cat(query, "\n", file="/tmp/log.txt", append=TRUE)
+
+  
   ## Dispatch on value of path[1]
   out <- switch(path[1],
                 "ext"=processBasehtmlFile(path, query, ...),
                 "images"=processBasehtmlFile(path, query, ...),
+                "static"=processStaticFile(path[-1], query, ...),
                 "gWidgetsWWWRun"=processRun(path[-1], query, ...),
                 "gWidgetsWWW" = processAJAX(path[-1], query, ...),
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
@@ -373,7 +416,7 @@ localServerStart <- function(file="", port=8079, package=NULL, ...) {
 
   ## global variables
   assign("gWidgetsWWWStaticDir", (tmp <- tempdir()), envir=.GlobalEnv)
-  assign("gWidgetsWWWStaticUrlBase", sprintf("/custom/%s/gWidgetsWWWRun/%s", url_base, tmp), envir=.GlobalEnv)
+  assign("gWidgetsWWWStaticUrlBase", sprintf("/custom/%s/static/%s", url_base, tmp), envir=.GlobalEnv)
   
   ## open if called to
   if(!is.null(file) && file != "") {
@@ -408,7 +451,7 @@ gWloadFile <- function(file, ...) {
   .url <- sprintf("http://127.0.0.1:%s/custom/%s/gWidgetsWWWRun/%s",
                   tools:::httpdPort,
                   url_base,
-                  ourURLencode(file))
+                  strip_slashes(ourURLencode(file), leading=FALSE))
   browseURL(.url)
 }
 

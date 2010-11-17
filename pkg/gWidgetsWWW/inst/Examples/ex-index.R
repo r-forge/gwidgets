@@ -44,7 +44,7 @@ b <- gbutton('click me', cont=g, handler=function(h,...) {<br />
 })<br />
 visible(w) <- TRUE<br />
 </code>
-</p>"))
+</p>"), warn=FALSE)
 ghtml(paste(msg, collapse=" "), cont=f)
 
 

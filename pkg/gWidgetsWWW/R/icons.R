@@ -30,13 +30,13 @@ addStockIcons <- function(iconNames, iconFiles) {
 getStockIcons <- function(icons) {
   gWidgetsWWWimageUrl <- getOption("gWidgetsWWWimageUrl")
   if(is.null(gWidgetsWWWimageUrl))
-    gWidgetsWWWimageUrl <- "/images/"
+    gWidgetsWWWimageUrl <- "/custom/gw/images"
   
   if(is.null(.stockicons$si)) {
     files <- list.files(path = system.file(paste("basehtml","images",sep=.Platform$file.sep),
                           package = "gWidgetsWWW"))
     newfiles <- gsub("\\.gif$|\\.jpg$|\\.jpeg$|\\.png$","",files)
-    si <<- paste(gWidgetsWWWimageUrl,files, sep="")
+    si <<- paste(gWidgetsWWWimageUrl,strip_slashes(files), sep="/")
     class(si) <- c("URL",class(si))
     names(si) <- newfiles
     .stockicons$si <- si

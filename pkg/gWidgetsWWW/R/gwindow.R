@@ -166,7 +166,8 @@ gwindow <- function(title="title",file="",visible=TRUE,
                       "eval(response.responseText);" +
                         "};" + "\n"
 
-              gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
+              if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
+                gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
               if(is.null(gWidgetsWWWAJAXurl))  {
                 gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
               }

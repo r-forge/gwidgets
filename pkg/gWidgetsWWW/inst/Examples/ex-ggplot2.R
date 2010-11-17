@@ -3,6 +3,8 @@
 ## ggplot2 commands, ...
 
 if(!exists("gWidgetsWWWStaticDir") || is.null(gWidgetsWWWStaticDir))
+  gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
+if(is.null(gWidgetsWWWStaticDir))
   gWidgetsWWWStaticDir <- tempdir()
 
 GUIdescription <- paste("An example GUI for exploring ggplot2 commands that illustrates:",
@@ -83,6 +85,9 @@ for(type in types) {
   addStockIcons(Units[[type]], convertStaticFileToUrl(iconFiles[[type]]))
 }
 
+Units$icons <- paste(gWidgetsWWWStaticDir, .Platform$file.sep,
+                     Units$Geom, ".png", sep="")
+Units$icons <- sapply(Units$icons, convertStaticFileToUrl)
 
 ##################################################
 ## our data set (was baseball from plyr, but too large for an example)
@@ -130,12 +135,14 @@ f <- gexpandgroup("Geoms: specify geometric object(s) to plot", cont = lg)
 
 GeomCb <- list()
 GeomDf <- data.frame(values = c("", upperToLower(Units$Geom)),
-                 icon = c("GeomBlank", Units$Geom),
+                 icon = c("GeomBlank", Units$icons),
                  qtip = c("", sapply(Units$Geom, function(i) {
                    obj <- getFromNamespace(i, ns="ggplot2")
                    obj$desc
                  })),
                  stringsAsFactors=FALSE)
+
+
 
 makeGeomSelector <- function(f) {
   g1 <- ggroup(cont = f)
@@ -287,16 +294,14 @@ visible(w) <- TRUE
 
 
 makePlots <- function() {
-  sink("/tmp/sink.R")
   require(reshape, quietly=TRUE, warn=FALSE)
   require(plyr, quietly=TRUE, warn=FALSE)
   require(grid, quietly=TRUE, warn=FALSE)
   require(ggplot2, quietly=TRUE, warn=FALSE)
-  sink()
 
-data("Cars93", package="MASS")
-bb <- Cars93
-
+  data("Cars93", package="MASS")
+  bb <- Cars93
+  
   l <- list()
   for(i in names(aesWidgets)) {
     val <- svalue(aesWidgets[[i]])
@@ -368,8 +373,7 @@ bb <- Cars93
   require(RSVGTipsDevice, quietly=TRUE, warn=FALSE)
   if(file.exists(imageFile))
     unlink(imageFile)                     # out with the old ...
-  imagefile <- getStaticTmpFile(ext=".svg")
-#  imagefile <- gsub("//","/",getStaticTmpFile(ext=".svg")) # in with the new
+  imageFile <- getStaticTmpFile(ext=".svg")
   devSVGTips(imageFile)
   out <- try(print(p), silent=TRUE)
   dev.off()

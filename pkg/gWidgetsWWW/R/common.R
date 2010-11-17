@@ -136,6 +136,20 @@ unescapeURL <- function(x) {
   return(x)
 }
 
+##' strip leading and trailing slashes
+##' @param x string to trim
+##' @param leading logical. If TRUE stripleading slashes
+##' @param trailing logical. If TRUE strip trailing slashes
+strip_slashes <- function(x, leading=TRUE, trailing=TRUE) {
+  if(leading)
+    x <- gsub("^[/]{1,}","",x)
+  if(trailing)
+    x <- gsub("[/]{1,}$","", x)
+  x
+}
+  
+
+
 ##' replace ' with \\'
 ##' Also can replace ' with &143; type thingy
 escapeQuotes <- function(x) UseMethod("escapeQuotes")
@@ -342,7 +356,8 @@ getStaticTmpFile <- function(ext="")  {
   }
 
   try(dir.create(gWidgetsWWWStaticDir, showWarnings=FALSE), silent=FALSE)
-  out <- paste(tempfile(tmpdir=gWidgetsWWWStaticDir),ext, sep=".")
+  out <- paste(tempfile(tmpdir=gWidgetsWWWStaticDir),ext,
+               sep=ifelse(grepl("^[.]",ext), "", "."))
 #  out <- gsub("[/]{2,}","/",out)        # strip off doubles
   return(out)
 }
@@ -357,9 +372,15 @@ convertStaticFileToUrl <- function(val) {
     gWidgetsWWWStaticUrlBase <- getOption("gWidgetsWWWStaticUrlBase")
   }
   ## strip off static dir from val, append on static url base
-  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
-  ## if(!grepl(gWidgetsWWWStaticUrlBase, val, fixed=TRUE))
-  ##   val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
+#  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
+
+  cat("Static\n", file="/tmp/debug-convert.txt")
+  cat(val, "\n", file="/tmp/debug-convert.txt", append=TRUE)
+  
+  if(grepl(gWidgetsWWWStaticDir, val, fixed=TRUE))
+    val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
+
+  cat(val, "\n", file="/tmp/debug-convert.txt", append=TRUE)
   ourURLencode(val)
 }
 

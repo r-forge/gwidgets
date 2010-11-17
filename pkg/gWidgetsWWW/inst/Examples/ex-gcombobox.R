@@ -6,7 +6,7 @@ handler <- function(h,...) gmessage(svalue(h$action), parent=g)
 
 m <- data.frame(
   values = state.name,
-  icons = rep("images/home.gif",50),
+  icons = convertStaticFileToUrl(getStockIcons()[[1]]),
   gtip = paste(state.abb,"has",state.area,"square miles.", sep=" ")
   )
 
