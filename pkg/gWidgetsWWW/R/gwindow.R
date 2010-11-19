@@ -62,7 +62,8 @@ gwindow <- function(title="title",file="",visible=TRUE,
   w$toplevel <- w
   w$..IDS <- c()
   w$..blocked_handlers <- c()           # IDs of handlers not to call
-
+  theArgs <- list(...)
+  w$..AJAXtimeout <- ifelse(is.null(theArgs$AJAXtimeout), 10000, theArgs$AJAXtimeout)
 
   ## store name in title for handlers.
   w$titlename <- make.names(title)
@@ -185,7 +186,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
                       "success: evalJSONResponse," +
                         "failure: processFailure," +
                           "method: 'POST', " +
-                            "timeout: 2000," +
+                            "timeout:" + .$..AJAXtimeout + "," +
                               "params: { type: 'runHandler', " +
                                 "sessionID: sessionID," +
                                   "id: id," +

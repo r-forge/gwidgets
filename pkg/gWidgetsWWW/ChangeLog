@@ -1,3 +1,8 @@
+2010-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (gwindow): add hidden argument AJAXtimeout to
+	gwindow. Set larger or shorter than 10000 if needed.
+
 2010-11-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* inst/templates/RApache-gWidgetsWWW.conf: restructured: put in
