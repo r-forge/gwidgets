@@ -4,11 +4,19 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+* new widget, gbigtable which implements exts's paging framework
+allowing very large data sets to be displayed (as it only shows a page
+at a time)
+* size<- method for tables can be a list with component columnWidths
+to specify the individual column widths in pixels. The defaults are
+taken from the column's entries at time of construction.
+* extended timeout period for AJAX calls. Can set with value specified
+to gwindow.
 * simplified RApache configuration; 
 * fixed bug with static files
 * moved js code from widgets into standalong file. Compressed by compress.R
 * internal change to how handlers are evaluated. Trying to cut down on
-SIGPIPE error
+SIGPIPE error. STILL HAVEN'T FOOUND THEM ALL.
 * bug fixes
 * fixed some of the examples
 

@@ -22,7 +22,8 @@ require(proto, quietly=TRUE)
 
 ## The double dot is meant to indicate an instance variable/method as
 ## opposed to a "class" variable/method. It seems that proto does not
-## propogate the double dot -- that is
+## propogate the double dot, so these are set in the widget constructor (as
+## they should be
 
 ## > a = proto(..test = TRUE, test = TRUE, new = function(.) .$proto())
 ## > b = a$new()
@@ -34,6 +35,7 @@ require(proto, quietly=TRUE)
 ##
 ## so we check for ..test using exists and inherits = FALSE
 
+##' Base trait for all widget/components/stores etc
 EXTWidget <-
   proto(new = function(.,...) {
     obj <- .$proto(...)
@@ -64,12 +66,7 @@ EXTWidget <-
         )
 
 
-
-## Some configuration
-
-### methods
-
-
+### methods ##################################################
 ##' has a slot? mapping of exists. From mutatr
 ##' 
 ##' @param key name of slot
@@ -112,7 +109,7 @@ EXTWidget$showPart <- function(.,part, queue=FALSE) {
 ## we have Ext Object "o" + ID and DOM object "ID" to consider
 ## XXX This is misnamed (toString?)
 
-##' Represent object as character
+##' Represent object as character, similar to tcltk ID
 ##'
 ##' The character is usually the name of the object in EXT.
 ##' @return a character
@@ -200,7 +197,9 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
  }
 ## create javascript code to write Javascript to set
 ## the value of a widget
-## properties setValueMethod, 
+## properties setValueMethod,
+
+##' property for where to set javascript when outside the Ext methods/properties
 EXTWidget$setValueJSAttribute = "innerHTML"
 
 
@@ -216,10 +215,6 @@ EXTWidget$setValueJS <- function(.,...) {
   ##' this uses the DOM value -- not the Ext widget. EXTComponent
   ##' overrides this.
   out <- sprintf("var widget= EXT.get(%s).%s = %s;", shQuote(.$ID), .$setValueJSAttribute, shQuote(value))
-  ## out <- String('var widget = ') +
-  ##   'EXT.get(' + shQuote(.$ID) + ');' +
-  ##     'widget.' + .$setValueJSAttribute + '= ' + shQuote(value) + ';\n'
-  
   return(out)                            
 }
 
@@ -257,10 +252,8 @@ EXTWidget$getValues <- function(., ...) .$..values
 ##' @param value value to set
 ##' @return adds to JS queue if shown
 EXTWidget$setValues <- function(.,i,j,...,value) {
-  ## XXX Need to include i,j
+  ## XXX Need to include i,j!
   .$..values <- value
-  ##if(exists("..shown",envir=., inherits=FALSE))
-    ## cat(.$setValuesJS(...), file=stdout())
   if(.$has_local_slot("..shown"))
     .$addJSQueue(.setValuesJS(...))
 }
@@ -269,18 +262,19 @@ EXTWidget$setValues <- function(.,i,j,...,value) {
 ##' @param ... passed to local function
 EXTWidget$setValuesJS <- function(.,...) {
   if(.$has_local_slot("..setValuesJS"))
-    .$..setValuesJS(...)
-#  if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)  
-#  return("")                               # cat javascript to set values
+     .$addJSQueue(.$..setValuesJS(...))
 }
 
 ## length, dim -- issue with recursion if given full name
 
-##' length method for gWidget
+##' length method for gWidget class
+##' 
 ##' @param x gWidgets instance.
 length.gWidget <- function(x) {. = x; .$.length()}
 
 ##' EXT length method
+##'
+##' @return length of object
 EXTWidget$.length <- function(.) {vals <- .$..values; length(vals)}
 
 ##' dim method for gWidget
@@ -298,18 +292,24 @@ EXTWidget$setNames <- function(.,value) {
     .$addJSQueue(.$setNamesJS())
   }
 }
+##' Method to set names attribute of object in Javascript
 EXTWidget$setNamesJS <- function(.) {}    # set names
 
 
-## visible<-
+##' Method for visible()
 EXTWidget$getVisible <- function(.) return(.$..visible )
+
+##' method to set visibility visible<-
+##'
+##' @param value logical
 EXTWidget$setVisible <- function(.,value) {
   .$..visible <- as.logical(value)
   if(exists("..shown",envir=., inherits=FALSE)) {
-    ## cat(.$setVisibleJS(), file=stdout())
     .$addJSQueue(.$setVisibleJS())
   }
 }
+
+##' javascript to synchronize widget with R value
 EXTWidget$setVisibleJS <- function(.) {
   if(exists("..setVisibleJS", envir=., inherits=FALSE))
     .$..setVisibleJS()
@@ -322,13 +322,21 @@ EXTWidget$setVisibleJS <- function(.) {
   .$callExtMethod(action)
 }
 
-## enabled<- 
+## enabled<-
+
+##' is widget enabled
+##' 
+##' @return logical
 EXTWidget$getEnabled <- function(.) return(.$..enabled )
+
+##' method to set if widget is enabled
+##' @param value logical
 EXTWidget$setEnabled <- function(.,value) {
   .$..enabled <- as.logical(value)
   if(.$has_local_slot("..shown"))
     .$addJSQueue(.$setEnabledJS())
 }
+##' method to write javascript to synchronize widget with R value
 EXTWidget$setEnabledJS <- function(.) {
   if(exists("..enabled", envir=., inherits=FALSE))
     value <- as.logical(.$..enabled)
@@ -372,29 +380,34 @@ EXTWidget$setStyleJS <- function(.,styles = NULL) {
 }
   
 
- ## set size.
- ## calls setStyle
- EXTWidget$setSize <- function(., value) {
-   ## fix size in ..style
-   if(exists("..style",envir=., inherits=FALSE))
-     curStyle <- .$..style
-   else
-     curStyle <- c()
+##' set size fo widget
+##' 
+##' calls setStyle
+##' @param value a vector c(width), c(width, height)
+EXTWidget$setSize <- function(., value) {
+  ## fix size in ..style
+  if(exists("..style",envir=., inherits=FALSE))
+    curStyle <- .$..style
+  else
+    curStyle <- c()
+  
+  n <- length(value)
+  if(n == 0) return()
+  
+  curStyle["width"] <- .$..width <- value[1]
+  
+  
+  if(n > 1) {
+    curStyle["height"] <- .$..height <- value[2]
+  }
+  
+  .$..style <- curStyle
+  return()
+}
 
-   n <- length(value)
-   if(n == 0) return()
-
-   curStyle["width"] <- .$..width <- value[1]
-
-
-   if(n > 1) {
-     curStyle["height"] <- .$..height <- value[2]
-   }
-
-   .$..style <- curStyle
-   return()
- }
-
+##' method to return size (in pixels) of widget
+##'
+##' @return integer vector with two components
 EXTWidget$getSize <- function(.) {
   if(!exists("..style",envir=., inherits=FALSE))
     return(c(width=NULL,height=NULL))
@@ -446,15 +459,18 @@ EXTWidget$ExtStdCfgOptions <- function(.) {
 
 
        
-## method to coerce ExtCfgOptions into a string
-## ExtCfgOptions is a list. The names are passed as keys and the values
-## are assigned.
-## Object Literals in Ext are like passing lists through the ... argument
-## characters are quoted, String()s are not. Sometimes
-## as.character(String() + "...") is useful.
-## This function recurses when the value is a list
-## method coerceToJSString is in common.R
-
+##' method to coerce ExtCfgOptions into a string
+##' 
+##' ExtCfgOptions is a list. The names are passed as keys and the values
+##' are assigned.
+##' Object Literals in Ext are like passing lists through the ... argument
+##' characters are quoted, String()s are not. Sometimes
+##' as.character(String() + "...") is useful.
+##' This function recurses when the value is a list
+##' method coerceToJSString is in common.R
+##' @param values value to be mapped
+##' @param doBraces if TRUE will wrap in {}
+##' @return javascript string 
 EXTWidget$mapRtoObjectLiteral <- function(.,values,doBraces=TRUE) {
   
   if(missing(values)) {
@@ -511,7 +527,7 @@ EXTWidget$header <- function(.) return("")
 
 ##' footer for the widget
 ##'
-##' Meant to be overriddent in subclass
+##' Meant to be overridden in subclass
 ##' @return returns text to be placed in the header
 EXTWidget$footer <- function(.) return("")
 
@@ -554,22 +570,27 @@ EXTWidget$writeConstructor <- function(.) {
 ## immediately back to R so that R handlers will be aware of the changes. We
 ## call this transport.
 
-## code to write out transport function
-## called in writeHandlers
+##' code to write out transport function
+##' 
+##' called in writeHandlers
+##' @param ... ignored
+##' @return javascript string
 EXTWidget$transportValue <- function(.,...) {
-  ## out <- String() +
-  ##   'var value = o' + .$ID + '.' +
-  ##     .$getValueJSMethod + '();\n'
   out <- sprintf("var value = o%s.%s();\n", .$ID, .$getValueJSMethod)
   return(out)
 }
+
+##' write out transport function
+##'
+##' @return javascript string
 EXTWidget$transportFUN <- function(.) {
   out <- sprintf("_transportToR(%s, Ext.util.JSON.encode({value:value}) );\n", shQuote(.$ID))
-  ## out <- String() +
-  ##   '_transportToR(' + shQuote(.$ID) +', Ext.util.JSON.encode({value:value}));'
   return(out)
 }
 
+##' piece together transport string
+##'
+##' @return javascript string
 EXTWidget$writeTransport <- function(.,ext="",signal=NULL) {
   ## transport to R
   if(!is.null(.$transportSignal)) {
@@ -583,13 +604,18 @@ EXTWidget$writeTransport <- function(.,ext="",signal=NULL) {
   return(out)
 }
 
-## writes tooltip. Tooltips are added with tooltip<- function
-## value can be a URL (isURL == TRUE) or a string or a character vector which
-## gets pasted together to be a string
+### Tooltip
+##' property for width of tooltip
 EXTWidget$tooltipWidth <- 200
+##' propert to hide tooltip after time out
 EXTWidget$tooltipAutoHide <- TRUE # override to
 
 ##' method to write out tooltip padded with \code{tooltip<-} method.
+##'
+##' writes tooltip. Tooltips are added with tooltip<- function
+##' value can be a URL (isURL == TRUE) or a string or a character vector which
+##' gets pasted together to be a string
+##' @return javascript string
 EXTWidget$writeTooltip <- function(.) {
   out <- String()
   ## tooltip
@@ -625,8 +651,10 @@ EXTWidget$writeTooltip <- function(.) {
   return(out)
 }
 
-## show object, including catting it
-## called by Show
+##' show object,
+##' 
+##' Called by show(). This method cat's out value
+##' Called once while GUI is drawn, so catted out, not added to queue
 EXTWidget$show <- function(., queue=FALSE) {
   out <- String("\n") +
     .$writeConstructor() +
@@ -641,11 +669,8 @@ EXTWidget$show <- function(., queue=FALSE) {
 ##################################################
 ## Some "subclasses" of EXTWidget defined below
 
-## EXT Component -- for controls, etc
-
+##' EXT Component -- for controls, etc. Main subclass
 EXTComponent <- EXTWidget$new()
-
-
 
 ## public API. Call Show which wraps show withing header, tooltip,
 ## separators, footer,
@@ -660,6 +685,10 @@ EXTComponent <- EXTWidget$new()
 
 ## unlike a Container, these have no children
 
+##' Show method for cmponents
+##'
+##' Shows components, sets ..shown property
+##' @return NULL
 EXTComponent$Show <- function(.,...) {        # wraps Show
   ## add in any instance specific scripts
   ## component specific scripts written out once in gwindow
@@ -684,10 +713,16 @@ EXTComponent$Show <- function(.,...) {        # wraps Show
 
 ### Methods have two parts
 ### * one for first showing (sets value in R)
-### * one after shown -- returns string with javascript
+### * one after shown -- returns string with javascript to synchronize R to browser
 
+##' Property for setValue if assigning to a property
 EXTComponent$setValueJSAttribute <- "value"
+##' method call for setting values
 EXTComponent$setValueJSMethod = "setValue"  # oID.method()
+
+##' javascript to synchronize main value of component
+##'
+##' @return javascript string
 EXTComponent$setValueJS <- function(.,...) {
   if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
    ## default method to set the value using setValue
@@ -702,19 +737,14 @@ EXTComponent$setValueJS <- function(.,...) {
    return(out)                              # to browser, not file
  }
 
- EXTComponent$setValuesJS <- function(.,...) {
-   if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)  
-   return("")
- }
 
 
-EXTComponent$setNamesJS <- function(.) {}    # set names
+### Different components ##################################################
 
-## Different components
-
+##' a resizable component
 EXTComponentResizable <- EXTComponent$new()
 
-## footer adds in a resizable conainer -- notw orking?
+## footer adds in a resizable conainer -- not working?
 EXTComponentResizable$footer <- function(.) {
   lst <- list(id  = as.character(.$ID + 'resizer'),
               wrap = TRUE,
@@ -729,11 +759,17 @@ EXTComponentResizable$footer <- function(.) {
   return(out)
   }
 
+### Text component ##################################################
 ##
 ## We have gedit, gtext with key events, that are a bit different for handlers
 ## as we want to intercept the event with javascript
+
+##' main trait for text components
 EXTComponentText <- EXTComponent$new()
 
+##' method to write handler
+##'
+##' @return javascript string
 EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
    out <- String() +
     'function(' + .$handlerArguments(signal) + ') {'
@@ -748,9 +784,6 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
    ## need to do transport
    tmp1 <- sprintf("var value = escape(o%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));\n",
                    .$ID, shQuote(.$ID))
-   ## tmp1 <- String() +
-   ##   "var value = escape("+ "o" + .$ID + ".getValue());" + 
-   ##     "_transportToR('" + .$ID + "', Ext.util.JSON.encode({value:value}));" + "\n"
 
    ## wrap inside conditional
    if(!is.null(handler$args$key)) {
@@ -775,13 +808,8 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
   return(out)
 }
 
-
-##
-##
-###########
-
-## Container Trait. Main methods
-## are:
+### Container Trait.  ##################################################
+## Main methods are:
 ## newID -- ID for a widget generated when added to a container.
 ##   This also copies over stuff to
 ## add -- adds to list for later rendering
@@ -792,20 +820,28 @@ EXTContainer <- EXTWidget$new(children = list(),
                               height = "auto",
                               makeItemsFixedItems = "" # to make items[]
                               )
-## each object gets an ID.
+##' A new id
+##'
+##' Each child gets its own ID
+##' @return a new id (gWidgetID##)
 EXTContainer$newID <- function(.) {
   IDS <- .$toplevel$..IDS
   n <- length(IDS)
-  newID <- paste("gWidgetID",n+1,sep="")
-  .$toplevel$..IDS <- c(IDS,newID)
+  newID <- sprintf("gWidgetID%s", n+1)
+  .$toplevel$..IDS <- c(IDS, newID)     # append
   return(newID)
 }
-## add for a container does several things:
-## * set toplevel for each child
-## * add css to toplevel if applicable
-## * add javascript to toplevel if applicable
-## * set object into child
-## ... is not used XXX should fix this.
+
+##' Add child widget to a container
+##' 
+##' add for a container does several things:
+##' * set toplevel for each child
+##' * add css to toplevel if applicable
+##' * add javascript to toplevel if applicable
+##' * set object into child
+##' @param child child object to add
+##' @param ... is not used XXX should fix this.
+##' @return NULL
 EXTContainer$add <- function(.,child,...) {
 
    ## add an ID
@@ -873,41 +909,53 @@ EXTContainer$add <- function(.,child,...) {
  }
 
 
-## write out JS to add child after things have been shown
-## this is likely not perfect
+##' Write javascipt code to add containers after the GUI has been shown
+##'
+##'  this is likely not perfect!
+##' @param child gWidget instance
 EXTContainer$addJS <- function(.,child) {
   out <- sprintf("%s.add(%s); %s.doLayout();",
                  .$asCharacter(), child$asCharacter(), .$asCharacter())
-
-  ## out <- String() +
-  ##   .$asCharacter() + '.add(' + child$asCharacter() + ');' +
-  ##     .$asCharacter() + '.doLayout();'
-
   return(out)
 }
 
-## remove a widget
+##' remove a widget
+##'
+##' @param widget widget to remove
 EXTContainer$delete <- function(., widget) {
   ## remove widget from obj
   if(exists("..shown", envir=., inherits=FALSE)) {
-    ## cat(.$deleteJS(widget))
     .$addJSQueue(.$deleteJS(widget))
   }
 }
 
+##' javascript to synchronize R with GUI
+##'
+##' @param widget to be removed
+##' @return javascript code
 EXTContainer$deleteJS <- function(., widget) {
   sprintf("%s.remove(%s);", .$asCharacter(), widget$asCharacter())
 }
       
 
-## for containers width and height are properties, not in .style
+##' Set size for containers width and height are properties, not in .style
+##'
+##' @param value vector of width [height]
+##' @return sets properties
 EXTContainer$setSize <- function(., value) {
   .$width <- value[1]
   if(length(value) > 1)
     .$height <- value[2]
 }
+
+##' return size of widget
+##'
+##' @return integer width and height
 EXTContainer$getSize <- function(.) c(width=.$width,height=.$height)
 
+##' Create list with standard configurations
+##'
+##' We use a list to store configurations. This returns some defaults
 EXTContainer$ExtStdCfgOptions <- function(.) {
   out <- get("ExtStdCfgOptions",EXTWidget)(.)
   out[['width']] <- .$width
@@ -936,9 +984,11 @@ EXTContainer$ExtStdCfgOptions <- function(.) {
 
 
 
-## Containers have children to show too.
-## also a separator is possible to display between the children,
-## although this should go
+##' Show method for containers
+##' Containers have children to show too.
+##' also a separator is possible to display between the children,
+##' although this should go
+##' @param queue to we add to queue or simple cat out
 EXTContainer$Show <- function(., queue=FALSE) {
   ## css -- use createStyleSheet method of Ext JS to write out
   if(exists("css",envir=., inherits=FALSE)) {
@@ -1012,9 +1062,10 @@ EXTContainer$Show <- function(., queue=FALSE) {
 
 }
 
-## items are how containers refer to their children
-
-## this will be overridden more than likely
+##' shows the child items
+##' 
+##' items are how containers refer to their children
+##' this will be overridden more than likely
 EXTContainer$makeItems <- function(.) {
   childIDs <- sapply(.$children, function(i) i$ID)
   isResizable <- sapply(.$children, function(i)
@@ -1066,8 +1117,10 @@ EXTContainer$makeItems <- function(.) {
   return(items)
 }
 
-## overritde EXTWidget$show, as
-## unlike a EXTComponent, here we need to add in the items too
+##' override of EXTWidget$show,
+##' 
+##' unlike a EXTComponent, here we need to add in the items too
+##' @param queue do we cat or queue
 EXTContainer$show <- function(., queue=FALSE) {
   out <- String() +
     'o' + .$ID + '= new ' + .$ExtConstructor + '({' + '\n' +
@@ -1083,7 +1136,13 @@ EXTContainer$show <- function(., queue=FALSE) {
 ## Some widget have a data store associated with them
 ## eg. gcombobox, gtable, gdf 
 
-EXTStore <- EXTWidget$new() ##proto()
+##' Main trait to hold a data store
+EXTStore <- EXTWidget$new()
+
+##' new method for a data store.
+##'
+##' Sets classname, toplevel widget
+##' @param toplevel toplevel window
 EXTStore$new <- function(., toplevel=NULL) {
   obj <- .$proto(toplevel=toplevel)
   class(obj) <- c("gWidgetStore",class(obj))
@@ -1091,31 +1150,76 @@ EXTStore$new <- function(., toplevel=NULL) {
 }
 ## properties
 ## the data frame (or vector)
+
+##' the ID for the store
 EXTStore$ID <- NULL                      # get from newID
+##' property. The data held in the store
 EXTStore$data <- NULL
+##' property. For some stores, a chosen column is designtated
 EXTStore$chosenCol <- NULL               # selected column
 
-## methods
-## coerce val to a JS array
+## Store methods
+##' set data into store
+##'
+##' @param d the data
 EXTStore$setData <- function(.,d) .$data <- d
+
+##' get Data from store
+##'
+##' @return the data
 EXTStore$getData <- function(.) .$data
+
+##' dimension of store
+##'
+##' @return dimension (from dim())
 EXTStore$dim <- function(.) dim(.$getData())
+
+##' set the chosen column property
+##'
+##' @param value the chosen column
 EXTStore$setChosenCol <- function(.,value).$chosenCol <- value
+
+##' get the chosen column
+##'
+##' @return the value of chosen column
 EXTStore$getChosenCol <- function(.).$chosenCol
 
+##' method to coerce data to javascript array
+##'
+##' @param val if missing using data, otherwise will coerce this
+##' @return javascript to display
 EXTStore$asJSArray <- function(.,val) {
   if(missing(val)) val <- .$data
   toJSArray(val)
 }
+
+##' method to get ID for object
+##'
+##' @return the ID of the object
 EXTStore$asCharacter <- function(.) String('o') + .$ID + 'store'
+
+##' which field to display. (In gcombobox)
 EXTStore$displayField <- function(.) .$chosenCol
 
+##' names of fields
+##'
+##' In ext "fields" are just columns. This gives  names of data
 EXTStore$fieldNames <- function(.) {names(.$data)}
-## for combo tihs is just an array, 
-## for a grid object it is more work
+
+##' Make the javascript code to make the fields
+##' 
+##' for combo tihs is just an array, 
+##' for a grid object it is more work
+##' @return javascript string
 EXTStore$makeFields <- function(.) {
   .$asJSArray(.$fieldNames())
 }
+
+##' show method for stores
+##'
+##' cats or queues the javascript code to show the widget
+##' @param cat or queue
+##' @note XXX do we have this wrong? Doesn't Show call show, and Show do the catting?
 EXTStore$show <- function(., queue=FALSE) {
   out <- .$asCharacter() + '= new Ext.data.ArrayStore({' +
     'fields:  ' + .$makeFields() + ',' + '\n' +
@@ -1124,45 +1228,141 @@ EXTStore$show <- function(., queue=FALSE) {
   .$Cat(out, queue=queue)
 }
 
-## replace the store with this data frame
+##' replace the store with this data
+##'
+##' @param data data to replace
+##' @return javascript string to replace values
 EXTStore$replaceStore <- function(., data) {
   if(!missing(data)) .$data <- data
   out <- String() +
     .$asCharacter() + '.removeAll();' +
       .$asCharacter() + '.loadData(' +
         .$asJSArray() + ');'
-
   return(out)
 }
 ## XXX need more granular approach
 
 
-## extend Component to handle a data store
+
+
+##################################################
+##' A proxy store will call back into the server to fetch more data.
+##' We use a different handler for thes.
+EXTProxyStore <- EXTStore$new()
+EXTProxyStore$new <- function(., toplevel=NULL, pageSize=25) {
+  obj <- .$proto(toplevel=toplevel, pageSize=as.numeric(pageSize))
+  class(obj) <- c("gWidgetProxyStore",class(obj))
+  invisible(obj)
+}
+
+##' write javacript code to show store
+EXTProxyStore$show <- function(., queue=FALSE) {
+  if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
+    gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
+  if(is.null(gWidgetsWWWAJAXurl))  {
+    gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
+  }
+  out <- String() + "\n" +
+    .$asCharacter() + '= new Ext.data.ArrayStore({' +
+#    .$asCharacter() + '= new Ext.data.JsonStore({' +
+#      "totalProperty: 'totalCount', root:'data'," +
+      'fields:  ' + .$makeFields() + ',' + '\n' +
+        'proxy: new Ext.data.HttpProxy({' +
+          sprintf("url: '%s/%s/%s/%s',",  gWidgetsWWWAJAXurl,"proxystore", .$asCharacter(), .$toplevel$sessionID) +
+            "method: 'POST'" +         # use POST, not GET as this makes processing easier
+              "})" +
+                  "})" + "\n"
+  out <- out +
+    sprintf("%s.getTotalCount = function() {return %s};", .$asCharacter(), nrow(.$data))
+  
+  .$Cat(out, queue=queue)
+}
+
+##' Parse the query and return data as json
+##'
+##' Very ext specific. Raise error if not correct
+EXTProxyStore$parseQuery <- function(., query) {
+  df <- .$getData()
+  m <- nrow(df)
+  if(!is.null(query$start)) {
+    ## start limit query
+    start <- as.numeric(query$start); limit <- as.numeric(query$limit)
+    if(m == 0 || m < start) {
+      stop("Data store wrong size for request")
+    } else {
+      ind <- seq(start, min(m, start+limit))
+      out <- toJSArray.data.frame(df[ind,,drop=FALSE]) # not .$toJSArray
+#      out <- ourToJSON(df[ind,,drop=FALSE])
+#      out <- sprintf("{'totalCount':'%s', 'data':%s}", nrow(df), out)
+    }
+  } else {
+    out <- ""
+  }
+  return(out)
+}
+
+##' javascript code to replace data
+##'
+##' Adds in getTotalCount redeifintion
+EXTProxyStore$replaceData <- function(., data) {
+  out <- get("replaceData", "EXTStore")(., data)
+  out <- out +
+    sprintf("%s.getTotalCount = function() {return %s};", .$asCharacter(), nrow(.$data))
+  out
+}
+
+##' Base trait for components with stores
+##' 
+##' extends Component to handle a data store
 EXTComponentWithStore <- EXTComponent$new()
 
 ## additional properties
 
-## store -- holds an EXTStore instance
+## property store -- holds an EXTStore instance
 EXTComponentWithStore$..store <- NULL
 
 ## methods
+
+##' getValue method for component with stores
+##'
+##' @returns values in store
 EXTComponentWithStore$getValues <- function(., ...) {
   tmp <- .$..store$data
   if(names(tmp)[1] == "..index")
     tmp <- tmp[,-1]
   tmp
 }
+
+##' length of items in store
+##'
+##' @returns length
 EXTComponentWithStore$getLength <- function(.)
   length(.$getValues())
+
+##' names of values in store
+##'
+##' @return character names
 EXTComponentWithStore$getNames <- function(.)
   names(.$getValues())
+
 ## XXX names<- not defined
+
+##' Set values in store
+##'
+##' @param i index XXX not implemented
+##' @param j index XXX not implemented
+##' @param ... passed to setValueJS
+##' @param value values to store
 EXTComponentWithStore$setValues <- function(.,i,j,...,value) {
   ## XXX need to include i,j stuff
   .$..store$data <- value
   if(.$has_local_slot("..shown"))
     .$addJSQueue(.$setValuesJS(...))
 }
+
+##' produce javascript to synchronize R with GUI
+##'
+##' @return javascript
 EXTComponentWithStore$setValuesJS <- function(.) {
   if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)
   
@@ -1174,6 +1374,29 @@ EXTComponentWithStore$setValuesJS <- function(.) {
   return(out)
 }
 
+##' set the size of component with store.
+##'
+##' @param value Can be a vector, as usual, or a list. If the latter,
+##' the components width, height and columnWidths are of interest. The
+##' latter to set the column widths -- in pixels -- as opposed to
+##' having it determined
+##' @return NULL
+EXTComponentWithStore$setSize <- function(., value) {
+  if(is.list(value)) {
+    width <- value$width
+    height <- value$height
+    columnWidths <- value$columnWidths
+  } else {
+    width <- value[1]
+    height <- value[2]
+    columnWidths <- NULL
+  }
+  get("setSize", EXTWidget)(., c(width,height))
+  if(!is.null(columnWidths))
+    .$..columnWidths <- rep(columnWidths, length.out=.$getLength())
+
+  ## Has local slot shown ...if(
+}
 
 ## turn an object into an array
 EXTComponentWithStore$asJSArray <- function(.,...) {
@@ -1223,7 +1446,196 @@ EXTComponentWithStore$filter <- function(., colname, regex) {
 #  .$..store$asCharacter()               # call into store
 #}
 
+##' Get value (savlue)
+EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
+  ## we store value as an index
+  out <- .$..data
+  values <- .$..store$data
+  
+  if(exists("..shown",envir=.,inherits=FALSE)) {
+    ## get from widget ID
+    out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
+    if(!inherits(out,"try-error")) {
+      .$..data <- out                 # update data
+    } else {
+      out <- .$..data
+    }
+  }
+  ## no index -- return values
+  if(!is.null(index) && index) {
+    return(as.numeric(out))
+  } else {
+    ## depends on drop
+    values <- values[,-1]             # drop ..index
+    if(is.null(drop) || drop) {
+      return(values[as.numeric(out),.$..store$chosenCol,drop=TRUE])
+    } else {
+      return(values[as.numeric(out),])
+    }
+  }      
+}
 
+## create JS to set value in store
+EXTComponentWithStore$setValueJS <- function(., ...) {
+  if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
+  
+  ind <- .$getValue(index=TRUE, drop=TRUE)
+  out <- String() +
+    'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
+  
+  return(out)
+}
+
+##' maek the column model for display
+EXTComponentWithStore$makeColumnModel <- function(.) {
+    ## return array for columns
+    ## id, header, sortable, renderer, dataIndex, tooltip
+##     columns: [
+##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
+##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
+##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
+##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
+##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
+##               ],
+
+    mapRenderer <- function(type) {
+      switch(type,
+             "character"="",
+             "String" = "",
+             "integer" = ",renderer:gtableInteger",
+             "numeric" = ",renderer:gtableNumeric",
+             "logical" = ",renderer:gtableLogical",
+             "factor" = "",
+             "icon" = ",width: 16,renderer:gtableIcon",              # for icons(we create this)
+             "date" = "",               # we create this?
+             "")
+    }
+
+    df <- .$..store$data
+    renderers <- sapply(df[,-1, drop=FALSE], function(i) mapRenderer(class(i)[1]))
+    colNames <- names(df)[-1]           # XXX
+##    colNames <- names(df)
+    colNames <- shQuoteEsc(colNames)
+
+    ## widths
+    if(exists("..columnWidths", .)) {
+      colWidths <- .$..columnWidths
+    } else {
+      
+      fontWidth <- 10
+      colWidths <- sapply(df[,-1, drop=FALSE], function(i) max(nchar(as.character(i))) + 1)
+      colWidths <- pmax(colWidths, nchar(names(df[,-1, drop=FALSE])) + 1)
+      totalWidth <- ifelse(exists("..width", envir=., inherits=FALSE), .$..width, "auto")
+      if(totalWidth == "auto" || fontWidth * sum(colWidths) > totalWidth)
+        colWidths <- colWidths * fontWidth       # fontWidth pixels per character
+      else
+                                        #      colWidths <- floor(fontWidth * colWidths * totalWidth/sum(colWidths))
+        colWidths <- colWidths * fontWidth       # fontWidth pixels per character
+    }
+    ## didn't work for header:
+    trimDD <- function(x) {
+      ind <- grep("^..", x)
+      if(length(ind) > 0)
+        x[ind] <- "''"
+      return(x)
+    }
+
+    tmp <- paste('{',
+                 'id:',colNames,
+                 ', header:',colNames,
+                 ', sortable:true',
+                 ', width:', colWidths,
+                 ', dataIndex:',colNames,
+                 renderers,
+                 '}',
+                 sep="")
+    out <- paste('[\n', paste(tmp,collapse=",\n"), ']', collapse="")
+
+    return(out)
+  }
+
+
+##' Make fields for the store
+EXTComponentWithStore$makeFields <- function(.) {
+  ## return something like this with name, type
+  ##     fields: [
+  ##            {name: 'company'},
+  ##            {name: 'price', type: 'float'},
+  ##            {name: 'change', type: 'float'},
+  ##            {name: 'pctChange', type: 'float'},
+  ##            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
+  ##         ]
+  ## types in DataField.js
+  mapTypes <- function(type) {
+    switch(type,
+           "character"="",
+           "String" = ",type: 'string'",
+           "integer" = ",type: 'int'",
+           "numeric" = ",type: 'float'",
+           "logical" = ",type: 'boolean'",
+           "factor"  = "",
+           "date" = ",type:date",
+           "")
+  }
+  df <- .$..store$data
+  types <- sapply(df[,-1, drop=FALSE], function(i) mapTypes(class(i)[1]))
+  colNames <- shQuoteEsc(names(df)[-1])
+  tmp <- paste("{name:", colNames, types, "}", sep="")
+  out <- paste("[",tmp,"]", collapse="\n")
+  
+  return(out)
+}
+
+##' Transport signal -- when to send back info
+##' This does cell click (for gtable, gbigtable) 
+EXTComponentWithStore$transportSignal <- c("cellclick")
+##' method to transport values back to R
+EXTComponentWithStore$transportValue <- function(.,...) {
+    ## we packed in ..index so we can get the index even if we've sorted
+    if(.$..multiple) {
+       ## work a bit to get the value
+       out <- String() +
+         'var store = w.getStore();' +
+           'var selModel = w.getSelectionModel();' +
+             'var values = selModel.getSelections();' +
+               'var value = new Array();' +
+                 'for(var i = 0, len=values.length; i < len; i++) {' +
+                   'var record = values[i];' +
+                     'var data = record.get("..index");' +
+                         'value[i] = data' +
+                           '};'
+     } else {
+       out <- String() +
+         'var record = w.getStore().getAt(rowIndex);' +
+           'var value = record.get("..index");' 
+     }
+    return(out)
+  }
+
+
+EXTComponentWithStore$addHandlerClicked <- function(.,handler, action=NULL, ...) {
+  ## we need to set up some stuff
+  .$addHandler(signal="cellclick",
+               handler = handler,
+               action = action,
+               handlerArguments = "grid, rowIndex, colIndex, e",
+               handlerValue = "var value = rowIndex + 1;"
+               )
+}
+
+## double click is default
+EXTComponentWithStore$addHandlerDoubleclick  <- function(.,handler, action=NULL, ...) {
+  ## we need to set up some stuff
+  .$addHandler(signal="dblclick",
+               handler = handler,
+               action = action,
+               handlerArguments = "grid, rowIndex, colIndex, e",
+               handlerValue = "var value = rowIndex + 1;")
+}
+ 
+  
+##################################################
+  
 ##' Sub Trait for gdf
 EXTComponentDfStore <- EXTComponentWithStore$new()
 
@@ -1270,6 +1682,25 @@ EXTComponentDfStore$setValuesJS <- function(., i,j,value) {
   .$addJSQueue(out)
 }
   
+
+##################################################
+## extend ComponentWithStore to handl proxy
+EXTComponentWithProxyStore <- EXTComponentWithStore$new()
+
+## additional properties
+
+## store -- holds an EXTStore instance
+EXTComponentWithProxyStore$..store <- NULL
+
+## Proxy store must call load method
+EXTComponentWithProxyStore$show <- function(., queue=FALSE) {
+  .$..store$show(queue=queue)
+  get("show",EXTComponentWithStore)(., queue=queue)       # call up
+  .$Cat(sprintf("%s.load({params:{start:0, limit:%s}});",
+                .$..store$asCharacter(), .$..store$pageSize),
+        queue=queue)
+}
+
 
 
 ### Some widgets render better in a panel

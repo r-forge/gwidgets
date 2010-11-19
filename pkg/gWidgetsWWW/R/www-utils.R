@@ -201,6 +201,25 @@ ourFromJSON <- function(x, ...) {
   fromJSON(x, ...)
 }
 
+##' make toJSON a method
+##' Failed? Wasn't dispatching right, so hard code in classes
+ourToJSON <- function(x, ...) {
+  f <- function(x) {
+    if(is(x, "logical"))
+      x <- tolower(as.character(x))
+    if(is(x, "factor"))
+      x <- as.character(x)
+    if(is(x, "character"))
+      x <- shQuote(x)
+    
+    sprintf("[%s]", paste(as.character(x), collapse=","))
+  }
+  if(is(x, "data.frame"))
+    out <- sprintf("[%s]",
+            paste(shQuote(names(x)), sapply(x, f), sep=":", collapse=","))
+  else
+    out <- f(x)
+}
 
 ##' coerce an object into a JSStrig
 ## String here is misnamed --

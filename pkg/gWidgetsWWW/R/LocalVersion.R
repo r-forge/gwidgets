@@ -145,14 +145,7 @@ processBasehtmlFile <- function(path, query, ...) {
 ##' @param ... ignored
 ##' 
 processStaticFile <- function(path, query, ...) {
-  cat(path, "\n", file="/tmp/debug-static.txt")
   f <- sprintf("%s%s",.Platform$file.sep, Reduce(file.path, path))
-
-  cat(f, mime_type(f),"\n", file="/tmp/debug-static.txt", append=TRUE)
-
-#  if(grepl(gWidgetsWWWStaticDir, path))
-#    f <- path
-
   if(!file.exists(f))
     return(makeErrorPage(sprintf("Can't find %s", f)))
 
@@ -264,7 +257,8 @@ processExternalRun <- function(path, query, ...) {
 ##' @details These all come as POST requests. This information is
 ##' passed through ..., not query. We call it query below, nonetheless
 processAJAX <- function(path, query, ...) {
-  query <- list(...)[[1]]               # query passed in body, not query (POST info)
+  if(is.null(query))
+    query <- list(...)[[1]]               # query passed in body, not query (POST info, not GET)
 
   
   ## rstudio passes query as an object with a attr "application/x-www-form-urlencoded; charset=UTF-8"
@@ -283,7 +277,14 @@ processAJAX <- function(path, query, ...) {
   }
 
   query <- lapply(query, function(i) i) # make a list
+
+
   type <- query$type
+
+  if(is.null(type))
+    type <- path[1]                     # for calling in url
+
+
   
   switch(type,
          "runHandler"= {
@@ -320,6 +321,18 @@ processAJAX <- function(path, query, ...) {
                        "status code"=200L
                        )
          },
+         "proxystore"={
+           ## grab id
+           ## look up store from id
+           ## return store[i:(i+step),]
+           ## query has start, limit. Path is funny
+           l <- gWidgetsWWW:::localProxyStore(path[2], path[3], query)
+           ret <- list(payload=l$out,
+                       "content-type"="application/json",
+                       "headers"=NULL,
+                       "status code"=200L
+                       )
+         },
          "fileupload"={
            ret <- makeErrorPage(sprintf("Don't know how to process type %s.", type))
          })
@@ -335,23 +348,17 @@ processAJAX <- function(path, query, ...) {
 ##' @param ... passes in post information (for AJAX calls!)
 gw.httpd.handler <- function(path, query, ...) {
 
+
   ## here path is path, query contains query string, ... ???
-  ## assign("path", path, envir=.GlobalEnv)
-  ## assign("query", query, envir=.GlobalEnv)
-  ## assign("post", list(...)[[1]], envir=.GlobalEnv)
   path <- ourURLdecode(path)
   query <- ourURLdecode(query)
+
   
   ## strip off /custom/url_base/
   path <- gsub(sprintf("^/custom/%s/",url_base), "", path)
   path <- unlist(strsplit(path, "/"))
 
-  cat("dispatch", "\n", file="/tmp/log.txt")
-  cat(path[1], "\n", file="/tmp/log.txt", append=TRUE)
-  cat(path[-11], "\n", file="/tmp/log.txt", append=TRUE)
-  cat(query, "\n", file="/tmp/log.txt", append=TRUE)
 
-  
   ## Dispatch on value of path[1]
   out <- switch(path[1],
                 "ext"=processBasehtmlFile(path, query, ...),
@@ -469,6 +476,14 @@ localServerOpen <- function(file, package=NULL, ...) {
     cat(sprintf("Can't find file %s\n", file))
 }
 
+##' return values
+##'
+##' Return error code if TRUE, OK if FALSE
+wasError <- function(val) {
+  ifelse(val, 419L, 200L)
+}
+
+
 ##' Source a file or url to write the web page
 ##'
 ##' @param file_or_url A file or url passed to source to produce the gWidgetsWWW web page
@@ -541,7 +556,23 @@ localRunHandler <- function(id, context=NULL, sessionID) {
   return(ret)
 }
 
+##' return data from proxy store
+##'
+##' @param id id of store
+##' @param sessionID session id to look up store
+##' @param query  Contains parameters passed by ext
+localProxyStore <- function(id, sessionID, query) {
+  e <- getBaseObjectFromSessionID(sessionID)
+  store <- e$getStoreById(id)
 
+
+
+  out <- try(store$parseQuery(query), silent=TRUE)
+  ret <- list(out=out,
+              retval=wasError(inherits(out, "try-error")))
+  return(ret)
+}
+  
 
 ## find file and run from package
 ## This one requires us to put in headers. This allows

@@ -52,7 +52,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
   ##  w$..visible <- FALSE
 
 
-  
+
   w$setValue(value=title)
   ## XXX handle cat to STDOUT
    w$file <- file; unlink(file)
@@ -71,6 +71,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
   
    
   #### methods ####
+  
   ##' run a handler
   ##' id is id of handler. Can be used for blocked handlers
   ##' context is named list of values to pass into "h" object
@@ -214,14 +215,14 @@ gwindow <- function(title="title",file="",visible=TRUE,
                       ## we get some XML back, not JSON
                       "success: function(response, opts) {}," +
                         "failure: processFailure," +
-                          "timeout: 2000," +
+                          sprintf("timeout: %s,", .$..AJAXtimeout) +
                             "method: 'POST'," +
-                            "params: { type: 'assign', " +
-                              "sessionID: sessionID," +
-                                "variable: id," +
-                                  "value: val" +
-                                    "}})};" + "\n"
-
+                              "params: { type: 'assign', " +
+                                "sessionID: sessionID," +
+                                  "variable: id," +
+                                    "value: val" +
+                                      "}})};" + "\n"
+              
               out <- out +
                 'function clearSession() {' +
                   "Ext.Ajax.request({" +
@@ -338,6 +339,26 @@ gwindow <- function(title="title",file="",visible=TRUE,
      return("")
    }
 
+  ## handlers for store
+
+  ##' we need to look up proxy stores when we process
+  w$proxyStores <- list()
+
+  ##' add a proxy store for later lookup
+  
+  w$addStore <- function(., store) {
+    l <- .$proxyStores
+    l[[store$asCharacter()]] <- store
+    .$proxyStores <- l
+  }
+
+  ##' get a proxy store from its id
+  w$getStoreById <- function(., id) {
+    .$proxyStores[[id]]
+  }
+
+
+  
    ## unload handler
    if(!is.null(handler)) 
      w$addHandler("onunload",handler, action=action)

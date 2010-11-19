@@ -108,3 +108,15 @@ bypassRequire <- function(pkg) {
   path <- system.file(package=pkg);
   (path != "");
 }
+
+
+##' get with a default
+getWithDefault <- function(x, default) {
+  if(is.null(x))
+    default
+  else
+    x
+}
+
+##' get from ...
+getFromDots <- function(..., var, default) getWithDefault(list(...)[[var]], default)

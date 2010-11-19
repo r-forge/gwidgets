@@ -45,7 +45,7 @@ export(
        "gslider","gspinbutton",
        "gstatusbar",
        "gsvg",
-       "gtable",
+       "gtable", "gbigtable",
        "gtext",
        "gwebvis",
        "gwindow",

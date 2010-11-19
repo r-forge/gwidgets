@@ -347,6 +347,19 @@ The communication between \R\/ and the browser works as
   The \code{icon.FUN} should return either url's or stock icon names.
   \cr
 
+  For tables the \code{size<-} method can be, as usual, a vector of
+  width and height values (in pixels). However, it ma also be a list
+  with components \code{width}, \code{height} and
+  \code{columnWidths}. The latter allows one to specify the widths of
+  each column in pixels. Otherwise these are intuited from the maxmim
+  number of characters in each column at time of construction.
+
+  The \code{gbigtable} widget allows very large tables to be
+  displayed, at it only shows part of the table at once. The number of
+  lines displayed is specified by the \code{pageSize} argument, with
+  default of 25.
+
+
   The \code{gdf} widget is implemented but limited. The widget
   recognizes certain data types and provides different means to edit the
   values. However, there is no capacity to add rows or columns. (One

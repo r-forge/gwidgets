@@ -2,29 +2,37 @@
 ## The GUI calls this as a form using an AJAX request
 ## This script returns javascript to be processed
 ## we limit the ability to call R from the browser to a) assignment to a gWidget
-## variable or b) to run a handler by its id.
+## variable b) to run a handler by its id c) a proxystore request d) fileupload?
 
 ## This script requires some packages and variables for keeping
 ## track of the session to be set
 
 require(rjson)
+require(gWidgetsWWW, quietly=TRUE)
 
 sendError <- function(db, msg) {
 #  out <- try(dbDisconnect(db), silent=TRUE)
   stop(paste("alert('", msg, "');"))
 }
 
+## must figure out type. Type can be set in POST value -- or be buried in the path type/id/sessionID
+if(is.null(POST) || is.null(POST$type)) {
+  path <- SERVER$path
+  path <- unlist(strsplit(path, "/"))
+  type <- path[1]
+  id <- path[2]
+  sessionID <- path[3]
+} else {
+  type <- POST$type
+  id <- POST$id                         # if present
+  sessionID <- POST$sessionID
+}
 
-if(!is.null(POST) && !is.null(POST$type)) {
+if(!is.null(type)) {
 
   RApacheOutputErrors(TRUE, '', '')
 
   
-  type <- POST$type
-
-  ## get session ID    
-  sessionID <- POST$sessionID
-
 
   if(exists("sessionDBIlogfile"))
     cat(sessionID, "\n", file=sessionDBIlogfile, append=TRUE)
@@ -150,6 +158,19 @@ if(!is.null(POST) && !is.null(POST$type)) {
       db[[sessionID]] <- e
     } else {
       sendError(db, paste("var name ", variable, " is not acceptable"))
+    }
+  } else if(type == "proxystore") {
+    ## get info from proxy store
+    store <- w$getStoreById(id)
+    out <- try(store$parseQuery(query), silent=TRUE)
+    
+    setContentType("application/javascript")
+    if(!inherits(out,"try-error")) {
+      cat(out)
+      200L
+    } else {
+      cat("Error")
+      419L
     }
   } else if(type == "fileupload") {
     ## XXX Implement me with security

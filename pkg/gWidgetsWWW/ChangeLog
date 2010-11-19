@@ -1,3 +1,10 @@
+2010-11-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTComponentWithStore$setSize): For components with
+	stores (gtable, gdf, gbigtable) the size may be specified with a
+	list with named components width, height and most imporantly
+	columnWidths. The latter specifies the individual column widths in pixels.
+
 2010-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gwindow.R (gwindow): add hidden argument AJAXtimeout to
