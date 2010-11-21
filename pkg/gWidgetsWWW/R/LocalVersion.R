@@ -235,13 +235,9 @@ processSource <- function(path, mimeType=mime_type(path)) {
 ##' @param ... ignored
 ##' @return payload to send to web server
 processRun <- function(path, query, ...) {
-  
   path <- paste(path, collapse=.Platform$file.sep)
-
-
   if(!file.exists(path))
     return(makeErrorPage(sprintf("Can't find %s", path)))
-
   ## if mime_type is text/plain, otherwise we pass through
   if(mime_type(path) == "text/plain") {
     ret <- processSource(path, "text/html")
@@ -488,14 +484,25 @@ gWloadFile <- function(file, ...) {
 }
 
 ##' Load file from pacakge
-##' @param file passed to system.file. If NULL, ignored
+##' @param file or connection. File is full file path or if package is
+##' non-NULL found from system.file(file, package=package). If a
+##' connection, a temporary file is found to use and the connection is
+##' closed.
 ##' @param package to look for file
 ##' @return NULL (opens page or gives message)
 localServerOpen <- function(file, package=NULL, ...) {
-  if(is.null(file))
-    return()                            # do nothing
-  if(!is.null(package))
+  if(missing(file))
+    return()
+  
+  if(is(file, "connection")) {
+    f <- tempfile(".R")
+    cat("", file=f)
+    sapply(readLines(file, warn=FALSE), function(i) cat(i,"\n", file=f, append=TRUE))
+    close(file)
+    file <- f
+  } else if(!is.null(package)) {
     file <- system.file(file, package=package)
+  }
   if(file.exists(file))
     gWloadFile(file, ...)
   else

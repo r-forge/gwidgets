@@ -784,7 +784,7 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
    tmp <- tmp + ');'
 
    ## need to do transport
-   tmp1 <- sprintf("var value = escape(o%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));\n",
+   tmp1 <- sprintf("var value = escape(o%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));",
                    .$ID, shQuote(.$ID))
 
    ## wrap inside conditional
@@ -806,7 +806,7 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
      out <- out + tmp
    }
    ## close up
-   out <- out + '}' + '\n'
+   out <- out + '}' + '\n\n'
   return(out)
 }
 

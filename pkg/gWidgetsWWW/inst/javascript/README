@@ -1,4 +1,1 @@
-These are javascript files that are called in through the $scripts part of a widget
-They do not need installation, but rather are output when a widget is used. (Ease instead of speed)
-
-Often an initial blank line is useful.
+These scripts are compressed into the gWidgetsWWW.js file in the basehtml directory

@@ -213,3 +213,4 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
 });
 
 Ext.reg('gmappanel', Ext.ux.GMapPanel); 
+

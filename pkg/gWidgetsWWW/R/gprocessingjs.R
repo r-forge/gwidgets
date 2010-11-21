@@ -13,8 +13,6 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-## XXX This is deprecated.
-
 
 ## interface to Processing.js
 ## handlers of processingEvents return javascript using processing. Use <<p>> to refer to processing
@@ -24,6 +22,24 @@
 ##        "<<p>>.line(1,2,4,5)
 ## }
 
+##' Widget to allow low-level graphics commands through processingjs.
+##'
+##' The advantage over gcanvas is that this has more interactivity
+##' defined for it.  The use of this is different though. The basic
+##' idea is that several of the lowlevel plot commands are
+##' implemented. For exmaple plot.new, plot.window, axis, title,
+##' lines, polygon etc. These are called differently though. They are
+##' implemented as proto methods of the gprocessingjs object, so are
+##' called as in p\$plot.window().  The method addHandlerClick passes
+##' back a value xy wich contains the position of the mouse click in
+##' pixel coordinates. One can use the method pixelsToXY to covert to
+##' usr coordinates.
+##' @param width of graphic
+##' @param height height of graphic (pixels)
+##' @param pointsize size of fonts
+##' @param container parent container
+##' @param ... passed to container's add method
+##' 
 gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL, ...) {
   widget <- EXTComponent$new(toplevel = container$toplevel,
                              ..width = width,
@@ -50,18 +66,6 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
   ## holds value as string
   widget$out <- String()
   
-  
-  ## methods to construct widget
-  widget$scripts <- function(.) {
-    files <- c("ext.ux.canvas.js", "processing.js", "processinginit.js")
-    ##    files <- c("ext.ux.canvas.js", "processing-0.9.1.js", "processinginit.js")
-    out <- String() + "\n"
-    for(i in files) {
-      f <- system.file("javascript",i, package="gWidgetsWWW")
-      out <- out + paste(readLines(f), collapse="\n") + "\n"
-    }
-    return(out)
-  }
 
   widget$ExtConstructor <- "Ext.ux.Canvas"
   widget$ExtCfgOptions <- function(.) {
@@ -71,15 +75,17 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
   }
 
 
+  widget$asCharacter <- function(.) sprintf("processing%s", .$ID)
+  
   widget$footer <- function(.) {
     ID <- .$ID
-    pID <- String("processing") + ID
+    pID <- .$asCharacter()
    ## create element
-    out <- String() +
-      "var " + pID + " = Processing('" + ID + "');" +
-        pID + ".size(" + .$..width + "," + .$..height + ");" +
-          .$out
-
+    out <- String() + "\n" + "// ------- \n" +
+      sprintf("var %s = new Processing(document.getElementById('%s'));", .$asCharacter(), .$ID) +
+        sprintf("%s.size(%s, %s);", .$asCharacter(), .$..width, .$..height) +
+          .$out + "\n"
+    
      ## for i in handlers, call
      ## these are javascript to call direct avoiding R handlers.
      for(i in .$processingEvents) {
@@ -94,9 +100,8 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
        }
      }
      ## call init
-    out <- out + pID + ".init();"
-    
-    .$Cat(out)
+#    out <- out + sprintf("%s.init();", .$asCharacter())
+    out
   }
   
   ## turn method into javascript command from Processing.js
@@ -107,8 +112,9 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
 
     val <-  String() +
       "processing" + .$ID +  "." + name + "(" + vals + ");"
-    if(exists("..shown", envir=., inherits=FALSE))
-      cat(val)
+
+    if(.$has_local_slot("..shown"))
+      .$addJSQueue(val)
     else
       .$out <- .$out + val
   }
@@ -450,11 +456,11 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
     if(is.na(col))
       col <- "black"
     col <- .$fixColor(col)
-    col <- rep(col, length(xy$x))
+    col <- rep(col, length.out=length(xy$x))
 
-    for(i in 1:length(xy$x))  {
+    for(i in seq_along(xy$x))  {
       .$fill(col[i])
-      .$ellipse(xy$x[i], xy$y[i], round(cex * 5))
+      .$ellipse(xy$x[i], xy$y[i], round(cex[i] * 5))
     }
   }
   
