@@ -1,4 +1,17 @@
+2010-11-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (gtree): added gtree widget. Not fully featured, as
+	there is no grid
+
 2010-11-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R (gslider): added tooltipTemplate (hidden) argument
+	to specify a template for the tooltip. The value {0} is
+	substituted. Again, not so fast. Had issues with 3.3.0 so reverted back
+
+	* change ext-3.0 to ext-3.3.0 (primarily for the grid tree). Not
+	so fast. Can't get 3.3.0 to work with chrome and safari so
+	reverted back
 
 	* R/aaa.R (EXTComponentWithStore$setSize): For components with
 	stores (gtable, gdf, gbigtable) the size may be specified with a

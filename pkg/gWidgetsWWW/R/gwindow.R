@@ -321,11 +321,6 @@ gwindow <- function(title="title",file="",visible=TRUE,
      out <- out +
        'var sessionID =' + shQuote(.$sessionID) + ';' + '\n'
      
-##      out <- out +
-##        'o' + .$ID + '.on("destroy", function() {clearSession("hi");});'
-
-     ## finish Ext.onReady
-#     out <- out + '})\n'
      .$Cat(out)
 
 
@@ -404,7 +399,6 @@ handler = NULL, action=NULL, container=NULL,...) {
   
     out <-  String() +
       'o' + .$ID + '.setTitle(' + shQuote(.$..data) + ');' + '\n'
-  ##cat(out, file=stdout())
   .$addJSQueue(out)
   }
 
@@ -476,8 +470,7 @@ handler = NULL, action=NULL, container=NULL,...) {
     out <-  out + 'o' + .$ID + '.render();' + '\n'
     if(visible(.))
       out <-  out + 'o' + .$ID + '.show();' + '\n'
-
-    ##.$Cat(out)
+    out
   }
 
   ## we don't add. The subwindow prints out

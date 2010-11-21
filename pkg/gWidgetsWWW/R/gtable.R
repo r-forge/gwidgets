@@ -335,10 +335,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
   }
 
   widget$footer <- function(.) {
-    out <- String() +
-      'o' + .$ID + '.getSelectionModel().selectFirstRow();'
-
-    .$Cat(out, queue=.$has_local_slot("..shown"))
+    sprintf('%s.getSelectionModel().selectFirstRow();',.$asCharacter())
   }
   
   

@@ -2,7 +2,7 @@ w <- gwindow("gWidgetsWWW")
 g <- ggroup(cont = w, horizontal=FALSE)
 ghtml("<h1>gWidgetsWWW</h1>", cont = g)
 f <- gexpandgroup("About", cont = g)
-msg <- readLines(textConnection("The gWidgets package provides an API to abstract the interface to a
+con <- textConnection("The gWidgets package provides an API to abstract the interface to a
 few of the available GUI toolkits avaiilable through R. The
 gWidgetsWWW package provides an implementation of the gWidgets
 API for use through a web browser. That is, using just R commands interactive
@@ -44,7 +44,9 @@ b <- gbutton('click me', cont=g, handler=function(h,...) {<br />
 })<br />
 visible(w) <- TRUE<br />
 </code>
-</p>"), warn=FALSE)
+</p>")
+msg <- readLines(con, warn=FALSE)
+close(con)
 ghtml(paste(msg, collapse=" "), cont=f)
 
 

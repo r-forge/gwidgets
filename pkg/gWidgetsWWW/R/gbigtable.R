@@ -105,10 +105,10 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
             "displayInfo: true,",
             "displayMsg: 'Displaying topics {0} - {1} of {2}',",
             "emptyMsg: 'No topics to display',",
-            "items:[",
-            "'-', {",
-            "pressed: true,",
-            ## XXX still need to get rid of button for preview.
+#            "items:[",
+#            "'-', {",
+#            "pressed: true,",
+#            ## XXX still need to get rid of button for preview.
 #            "enableToggle:true,",
 #            "text: 'Show Preview',",
 #            "cls: 'x-btn-text-icon details',",
@@ -117,7 +117,7 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
 #            "view.showPreview = pressed;",
 #            "view.refresh();",
 #            "}",
-          "}]",
+#          "}]",
           "})",
             collapse="\n")
 
@@ -145,11 +145,9 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
   }
 
 
+  ## select first row
   widget$footer <- function(.) {
-    out <- String() +
-      'o' + .$ID + '.getSelectionModel().selectFirstRow();'
-
-    .$Cat(out, queue=.$has_local_slot("..shown"))
+    sprintf("%s.getSelectionModel().selectFirstRow();\n", .$asCharacter())
   }
   
   

@@ -15,12 +15,10 @@
 
 
 
-##'
-##'
-##' ##' Environment to hold different sessions
+##' Environment to hold different sessions
 assign("..gWidgets_sessionEnv", new.env(), envir=.GlobalEnv)
 
-##' remove session form list to free up space
+##' remove session from list to free up memory
 clearSessionId <- function(ID) {
   sessionEnv <- get("..gWidgets_sessionEnv",  envir=.GlobalEnv)
   sessionEnv[[ID]] <- NULL
@@ -47,7 +45,9 @@ getBaseObjectFromSessionID <- function(sessionID, envir=.GlobalEnv) {
   return(NULL)
 }
 
-##' return all gWindow instances
+##' return all gWindow instances in an environment
+##'
+##' @param environment to search in
 getBaseObjectsFromEnvironment <- function(envir=.GlobalEnv) {
   vars <- ls(envir=envir)
   ind <- sapply(vars, function(i) inherits(get(i, envir=envir), "gWindow"))
@@ -58,7 +58,10 @@ getBaseObjectsFromEnvironment <- function(envir=.GlobalEnv) {
   return(gWindowObjects)
 }
   
-  
+##' escape brackets in a string
+##'
+##' @param x character value to escape
+##' @return character
 escapeBrackets <- function(x) gsub("(\\{|\\})", "\\\\\\1", x)
 
 
@@ -66,6 +69,8 @@ escapeBrackets <- function(x) gsub("(\\{|\\})", "\\\\\\1", x)
 ##'
 ##' Find mime type from file extension
 ##' (Taken from Duncan Murdoch's work)
+##' @param path file name
+##' @return mime type
 mime_type <- function(path) {
   ext <- strsplit(path, ".", fixed = TRUE)[[1L]]
   if(n <- length(ext)) ext <- ext[n] else ""
@@ -84,9 +89,14 @@ mime_type <- function(path) {
          "text/plain")
 }
 
+
+
 ##' return an error
+##' 
 ##' @param msg String. error message
-##' @param status_code Integer. use to specify status code. Default if 404L
+##' @param status_code Integer. use to specify status code. Default if 400L
+##' @return Returns a list with components indicating the payload (the
+##' text to display), the content type and the status code. 
 makeErrorPage <- function(msg, status_code=400L) {
   list(payload=paste(msg, collase="\n"),
        "content-type"="text/html",
@@ -97,6 +107,7 @@ makeErrorPage <- function(msg, status_code=400L) {
 ##'
 ##' @param file filename of script
 ##' @param content_type MIME type of output
+##' @return list containng output and status
 processScript <- function(file, content_type="text/html") {
   ## source file, capture output
   out <- capture.output(source(file))
@@ -114,7 +125,7 @@ processScript <- function(file, content_type="text/html") {
 ##' @param path path to file
 ##' @param query query string (path?var1=x&var2=u) -> path=path; query=c(var1="x", var2="u")
 ##' @param ... ignored
-##' 
+##' @return payload to send to web server
 processBasehtmlFile <- function(path, query, ...) {
   f <- sprintf("/basehtml/%s", strip_slashes(paste(path, collapse="/")))
   f <- gsub("//","/", f)                # just in case
@@ -143,14 +154,12 @@ processBasehtmlFile <- function(path, query, ...) {
 ##' @param path path to file
 ##' @param query query string (path?var1=x&var2=u) -> path=path; query=c(var1="x", var2="u")
 ##' @param ... ignored
-##' 
+##' @return payload to return to web server
 processStaticFile <- function(path, query, ...) {
   f <- sprintf("%s%s",.Platform$file.sep, Reduce(file.path, path))
   if(!file.exists(f))
     return(makeErrorPage(sprintf("Can't find %s", f)))
 
-
-  
   ## see https://code.google.com/speed/page-speed/docs/caching.html
   ## doesn't seem to work with firefox
   temp <- "%a %b %e %Y %H:%M:%S GMT%z (%Z)"
@@ -171,6 +180,7 @@ processStaticFile <- function(path, query, ...) {
 ##' @param path path to file
 ##' @param query query string (path?var1=x&var2=u) -> path=path; query=c(var1="x", var2="u")
 ##' @param ... ignored
+##' @return payload to send to web server
 processPath <- function(path, query, ...) {
   l <- list(...)
   l$path <- path
@@ -187,6 +197,7 @@ processPath <- function(path, query, ...) {
 ##'
 ##' @param path a file or sure. (Passed to source)
 ##' @param mimeType to specify mime type
+##' @return payload to send to web server
 processSource <- function(path, mimeType=mime_type(path)) {
   e <- new.env()
   results <- try(capture.output(do.call("source", list(path, local=TRUE), envir=e)), silent=TRUE)
@@ -222,6 +233,7 @@ processSource <- function(path, mimeType=mime_type(path)) {
 ##' @param path path to file
 ##' @param query query string (path?var1=x&var2=u) -> path=path; query=c(var1="x", var2="u")
 ##' @param ... ignored
+##' @return payload to send to web server
 processRun <- function(path, query, ...) {
   
   path <- paste(path, collapse=.Platform$file.sep)
@@ -242,7 +254,11 @@ processRun <- function(path, query, ...) {
 }
 
 ##' run an external file (from a url)
+##' 
 ##' query passes in url: /custom/gw/gWidgetsWWWRunExternal?url=http://www.math.csi.cuny.edu/test
+##' @param path ignored
+##' @param query the path is the first entry.
+##' @return calls processSource
 processExternalRun <- function(path, query, ...) {
   path <- ourURLdecode(query[1])
   ret <- processSource(path, "text/html")
@@ -256,6 +272,7 @@ processExternalRun <- function(path, query, ...) {
 ##' @param ... Passes in detail abou tPOST event
 ##' @details These all come as POST requests. This information is
 ##' passed through ..., not query. We call it query below, nonetheless
+##' @return a payload to send to web server
 processAJAX <- function(path, query, ...) {
   if(is.null(query))
     query <- list(...)[[1]]               # query passed in body, not query (POST info, not GET)
@@ -284,8 +301,6 @@ processAJAX <- function(path, query, ...) {
   if(is.null(type))
     type <- path[1]                     # for calling in url
 
-
-  
   switch(type,
          "runHandler"= {
            l <- gWidgetsWWW:::localRunHandler(query$id, query$context, query$sessionID)
@@ -310,8 +325,9 @@ processAJAX <- function(path, query, ...) {
          },
          "clearSession"={
            ## clear out session
+           ## For some reason this setup gives a SIGPIPE error and it isn't in the call to clearSessionID
            clearSessionId(query$sessionID)
-            ret <- list(payload="",
+           ret <- list(payload="",
                        "content-type"="text/html",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
@@ -322,10 +338,9 @@ processAJAX <- function(path, query, ...) {
                        )
          },
          "proxystore"={
-           ## grab id
-           ## look up store from id
-           ## return store[i:(i+step),]
-           ## query has start, limit. Path is funny
+           ## localProxyStore dispatches to a method of the store which considers query
+           ## path[2] is the id of the widget, path[3] is the sessionID. These are passed
+           ## in via the URL -- not the query
            l <- gWidgetsWWW:::localProxyStore(path[2], path[3], query)
            ret <- list(payload=l$out,
                        "content-type"="application/json",
@@ -336,7 +351,6 @@ processAJAX <- function(path, query, ...) {
          "fileupload"={
            ret <- makeErrorPage(sprintf("Don't know how to process type %s.", type))
          })
-  ##  assign("ret", ret, envir=.GlobalEnv)
   return(ret)
 }
 
@@ -346,6 +360,7 @@ processAJAX <- function(path, query, ...) {
 ##' @param path passes in path including custom/gw bit
 ##' @param query passes in GET info
 ##' @param ... passes in post information (for AJAX calls!)
+##' @return output of functions is a payload list.
 gw.httpd.handler <- function(path, query, ...) {
 
 
@@ -377,15 +392,24 @@ gw.httpd.handler <- function(path, query, ...) {
 
 ##' is the server running
 ##'
+##' @return logical
 isServerRunning <- function() {
   tools:::httpdPort > 0L
 }
 
 ## for testing from outside package
+##' global value for base url
 url_base <- NULL
+##' global value for AJAX url
 gWidgetsWWWAJAXurl <- NULL
+
+##' global for image directory url
 gWidgetsWWWimageUrl <- NULL
+
+##' global for directory where static files are to go
 gWidgetsWWWStaticDir <- NULL
+
+##' global variable to indicate if running locally or via rapache server
 .gWidgetsWWWisLocal <- NULL
 
 ##' start the local server for gWidgetsWWW
@@ -453,6 +477,7 @@ localServerStart <- function(file="", port=8079, package=NULL, ...) {
 ##' Load a file in gWidgets by calling gWidgetsWWWRun
 ##' @param file filename to open
 ##' @note  XXX Unix only? Test this
+##' @return NULL
 gWloadFile <- function(file, ...) {
   localServerStart(file=NULL)
   .url <- sprintf("http://127.0.0.1:%s/custom/%s/gWidgetsWWWRun/%s",
@@ -465,6 +490,7 @@ gWloadFile <- function(file, ...) {
 ##' Load file from pacakge
 ##' @param file passed to system.file. If NULL, ignored
 ##' @param package to look for file
+##' @return NULL (opens page or gives message)
 localServerOpen <- function(file, package=NULL, ...) {
   if(is.null(file))
     return()                            # do nothing
@@ -479,6 +505,8 @@ localServerOpen <- function(file, package=NULL, ...) {
 ##' return values
 ##'
 ##' Return error code if TRUE, OK if FALSE
+##' $param val logical TRUE if there was an error
+##' @return integer the status code of error or not
 wasError <- function(val) {
   ifelse(val, 419L, 200L)
 }
@@ -497,27 +525,31 @@ localServerSource <- function(file_or_url) {
                   ourURLencode(file_or_url))
   browseURL(.url)
 }
-  
+
+##' Is gWidgetsWW running from the local server
+##'
+##' @return logical
 gWidgetsWWWIsLocal <- function() {
   !is.null(getFromNamespace(".gWidgetsWWWisLocal", ns="gWidgetsWWW"))
 }
 
 
-##' Called by AJAX script to assign a value
+##' Called by AJAX script to assign a value in the local session
+##'
+##' @return list with error code and message
 localAssignValue <- function(id, value, sessionID) {
   e <- getBaseObjectFromSessionID(sessionID)
-  OK <- 200L; ERROR <- 419L
-  l <- list(out="", retval=OK)
+  l <- list(out="", retval=wasError(FALSE))
   if(is.null(e)) {
     l$out <- sprintf("Error: can't find session for", sessionID, "\n")
-    l$retval <- ERROR
+    l$retval <- wasError(TRUE)
   } else {
     out <- ourFromJSON(value)
     if(is.list(out)) {
       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
       if(inherits(tmp, "try-error")) {
         l$out <- tmp
-        l$retval <- ERROR
+        l$retval <- wasError(TRUE)
       }
     }
   }
@@ -525,6 +557,11 @@ localAssignValue <- function(id, value, sessionID) {
 }
 
 ##' Called to run a handler
+##'
+##' @id widget id
+##' @param context passed into give context
+##' @sessionID sessionID used to find the environment
+##' @return payload to send to web server
 localRunHandler <- function(id, context=NULL, sessionID) {
   ## assign("id",id, envir=.GlobalEnv)
   ## assign("context", context, envir=.GlobalEnv)
@@ -558,9 +595,11 @@ localRunHandler <- function(id, context=NULL, sessionID) {
 
 ##' return data from proxy store
 ##'
+##' Calls the stores parseQuery method 
 ##' @param id id of store
 ##' @param sessionID session id to look up store
-##' @param query  Contains parameters passed by ext
+##' @param query  Contains parameters passed by ext. Passed to parseQuery method of store
+##' @return payload to send to server
 localProxyStore <- function(id, sessionID, query) {
   e <- getBaseObjectFromSessionID(sessionID)
   store <- e$getStoreById(id)
@@ -574,31 +613,34 @@ localProxyStore <- function(id, sessionID, query) {
 }
   
 
-## find file and run from package
-## This one requires us to put in headers. This allows
-## files other than .R files to be served
-mimeTypes <- function(ext) {
-  switch(ext,
-         "R","text/javascript",
-         "txt"="text/plain",
-         "htm"="text/html",
-         "html"="text/html",
-         "gif"="image/gif",
-         "jpg"="image/jpeg",
-         "png"="image/png",
-         "svg"="image/svg+xml",
-         "xbm"="image/x-xbitmap",
-         "css"="text/css",
-         "js "="application/x-javascript",
-         "htc"="text/x-component",
-         "xml"="text/xml",
-         "pdf"="application/pdf",
-         "eps"="application/postscript",
-         "ps"="application/postscript",
-         "text/html"
-         )
-}
+## ## find file and run from package
+## ## This one requires us to put in headers. This allows
+## ## files other than .R files to be served
+## mimeTypes <- function(ext) {
+##   switch(ext,
+##          "R","text/javascript",
+##          "txt"="text/plain",
+##          "htm"="text/html",
+##          "html"="text/html",
+##          "gif"="image/gif",
+##          "jpg"="image/jpeg",
+##          "png"="image/png",
+##          "svg"="image/svg+xml",
+##          "xbm"="image/x-xbitmap",
+##          "css"="text/css",
+##          "js "="application/x-javascript",
+##          "htc"="text/x-component",
+##          "xml"="text/xml",
+##          "pdf"="application/pdf",
+##          "eps"="application/postscript",
+##          "ps"="application/postscript",
+##          "text/html"
+##          )
+## }
 
+##' Make a page header for a locally served script
+##'
+##' @return html code for the page header
 makegWidgetsWWWPageHeader <- function(.) {
   ## XXX This needs work!! The proper combination here could make things work for Chrome, safari, Opera and IE?
   out <- paste(
@@ -606,11 +648,13 @@ makegWidgetsWWWPageHeader <- function(.) {
 #               "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>",
 #               '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
 #               "<html xmlns='http://www.w3.org/1999/xhtml' xmlns:v='urn:schemas-microsoft-com:vml'>",
-               "<html xmlns:v=urn:schemas-microsoft-com:vml>",
+#               "<html xmlns:v=urn:schemas-microsoft-com:vml>",
+               "<html>",
                "<head>",
                "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />",
                "<!-- Call in Ext style sheet -->",
                "<link rel='stylesheet' type='text/css' href='/custom/gw/ext/resources/css/ext-all.css' />",
+#               "<link rel='stylesheet' type='text/css' href='/custom/gw/ext/examples/ux/css/ux-all.css' />",
                "</head>",
                "<body>",
                "<!-- Call in Ext files -->",               
@@ -625,33 +669,41 @@ makegWidgetsWWWPageHeader <- function(.) {
                "</div>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading Core API...';</script>",
                "<script type='text/javascript' src='/custom/gw/ext/adapter/ext/ext-base.js'></script>",
+#               "<script type='text/javascript' src='/custom/gw/ext/adapter/ext/ext-base-debug.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading UI Components...';</script>",
 
                "<script type='text/javascript' src='/custom/gw/ext/ext-all.js'></script>",
+#               "<script type='text/javascript' src='/custom/gw/ext/ext-all-debug-w-comments.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
                ## conditional includes -- values set in constructor on toplevel
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
-               ## google stuff -- move out
-               if(exists("ggooglemaps_key", .) && exists("do_googlemaps", .)) {
-                 paste(
-                       ## sprintf('<script type=\'text/javascript\' src=http://www.google.com/jsapi?key=%s></script>',.$ggooglemaps_key),
-                       ## '<script type="text/javascript">  google.load("maps", "2"); </script>',
-                       "<script type='text/javascript' src='/custom/gw/ggooglemaps/ext.ux.gmappanel.js'></script>" ,
-                       '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />',
-                       '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>',
-                       sep="\n")
-               },
+               ## ## google stuff -- move out
+               ## if(exists("ggooglemaps_key", .) && exists("do_googlemaps", .)) {
+               ##   paste(
+               ##         ## sprintf('<script type=\'text/javascript\' src=http://www.google.com/jsapi?key=%s></script>',.$ggooglemaps_key),
+               ##         ## '<script type="text/javascript">  google.load("maps", "2"); </script>',
+               ##         "<script type='text/javascript' src='/custom/gw/ggooglemaps/ext.ux.gmappanel.js'></script>" ,
+               ##         '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />',
+               ##         '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>',
+               ##         sep="\n")
+               ## },
                ## end google
                ## webvis stuff move out
-               if(exists("do_gwebvis", envir=.)) {
-                 "<script type='text/javascript' src='/custom/gw/protovis/protovis-d3.1.js'></script>"
-               },
+               ## if(exists("do_gwebvis", envir=.)) {
+               ##   "<script type='text/javascript' src='/custom/gw/protovis/protovis-d3.1.js'></script>"
+               ## },
                ##
                "<script type='text/javascript'>Ext.onReady(function(){Ext.get('loading').remove();});</script>",
                sep="\n")
   return(out)
 }
 
+##' Make a web page for the results
+##'
+##' @param results results of source a script file
+##' @param script logical If TRUE wrap in script tags
+##' @param . Ignored. Might be usefule for conditionally making the page header
+##' @return HTML+javasscript code to write out to the server
 makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
   out <- makegWidgetsWWWPageHeader(.)
   out <-  paste(out,
@@ -663,7 +715,8 @@ makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
                  "</script>"
                },
                 ## XXX This gives issues with the canvas example. Not sure why
-                ## "<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
+                ## Causes SIGPIPE ERROR. Not the clearSession call, this invocation?
+                ##"<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
                "</body>",
                "</html>",
                sep="\n")
@@ -688,9 +741,13 @@ makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
 ## }
 
 ##' stop local server
+##'
+##' Deprecated
 localServerStop <- stopRpadServer <- function() .Deprecated("",msg="No longer needed")
 
 ##' restart local server
+##'
+##' Deprecated
 localServerRestart <- restartRpadServer <- function() .Deprecated("",msg="No longer needed")
 
 ##' open file wihin an optional package

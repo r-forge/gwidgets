@@ -75,13 +75,6 @@ gbutton <- function(text="", border=TRUE,
                    sprintf("%s.id = %s;", ID, shQuote(.$ID)),
                    sprintf("%s.render(document.body);", ID),
                    sep="\n")
-      ## out <- String() +
-      ##   'o' + .$ID + '= new ' + .$ExtConstructor + '(' +
-      ##     .$..action$asCharacter() + ');'
-      ## out <- out +
-      ##   .$asCharacter() + '.id=' + shQuote(.$ID) + ';' 
-      ## out <- out +
-      ##   .$asCharacter() + '.render(document.body);' + '\n'
     } else {
       out <- get("writeConstructor",envir=EXTWidget)(.)
     }

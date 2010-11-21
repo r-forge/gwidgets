@@ -47,6 +47,7 @@ export(
        "gsvg",
        "gtable", "gbigtable",
        "gtext",
+       "gtree",
        "gwebvis",
        "gwindow",
        "getStockIcons",

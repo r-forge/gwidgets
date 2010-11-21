@@ -250,7 +250,10 @@ The communication between \R\/ and the browser works as
   \cr
 
   The \code{gslider} widget has a tooltip that indicates the value of
-  the widget. The \code{[<-} method to set the values to choose from is not implemented.
+  the widget. This tooltip can be customized. Pass a string, such as
+  \code{"<b>{0} percent complete</b>"} to the constructor. (The 0 in braces
+  is substituted into the HTML fragment.) The \code{[<-} method to set
+  the values to choose from is not implemented.
   \cr
 
 

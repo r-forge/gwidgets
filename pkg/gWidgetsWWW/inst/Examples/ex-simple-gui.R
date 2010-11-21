@@ -196,7 +196,7 @@ listDataFramesDialog <- function() {
       i <- svalue(tbl)
       w2 <- gwindow(sprintf("Detail on %s", i), parent=w1, width=600, height=600)
       g <- ggroup(cont=w2, horizontal=FALSE)
-      tbl2 <- gtable(get(i, envir=.GlobalEnv), cont=g)
+      tbl2 <- gbigtable(get(i, envir=.GlobalEnv), cont=g)
       size(tbl2) <- c(550,500)
       gbutton("dismiss", cont=g, handler=function(...) dispose(w2))
       visible(w2) <- TRUE

@@ -97,11 +97,22 @@ g = gexpandgroup("gdf", cont=g1)
 widget = gdf(mtcars[1:5, 1:6], cont=g)
 size(widget) <- c(300,300)
 
+g <- gexpandgroup("gbigtable -- paging", cont=g1)
+widget <- gbigtable(mtcars, cont=g)
+size(widget) <- c(300,300)
+
+
+
 g = gexpandgroup("gtree", cont=g1)
-glabel("no gtree yet", cont=g)
-
-
-
+offspring <- function(path, ...) {
+  x <- rbinom(2, 1, .5)
+  nms <- paste(path, 0:1, sep=":")
+  icons <- c("dismiss","ok")[x+1]
+  data.frame(id=nms, hasoffspring=as.logical(x), icons=icons, stringsAsFactors=FALSE)
+}
+tr <- gtree(offspring=offspring, icon.FUN=TRUE, cont=g)
+size(tr) <- c(300,300)
+b <- gbutton("Try again", cont=g, handler=function(h,...) tr$update())
 
 
 g = gexpandgroup("gtoolbar", cont=g1)
