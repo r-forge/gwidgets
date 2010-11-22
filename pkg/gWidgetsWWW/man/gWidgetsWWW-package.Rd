@@ -357,6 +357,20 @@ The communication between \R\/ and the browser works as
   each column in pixels. Otherwise these are intuited from the maxmim
   number of characters in each column at time of construction.
 
+  The formatting of the columns is controlled by a few javascript functions. For example the formatting of numeric variables by the javascript function \code{gtableNumeric}. This can be overridden. For example if \code{tbl} is a table widget, then before the GUI is drawn, this code will overwrite the default definition:
+
+
+\code{tbl$..scripts <- function(.) \{}\cr
+\code{  paste("gtableNumeric = function(val) \{ ",}\cr
+\code{        "return '<span  style=\"text-align:right; color:blue\"><h1>' + val + '</h1></span>';",}\cr
+\code{        "\}",}\cr
+\code{        sep="\n")}\cr
+\code{\}}\cr
+   
+
+
+
+
   The \code{gbigtable} widget allows very large tables to be
   displayed, at it only shows part of the table at once. The number of
   lines displayed is specified by the \code{pageSize} argument, with

@@ -53,9 +53,9 @@ if(is.null(file))  {
   ## create output
   setContentType("text/html")
   ## set cache headers
-  setHeader("Cache-Control", "max-age=31536000")
-  setHeader("Last-Modified", format(file.info(file)$mtime,"%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
-  setHeader("Expires", format(Sys.time() + 60*60*24, "%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
+#  setHeader("Cache-Control", "max-age=31536000")
+#  setHeader("Last-Modified", format(file.info(file)$mtime,"%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
+#  setHeader("Expires", format(Sys.time() + 60*60*24, "%a %b %e %Y %H:%M:%S GMT%z (%Z)"))
             
   out <- String() ## gWidgetsWWW is loaded in
   out <- out +
