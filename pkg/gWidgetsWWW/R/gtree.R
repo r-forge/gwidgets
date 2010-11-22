@@ -89,13 +89,6 @@ gtree <- function(offspring = NULL,
   widget$..data <- "0:"             # base node with no value
   ## will need setValues method, ...
 
-  ## find URL for dataURL argument
-  if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
-    gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
-  if(is.null(gWidgetsWWWAJAXurl))  {
-    gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
-  }
-  .$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
   
   widget$ExtConstructor <- "Ext.tree.TreePanel"
   widget$ExtCfgOptions <- function(.) {
@@ -107,7 +100,7 @@ gtree <- function(offspring = NULL,
                 trackMouseOver=TRUE,
                 rootVisible=FALSE,
                 dataUrl=sprintf('%s/%s/%s/%s',
-                  .$..gWidgetsWWWAJAXurl,"proxystore", .$..store$asCharacter(), .$toplevel$sessionID),
+                  .$toplevel$..gWidgetsWWWAJAXurl,"proxystore", .$..store$asCharacter(), .$toplevel$sessionID),
                 root=list(
                   expanded=TRUE,
                   nodeType='async',

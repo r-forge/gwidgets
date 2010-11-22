@@ -87,7 +87,16 @@ gwindow <- function(title="title", visible=TRUE,
   ## store name in title for handlers.
   w$titlename <- make.names(title)
   assign(w$titlename,w, envir=.GlobalEnv)
-  
+
+  ## Find values from apache config or from local config
+  ## find URL for dataURL argument
+  if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
+    gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
+  if(is.null(gWidgetsWWWAJAXurl))  {
+    gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
+  }
+  widget$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
+
    
   #### methods ####
   
