@@ -273,20 +273,20 @@ A number of little quirks are present, that are not present with other \pkg{gWid
   window the \code{visible} method, as in \code{visible(w) = TRUE}, is
   used. (When this is issued the javascript to make the page is
   generated.)
-\item The handlers are run in an environment that does not remember
+\item[Environment of handlers] The handlers are run in an environment that does not remember
   the loading of any packages beyond the base packages and
   \pkg{gWidgetsWWW}. So in each handler, any external packages must be
   loaded.
-\item The use of the options \code{quietly=TRUE} \textit{and}
+\item[Working quietly] The use of the options \code{quietly=TRUE} \textit{and}
   \code{warn=FALSE} should be used with \code{require} when loading in
   external packages. Otherwise, these messages will be interpreted by
   the web server and an error will usually occur.
-\item Debugging can be tough as the R session is not readily
+\item[Debugging woes] Debugging can be tough as the R session is not readily
   available. The error messages in the browser are useful. For
   development of the package the firebug (\url{getfirebug.com}) add on
   to FireFox has proven very useful. Alternatively, it can be helpful
   to source in the script at the command line to see if there are errors.
-\end{enumerate}
+\end{description}
 
 \subsection{Data persistence}
 \label{sec:data-persistence}

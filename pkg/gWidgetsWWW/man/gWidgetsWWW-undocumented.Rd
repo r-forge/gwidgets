@@ -66,6 +66,7 @@
 \alias{gstatusbar}
 \alias{gtable}
 \alias{gtext}
+\alias{gtree}
 \alias{gwindow}
 \alias{size}
 \alias{size<-}

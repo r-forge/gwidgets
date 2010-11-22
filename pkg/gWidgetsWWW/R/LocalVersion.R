@@ -520,7 +520,7 @@ localServerOpen <- function(file, package=NULL, ...) {
     sapply(readLines(file, warn=FALSE), function(i) cat(i,"\n", file=f, append=TRUE))
     close(file)
     file <- f
-  } if(isURL(file)) {
+  } else if(isURL(file)) {
     localServerSource(file)
   } else if(!is.null(package)) {
     file <- system.file(file, package=package)
