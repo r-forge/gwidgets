@@ -483,13 +483,33 @@ gWloadFile <- function(file, ...) {
   browseURL(.url)
 }
 
+##' Load from a URL
+##'
+##' First downloads to a temporary file, then loads that
+##' @param file a url for the script
+gWloadFromURL <- function(file, ...) {
+  tmp <- tempfile()
+  out <- download.file(file, tmp)
+  if(out == 0L) {
+    localServerStart(file=NULL)
+    .url <- sprintf("http://127.0.0.1:%s/custom/%s/gWidgetsWWWRun/%s",
+                    tools:::httpdPort,
+                    url_base,
+                    tmp)
+    browseURL(.url)
+  } else {
+    cat(sprintf("Error downloading %s.", file))
+  }
+}
+
 ##' Load file from pacakge
-##' @param file or connection. File is full file path or if package is
+##' @param file, url or connection. File is full file path or if package is
 ##' non-NULL found from system.file(file, package=package). If a
 ##' connection, a temporary file is found to use and the connection is
 ##' closed.
 ##' @param package to look for file
 ##' @return NULL (opens page or gives message)
+##' @note at this point, we should have written this to dispatch on the type of file.
 localServerOpen <- function(file, package=NULL, ...) {
   if(missing(file))
     return()
@@ -500,6 +520,8 @@ localServerOpen <- function(file, package=NULL, ...) {
     sapply(readLines(file, warn=FALSE), function(i) cat(i,"\n", file=f, append=TRUE))
     close(file)
     file <- f
+  } if(isURL(file)) {
+    localServerSource(file)
   } else if(!is.null(package)) {
     file <- system.file(file, package=package)
   }

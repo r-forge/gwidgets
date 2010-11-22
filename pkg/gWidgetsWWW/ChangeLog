@@ -1,3 +1,7 @@
+2010-11-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (localServerOpen): check for urls, downloads if there
+
 2010-11-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gprocessingjs.R: added this back in. Provides a more

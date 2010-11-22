@@ -86,11 +86,9 @@ are not working equally for all browsers. (Some of these require the
 
 \section{Overview}
 
-To create a web GUI a means first that a web page with controls,
-etc. must be created to layout the GUI. More importantly though, to be
-interactive a means must be provided to callback in to the web
-server when the user initiates an action so that the web server
-can responds with commands to manipulate the user's page.
+This package provides both a means to layout a web page to serve as an
+interactive GUI, but also a means to have an \R{} session called from
+the GUI to manipulate the web session.
 
 There are two choices for the webserver:
 \begin{itemize}
@@ -103,21 +101,25 @@ localServerOpen("/Examples/ex-simple-gui.R", package="gWidgetsWWW")
 \end{verbatim}
   will open an example page.
 
-\item To allow other computers to run a \pkg{gWidgetsWWW} script the
-  RApache package \url{http://biostat.mc.vanderbilt.edu/rapache/},
-  which embeds an R process within the Apache web server, is
-  used. Both process callbacks from the browser to the web server that
-  can be processed through R.
+\item One can serve web pages to a wider audience through the   
+  RApache package \url{http://biostat.mc.vanderbilt.edu/rapache/} for R.
+  This  embeds an R process within the Apache web server.
+  This requires some configuration. The defaults work for a standard
+  Ubuntu installation.
 \end{itemize}
 
-To return instructions to the page, javascript is used so that the
-entire page need not be reloaded, as javascript can manipulate
-elements on the page. The javascript code is simplified by using the
-extjs javascript libraries, available from \url{www.extjs.com}.
+A modern set of web tools includes three primary domains: HTML for
+markup of the text, CSS for the layout of the page, and JavaScript to
+manipulate the page. This package requires none of these, as it
+leverages a popular javascript library (ext from \url{www.sencha.com})
+to provide a consistent look and the javascript interactivity. As the
+pages are not centered around displaying content, but rather
+interactive controls, there is no need for HTML knowledge.
 
+To make a GUI in \pkg{gWidgets} requires two steps: writing a script
+and calling that script.
 
-
-To make a GUI in \pkg{gWidgets} can be as easy as loading the \pkg{gWidgets} package then calling
+A simple script could look like:
 \begin{Sinput}
 w <- gwindow("simple GUI with one button", visible=FALSE)
 g <- ggroup(cont = w)
@@ -126,17 +128,23 @@ b <- gbutton("click me", cont = g, handler = function(h,...) {
 })
 visible(w) <- TRUE
 \end{Sinput}
+To call this script can be done various ways. Suppose we store it in
+the file ``script.R''. If we want to run it through the local web
+server we would open it with a command like:
+\begin{Sinput}
+  localServerOpen("full_path_to_script.R")
+\end{Sinput}
 
-To run the GUI, two ways are possible. This code can be embedded in
-(or \code{source}d from) a \pkg{brew} template and run through the
-combination of \pkg{brew} and \pkg{RApache}. Alternatively, one can
-configure \pkg{gWidgetsWWW} to process specific URLs through this
-template and encode the file name in the URL. With this approach,
-adding a web page is a easy as adding a file to a directory and
-pointing a browser at it.  The main webpage for \pkg{gWidgetsWWW}
-\url{http://www.math.csi.cuny.edu/gWidgetsWWW} contains examples of
-some basic GUIs. These are included in the Examples subdirectory of
-the package once installed.
+Whereas if we wanted to serve it throug rapache, we would place the
+file into an appropriate directory (this is configured when RApache is
+configured for gWidgetsWWW). The default is /var/www/gWidgetsWWW. Then
+the script is called from the browser with a url such as
+\begin{verbatim}
+http://your.domain.com/gWidgetsWWWrun/script.R
+\end{verbatim}
+The domain is yours, the ``gWidgetsWWWrun'' is the default URL to
+execute a script, but this can be configured to your likeing.
+
 
 GUIs made with gWidgetsWWW are not as snappy as other web GUIs. The
 main reason for this is the fact that callbacks to manipulate the page
@@ -150,11 +158,19 @@ javascript) versus speed for the user.
 
   Web GUIs are different than desktop GUIs. Not only are they slower,
   as they have lag time between the GUI and the server, there can only
-  be one top-level windows. The \code{gwindow} call above makes such a
-  top-level window (a web page). Subwindows are possible, but all
-  other \code{gwindow} instances should use the \code{parent} argument
-  to specify an object that acts as the parent of a subwindow. (an
-  animation will appear from there, say.)
+  be one top-level window.
+  
+  In a script we have a few restrictions on top-level windows, not
+  present in the \pkg{gWidgets} API. Namely: as just metioned, only
+  one top-level instance per script; this must also be stored in a
+  global variable; this object is not visible until explicity made so
+  through a call to \code{visible} and this is done only after the GUI
+  is layed out.
+  
+  Subwindows are possible. These are other \code{gwindow} instances
+  using the \code{parent} argument to specify an object that acts
+  as the parent of a subwindow. (an animation will appear from there,
+  say.)
 
 
 
@@ -247,7 +263,8 @@ and much more.
 A number of little quirks are present, that are not present with other \pkg{gWidgets} implementations:
 \begin{description}
 \item[Top-level windows] 
-  Top level windows must be global to the script. There can be only
+  As mentioned above,
+  top level windows must be global to the script. There can be only
   one and it must be named. (A seach over the global variables with a
   given class is used to find the toplevel window in a handler).
   
@@ -269,7 +286,6 @@ A number of little quirks are present, that are not present with other \pkg{gWid
   development of the package the firebug (\url{getfirebug.com}) add on
   to FireFox has proven very useful. Alternatively, it can be helpful
   to source in the script at the command line to see if there are errors.
-% \item The local server needs to have backslashes escaped, thereby doubling up the number of backslashes needed. This means some code may need to be modified to run on the outside server. The check \code{exists(".RpadEnv",envir=.GlobalEnv) \&\& get("RpadLocal", envir=.RpadEnv)} can be used to see if a script is being served locally.
 \end{enumerate}
 
 \subsection{Data persistence}
@@ -309,13 +325,13 @@ advantages to this, and some drawbacks. One advantage is the user can
 modify objects or call their internal methods.
 
 
-\subsection{ggooglemaps}
-\label{sec:ggooglemaps}
+% \subsection{ggooglemaps}
+% \label{sec:ggooglemaps}
 
-[Currently not quite working] The \code{ggooglemaps} widget provides
-access to a sliver of the google maps API.  This sliver could be
-enlarged quite easily if desired. Using this requires the web server
-to be registred with google.
+% [Currently not quite working] The \code{ggooglemaps} widget provides
+% access to a sliver of the google maps API.  This sliver could be
+% enlarged quite easily if desired. Using this requires the web server
+% to be registred with google.
 
 
 \section{Installation}
@@ -365,10 +381,12 @@ Installation of the RApache server requires several steps:
 \label{sec:security}
 
 Security -- is a big deal. Web servers can be hacked, and if hacked
-the hacker has full access to the server. This can be scary. The local server blocks all requests that are not to the local IP 127.0.0.1, preventing outside access. As for outside access, although
-it is not believed that RApache is any less secure than other Apache
-modules, you can protect yourself by running the entire setup within a
-virtual machine. There is easy to install, reasonably priced (or free)
+the hacker has full access to the server. This can be scary. The local
+server blocks all requests that are not to the local IP 127.0.0.1,
+preventing outside access. As for outside access, although it is not
+believed that RApache is any less secure than other Apache modules,
+you can protect yourself by running the entire setup within a virtual
+machine. There is easy to install, reasonably priced (or free)
 commercial software from VMWare (\url{www.vmware.com}). For
 open-source fans, the VirtualBox project (\url{www.virtualbox.org})
 also has software. One can install this, then run the author provided
