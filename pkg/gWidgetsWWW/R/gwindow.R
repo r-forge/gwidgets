@@ -309,7 +309,7 @@ gwindow <- function(title="title", visible=TRUE,
 
      ## set title 
      out <- out +
-       'document.title =' +shQuote(escapeHTML(.$getValue())) + ';\n' 
+       'document.title =' +shQuote(.$getValue()) + ';\n' 
 
      ## write out sessionID
      out <- out +

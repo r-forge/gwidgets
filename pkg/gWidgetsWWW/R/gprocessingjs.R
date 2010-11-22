@@ -111,7 +111,7 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
     vals <- paste(args, collapse=", ")
 
     val <-  String() +
-      "processing" + .$ID +  "." + name + "(" + vals + ");"
+      "processing" + .$ID +  "." + name + "(" + vals + ");\n"
 
     if(.$has_local_slot("..shown"))
       .$addJSQueue(val)
@@ -301,10 +301,10 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
 
   ## rect -> prect
   widget$prect <- function(., x,y, width, height)
-    .$makeCommand("rect",  x,y, width, height)
+    .$makeCommand("rect",  x, y, width, height)
 
   ## draw ellipse or circle
-  widget$ellipse <- function(., x, y, width, height=width)
+  widget$ellipse <- function(., x, y, width=10, height=width)
     .$makeCommand("ellipse", x, y, width, height)
 
 
@@ -452,6 +452,8 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
     xy$x <- .$xToPixels(x)
     xy$y <- .$yToPixels(y)
 
+    ## recycle cex
+    cex <- rep(cex, length.out=length(xy$x))
     ## fix and recycle col
     if(is.na(col))
       col <- "black"
@@ -460,7 +462,7 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
 
     for(i in seq_along(xy$x))  {
       .$fill(col[i])
-      .$ellipse(xy$x[i], xy$y[i], round(cex[i] * 5))
+      .$ellipse(xy$x[i], xy$y[i], width=round(cex[i] * 5))
     }
   }
   
