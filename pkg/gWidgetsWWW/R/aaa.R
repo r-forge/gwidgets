@@ -55,7 +55,6 @@ EXTWidget <-
         css = NULL,
         scripts = NULL,                 # javascript stuff per widget
         style = c(),                    # style options
-        file = "",                      # for "cat"; in parent of widget
         ExtConstructor = NULL,          # eg. Ext.Button
         ExtCfgOptions = NULL,           # config options -- fn returns a list
         ..ExtCfgOptions = NULL,         # additional options per instance
@@ -79,7 +78,6 @@ EXTWidget$has_slot <- function(., key) exists(key, envir=.)
 ##' @return logical
 EXTWidget$has_local_slot <- function(., key) exists(key, envir=., inherits=FALSE)
 
-## used to display to STDOUT or a file for debugging
 ## or puts onto JS queue
 ##' @param ... pasted together to form a string
 ##' @param queue to we push onto JSQueue or print out. (Pushing is used if returning JS)
@@ -88,7 +86,7 @@ EXTWidget$Cat <- function(.,..., queue=FALSE) {
   if(queue)
     .$addJSQueue(out)
   else
-    cat(out, file=.$file, append=TRUE)
+    cat(out)
 }
 
 ## Cat either a string or function
@@ -854,7 +852,6 @@ EXTContainer$add <- function(.,child,...) {
    child$toplevel = .$toplevel         # pass in toplevel window
 
    ## pass along parent properties
-   child$file <- .$file
    child$titlename <- .$titlename
 
    ## Move scripts, css to toplevel
@@ -1367,7 +1364,6 @@ EXTProxyTreeStore$show <- function(., queue=FALSE) {
 EXTProxyTreeStore$parseQuery <- function(., query) {
   df <- .$getData()
   m <- nrow(df)
-  cat(paste(capture.output(str(query)),collapse="\n"),"\n", file="/tmp/test.txt", append=TRUE)
 
   ## kludgy bit to put in icons
   si <- getStockIcons()
@@ -1825,7 +1821,6 @@ EXTComponentDfStore$setValues <- function(., i, j, ..., value) {
   d[i,j] <- value
   .$..store$setData(d)
   if(exists("..shown", envir=., inherits=FALSE)) {
-    ##cat(.$setValuesJS(i,j,value), file=stdout())
     .$addJSQueue(.$setValuesJS(i,j,value))
   }
 }
@@ -1859,7 +1854,6 @@ EXTComponentDfStore$setValuesJS <- function(., i,j,value) {
     out <- out + "rec.commit();" + "\n"
   }
 
-  ##cat(out, file=stdout())
   .$addJSQueue(out)
 }
   
@@ -2166,7 +2160,6 @@ delete.gWidget <- function(obj, widget, ...) {
   if(exists("dispose", envir=.)) {
     .$dispose()
   } else if(exists("..shown",envir=., inherits=FALSE)) {
-    ##cat(.$callExtMethod("hide"), file=stdout())
     .$addJSQueue(.$callExtMethod("hide"))
   }
 }
@@ -2180,7 +2173,6 @@ delete.gWidget <- function(obj, widget, ...) {
   if(value) .$..focus <- TRUE
   
   if(exists("..shown",envir=., inherits=FALSE) && value)
-    ##cat(.$callExtMethod("focus",tolower(as.character(value))), file=stdout())
     .$addJSQueue(.$callExtMethod("focus",tolower(as.character(value))))
 
   return(obj)
@@ -2293,7 +2285,6 @@ visible.gWidget <- function(obj) obj$getVisible()
     .$..style <- c(.$..style,value)
   
   if(exists("..shown",., inherits=FALSE)) {
-    ##cat(.$setStyleJS(), file=stdout())
     .$addJSQueue(.$setStyleJS())
    }
   
@@ -2422,7 +2413,7 @@ EXTWidget$addJSQueue <- function(., x) {
 ##' run the queue. Called by gwindow::runHandler, and by hanging event (ala r-studio)
 ##'
 ##' @param . EXTWidget
-##' @return clears queue, then returns string with handlers pasted together
+##' @return clears queue, then returns string with handler's output pasted together
 EXTWidget$runJSQueue <- function(.) {
   parent <- .$toplevel
   curQueue <- parent$JSQueue

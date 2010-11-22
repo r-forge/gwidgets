@@ -20,7 +20,29 @@
 ## if container is not null, then a subwindow is made
 ## handler called on unload
 
-gwindow <- function(title="title",file="",visible=TRUE,
+##' Main top level window
+##'
+##' Each script needs to have one and only one instance as a global
+##' variable. The visible argument is ignored. One must call
+##' \code{visible<-} with a value of \code{TRUE} after the page is
+##' layed out. (This prints the javascript to the browser).
+##'
+##' @param title Page title
+##' @param visible ignored. Must set visibility TRUE after GUI construction is done.
+##' @param width size in in pixels. (Mostly only for a subwindow)
+##' @param height size in pixels (For subwindows)
+##' @param parent If non-\code{NULL} creates a sub window.
+##' @param handler assigned to page unload event
+##' @param action passed to handler
+##' @param ... ignored
+##' @return a gwindow instance. Many methods but key one is \code{visible<-}.
+##' @note There are some \pkg{proto} properties that can be set to adjust the values. These are \code{loadingText}; \code{doLoadingText}; \code{..show\_error\_message}; \code{AJAXtimeout}
+##' @examples
+##' \dontrun{
+##' w <- gwindow("hello test")
+##' gbutton("Click me", cont=w, handler=function(h,...) galert("Hello world", parent=w))
+##' visible(w) <- TRUE
+gwindow <- function(title="title", visible=TRUE,
                     name=title,
                     width = NULL, height = NULL, parent = NULL,
                     handler=NULL, action=NULL,...) {
@@ -34,13 +56,13 @@ gwindow <- function(title="title",file="",visible=TRUE,
      return(.gsubwindow(title=title,handler=handler, action=action,
                         visible=visible,
                         width = width, height = height,
-                       container=container,...))
+                        container=container,...))
 
-   w <- EXTContainer$new(file=file,
-                         visible=visible,
-                         ..actions = list())
-   class(w) <- c("gWindow",class(w))
-
+  w <- EXTContainer$new(
+                        visible=visible,
+                        ..actions = list())
+  class(w) <- c("gWindow",class(w))
+  
   ## no parent container -- so no ID. We fix this
   w$ID <- "gWidgetID0"                  # XXX Issue if more than one per page!
   w$sessionID <- makeSessionID()
@@ -54,9 +76,6 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
 
   w$setValue(value=title)
-  ## XXX handle cat to STDOUT
-   w$file <- file; unlink(file)
-  
   w$jscriptHandlers <- list()        # handlers in parent winoow
   w$JSQueue <- character()           # output of JS handlers
   w$toplevel <- w
@@ -84,9 +103,9 @@ gwindow <- function(title="title",file="",visible=TRUE,
         for(i in names(context))
           h[[i]] <- context[[i]]
       }
-      ## XXX changed to use queue
-      out <- lst$handler(h)             # add to JS Queue
-      assign("tmp", lst$handler, envir=.GlobalEnv)
+      ## XXX changed to use queue. Each handler should
+      ## call addToJSQueue
+      out <- try(lst$handler(h), silent=TRUE)          # add to JS Queue
 #      return(lst$handler(h))
     }
     .$runJSQueue()                      # run the queue
@@ -148,7 +167,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
 
               ## Some javascript functions
-              ## XXX make betters
+              ## XXX make better
 
               if(exists("..show_error_message", envir=.)) {
                 processFailure <- paste("function processFailure(response, options) {",
@@ -173,10 +192,8 @@ gwindow <- function(title="title",file="",visible=TRUE,
               if(is.null(gWidgetsWWWAJAXurl))  {
                 gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
               }
-              
-              ## XXX Need to fix
-              ## * url is fixed
-              ## key, extra needs to be added
+
+              ## code to run a javascript handler
               out <- out +
                 'runHandlerJS = function(id,context) {' +
                   ifelse(.$doLoadingText, 
@@ -233,33 +250,10 @@ gwindow <- function(title="title",file="",visible=TRUE,
                             "}})};" + "\n"
               
 
-              ## put into run function
-##               out <- out +
-##                 'clearSession = function() {' +
-##                   "Ext.Ajax.request({" +
-##                     "url: '" + gWidgetsWWWAJAXurl + "'," +
-##                       "success: evalJSONResponse," +
-##                         "failure: processFailure," +
-##                           "method: 'POST'," +
-##                             "params: { type: 'clearSession', " +
-##                               "sessionID: sessionID," +
-##                                     "}})};"
-
-              
               
               ## this is for tooltips in, say, gnotebook tabs.
               out <- out +
                 "Ext.QuickTips.init();\n"
-
-              ## ext message for galert
-              f <- system.file("javascript","ext.ux.example.js", package="gWidgetsWWW")
-              out <- out + paste(readLines(f, warn=FALSE), sep="\n") 
-
-              ## statusbar
-              if(exists("..statusBar", envir=., inherits=FALSE)) {
-                f <- system.file("javascript","ext.ux.statusbar.js", package="gWidgetsWWW")
-                out <- out + paste(readLines(f, warn=FALSE), collapse="\n") 
-              }
 
               return(out)
             })
@@ -315,7 +309,7 @@ gwindow <- function(title="title",file="",visible=TRUE,
 
      ## set title 
      out <- out +
-       'document.title =' +shQuote(.$getValue()) + ';\n' 
+       'document.title =' +shQuote(escapeHTML(.$getValue())) + ';\n' 
 
      ## write out sessionID
      out <- out +
@@ -334,13 +328,13 @@ gwindow <- function(title="title",file="",visible=TRUE,
      return("")
    }
 
-  ## handlers for store
+  ## handlers for proxy stores
+  ## These methods are used by gbigtable and by gtree to dynamically populate data
 
-  ##' we need to look up proxy stores when we process
+  ##' Property. We need to look up proxy stores when we process
   w$proxyStores <- list()
 
   ##' add a proxy store for later lookup
-  
   w$addStore <- function(., store) {
     l <- .$proxyStores
     l[[store$asCharacter()]] <- store
@@ -352,18 +346,15 @@ gwindow <- function(title="title",file="",visible=TRUE,
     .$proxyStores[[id]]
   }
 
-
   
-   ## unload handler
-   if(!is.null(handler)) 
-     w$addHandler("onunload",handler, action=action)
+  
+  ## unload handler
+  if(!is.null(handler)) 
+    w$addHandler("onunload",handler, action=action)
 
    
     invisible(w)
  }
-
-### XXXXXX -- handler code not working since we updated ----
-
 
 ## gsubwindow
 ## a subwindow appears on top of a regular window
@@ -375,14 +366,14 @@ gwindow <- function(title="title",file="",visible=TRUE,
 ## visible(obj) <- FALSE/TRUE hides/shows
 .gsubwindow <- function(title="Subwindow title", visible=TRUE,
                         width=500, height=300,
-handler = NULL, action=NULL, container=NULL,...) {
+                        handler = NULL, action=NULL, container=NULL,...) {
 
   widget <- EXTContainer$new(toplevel=container$toplevel,
-                           ..visible = as.logical(visible)
-                           ) 
+                             ..visible = as.logical(visible)
+                             ) 
   class(widget) <- c("gSubwindow",class(widget))
   widget$setValue(value=title)
-
+  
   if(is.null(width)) width <- 500
   if(is.null(height)) height <- 300
   widget$..style <- c("width"=width, height=height)
@@ -395,10 +386,10 @@ handler = NULL, action=NULL, container=NULL,...) {
 
   ## set title
   widget$setValueJS <- function(.) {
-  if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
+  if(.$has_local_slot("..setValueJS"))
+    .$..setValueJS(...)
   
-    out <-  String() +
-      'o' + .$ID + '.setTitle(' + shQuote(.$..data) + ');' + '\n'
+  out <-  sprintf("%s.setTitle(%s);\n", .$asCharacter(), shQuote(escapeHTML(.$..data)))
   .$addJSQueue(out)
   }
 
@@ -407,7 +398,7 @@ handler = NULL, action=NULL, container=NULL,...) {
   widget$setVisible <- function(., value) {
     value <- as.logical(value)
     .$..visible <- value
-    if(exists("..shown", envir=., inherits=FALSE))
+    if(.$has_local_slot("..shown"))
       .$addJSQueue(.$setVisibleJS())
     else 
       .$Show(queue=TRUE)
@@ -415,14 +406,12 @@ handler = NULL, action=NULL, container=NULL,...) {
 
   ## odd inheritance here
   widget$setVisibleJS <- function(.) {
-    if(exists("..setVisibleJS", envir=., inherits=FALSE))
+    if(.$has_local_slot("..setVisibleJS"))
       .$..setVisibleJS()
     
     ## opposite -- we already changed if we got here
-    method <- ifelse(.$..visible, "show", "hide")
-    out <- String() + 
-      'o' + .$ID + '.' + method + '();'
-    ##cat(out, file=stdout())
+    out <- sprintf("%s.%s();", .$asCharacter(),
+                   ifelse(.$..visible, "show", "hide"))
     .$addJSQueue(out)
   }
 
@@ -447,7 +436,6 @@ handler = NULL, action=NULL, container=NULL,...) {
     ## statusbar. Menu? Tool?
     if(exists("..statusBar",envir=., inherits=FALSE)) {
       sbText <- String() +
-#        'new Ext.StatusBar({' +
         'new Ext.ux.StatusBar({' +      # as of 3.0 not in ext -- uses toolbar instead
           'id: "' + .$ID + 'statusBar",' +
             'defaultText: "",' +
@@ -465,11 +453,11 @@ handler = NULL, action=NULL, container=NULL,...) {
   widget$header <- function(.) {}
   widget$footer <- function(.) {
     ## render and show
-    out <- String()
-
-    out <-  out + 'o' + .$ID + '.render();' + '\n'
+    out <- String() +
+      sprintf("%s.render();", .$asCharacter())
     if(visible(.))
-      out <-  out + 'o' + .$ID + '.show();' + '\n'
+      out <- out + sprintf("%s.show();", .$asCharacter())
+
     out
   }
 
