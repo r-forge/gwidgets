@@ -78,7 +78,7 @@ makeLinks <- function(i,f) {
       localServerOpen(sprintf("Examples/%s", i), package="gWidgetsWWW")
     })
   } else {
-    url <- sprintf("/gWidgetsWWWrun/%s", i)
+    url <- sprintf("%s/%s",w$..gWidgetsWWWAJAXurl, i)
     ghtml(sprintf("&nbsp;<a href=%s target='_blank'>%s</a>",url, i), cont = g1)
   }
 }

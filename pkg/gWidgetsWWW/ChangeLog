@@ -1,5 +1,8 @@
 2010-11-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* inst/scripts/gWidgetsWWWAJAX.R: for proxystore, changed how we get path, using
+	uri not path part of SERVER
+
 	* R/LocalVersion.R (localServerOpen): check for urls, downloads if there
 
 2010-11-21  john verzani  <verzani@john-verzanis-macbook-pro.local>

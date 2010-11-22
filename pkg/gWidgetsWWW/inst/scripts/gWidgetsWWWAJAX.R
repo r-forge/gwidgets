@@ -15,10 +15,20 @@ sendError <- function(db, msg) {
   stop(paste("alert('", msg, "');"))
 }
 
+
+
 ## must figure out type. Type can be set in POST value -- or be buried in the path type/id/sessionID
 if(is.null(POST) || is.null(POST$type)) {
-  path <- SERVER$path
-  path <- unlist(strsplit(path, "/"))
+
+  ## we use the uri and strip off the AJAXurl
+#  path <- SERVER$path
+#  path <- unlist(strsplit(path, "/"))
+
+  path <- SERVER$uri
+  path <- gsub(gWidgetsWWWAJAXurl,"", path)
+  path <- unlist(strsplit(path, "/"))[-1]
+
+  
   type <- path[1]
   id <- path[2]
   sessionID <- path[3]
@@ -161,6 +171,9 @@ if(!is.null(type)) {
     }
   } else if(type == "proxystore") {
     ## get info from proxy store
+    w <- e[[w]]
+    query <- POST
+    
     store <- w$getStoreById(id)
     out <- try(store$parseQuery(query), silent=TRUE)
     
