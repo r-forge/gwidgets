@@ -1660,7 +1660,7 @@ EXTComponentWithStore$makeColumnModel <- function(.) {
     colNames <- shQuoteEsc(colNames)
 
     ## widths
-    if(exists("..columnWidths", .)) {
+    if(.$has_slot("..columnWidths")) {
       colWidths <- .$..columnWidths
     } else {
       

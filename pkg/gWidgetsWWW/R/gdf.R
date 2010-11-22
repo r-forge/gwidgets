@@ -169,6 +169,8 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
                  'id:',colNames,
                  ', header:',colNames,
                  ', sortable:true',
+                 if(!.$has_slot("..columnWidths")) "" else 
+                        sprintf(", width: %s",rep(.$..columnWidths, length.out=ncol(df))),
                  ', dataIndex:',colNames,
                  editors,
                  '}',

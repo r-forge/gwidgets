@@ -242,97 +242,97 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 
 
   
-  widget$makeColumnModel <- function(.) {
-    ## return array for columns
-    ## id, header, sortable, renderer, dataIndex, tooltip
-##     columns: [
-##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
-##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
-##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
-##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
-##               ],
+##   widget$makeColumnModel <- function(.) {
+##     ## return array for columns
+##     ## id, header, sortable, renderer, dataIndex, tooltip
+## ##     columns: [
+## ##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
+## ##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
+## ##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
+## ##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
+## ##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
+## ##               ],
 
-    mapRenderer <- function(type) {
-      switch(type,
-             "character"="",
-             "String" = "",
-             "integer" = ",renderer:gtableInteger",
-             "numeric" = ",renderer:gtableNumeric",
-             "logical" = ",renderer:gtableLogical",
-             "factor" = "",
-             "icon" = ",width: 16,renderer:gtableIcon",              # for icons(we create this)
-             "date" = "",               # we create this?
-             "")
-    }
+##     mapRenderer <- function(type) {
+##       switch(type,
+##              "character"="",
+##              "String" = "",
+##              "integer" = ",renderer:gtableInteger",
+##              "numeric" = ",renderer:gtableNumeric",
+##              "logical" = ",renderer:gtableLogical",
+##              "factor" = "",
+##              "icon" = ",width: 16,renderer:gtableIcon",              # for icons(we create this)
+##              "date" = "",               # we create this?
+##              "")
+##     }
 
-    df <- .$..store$data
-    renderers <- sapply(df[,-1, drop=FALSE], function(i) mapRenderer(class(i)[1]))
-    colNames <- names(df)[-1]           # XXX
-##    colNames <- names(df)
-    colNames <- shQuoteEsc(colNames)
+##     df <- .$..store$data
+##     renderers <- sapply(df[,-1, drop=FALSE], function(i) mapRenderer(class(i)[1]))
+##     colNames <- names(df)[-1]           # XXX
+## ##    colNames <- names(df)
+##     colNames <- shQuoteEsc(colNames)
 
-    ## widths
-    fontWidth <- 10
-    colWidths <- sapply(df[,-1, drop=FALSE], function(i) max(nchar(as.character(i))) + 1)
-    colWidths <- pmax(colWidths, nchar(names(df[,-1, drop=FALSE])) + 1)
-    totalWidth <- ifelse(exists("..width", envir=., inherits=FALSE), .$..width, "auto")
-    if(totalWidth == "auto" || fontWidth * sum(colWidths) > totalWidth)
-      colWidths <- colWidths * fontWidth       # fontWidth pixels per character
-    else
-#      colWidths <- floor(fontWidth * colWidths * totalWidth/sum(colWidths))
-      colWidths <- colWidths * fontWidth       # fontWidth pixels per character
+##     ## widths
+##     fontWidth <- 10
+##     colWidths <- sapply(df[,-1, drop=FALSE], function(i) max(nchar(as.character(i))) + 1)
+##     colWidths <- pmax(colWidths, nchar(names(df[,-1, drop=FALSE])) + 1)
+##     totalWidth <- ifelse(exists("..width", envir=., inherits=FALSE), .$..width, "auto")
+##     if(totalWidth == "auto" || fontWidth * sum(colWidths) > totalWidth)
+##       colWidths <- colWidths * fontWidth       # fontWidth pixels per character
+##     else
+## #      colWidths <- floor(fontWidth * colWidths * totalWidth/sum(colWidths))
+##       colWidths <- colWidths * fontWidth       # fontWidth pixels per character
     
-    ## didn't work for header:
-    trimDD <- function(x) {
-      ind <- grep("^..", x)
-      if(length(ind) > 0)
-        x[ind] <- "''"
-      return(x)
-    }
+##     ## didn't work for header:
+##     trimDD <- function(x) {
+##       ind <- grep("^..", x)
+##       if(length(ind) > 0)
+##         x[ind] <- "''"
+##       return(x)
+##     }
 
-    tmp <- paste('{',
-                 'id:',colNames,
-                 ', header:',colNames,
-                 ', sortable:true',
-                 ', width:', colWidths,
-                 ', dataIndex:',colNames,
-                 renderers,
-                 '}',
-                 sep="")
-    out <- paste('[\n', paste(tmp,collapse=",\n"), ']', collapse="")
+##     tmp <- paste('{',
+##                  'id:',colNames,
+##                  ', header:',colNames,
+##                  ', sortable:true',
+##                  ', width:', colWidths,
+##                  ', dataIndex:',colNames,
+##                  renderers,
+##                  '}',
+##                  sep="")
+##     out <- paste('[\n', paste(tmp,collapse=",\n"), ']', collapse="")
 
-    return(out)
-  }
-  widget$makeFields <- function(.) {
-    ## return something like this with name, type
-    ##     fields: [
-    ##            {name: 'company'},
-    ##            {name: 'price', type: 'float'},
-    ##            {name: 'change', type: 'float'},
-    ##            {name: 'pctChange', type: 'float'},
-    ##            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-    ##         ]
-    ## types in DataField.js
-    mapTypes <- function(type) {
-      switch(type,
-             "character"="",
-             "String" = ",type: 'string'",
-             "integer" = ",type: 'int'",
-             "numeric" = ",type: 'float'",
-             "logical" = ",type: 'boolean'",
-             "factor"  = "",
-             "date" = ",type:date",
-             "")
-    }
-    df <- .$..store$data
-    types <- sapply(df[,-1, drop=FALSE], function(i) mapTypes(class(i)[1]))
-    colNames <- shQuoteEsc(names(df)[-1])
-    tmp <- paste("{name:", colNames, types, "}", sep="")
-    out <- paste("[",tmp,"]", collapse="\n")
+##     return(out)
+##   }
+##   widget$makeFields <- function(.) {
+##     ## return something like this with name, type
+##     ##     fields: [
+##     ##            {name: 'company'},
+##     ##            {name: 'price', type: 'float'},
+##     ##            {name: 'change', type: 'float'},
+##     ##            {name: 'pctChange', type: 'float'},
+##     ##            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
+##     ##         ]
+##     ## types in DataField.js
+##     mapTypes <- function(type) {
+##       switch(type,
+##              "character"="",
+##              "String" = ",type: 'string'",
+##              "integer" = ",type: 'int'",
+##              "numeric" = ",type: 'float'",
+##              "logical" = ",type: 'boolean'",
+##              "factor"  = "",
+##              "date" = ",type:date",
+##              "")
+##     }
+##     df <- .$..store$data
+##     types <- sapply(df[,-1, drop=FALSE], function(i) mapTypes(class(i)[1]))
+##     colNames <- shQuoteEsc(names(df)[-1])
+##     tmp <- paste("{name:", colNames, types, "}", sep="")
+##     out <- paste("[",tmp,"]", collapse="\n")
 
-    return(out)
-  }
+##     return(out)
+##   }
 
   widget$footer <- function(.) {
     sprintf('%s.getSelectionModel().selectFirstRow();',.$asCharacter())
