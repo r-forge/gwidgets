@@ -69,7 +69,11 @@
 \SweaveOpts{keep.source=TRUE}
 
 \section*{Abstract:}
-The \pkg{gWidgets} package provides an API to abstract the interface for a few of the available GUI toolkits avaiilable through R. The \pkg{gWidgetsWWW} package provides an implementation of the \pkg{gWidgets} API for use with through the web. Using just R commands, interactive GUIs can be produced.\\
+The \pkg{gWidgets} package provides an API to abstract the interface
+for a few of the available GUI toolkits avaiilable through R. The
+\pkg{gWidgetsWWW} package provides an implementation of the
+\pkg{gWidgets} API for use with through the web. Using just R
+commands, interactive web GUIs can be produced.\\
 
 
 The current status of the project is still experimental. It should
