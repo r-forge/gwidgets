@@ -734,7 +734,7 @@ EXTComponent$setValueJS <- function(.,...) {
      'o' + .$ID +'.' + .$setValueJSMethod +
        '(' + toJS(.$..data) + ');' + '\n'
    
-   return(out)                              # to browser, not file
+   return(out)                              # to browser, not filewi
  }
 
 
@@ -1271,18 +1271,13 @@ EXTProxyStore$new <- function(., toplevel=NULL, pageSize=25, ...) {
 ##' @param queue if FALSE, will cat out, otherwise queues up the javascript
 ##' @return NULL
 EXTProxyStore$show <- function(., queue=FALSE) {
-  if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
-    gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
-  if(is.null(gWidgetsWWWAJAXurl))  {
-    gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
-  }
   out <- String() + "\n" +
     .$asCharacter() + '= new Ext.data.ArrayStore({' +
 #    .$asCharacter() + '= new Ext.data.JsonStore({' +
 #      "totalProperty: 'totalCount', root:'data'," +
       'fields:  ' + .$makeFields() + ',' + '\n' +
         'proxy: new Ext.data.HttpProxy({' +
-          sprintf("url: '%s/%s/%s/%s',",  gWidgetsWWWAJAXurl,"proxystore", .$asCharacter(), .$toplevel$sessionID) +
+          sprintf("url: '%s/%s/%s/%s',",  .$toplevel$..gWidgetsWWWAJAXurl,"proxystore", .$asCharacter(), .$toplevel$sessionID) +
             "method: 'POST'" +         # use POST, not GET as this makes processing easier
               "})" +
                   "})" + "\n"

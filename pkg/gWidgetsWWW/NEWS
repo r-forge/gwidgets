@@ -4,7 +4,9 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
-* new widget gtree
+* resurrected gprocessingjs widget. An alternative to gcanvas as it
+has a mouse handler.
+* new widget gtreeg
 * new widget, gbigtable which implements exts's paging framework
 allowing very large data sets to be displayed (as it only shows a page
 at a time)

@@ -89,15 +89,14 @@ gwindow <- function(title="title", visible=TRUE,
   assign(w$titlename,w, envir=.GlobalEnv)
 
   ## Find values from apache config or from local config
-  ## find URL for dataURL argument
+
+  ## find URL for AJAX call, place into toplevel for later reference
   if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
     gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
   if(is.null(gWidgetsWWWAJAXurl))  {
     gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
   }
   w$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
-
-   
   #### methods ####
   
   ##' run a handler
@@ -196,12 +195,6 @@ gwindow <- function(title="title", visible=TRUE,
                       "eval(response.responseText);" +
                         "};" + "\n"
 
-              if(!exists("gWidgetsWWWAJAXurl") || is.null(gWidgetsWWWAJAXurl))
-                gWidgetsWWWAJAXurl <- getOption("gWidgetsWWWAJAXurl")
-              if(is.null(gWidgetsWWWAJAXurl))  {
-                gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
-              }
-
               ## code to run a javascript handler
               out <- out +
                 'runHandlerJS = function(id,context) {' +
@@ -209,7 +202,7 @@ gwindow <- function(title="title", visible=TRUE,
                          sprintf("Ext.getBody().mask('%s');", .$loadingText),
                          "") + "\n" +
                   "Ext.Ajax.request({" +
-                    "url: '" + gWidgetsWWWAJAXurl + "'," +
+                    "url: '" + .$..gWidgetsWWWAJAXurl + "'," +
                       "success: evalJSONResponse," +
                         "failure: processFailure," +
                           "method: 'POST', " +
