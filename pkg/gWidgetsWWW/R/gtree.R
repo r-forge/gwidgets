@@ -95,6 +95,7 @@ gtree <- function(offspring = NULL,
   if(is.null(gWidgetsWWWAJAXurl))  {
     gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
   }
+  .$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
   
   widget$ExtConstructor <- "Ext.tree.TreePanel"
   widget$ExtCfgOptions <- function(.) {
@@ -106,7 +107,7 @@ gtree <- function(offspring = NULL,
                 trackMouseOver=TRUE,
                 rootVisible=FALSE,
                 dataUrl=sprintf('%s/%s/%s/%s',
-                                 gWidgetsWWWAJAXurl,"proxystore", .$..store$asCharacter(), .$toplevel$sessionID),
+                  .$..gWidgetsWWWAJAXurl,"proxystore", .$..store$asCharacter(), .$toplevel$sessionID),
                 root=list(
                   expanded=TRUE,
                   nodeType='async',
