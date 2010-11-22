@@ -95,7 +95,7 @@ gwindow <- function(title="title", visible=TRUE,
   if(is.null(gWidgetsWWWAJAXurl))  {
     gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
   }
-  widget$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
+  w$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
 
    
   #### methods ####
