@@ -7,12 +7,17 @@
 ## This script requires some packages and variables for keeping
 ## track of the session to be set
 
+## the hack to find the lone gwindow could be improved so that we can
+## have more than one per window. This would allow us to mix html and
+## gWidgets.
+
 require(rjson)
 require(gWidgetsWWW, quietly=TRUE)
 
 sendError <- function(db, msg) {
 #  out <- try(dbDisconnect(db), silent=TRUE)
-  stop(paste("alert('", msg, "');"))
+  out <- try(stop(paste("alert('", msg, "');")), silent=TRUE)
+  out
 }
 
 
@@ -52,10 +57,6 @@ if(!is.null(type)) {
   ## db object
   createDb(sessionDbFile) ## if not already there
 
-  if(exists("sessionDBIlogfile"))
-    cat(sessionID, "load dbfile", "\n", file=sessionDBIlogfile, append=TRUE)
-
-  
   db <- initDb(sessionDbFile, type=sessionDbType)
 
   if(exists("sessionDBIlogfile"))
@@ -65,20 +66,20 @@ if(!is.null(type)) {
     sendError(db, "Error opening data base file")
   } 
   
-  ## tidy up -- delete old sessions
-  if(!dbExists(db,"lastClearTime") ||
-     db[["lastClearTime"]] + 7 * 24 * 60 * 60 < Sys.time()) { # 7 days??
-    keys <- dbList(db)
-    if(length(keys > 1)) {
-      keys <- keys[keys != "lastClearTime"]
-      for(key in keys) {
-        session <- db[[key]]
-        if(sessionHasTimedout(session))
-          dbDelete(db,key)
-      }
-    }
-    db[['lastClearTime']] <- Sys.time()
-  }
+  ## ## tidy up -- delete old sessions
+  ## if(!dbExists(db,"lastClearTime") ||
+  ##    db[["lastClearTime"]] + 7 * 24 * 60 * 60 < Sys.time()) { # 7 days??
+  ##   keys <- dbList(db)
+  ##   if(length(keys > 1)) {
+  ##     keys <- keys[keys != "lastClearTime"]
+  ##     for(key in keys) {
+  ##       session <- db[[key]]
+  ##       if(sessionHasTimedout(session))
+  ##         dbDelete(db,key)
+  ##     }
+  ##   }
+  ##   db[['lastClearTime']] <- Sys.time()
+  ## }
   
   if(exists("sessionDBIlogfile"))
     cat(sessionID, "check valid key", "\n", file=sessionDBIlogfile, append=TRUE)

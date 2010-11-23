@@ -44,6 +44,9 @@ gcanvas <- function(f, width=480, height=400,
     out[['html']] <- String() +
       '\'<canvas id="gWidgetsCanvas' + .$ID + '" width=' + .$..width + ' height=' + .$..height +
         '>' + gettext("If you see this, your browser does not support the canvas tag.") + '</canvas>\''
+
+    out[["width"]] <- .$..width         # for panel size
+    out[["height"]] <- .$..height
     
     return(out)
   }

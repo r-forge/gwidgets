@@ -13,7 +13,9 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-### The container code in Ext is very similar.
+## Box Containers for gWidgetsWWW
+##
+## The container code in Ext is very similar.
 ## All use Ext.Panel with some different configuration options
 ## this code tries to take advantage of that  by introducing some sub"traits".
 ## the tricky thing is the call up to ExtCfgOptions from the inherited trait.

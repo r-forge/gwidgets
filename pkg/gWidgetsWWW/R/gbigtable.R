@@ -100,7 +100,7 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
 
     out[['bbar']] = String() +
       paste("new Ext.PagingToolbar({",
-            "pageSize: 25,",
+            sprintf("pageSize: %s,",.$..store$pageSize),
             (String("store:") + .$..store$asCharacter() + ','),
             "displayInfo: true,",
             "displayMsg: 'Displaying topics {0} - {1} of {2}',",

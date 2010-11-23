@@ -1,15 +1,18 @@
 ## TODO for gWidgetsWWW
 * doc with roxygen
 * why is 3.3 an issue with chrome, safari
-* gtree (needs 3.3+??)
 * fix SIGPIPE error with local
-* integrate hanging events. 
+* integrate hanging events ala r-studio
+* menu images (sort out)  makeIconClasses was removed tomake things
+  work with IE. This definitely messes up icons in menus???
 * gbutton and actions in subwindows  
 * spinbutton trigger icons -- need to work with css to get this going. Wait until part of Ext, not Ext.ux
 * gsvg -- need to implement adding a handler. Requires hacking into svg code produced by the device
 * gfile: server version, now its local only 
 * Implement  defaultWidget, 
-DONE (moved to file)* scripts issue: glabel in gsubwindow doesn't work. Should I preload
+* gtree -- grid, not single column
+DONE * gtree (needs 3.3+??)
+ DONE (moved to file)* scripts issue: glabel in gsubwindow doesn't work. Should I preload
 these? Simple JS call and cleans up code
 DONE * actions in general don't seem to be working well (menu, ex-actions)
 DONE * change JS handlers to return strings, not cat it out. Then we
@@ -19,8 +22,6 @@ DONE * [<- for i,j and dgf
 (A firefox thing) * size of text in gcombobox is too big. How to change?
 * update googlemaps to new API (disabled for now)
 DONE * gcli for local version
-* menu images (sort out)  makeIconClasses was removed tomake things
-  work with IE. This definitely messes up icons in menus???
 DONE (local version) * fix ggooglemaps. (integrate RgoogleMaps package)
 * tree widget -- can do with json example in 3.0. Just put file into static dir and load. What about callbacks?
 DONE * createDelegate to pass info to handlers (kye=value) --implement,

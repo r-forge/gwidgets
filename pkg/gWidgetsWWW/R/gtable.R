@@ -29,6 +29,22 @@
 ## names<-, names for headers
 ## integrate -- filter fun: maybe never
 
+
+##' A table widget
+##'
+##' A table widget
+##' @param items 
+##' @param multiple 
+##' @param chosencol 
+##' @param icon.FUN 
+##' @param filter.column 
+##' @param filter.labels 
+##' @param filter.FUN 
+##' @param handler 
+##' @param action 
+##' @param container 
+##' @param ... 
+##' @note
 gtable <- function(items, multiple = FALSE, chosencol = 1,
                    icon.FUN = NULL,
                    filter.column = NULL, filter.labels = NULL,
