@@ -1,3 +1,8 @@
+2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbigtable.R (widget$setValuesJS): override method from
+	gtable. 
+
 2010-11-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* inst/scripts/gWidgetsWWWAJAX.R: for proxystore, changed how we get path, using

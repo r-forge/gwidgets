@@ -80,6 +80,15 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
       .$addJSQueue(.$setValuesJS(...))
   }
 
+  widget$setValuesJS <- function(., ...) {
+    ## get browser to reload itself
+    out <- String() +
+      sprintf("%s.getTotalCount = function() {return %s};", .$..store$asCharacter(), nrow(.$..store$data)) +
+        sprintf("%s.load({params:{start:0, limit:%s}});",
+                .$..store$asCharacter(), .$..store$pageSize)
+    .$addJSQueue(out)
+  }
+  
   ##' visibility
   widget$setVisible <- function(., value) {
     ## XXX nothing to do here, can't find the visible (setHidden? method we need)
