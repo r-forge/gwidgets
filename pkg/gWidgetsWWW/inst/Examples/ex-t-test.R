@@ -2,19 +2,19 @@
 
 w <- gwindow("t-test example")
 g <- ggroup(cont = w, horizontal = FALSE)
-data(Cars93, package="MASS")
+
+require(MASS, quietly=TRUE)
 
 
-dataSets <- c("mtcars") #,"Cars93")
-alternatives <- data.frame(value=c("two.sided","less","greater"),
-                           label = c("two sided", "less than", "greater than"))
+dataSets <- c("mtcars","Cars93")
+alternatives <- c("two.sided","less","greater")
 
 tbl <- glayout(cont=g)
 tbl[1,1] <- glabel("Selecte a data frame:", cont=tbl)
 tbl[1,2] <- (selData <- gcombobox(dataSets, selected=0, cont=tbl, editable=TRUE))
 
 tbl[2,1] <- glabel("Select a variable", cont=tbl)
-tbl[2,2] <- (selVariable <- gcombobox(c("",""),cont = tbl, editable = TRUE))
+tbl[2,2] <- (selVariable <- gcombobox(c(""),cont = tbl, editable = TRUE))
 
 tbl[3,1] <- glabel("mu:", cont=tbl)
 tbl[3,2] <- (selMu <- gedit(0, cont=tbl))
@@ -43,6 +43,11 @@ addHandlerChanged(selData, handler = function(h,...) {
   df <- svalue(selData)
   df <- get(df, inherits=TRUE)                # string to object
   selVariable[] <- data.frame(names(df),names(df), stringsAsFactors=FALSE)
+  svalue(selVariable, index=TRUE) <- 0
+  enabled(selMu) <- FALSE
+  enabled(selAlt) <- FALSE
+  enabled(buttonGroup) <- FALSE
+  
 })
 
 addHandlerChanged(selVariable, handler = function(h,...) {

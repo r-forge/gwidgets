@@ -1453,7 +1453,11 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
   ## we store value as an index
   out <- .$..data
   values <- .$..store$data
-  
+  ## hack to make chosenCol work with combobox
+  chosenCol <- getWithDefault(.$..store$chosenCol, 1)
+  if(is.character(chosenCol) && !(chosenCol %in% names(values)))
+    chosenCol <- 1
+
   if(exists("..shown",envir=.,inherits=FALSE)) {
     ## get from widget ID
     out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
@@ -1464,12 +1468,15 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
     }
   }
 
-
   if(!is.numeric(out)) {
-    if(any(tmp <- out == values[,.$..store$chosenCol]))
+    if(any(tmp <- out == values[,chosenCol]))
       out <- min(which(tmp))
+    else
+      return(out)                         # a character not in store
   }
   out <- as.numeric(out)
+
+
   
   ## no index -- return values
   if(!is.null(index) && index) {
@@ -1480,7 +1487,7 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
       values <- values[,-1, drop=FALSE]             # drop ..index
 
     if(is.null(drop) || drop) {
-      return(values[out,.$..store$chosenCol,drop=TRUE])
+      return(values[out, chosenCol, drop=TRUE])
     } else {
       return(values[out,])
     }
@@ -1519,8 +1526,12 @@ EXTComponentWithStore$setValueJS <- function(., ...) {
   if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
   
   ind <- .$getValue(index=TRUE, drop=TRUE)
-  out <- String() +
-    'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
+  if(ind <= 0)
+    out <- sprintf("%s.clearValue()", .$asCharacter())
+  else
+    out <- sprintf("%s.getSelectionModel().selectRows(%s);", .$asCharacter(), toJSON(ind-1))
+#    out <- String() +
+#      'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
   
   return(out)
 }

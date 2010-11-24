@@ -68,7 +68,7 @@ gwindow <- function(title="title", visible=TRUE,
   w$sessionID <- makeSessionID()
   w$toplevel <- w
   w$..renderTo <- String("Ext.getBody()") # can override
-  w$..show_error_messages <- TRUE         # set to NULL to not show
+  w$..show_error_messages <- gWidgetsWWWIsLocal()         # set to NULL to not show
   w$doLoadingText <- gWidgetsWWWIsLocal() # do we print a message when calling a handler
   w$loadingText <- gettext("Loading...")  # prints when a handler is called to indicate a request.
   ##  w$..visible <- FALSE

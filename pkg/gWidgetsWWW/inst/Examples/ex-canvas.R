@@ -4,7 +4,7 @@ ghtml(paste("Example of using the canvas device with gWidgetsWWW. Requires HTML5
             "<br>",
             "The canvas device uses javascript to write the graphic, not an image.",
             "It is an alternative to the gsvg device, which requires its image to be loaded from a file.",
-            collapse="\n"),
+            collapse="\n"), cont=g)
 
 ##' make a plot. This would, of course, be modified
 makePlot <- function() {
@@ -16,17 +16,6 @@ makePlot <- function() {
   dev.off()
   f
 }
-
-##' w is the toplevel window. Needed to be global in every script.
-w <- gwindow("Example of canvas device within gWidgetsWWW")
-
-
-g <- ggroup(cont = w, horizontal=FALSE)
-ghtml(paste("Example of using the canvas device with gWidgetsWWW. Requires HTML5-compliand browser to work.",
-            "<br>",
-            "The canvas device uses javascript to write the graphic, not an image. It is an alternative to the gsvg device, which requires its image to be loaded from a file.",
-            collapse="\n"),
-      cont = g)
 
 if(!require(canvas)) {
   glabel("This needs the canvas package to be installed", cont=g)

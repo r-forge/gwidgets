@@ -37,7 +37,8 @@ gcombobox <- gdroplist <-
     ## d) 4 cols: user can use template
 
 
-    ## figure out which type
+ 
+    
     if(!is.data.frame(items) ||  ncol(items) == 1)
       widget$..type <- 1
     else
@@ -46,7 +47,7 @@ gcombobox <- gdroplist <-
     if(!is.data.frame(items)) {
       if(is.numeric(items))
         widget$coerce.with = "as.numeric"
-      items <- data.frame(value=items, stringsAsFactors=FALSE)
+      items <- data.frame(values=items, stringsAsFactors=FALSE)
     }
     
     ## double up first column
@@ -76,6 +77,7 @@ gcombobox <- gdroplist <-
     ## store has a data frame for its "data" property
     store$setData(items)
     store$setChosenCol(store$fieldNames()[1])
+
 
     widget$..store <- store
 
