@@ -97,7 +97,7 @@ gwindow <- function(title="title", visible=TRUE,
     gWidgetsWWWAJAXurl <- "/gWidgetsWWW"
   }
   w$..gWidgetsWWWAJAXurl <- gWidgetsWWWAJAXurl
-  w$..gWidgetsWWWrunUrl <- getWithDefault(getOption("gwidgetsWWWrunUrl"), "/gWidgetsWWWrun")
+  w$..gWidgetsWWWrunUrl <- getWithDefault(getOption("gWidgetsWWWrunUrl"), "/gWidgetsWWWrun")
   #### methods ####
   
   ##' run a handler
