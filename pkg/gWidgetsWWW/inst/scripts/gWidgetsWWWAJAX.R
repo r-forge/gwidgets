@@ -14,13 +14,14 @@
 require(rjson)
 require(gWidgetsWWW, quietly=TRUE)
 
+.sendError <- FALSE
+.sendErrorMessage <- ""
 sendError <- function(db, msg) {
 #  out <- try(dbDisconnect(db), silent=TRUE)
-  out <- try(stop(paste("alert('", msg, "');")), silent=TRUE)
-  out
+  .sendError <<- TRUE
+  .sendErrorMessage <- msg
+#  stop(paste("alert('", msg, "');"))
 }
-
-
 
 ## must figure out type. Type can be set in POST value -- or be buried in the path type/id/sessionID
 if(is.null(POST) || is.null(POST$type)) {
@@ -34,10 +35,11 @@ if(is.null(POST) || is.null(POST$type)) {
   path <- unlist(strsplit(path, "/"))[-1]
 
   
-  type <- path[1]
-  id <- path[2]
-  sessionID <- path[3]
+  type <- path[2]
+  id <- path[3]
+  sessionID <- path[4]
 } else {
+  path <- c()
   type <- POST$type
   id <- POST$id                         # if present
   sessionID <- POST$sessionID
@@ -45,14 +47,12 @@ if(is.null(POST) || is.null(POST$type)) {
 
 if(!is.null(type)) {
 
-  RApacheOutputErrors(TRUE, '', '')
-
+#  RApacheOutputErrors(TRUE, 'alert("', '");')
+  RApacheOutputErrors(FALSE, '', '')
   
 
   if(exists("sessionDBIlogfile"))
     cat(sessionID, "\n", file=sessionDBIlogfile, append=TRUE)
-
-
   
   ## db object
   createDb(sessionDbFile) ## if not already there
@@ -106,6 +106,9 @@ if(!is.null(type)) {
   
   ## what type of request. Just a few
   if(type == "runHandler") {
+    ### Run a handler call. Returns javascript
+
+    
     if(exists("sessionDBIlogfile"))
       cat(sessionID, "run handler", "\n", file=sessionDBIlogfile, append=TRUE)
 
@@ -124,7 +127,7 @@ if(!is.null(type)) {
       context <- try(fromJSON(as.character(POST$context)), silent=TRUE)
       out <- try(e[[w]]$runHandler(POST$id, context), silent=TRUE)
     }
-    
+
     if(exists("sessionDBIlogfile"))
       cat(sessionID, "ran handler", "\n", file=sessionDBIlogfile, append=TRUE)
 
@@ -136,10 +139,14 @@ if(!is.null(type)) {
       setContentType("text/plain")
       if(!inherits(out,"try-error"))
         cat(out)
+
       ## store session
       db[[sessionID]] <- e
     }
   } else if(type == "assign") {
+    ## Assign a value. 
+
+    
     ## Assign a value in the gwindow object
     ## only names of  gWidgetsXXX are permitted
 
@@ -168,9 +175,10 @@ if(!is.null(type)) {
       ## save session
       db[[sessionID]] <- e
     } else {
-      sendError(db, paste("var name ", variable, " is not acceptable"))
+      sendError(db, sprintf("var name %s is not acceptable", variable))
     }
   } else if(type == "proxystore") {
+    
     ## get info from proxy store
     w <- e[[w]]
     query <- POST
@@ -183,7 +191,7 @@ if(!is.null(type)) {
       cat(out)
       200L
     } else {
-      cat("Error")
+      sendError(db, sprintf("Error: %s", out))
       419L
     }
   } else if(type == "fileupload") {
@@ -222,5 +230,10 @@ if(!is.null(type)) {
 #  out <- try(dbDisconnect(db), silent=TRUE)
 }
 
-
-DONE
+## Question: how to return the error message to browser. I get stuck
+## with general 500 warning
+if(.sendError) {
+  HTTP_INTERNAL_SERVER_ERROR
+} else {
+  HTTP_OK #DONE
+}

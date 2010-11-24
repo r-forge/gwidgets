@@ -593,9 +593,6 @@ localAssignValue <- function(id, value, sessionID) {
 ##' @sessionID sessionID used to find the environment
 ##' @return payload to send to web server
 localRunHandler <- function(id, context=NULL, sessionID) {
-  ## assign("id",id, envir=.GlobalEnv)
-  ## assign("context", context, envir=.GlobalEnv)
-  ## assign("sessionID", sessionID, envi=.GlobalEnv)
 
   if(!is.null(context)) {
     context <- ourURLdecode(context)
@@ -638,7 +635,20 @@ localProxyStore <- function(id, sessionID, query) {
   e <- getBaseObjectFromSessionID(sessionID)
   store <- e$getStoreById(id)
 
-
+  ## return 200 if ok, 419 if no
+  OK <- 200L; ERROR <- 419L
+  ret <- list(out="", retval=OK)
+  
+  e <- getBaseObjectFromSessionID(sessionID)
+  ## sanity checks
+  if(is.null(e)) {
+    ret$out <- "alert('No session for this id');"
+    ret$retval <- ERROR
+  } else {
+    ## set ret$out. If an error set ret$reval <- ERROR
+    x <- paste(capture.output(query), collapse="\n")
+    ret$out <- x
+  }
 
   out <- try(store$parseQuery(query), silent=TRUE)
   ret <- list(out=out,

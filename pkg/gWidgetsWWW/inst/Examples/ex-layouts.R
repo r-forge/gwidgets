@@ -1,3 +1,5 @@
+## Test many different layouts
+
 w <- gwindow("Test of different layouts")
 width <- 500
 ## ggroup

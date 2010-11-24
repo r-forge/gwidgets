@@ -1,3 +1,5 @@
+## combobox examples
+
 w <- gwindow("Test of gcombobox")
 g <- ggroup(cont=w, horizontal=FALSE)
 

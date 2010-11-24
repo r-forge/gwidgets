@@ -16,6 +16,8 @@ m <- data.frame(key=c("smith","jones"),
                 name = c("John","John"),
                 age = c(44, 12))
 g <- ggroup(horizontal=FALSE, cont = w)
+glabel("To edit a data frame. Type either smith or jones to fill in", cont=g)
+
 
 tbl <- glayout(cont = g)
 n <- ncol(m)
@@ -23,6 +25,7 @@ nms <- names(m)
 m <- as.character.matrix(m); colnames(m) <- nms
 tbl[1,1, align=c(1,0)] <- nms[1]
 tbl[1,2, align=c(-1,0)] <- (keyCB <- gcombobox(m[,1], selected=0, editable=TRUE, cont=tbl))
+
 keyCB$..hideTrigger <- TRUE
 ## populate if selected from drop down
 keyCB$addHandler(signal="select", handler = function(h,...) {

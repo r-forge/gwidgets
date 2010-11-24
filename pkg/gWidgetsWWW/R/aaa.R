@@ -1244,6 +1244,8 @@ EXTStore$replaceStore <- function(., data) {
 }
 ## XXX need more granular approach
 
+## A proxy store XXX
+EXTStoreWithProxy <- EXTStore$new()
 
 
 

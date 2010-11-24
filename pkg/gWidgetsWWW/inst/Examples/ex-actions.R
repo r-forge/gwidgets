@@ -1,9 +1,17 @@
+## An example of actions
+## gWidgets uses actions for toolbar, menubars and buttons
+## this shows how actions can be enabled/disabled
+
 w <- gwindow("Example of using actions")
 g <- ggroup(cont=w, horizontal=FALSE)
 l <- glabel("An example of how to manipulate actions", cont=g)
 l <- glabel("(icons aren't yet hooked up)", cont=g) 
 
 handler <- function(h,...) gmessage("called handler", parent=w)
+
+## list of actions.
+## actions need the parent argument in gWidgetsWWW, not so in other
+## gWidgets
 alist = list(
   new = gaction(label="new",icon="new",handler = handler, parent = w),
   open = gaction(label="open",icon="open",handler = handler, parent = w),
@@ -13,6 +21,7 @@ alist = list(
   cut = gaction(label="cut",icon="cut",handler = handler, parent = w)
   )
 
+## menu bar list
 mlist <- list(file = list(
                 new = alist$new,
                 open = alist$open,
@@ -24,7 +33,7 @@ mlist <- list(file = list(
                 cut = alist$cut
                 )
               )
-                
+
 mb <- gmenu(mlist, cont=w)
 l <- glabel("Buttons can take actions too.", cont=g)
 b <- gbutton(action = alist$save, cont = g)
@@ -49,6 +58,7 @@ b2 <- gbutton("set actions as if \"some change\" is the  state", cont =g,
                   enabled(alist[[i]]) <- TRUE
               })
 
+## show the window
 gstatusbar("Powered by RApache and gWidgetsWWW", cont = w)
 visible(w) <- TRUE
 

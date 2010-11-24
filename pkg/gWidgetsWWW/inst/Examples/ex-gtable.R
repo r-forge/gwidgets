@@ -1,4 +1,5 @@
-## examples of tables
+## example of gtable widget
+
 d <- mtcars[1:3, 1:6]
 
 

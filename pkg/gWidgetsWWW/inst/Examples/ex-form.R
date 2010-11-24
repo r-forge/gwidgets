@@ -1,3 +1,5 @@
+## Example of gfieldset widget to make a form
+
 w <- gwindow("An example form")
 g <- ggroup(horiz=FALSE, cont = w)
 

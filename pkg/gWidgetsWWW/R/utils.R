@@ -66,13 +66,10 @@ convertStaticFileToUrl <- function(val) {
   ## strip off static dir from val, append on static url base
 #  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
 
-  cat("Static\n", file="/tmp/debug-convert.txt")
-  cat(val, "\n", file="/tmp/debug-convert.txt", append=TRUE)
   
   if(grepl(gWidgetsWWWStaticDir, val, fixed=TRUE))
     val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
 
-  cat(val, "\n", file="/tmp/debug-convert.txt", append=TRUE)
   ourURLencode(val)
 }
 
