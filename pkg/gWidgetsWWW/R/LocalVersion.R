@@ -301,7 +301,7 @@ processAJAX <- function(path, query, ...) {
          "runHandler"= {
            l <- gWidgetsWWW:::localRunHandler(query$id, query$context, query$sessionID)
            ret <- list(payload=l$out,
-                       "content-type"="text/javascript",
+                       "content-type"="application/javascript",
                        "headers"=NULL,
                        "status code"=l$retval
                        )
@@ -310,7 +310,8 @@ processAJAX <- function(path, query, ...) {
            ## pass back return value. Assign does nothing otherwise
            l <- gWidgetsWWW:::localAssignValue(query$variable, ourURLdecode(query$value), query$sessionID)
            ret <- list(payload=l$out,
-                       "content-type"="text/html",
+#                       "content-type"="text/html",
+                        "content-type"="application/javascript",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
                          "<responseText></responseText>",
@@ -323,7 +324,7 @@ processAJAX <- function(path, query, ...) {
            ## clear out session
            ## For some reason this setup gives a SIGPIPE error and it isn't in the call to clearSessionID
            clearSessionId(query$sessionID)
-           ret <- list(payload="",
+           ret <- list(payload="", 
                        "content-type"="text/html",
                        "headers"=paste(
                          "<?xml version='1.0' encoding='ISO-8859-1'?>",
@@ -610,14 +611,18 @@ localRunHandler <- function(id, context=NULL, sessionID) {
   ## sanity checks
   if(is.null(e)) {
     ret$out <- "alert('No session for this id');"
-    ret$retval <- ERROR
+    ret$retval <- wasError(TRUE)
   } else {
     ## runHandler calls methods which first send javascript to the queue
     ## then we run the queue
     if(!(is.null(context) || context == ""))
-      ret$out <- e$runHandler(id, ourFromJSON(context))
+      ret$out <- try(e$runHandler(id, ourFromJSON(context)), silent=TRUE)
     else
-      ret$out <- e$runHandler(id)
+      ret$out <- try(e$runHandler(id), silent=TRUE)
+    if(inherits(ret$out, "try-error")) {
+      ret$out <- sprintf("<br />Error: %s", paste(ret$out,collapse="<br />"))
+      ret$retval <- wasError(TRUE)
+    }
   }
   return(ret)
 }
@@ -745,7 +750,7 @@ makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
                },
                 ## XXX This gives issues with the canvas example. Not sure why
                 ## Causes SIGPIPE ERROR. Not the clearSession call, this invocation?
-                ##"<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
+                ## "<script type='text/javascript'>Ext.EventManager.on(Ext.getBody() , 'unload', clearSession)</script>",
                "</body>",
                "</html>",
                sep="\n")

@@ -102,6 +102,7 @@ gwindow <- function(title="title", visible=TRUE,
   ##' run a handler
   ##' id is id of handler. Can be used for blocked handlers
   ##' context is named list of values to pass into "h" object
+  ##' Handlers that don't run raise an error
   w$runHandler <- function(., id, context) {
     id <- as.numeric(id)
     if(! (id %in% .$..blocked_handlers)) {
@@ -112,10 +113,12 @@ gwindow <- function(title="title", visible=TRUE,
           h[[i]] <- context[[i]]
       }
       ## XXX changed to use queue. Each handler should
-      ## call addToJSQueue
+      ## Each XXXJS call  adds to the JSQueue, it isn't done here
       out <- try(lst$handler(h), silent=TRUE)          # add to JS Queue
 #      return(lst$handler(h))
     }
+    if(inherits(out, "try-error"))
+      stop(sprintf("<br />Error running handler: %s", out))
     .$runJSQueue()                      # run the queue
   }
 
@@ -177,7 +180,7 @@ gwindow <- function(title="title", visible=TRUE,
               ## Some javascript functions
               ## XXX make better
 
-              if(exists("..show_error_message", envir=.)) {
+              if(.$has_local_slot("..show_error_messages")) {
                 processFailure <- paste("function processFailure(response, options) {",
                                         "Ext.example.msg('Error:', response.responseText, 4);",
                                         "};",
