@@ -2072,7 +2072,6 @@ EXTComponentWithItems$no.x.hidden <- TRUE
 
 ##' assign value
 EXTComponentWithItems$assignValue <- function(., value) {
-  assign("cidebug", value, envir=.GlobalEnv)
   svalue(., index=NULL) <- value[[1]]
 }
 

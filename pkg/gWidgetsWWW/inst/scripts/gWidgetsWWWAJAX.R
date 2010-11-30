@@ -191,11 +191,9 @@ if(!.sendError && !is.null(type)) {
 #        e[[w]] <- tmp
 
         w <- e[[w]]
-        out <- try(get("assignValue", w, inherits=TRUE)(w, variable, value), silent=TRUE)
-##        out <- try(w$assignValue(variable, value), silent=TRUE)
+        out <- try(w$assignValue(variable, value), silent=TRUE)
         
-        cat(paste(capture.output(ls(w)), collapse="\n"), file="/tmp/assign.txt", append=FALSE)
-      ## log errors
+        ## log errors
         if(inherits(out,"try-error")) {
           sendError(db, out)
         } else {
@@ -251,9 +249,9 @@ if(!.sendError && !is.null(type)) {
 
 ## Question: how to return the error message to browser. I get stuck
 ## with general 500 warning
-if(.sendError) {
-   cat(paste(capture.output(.sendErrorMessage), collapse="\n"), "\n", file="/tmp/error.txt")
-}
+#if(.sendError) {
+#   cat(paste(capture.output(.sendErrorMessage), collapse="\n"), "\n", file="/tm#p/error.txt")
+#}
 if(.sendError) {
   HTTP_INTERNAL_SERVER_ERROR
 } else {
