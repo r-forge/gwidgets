@@ -1,6 +1,16 @@
 ## TODO for gWidgetsWWW
+DONE* put in assignValue call into widget, into AJAX guy. Cleans up
+cruft
+DONE * tidy up javascript creation commands
+* date renderer in ComponentWithStore's makeColumnModel
+* fix rapache script for assign
+* need to move methods out of widget, into Traits.
+* clean up use of statusbar for ajax messages. (Timers)
+* spotfire-like example
+DONE * togglebutton
+* checkbox in grid FIX CHECKED INIT
 * doc with roxygen
-* why is 3.3 an issue with chrome, safari
+* why is 3.3 an issue with chrome, safari?
 * fix SIGPIPE error with local
 * integrate hanging events ala r-studio
 * menu images (sort out)  makeIconClasses was removed tomake things

@@ -129,18 +129,20 @@ gtree <- function(offspring = NULL,
   ## otherwise (default) return text of selected
   ## no means to return the whole path, but could get with offpring and a loop
   widget$getValue <- function(., index=NULL, drop=NULL, ...) {
-    if(exists("..shown",envir=.,inherits=FALSE)) {
-      ## get from widget ID
-      out <- try(get(.$ID, envir=.$toplevel),silent=TRUE)
-      if(inherits(out,"try-error")) {
-        out <- .$..data
-      } else {
-        .$..data <- out                  # update data
-      }
-    } else {
-      out <- .$..data
-    }
+    ## if(exists("..shown",envir=.,inherits=FALSE)) {
+    ##   ## get from widget ID
+    ##   out <- try(get(.$ID, envir=.$toplevel),silent=TRUE)
+    ##   if(inherits(out,"try-error")) {
+    ##     out <- .$..data
+    ##   } else {
+    ##     .$..data <- out                  # update data
+    ##   }
+    ## } else {
+    ##   out <- .$..data
+    ## }
     ## out is in form 0:path:text
+    out <- .$..data
+    
     tmp <- strsplit(out, ":")[[1]][-1]
     n <- length(tmp)
     text <- tmp[n]

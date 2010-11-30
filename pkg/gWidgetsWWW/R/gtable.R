@@ -90,15 +90,15 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
     out <- .$..data
     values <- .$..store$data
 
-    if(exists("..shown",envir=.,inherits=FALSE)) {
-      ## get from widget ID
-      out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-      if(!inherits(out,"try-error")) {
-        .$..data <- out                 # update data
-      } else {
-        out <- .$..data
-      }
-    }
+    ## if(exists("..shown",envir=.,inherits=FALSE)) {
+    ##   ## get from widget ID
+    ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
+    ##   if(!inherits(out,"try-error")) {
+    ##     .$..data <- out                 # update data
+    ##   } else {
+    ##     out <- .$..data
+    ##   }
+    ## }
     ## no index -- return values
     if(!is.null(index) && index) {
       return(as.numeric(out))
@@ -148,33 +148,17 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
   }
 
   ##' visibility
+  ##
+  ## Use filter method and ..index column to filter. Would be ugly for large tables!
   widget$setVisible <- function(., value) {
-    ## XXX nothing to do here, can't find the visible (setHidden? method we need)
-
+    n <- nrow(.$getValues())
+    value <- rep(value, length.out=n)
+    .$..visible <- value                # XXX???
+    inds <- which(value)
+    reg <- paste("^",inds,"$", sep="", collapse="|")
+    .$filter("..index", reg)
   }
 
-  ## ## we don't have a good means for visible<-. Instead we have this
-  ## ## filter proto method
-  ## XXX moved out to widget with store
-  ## widget$filter <- function(., colname, regex) {
-  ##   if(!exists("..shown",envir=., inherits=FALSE)) {
-  ##     ## "Can only filter once object is shown"
-  ##     out <- ""
-  ##   }
-
-  ##   if(missing(colname) || !colname %in% names(.$..store$data))  {
-  ##      ## Need colname to match one of the names of the data set
-  ##     out <- ""
-  ##   }
-
-  ##   if(missing(regex) || regex=="") {
-  ##     out <- sprintf("o%s.getStore().clearFilter();", .$ID)
-  ##   } else {
-  ##     out <- sprintf("o%s.getStore().filter('%s','%s');", .$ID, colname, regex)
-  ##   }
-  ##   cat(out, file=stdout())
-  ## }
-  
 
   
   widget$transportSignal <- c("cellclick")

@@ -25,6 +25,10 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
   class(widget) <- c("gSpinbutton",class(widget))
   widget$setValue(value=value)
   widget$..coerce.with="as.numeric"
+
+  ## no index
+  widget$assignValue <- function(., value) svalue(., index=NULL) <- value
+
   ## CSS
   ## XXX Get this css to work to get trigger icon for spin
   ##   widget$css <- function(.) {
@@ -40,7 +44,7 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
                  "/*background-color:#ff00cc;*/",
                  "}",
                  ".x-form-field-wrap .x-form-spinner-trigger {",
-                   "background:transparent url('../images/spinner.gif') no-repeat 0 0;",
+                   sprintf("background:transparent url('%s/spinner.gif') no-repeat 0 0;",gWidgetsWWWimageUrl),
                  "}",
                  ".x-form-field-wrap .x-form-spinner-overup{",
                  "background-position:-17px 0;",
@@ -78,7 +82,7 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
                  ".x-form-field-wrap .x-form-spinner-splitter {",
                  "line-height:1px;",
                  "font-size:1px;",
-                 "background:transparent url('../images/spinner-split.gif') no-repeat 0 0;",
+                 sprintf("background:transparent url('%s/spinner-split.gif') no-repeat 0 0;",gWidgetsWWWimageUrl),
                  "position:absolute;",
                  "cursor: n-resize;",
                "}",

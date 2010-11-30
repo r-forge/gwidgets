@@ -390,14 +390,17 @@ The communication between \R\/ and the browser works as
   row names. One could add these to \code{items} first as a character
   vector to edit. and then take them off again. \cr
 
-  There is no \code{visible<-} method to restrict the rows that are
-  shown by a specification of a logical vector. However, a proto method
-  \code{filter} is available to filter by a column name and regular
-  expression after the widget is shown. The
-  \code{ex-gtable} example has a sample usage.
+  The \code{visible<-} method is use to restrict the rows that are
+  shown by a specification of a logical vector. In addition, a proto
+  method \code{filter} is available to filter by a column name and
+  regular expression after the widget is shown. The \code{ex-gtable}
+  example has a sample usage. The \code{visible<-} method uses
+  \code{filter} in an inefficient manner, so using filter is suggested
+  for large data sets. (Although it is not portable across gWidgets
+  toolkits).\cr
 
 
-  The \code{gtree} widget needs writing.
+  The \code{gtree} widget works, but only for single columns. (No grid).
   \cr
 
 

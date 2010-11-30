@@ -86,7 +86,8 @@ export(
        "String"
        )
 
-exportS3Classes("gWidget","gWindow","String")
+## is this needed?
+#exportS3Classes("gWidget","gWindow","String")
 
 S3method("svalue","gWidget")
 S3method("svalue<-","gWidget")

@@ -186,9 +186,12 @@ if(!.sendError && !is.null(type)) {
       ## data could be arbitrarily large
       if(length(grep("^gWidgetID", variable)) > 0) {
         ## had sink() call here, removed. Was it required?
-        tmp <- e[[w]]
-        out <- try(assign(variable, value, envir=tmp), silent=TRUE) ## not e[[w]] here.
-        e[[w]] <- tmp
+#        tmp <- e[[w]]
+#        out <- try(assign(variable, value, envir=tmp), silent=TRUE) ## not e[[w]] here.
+#        e[[w]] <- tmp
+
+        w <- e[[w]]
+        out <- try(e$assignValue(variable, value), silent=TRUE)
         
       ## log errors
         if(inherits(out,"try-error")) {

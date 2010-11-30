@@ -136,6 +136,17 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     return(out)
   }
 
+  ## The map editor
+  widget$mapEditor <- function(., x) {
+    type <- class(x)[1]
+    switch(type,
+           "integer" = ",editor: new Ext.form.NumberField({allowBlank: true,allowDecimals: false,nanText: 'NA'})",
+           "numeric" = ",editor: new Ext.form.NumberField({allowBlank: true,allowDecimals: true,nanText: 'NA'})",
+           "logical" = String(",editor:") + "new Ext.form.ComboBox({typeAhead: true,editable: false,triggerAction: 'all',store: ['true','false'],lazyRender:true,listClass: 'x-combo-list-small'})",
+           "factor" = String(",editor:") + "new Ext.form.ComboBox({typeAhead: true,editable: false,triggerAction: 'all',store: [" + paste(shQuote(levels(x)),collapse=",") + "],lazyRender:true,listClass: 'x-combo-list-small'})",
+           "date" = "",               # we create this?
+           ",editor: new Ext.form.TextField()") # default is text
+  }
 
   widget$makeColumnModel <- function(.) {
     ## return array for columns
@@ -148,19 +159,9 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
 ##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
 ##               ],
 
-    mapEditor <- function(x) {
-      type <- class(x)[1]
-      switch(type,
-             "integer" = ",editor: new Ext.form.NumberField({allowBlank: true,allowDecimals: false,nanText: 'NA'})",
-             "numeric" = ",editor: new Ext.form.NumberField({allowBlank: true,allowDecimals: true,nanText: 'NA'})",
-             "logical" = String(",editor:") + "new Ext.form.ComboBox({typeAhead: true,editable: false,triggerAction: 'all',store: ['true','false'],lazyRender:true,listClass: 'x-combo-list-small'})",
-             "factor" = String(",editor:") + "new Ext.form.ComboBox({typeAhead: true,editable: false,triggerAction: 'all',store: [" + paste(shQuote(levels(x)),collapse=",") + "],lazyRender:true,listClass: 'x-combo-list-small'})",
-             "date" = "",               # we create this?
-             ",editor: new Ext.form.TextField()") # default is text
-    }
 
     df <- .$..store$data
-    editors <- sapply(df, function(i) mapEditor(i))
+    editors <- sapply(df, function(i) .$mapEditor(i))
     colNames <- names(df)
     colNames <- shQuoteEsc(colNames)
 

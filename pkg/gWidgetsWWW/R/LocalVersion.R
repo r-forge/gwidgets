@@ -567,6 +567,7 @@ gWidgetsWWWIsLocal <- function() {
 ##' Called by AJAX script to assign a value in the local session
 ##'
 ##' @return list with error code and message
+##' @TODO should assign using svalue method. This just puts into local environment to be picked up later
 localAssignValue <- function(id, value, sessionID) {
   e <- getBaseObjectFromSessionID(sessionID)
   l <- list(out="", retval=wasError(FALSE))
@@ -575,6 +576,8 @@ localAssignValue <- function(id, value, sessionID) {
     l$retval <- wasError(TRUE)
   } else {
     out <- ourFromJSON(value)
+    e$assignValue(id, out)
+    
     if(is.list(out)) {
       tmp <- try(assign(id, out$value, envir=e), silent=TRUE)
       if(inherits(tmp, "try-error")) {

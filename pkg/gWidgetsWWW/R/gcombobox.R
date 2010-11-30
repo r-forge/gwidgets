@@ -115,6 +115,11 @@ gcombobox <- gdroplist <-
 
     widget$getValueJSMethod <- "getRawValue"
     widget$setValueJSMethod <- "setValue"
+
+    widget$assignValue <- function(., value) {
+      svalue(., index=NULL) <- value[[1]]
+    }
+    
     widget$..setValue <- function(., index=NULL, ..., value) {
       ## can set by text or by index.
       if(!is.null(index) && index) {
@@ -125,11 +130,22 @@ gcombobox <- gdroplist <-
           value = ""                    # empty if selected = 0
       }
       .$..data <- as.character(value)
-      if(.$ID != "")
-        assign(.$ID,value, envir=.$toplevel)
+#      if(.$ID != "")
+#        assign(.$ID,value, envir=.$toplevel)
     }
     
-
+    widget$setValueJS <- function(., ...) {
+      if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
+      ind <- .$getValue(index=TRUE)
+      if(ind <= 0)
+        out <- sprintf("%s.clearValue()", .$asCharacter())
+      else
+        out <- sprintf("%s.setValue('%s');", .$asCharacter(), .$getValue(index=FALSE))
+#    out <- String() +
+#      'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
+  
+  return(out)
+}
     widget$setValues <- function(.,i,j,...,value) {
       ## intercept value if not data frame or if only 1 d
       if(!is.data.frame(value)) {

@@ -21,8 +21,13 @@
 ## svalue<- works
 ## names 
 ## names<-  NO METHOD setBoxLabel
-gcheckbox = function(text, checked = FALSE,
+gcheckbox = function(text, checked = FALSE, use.togglebutton=FALSE,
   handler = NULL, action = NULL,  container = NULL,...) {
+
+  ## dispatch elsewhere if a togglebutton
+  if(use.togglebutton) {
+    return(gtogglebutton(text, checked, handler,action,container, ...))
+  }
   
   widget <- EXTComponentInPanel$new(toplevel=container$toplevel)
   class(widget) <- c("gCheckbox",class(widget))
@@ -54,7 +59,19 @@ gcheckbox = function(text, checked = FALSE,
          )
   }
 
+  ## assign value
+  widget$assignValue <- function(., value) {
+    svalue(.) <- as.logical(toupper(value[[1]]))
+  }
+  
+  ## Doesn't work
+  widget$setValuesJS <- function(., ...) {
+    out <- sprintf("%s.boxLabel = '%s';", .$asCharacter(), .$getValues()[1])
+    .$addJSQueue(out)
+  }
 
+  
+  
   ## add after CSS, scripts defined
   container$add(widget,...)
 
@@ -65,5 +82,61 @@ gcheckbox = function(text, checked = FALSE,
   invisible(widget)
 }
 
+##' use toggle button to indicate checkbox state
+##' 
+##' @param text  button text, use [<- to set
+##' @param checked value checked or not. Use svalue<- to set
+##' @param handler 
+##' @param action 
+##' @param container 
+##' @param ... 
+gtogglebutton <- function(text="", checked=TRUE,
+                    handler = NULL, action=NULL, container, ...) {
+  ## components
+  widget <- EXTComponent$new(toplevel=container$toplevel,
+                             ..handler = handler,
+                             ..action=action
+                             )
+  class(widget) <- c("gToggleButton",class(widget))
+
+  widget$setValue(value=checked)
+  widget$setValues(value=text)
+  
+
+  widget$setValueJS <- function(.) {
+    out <- String() +
+      sprintf("var widget = %s;", .$asCharacter()) +
+        sprintf("widget.pressed(%s);", tolower(as.character(.$getValue())))
+    .$addJSQueue(out)
+  }
+
+  widget$setValuesJS <- function(., ...) {
+    out <- sprintf("%s.setText('%s');", .$asCharacter(), .$getValues()[1])
+    .$addJSQueue(out)
+  }
+  
+  widget$transportSignal <- "toggle"
+  widget$ExtConstructor <- "Ext.Button"
+  widget$ExtCfgOptions <- function(.) {
+    out <- list("text" = .$getValues()[1],
+                "enableToggle"=TRUE,
+                "pressed"=svalue(.)
+                )
+    return(out)
+  }
+
+
+  
+  ## add after CSS, scripts defined
+  container$add(widget,...)
+
+  if(!is.null(handler))
+    widget$addHandlerClicked(handler=handler,action=action)
+  
+  invisible(widget)
+}
+  
+
 ### A check box group
+
 

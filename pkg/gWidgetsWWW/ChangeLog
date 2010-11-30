@@ -1,3 +1,20 @@
+2010-11-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R: tidied up the combining of strings to make javascript calls.
+
+2010-11-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: Added use.table option. If TRUE widget uses
+	grid with checkboxes to select multiple from. Doesn't set value
+	from checked! (To fix)
+
+2010-11-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: added use.togglebutton option
+
+	* R/gwindow.R: if a statusbar, use that to indicate assigning,
+	handler running
+
 2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gbigtable.R (widget$setValuesJS): override method from

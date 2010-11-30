@@ -82,8 +82,10 @@ gtext <- function(text = NULL, width = NULL, height = 300,
   widget$transportSignal <- "change"
   widget$transportValue <- function(.,...) {
     out <- String() +
-      'var value = escape(' + .$asCharacter() + '.' +
-        .$getValueJSMethod + '());' + '\n'
+      sprintf("var value=escape(%s.%s());",
+              .$asCharacter(), .$getValueJSMethod)
+##      'var value = escape(' + .$asCharacter() + '.' +
+##        .$getValueJSMethod + '());' + '\n'
     return(out)
   }
   widget$ExtConstructor <- "Ext.form.TextArea"

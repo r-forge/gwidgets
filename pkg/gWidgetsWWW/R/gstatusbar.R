@@ -41,13 +41,13 @@ gstatusbar <- function(text = "", container=NULL, ...) {
   widget$ID <- container$newID()
 
 
-  ## need to load in ux code, as of 3.0 status bar is not ext native
-  widget$scripts <- function(.) {
-    f <- system.file("javascript","ext.ux.statusbar.js", package="gWidgetsWWW")
-    out <- paste(readLines(f), collapse="\n")
+  ## ## need to load in ux code, as of 3.0 status bar is not ext native
+  ## widget$scripts <- function(.) {
+  ##   f <- system.file("javascript","ext.ux.statusbar.js", package="gWidgetsWWW")
+  ##   out <- paste(readLines(f), collapse="\n")
     
-    return(out)
-  }
+  ##   return(out)
+  ## }
 
   
   ## helper to get status bar by its ID
@@ -76,14 +76,14 @@ gstatusbar <- function(text = "", container=NULL, ...) {
   ## we add these here as extra methods not in API
   widget$showBusy <- function(.) {
     out <- .$getSBJS() +
-      'widget.showBusy();';
-    ##cat(out, file=stdout())
+#      'widget.showBusy();';
+      'widget.showStatus({text: "Busy...", iconCls:"x-status-busy"});';
     .$addJSQueue(out)
   }
   widget$clearStatus <- function(.) {
     out <- .$getSBJS() +
-      'widget.clearStatus();';
-    ##cat(out, file=stdout())
+#      'widget.clearStatus();';
+      sprintf('widget.showStatus({text: "%s", iconCls:"x-status-valid"});', .$getValue())
     .$addJSQueue(out)
   }
 

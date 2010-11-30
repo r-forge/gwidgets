@@ -138,24 +138,26 @@ EXTWidget$callExtMethod <- function(., methodname, args) {
 ##' @param index see svalue
 ##' @param drop see svalue
 EXTWidget$getValue <- function(., index=NULL,drop=NULL, ...) {
-  if(exists("..shown",envir=.,inherits=FALSE)) {
-     ## get from widget ID
-     out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-     if(inherits(out,"try-error")) {
-       out <- .$..data
-     } else {
-       .$..data <- out                  # update data
-     }
-   } else {
-     if(is.null(index) || !index) {
-       out <- .$..data
-     } else {
-       values <- .$getValues()
-       if(is.data.frame(values))
-         values <- values[,1, drop=TRUE]
-       out <- which(.$..data %in% values)
-    }
-   }
+  ## if(exists("..shown",envir=.,inherits=FALSE)) {
+     ## ## get from widget ID
+     ## out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
+     ## if(inherits(out,"try-error")) {
+     ##   out <- .$..data
+     ## } else {
+     ##   .$..data <- out                  # update data
+     ## }
+  ## } else {
+
+  out <- .$..data
+  ## if(is.null(index) || !index) {
+  ##   out <- .$..data
+  ## } else {
+  ##   values <- .$getValues()
+  ##   if(is.data.frame(values))
+  ##     values <- values[,1, drop=TRUE]
+  ##   out <- which(.$..data %in% values)
+  ## }
+  ##}
   out <- .$coerceValues(out)
   return(out)
 }
@@ -253,7 +255,7 @@ EXTWidget$setValues <- function(.,i,j,...,value) {
   ## XXX Need to include i,j!
   .$..values <- value
   if(.$has_local_slot("..shown"))
-    .$addJSQueue(.setValuesJS(...))
+    .$addJSQueue(.$setValuesJS(...))
 }
 
 ##' call to set values via JS
@@ -283,7 +285,7 @@ dim.gWidget <- function(x) {. = x; .$.dim()}
 EXTWidget$.dim <- function(.) {vals <- .$..values; dim(vals)}
 
 ## names, names<-
-EXTWidget$getNames <- function(.) .$names
+EXTWidget$getNames <- function(.) .$..names
 EXTWidget$setNames <- function(.,value) {
   .$..names <- value
   if(exists("..shown",envir=., inherits=FALSE)) {
@@ -566,15 +568,17 @@ EXTWidget$writeConstructor <- function(.) {
 
 ## For controls whose value may be changed by the GUI, we write out changes
 ## immediately back to R so that R handlers will be aware of the changes. We
-## call this transport.
+## call this transport. The method assignValue is used within R to assign these values into the widget
+## The basic call involves  Ext.util.JSON.encode({value:value}) on one end
+## and this decode by fromJSON on the other end.
 
-##' code to write out transport function
+##' code to write out value definition of transport function
 ##' 
 ##' called in writeHandlers
 ##' @param ... ignored
 ##' @return javascript string
 EXTWidget$transportValue <- function(.,...) {
-  out <- sprintf("var value = o%s.%s();\n", .$ID, .$getValueJSMethod)
+  out <- sprintf("var value = %s.%s();\n", .$asCharacter(), .$getValueJSMethod)
   return(out)
 }
 
@@ -582,13 +586,13 @@ EXTWidget$transportValue <- function(.,...) {
 ##'
 ##' @return javascript string
 EXTWidget$transportFUN <- function(.) {
-  out <- sprintf("_transportToR(%s, Ext.util.JSON.encode({value:value}) );\n", shQuote(.$ID))
+  out <- sprintf("_transportToR(%s, Ext.util.JSON.encode({value:value}) );", shQuote(.$ID))
   return(out)
 }
 
 ##' piece together transport string
 ##'
-##' @return javascript string
+##' @return javascript string writing out body of transport function
 EXTWidget$writeTransport <- function(.,ext="",signal=NULL) {
   ## transport to R
   if(!is.null(.$transportSignal)) {
@@ -664,6 +668,24 @@ EXTWidget$show <- function(., queue=FALSE) {
   .$Cat(out, queue=queue)
 }
 
+##' An init method
+##'
+##' Adds instance to toplevel list of children
+##' @param . self
+EXTWidget$init <- function(.) {
+  if(.$has_local_slot("toplevel")) {
+    .$toplevel$addChild(.)
+  }
+}
+
+##' Assign value passed in from browser via transportToR
+##'
+##' Default is just svalue, but many other widgets require more than this
+##' @param . self
+##' @param value value to assign. May be a vector or list (from JSON conversion)
+EXTWidget$assignValue <- function(., value) {
+  svalue(., index=TRUE) <- value[[1]]   # value is a list
+}
 
 ##################################################
 ## Some "subclasses" of EXTWidget defined below
@@ -710,7 +732,7 @@ EXTComponent$Show <- function(.,...) {        # wraps Show
 }
 
 
-
+##' 
 ### Methods have two parts
 ### * one for first showing (sets value in R)
 ### * one after shown -- returns string with javascript to synchronize R to browser
@@ -767,45 +789,78 @@ EXTComponentResizable$footer <- function(.) {
 ##' main trait for text components
 EXTComponentText <- EXTComponent$new()
 
+##' Assign value -- coerce to text
+EXTComponentText$assignValue <- function(., value) {
+  .$..data <- paste(value[[1]], collapse="\n")
+}
+
 ##' method to write handler
 ##'
-##' @return javascript string
+##' @return javascript string function(...) {...} NO ; at end
 EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
-   out <- String() +
-    'function(' + .$handlerArguments(signal) + ') {'
-
-   tmp <- String() +
-     'runHandlerJS(' + handler$handlerID
-   if(!is.null(handler$handlerExtraParameters)) {
-     tmp <- tmp + "," + handler$handlerExtraParameters
-   }
-   tmp <- tmp + ');'
+   out <- String()  +
+     sprintf("function(%s) {\nrunHandlerJS(%s%s);\n",
+             .$handlerArguments(signal),
+             handler$handlerID,
+             ifelse(!is.null(handler$handlerExtraParameters),
+                    paste(",", handler$handlerExtraParameters, sep=""),
+                    "")
+             )
+     
+   ## 'function(' + .$handlerArguments(signal) + ') {'
+   ## tmp <- String() +
+   ##   'runHandlerJS(' + handler$handlerID
+   ## if(!is.null(handler$handlerExtraParameters)) {
+   ##   tmp <- tmp + "," + handler$handlerExtraParameters
+   ## }
+   ## tmp <- tmp + ');'
 
    ## need to do transport
-   tmp1 <- sprintf("var value = escape(o%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));",
-                   .$ID, shQuote(.$ID))
+   ## tmp1 <- sprintf("var value = escape(%s.getValue());_transportToR(%s, Ext.util.JSON.encode({value:value}));",
+   ##                 .$asCharacter(), shQuote(.$ID))
 
-   ## wrap inside conditional
+
    if(!is.null(handler$args$key)) {
-     key <- handler$args$key
-     out <- out + "if(e.getCharCode() ==" +
-       ifelse(is.numeric(key) || nchar(key) == 1, shQuote(key),key) +
-       ") {" +
-         tmp1 +
-           tmp +
-           "};"
-   } else if(!is.null(handler$args$charCode)) {
-     key <- handler$args$charCode
-     out <- out + "if(e.getCharCode() ==" +
-       ifelse( nchar(key) == 1, shQuote(key),key) + ") {" +
-         tmp1 + tmp +
-         "};"
-   } else {
-     out <- out + tmp
+
+     keyMatch <- ""
+     if(!is.null(key <- handler$args$key)) {
+       keyMatch <- ifelse(is.numeric(key) || nchar(key) == 1, shQuote(key), key)
+     } else if(!is.null(key <- handler$args$charCode)) {
+       keyMatch <- ifelse(nchar(key) == 1, shQuote(key), key)
+     }
+     
+     out <- out +
+       paste(sprintf("if(e.getCharcode() == %s) {",keyMatch),
+             sprintf("var value = escape(%s.getValue());", .$asCharacter()),
+             sprintf("_transportToR('%s', EXT.util.JSON.encode({value:value}));", .$ID),
+             "}",
+           sep="\n")
    }
-   ## close up
-   out <- out + '}' + '\n\n'
-  return(out)
+
+   out <- out + "}\n"
+   
+   ## ## wrap inside conditional
+   ## if(!is.null(handler$args$key)) {
+   ##   key <- handler$args$key
+   ##   out <- out + "if(e.getCharCode() ==" +
+   ##     ifelse(is.numeric(key) || nchar(key) == 1, shQuote(key),key) +
+   ##     ") {" +
+   ##       tmp1 +
+   ##         tmp +
+   ##         "};"
+   ## } else if(!is.null(handler$args$charCode)) {
+   ##   key <- handler$args$charCode
+   ##   out <- out + "if(e.getCharCode() ==" +
+   ##     ifelse( nchar(key) == 1, shQuote(key),key) + ") {" +
+   ##       tmp1 + tmp +
+   ##       "};"
+   ## } else {
+   ##   out <- out + tmp
+   ## }
+   ## ## close up
+   ## out <- out + '}' + '\n\n'
+
+   return(out)
 }
 
 ### Container Trait.  ##################################################
@@ -850,7 +905,8 @@ EXTContainer$add <- function(.,child,...) {
    ## add parent to child for traversal
    child$parent = .
    child$toplevel = .$toplevel         # pass in toplevel window
-
+   child$init()                        # initialize
+   
    ## pass along parent properties
    child$titlename <- .$titlename
 
@@ -1444,6 +1500,14 @@ EXTComponentWithStore$..store <- NULL
 
 ## methods
 
+##' Assign Value -- clicks sends back rowindex
+##' 
+##' @param . self
+##' @param value value, list with initial component the row number
+EXTComponentWithStore$assignValue <- function(., value) {
+  .$..data <- as.numeric(value[[1]])
+}
+
 ##' Get value (savlue)
 ##'
 ##' @param index logical. If TRUE return index
@@ -1458,15 +1522,16 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
   if(is.character(chosenCol) && !(chosenCol %in% names(values)))
     chosenCol <- 1
 
-  if(exists("..shown",envir=.,inherits=FALSE)) {
-    ## get from widget ID
-    out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-    if(!inherits(out,"try-error")) {
-      .$..data <- out                 # update data
-    } else {
-      out <- .$..data
-    }
-  }
+  ## if(exists("..shown",envir=.,inherits=FALSE)) {
+  ##   ## get from widget ID
+  ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
+  ##   if(!inherits(out,"try-error")) {
+  ##     .$..data <- out                 # update data
+  ##   } else {
+  ##     out <- .$..data
+  ##   }
+  ## }
+  out <- .$..data
 
   if(!is.numeric(out)) {
     if(any(tmp <- out == values[,chosenCol]))
@@ -1621,6 +1686,22 @@ EXTComponentWithStore$filter <- function(., colname, regex) {
     .$addJSQueue(out)
   }
 
+##' visibility
+##'
+##' Use filter method and initil ..inaex column to implment filtering
+##' @param . self
+##' @param value Logical, recycled to number of rows. TRUE for rows to display
+EXTComponentWithStore$setVisible <- function(., value) {
+  n <- dim(.)[1]
+  value <- rep(value, length.out=n)
+  .$..visible <- value                # XXX???
+  inds <- which(value)
+  reg <- paste("^",inds,"$", sep="", collapse="|")
+  .$filter("..index", reg)
+}
+
+
+
 ##' Wrapper to turn an object into an JS array
 ##'
 ##' @param ... passed to store's methods
@@ -1662,7 +1743,7 @@ EXTComponentWithStore$makeColumnModel <- function(.) {
              "logical" = ",renderer:gtableLogical",
              "factor" = "",
              "icon" = ",width: 16,renderer:gtableIcon",              # for icons(we create this)
-             "date" = "",               # we create this?
+             "date" = ",renderer:gtableDate",               # we create this?
              "")
     }
 
@@ -1988,6 +2069,15 @@ EXTComponentWithItems$itemname <- "item"
 EXTComponentWithItems$ExtConstructor <- "Ext.Panel"
 ##' property. The no.x.hidden property, when TRUE, will suppress hiding, then showing of widget
 EXTComponentWithItems$no.x.hidden <- TRUE
+
+##' assign value
+EXTComponentWithItems$assignValue <- function(., value) {
+  assign("cidebug", value, envir=.GlobalEnv)
+  svalue(., index=NULL) <- value[[1]]
+}
+
+
+
 ##' Is i checked
 ##'
 ##' @return logical indicating if item i is checked
@@ -2042,37 +2132,55 @@ EXTComponentWithItems$writeHandlersJS <- function(.) {
   for(sig in signals) {
     for(i in 1:(n <- length(.))) {
       out <- out +
-        'var widget = ' + .$asCharacter() + '.getComponent(' +
-          as.character(i - 1) + ');' +
-            'widget.on(' +
-              ## XXX transport args needs to be siganl dependent!!
-              shQuote(sig) + ',' +
-                'function(' + .$handlerArguments(sig) + ') {\n'
+        paste(sprintf("var widget = %s.getComponent(%s);",.$asCharacter(), as.character(i-1)),
+              sprintf("widget.on('%s', function(%s) {%s}, this, {delay:1, buffer:1, single:false});",
+                      sig,
+                      .$handlerArguments(sig),
+                      ifelse(!is.null(.$transportSignal) && sig %in% .$transportSignal,
+                             .$writeTransport(ext = shQuote(i), signal=sig),
+                             "")
+                      ),
+              sep="")
+      ## out <- out +
+      ##   'var widget = ' + .$asCharacter() + '.getComponent(' +
+      ##     as.character(i - 1) + ');' +
+      ##       'widget.on(' +
+      ##         ## XXX transport args needs to be siganl dependent!!
+      ##         shQuote(sig) + ','  +
+      ##           'function(' + .$handlerArguments(sig) + ') {\n'
 
-      ## write out transport if necessary
-      ## XXX code to pass values createDelegate ....
-      if(!is.null(.$transportSignal) && sig %in% .$transportSignal) {
-        out <- out + .$writeTransport(ext = shQuote(i), signal=sig) # ## pass this in
-      }
-      out <- out +'}' +
-        ',this, {delay:1,buffer:1, single:false});' + '\n'
+      ## ## write out transport if necessary
+      ## ## XXX code to pass values createDelegate ....
+      ## if(!is.null(.$transportSignal) && sig %in% .$transportSignal) {
+      ##   out <- out + .$writeTransport(ext = shQuote(i), signal=sig) # ## pass this in
+      ## }
+      ## out <- out +'}' +
+      ##   ',this, {delay:1,buffer:1, single:false});' + '\n'
       
+
       ## write out handler if needed
       if(!is.null(allHandlers[[sig]])) {
         handler <- allHandlers[[sig]]
         out <- out +
-          'var widget = ' + .$asCharacter() + '.getComponent(' + as.character(i - 1) + ');' +
-            'widget.on(' +
-            ## XXX transport args needs to be siganl dependent!!
-            shQuote(sig) + ',' +
-              'function(' + .$handlerArguments(sig) + ') {\n' +
-                .$writeHandlerFunction(signal=sig, handler=handler) +
-                  '\n'
-        ##           'runHandlerJS(' + handler$handlerID  +
-        ##             handler$handlerExtraParameters + ');' + '\n' +
-        ##               'true;' + '\n'
-        out <- out +
-          '},this, {delay:100,buffer:100, single:false});' + '\n'
+          paste(sprintf("var widget = %s.getComponent(%s);", .$asCharacter(), as.character(i-1)),
+#                sprintf("widget.on('%s', function(%s) {%s}, this, {delay:1, buffer:1, single:false});",
+                sprintf("widget.on('%s', %s, this, {delay:1, buffer:1, single:false});",
+                        sig,
+                        .$writeHandlerFunction(signal=sig, handler=handler)),
+                sep="")
+##           'var widget = ' + .$asCharacter() + '.getComponent(' + as.character(i - 1) + ');' +
+##             'widget.on(' +
+##             ## XXX transport args needs to be siganl dependent!!
+##             shQuote(sig) + ',' +
+## #              'function(' + .$handlerArguments(sig) + ') {\n' +
+##                 .$writeHandlerFunction(signal=sig, handler=handler) +
+##                   '\n'
+##         ##           'runHandlerJS(' + handler$handlerID  +
+##         ##             handler$handlerExtraParameters + ');' + '\n' +
+##         ##               'true;' + '\n'
+##         out <- out +
+## #          '}' +
+##             ',this, {delay:100,buffer:100, single:false});' + '\n'
       }
     }
   }
@@ -2252,7 +2360,7 @@ visible.gWidget <- function(obj) obj$getVisible()
   . <-  x
   .$getNames()
 }
-"names<-.gWidget" <- function(x,value) {
+"names<-.gWidget" <- function(x, value) {
   . = x
   .$setNames(value)
   return(x)
@@ -2486,12 +2594,14 @@ EXTWidget$handlerArgumentsList <-
        rowcontextmenu = "w, rowIndex, e", # grid
        rowdblclick = "w, rowIndex, e", # grid
        rowmousedown = "w, rowIndex, e", # grid       
-       select = "w,record,index", beforeselect = "w, record, index", 
+       select = "w,record,index", beforeselect = "w, record, index",
+       selectionchange = "selModel",    # gcheckboxgrouptable
        show = "w", beforeshow = "w", 
        specialkey = "w, e",
+       toggle = "w, value",             # gtogglebutton
        valid = "w")
 
-## process the list above allowing for local overrides                                       
+##' process the list above allowing for local overrides                                       
 EXTWidget$handlerArguments <- function(.,signal) {
   out <- .$handlerArgumentsList
   if(exists("..handlerArgumentsList", envir=., inherits = FALSE)) {
@@ -2502,16 +2612,29 @@ EXTWidget$handlerArguments <- function(.,signal) {
   return(val)
 }
 
-## abstract out function. Used with gradio
+##' Write the handler part of the call function(...) (define_value;runHandlerJS(...))
+##'
+##' No trailing ; after function(...) {...}
+##' @param . self
+##' @param signal signal for handler to be called on.
+##' @param handler handler list, prepared elsewhere
 EXTWidget$writeHandlerFunction <- function(., signal, handler) {
+
+  out <- sprintf("function(%s) {runHandlerJS(%s%s);}\n",
+                 .$handlerArguments(signal),
+                 handler$handlerID,
+                 ifelse(!is.null(handler$handlerExtraParameters),
+                        paste(",", handler$handlerExtraParameters, sep=""),
+                        "")
+                 )
   
-  out <- String() +
-    'function(' + .$handlerArguments(signal) + ') {'  +
-      'runHandlerJS(' + handler$handlerID
-  if(!is.null(handler$handlerExtraParameters)) {
-    out <- out + "," + handler$handlerExtraParameters
-  }
-  out <- out + ');' +  '}' + '\n'
+  ## out <- String() +
+  ##   'function(' + .$handlerArguments(signal) + ') {'  +
+  ##     'runHandlerJS(' + handler$handlerID
+  ## if(!is.null(handler$handlerExtraParameters)) {
+  ##   out <- out + "," + handler$handlerExtraParameters
+  ## }
+  ## out <- out + ');' +  '}' + '\n'
   return(out)
 }
 
@@ -2527,45 +2650,66 @@ EXTWidget$writeHandlerJS <- function(.,signal="",handler=NULL) {
   out <- String()
   if(signal == "idle") {
     out <- out +
-      'setInterval(function() {' +
-        'runHandlerJS(' + handler$handlerID
-    if(!is.null(handler$handlerExtraParameters))
-      out <- out + "," + handler$handlerExtraParameters
-    out <- out +
-      ');' +
-        '},' + handler$handlerArguments + ');' + '\n'
+      sprintf("setInterval(function() {runHandlerJS(%s%s)})\n",
+              handler$handlerID,
+              ifelse(!is.null(handler$handlerExtraParameters),
+                     paste(",", handler$handlerExtraParameters, sep=""),
+                     "")
+              )
+
+    ## out <- out +
+    ##   'setInterval(function() {' +
+    ##     'runHandlerJS(' + handler$handlerID
+    ## if(!is.null(handler$handlerExtraParameters))
+    ##   out <- out + "," + handler$handlerExtraParameters
+    ## out <- out +
+    ##   ');' +
+    ##     '},' + handler$handlerArguments + ');' + '\n'
   } else {
     
     ## write out transport if necessary
     ## XXX code to pass values createDelegate ....
     if(!is.null(.$transportSignal) && signal %in% .$transportSignal) {
       out <- out +
-        'o' + .$ID + '.on(' +
-          ## XXX transport args needs to be siganl dependent!!
-          shQuote(signal) + ', ' +
-            'function(' + .$handlerArguments(signal) + ') {\n' +
-              .$writeTransport(signal = signal) +
-                '}' +
-                  ',this, {delay:1,buffer:1, single:false});' + '\n'
+        sprintf("%s.on('%s', function(%s) {%s}, this, {delay:1, buffer:1, single:false});",
+                .$asCharacter(),
+                signal,
+                .$handlerArguments(signal),
+                .$writeTransport(signal=signal))
+        
+        ## 'o' + .$ID + '.on(' +
+        ##   ## XXX transport args needs to be siganl dependent!!
+        ##   shQuote(signal) + ', ' +
+        ##     'function(' + .$handlerArguments(signal) + ') {\n' +
+        ##       .$writeTransport(signal = signal) +
+        ##         '}' +
+        ##           ',this, {delay:1,buffer:1, single:false});' + '\n'
     }
 
     
     ## write out handler if needed
     if(!is.null(handler)) {
       out <- out +
-        'o' + .$ID + '.on(' +
-          ## XXX transport args needs to be siganl dependent!!
-          shQuote(signal) + ',' +
-            .$writeHandlerFunction(signal=signal, handler=handler) +
-',this, {delay:100,buffer:100, single:false});' + '\n'
+        sprintf("%s.on('%s', %s, this, {delay:100, buffer:100, single:false});\n",
+                .$asCharacter(),
+                signal,
+                .$writeHandlerFunction(signal=signal, handler=handler) ## includes function() {}
+                )
+##         'o' + .$ID + '.on(' +
+##           ## XXX transport args needs to be siganl dependent!!
+##           shQuote(signal) + ',' +
+##             .$writeHandlerFunction(signal=signal, handler=handler) +
+## ',this, {delay:100,buffer:100, single:false});' + '\n'
 
     }
 #  
 #    out <- out +
 #      '},this, {delay:100,buffer:100, single:false});' + '\n'
   }
+
   return(out)
 }
+
 EXTWidget$writeHandlersJS <- function(.) {
   if(exists("..handlers", envir=., inherits=FALSE))
     allHandlers <- .$..handlers
@@ -2675,29 +2819,29 @@ addHandlerBlur.gWidget <- function(obj,handler, action=NULL)
 
 
 ## addHandlerChanged
- EXTWidget$addHandlerChanged <- function(., handler, action=NULL) {
-   .$addHandler(signal="change",handler, action)
- }
+EXTWidget$addHandlerChanged <- function(., handler, action=NULL) {
+  .$addHandler(signal="change",handler, action)
+}
 
- "addHandlerChanged" <- function(obj, handler, action=NULL)
-   UseMethod("addHandlerChanged")
- addHandlerChanged.gWidget <- function(obj,handler, action=NULL)
-   obj$addHandlerChanged(handler, action)
+"addHandlerChanged" <- function(obj, handler, action=NULL)
+  UseMethod("addHandlerChanged")
+addHandlerChanged.gWidget <- function(obj,handler, action=NULL)
+  obj$addHandlerChanged(handler, action)
 
- ## addHandlerClicked
- EXTWidget$addHandlerClicked <- function(., handler, action=NULL) {
-   .$addHandler(signal="click",handler, action)
- }
+## addHandlerClicked
+EXTWidget$addHandlerClicked <- function(., handler, action=NULL) {
+  .$addHandler(signal="click",handler, action)
+}
 
- "addHandlerClicked" <- function(obj, handler, action=NULL)
-   UseMethod("addHandlerClicked")
- addHandlerClicked.gWidget <- function(obj,handler, action=NULL)
-   obj$addHandlerClicked(handler, action)
+"addHandlerClicked" <- function(obj, handler, action=NULL)
+  UseMethod("addHandlerClicked")
+addHandlerClicked.gWidget <- function(obj,handler, action=NULL)
+  obj$addHandlerClicked(handler, action)
 
- ## addHandlerDoubleclick
- EXTWidget$addHandlerDoubleclick <- function(., handler, action=NULL) {
-   .$addHandler(signal="dblclick",handler, action)
- }
+## addHandlerDoubleclick
+EXTWidget$addHandlerDoubleclick <- function(., handler, action=NULL) {
+  .$addHandler(signal="dblclick",handler, action)
+}
 
 "addHandlerDoubleclick" <- function(obj, handler, action=NULL)
   UseMethod("addHandlerDoubleclick")

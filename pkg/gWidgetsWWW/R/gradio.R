@@ -40,19 +40,22 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   widget$setValues(value = items)
 
   ## define methods
+  widget$assignValue <- function(., value) {
+    .$..data <- as.numeric(value[[1]])
+  }
   ## we store values by index
   widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
     ## we need to revers logic from AWidgtet$getValue
     out <- .$..data
-    if(exists("..shown",envir=.$toplevel,inherits=FALSE)) {
-      ## get from widget ID
-      out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-      if(!inherits(out,"try-error")) {
-        out <- as.numeric(out)          # is character
-      } else {
-        out <- .$..data
-      }
-    }
+    ## if(exists("..shown",envir=.$toplevel,inherits=FALSE)) {
+    ##   ## get from widget ID
+    ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
+    ##   if(!inherits(out,"try-error")) {
+    ##     out <- as.numeric(out)          # is character
+    ##   } else {
+    ##     out <- .$..data
+    ##   }
+    ## }
     ## no index -- return values
     if(is.null(index)) index <- FALSE
     if(index)
@@ -129,11 +132,18 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   ## transport
   widget$transportValue <- function(.,...,i) {
     out <- String() +
-      'if(checked === true) {' +
-        '_transportToR(' + shQuote(.$ID) +
-          ',' +
-            'Ext.util.JSON.encode({value:' + i + '})' +
-            ');}' + '\n'         # i passed into transportValue()!
+      paste("if(checked==true) {",
+            sprintf("_transportToR('%s', Ext.util.JSON.encode({value:%s}))",
+                    .$ID,               # i passed into transportValue
+                    i),
+            "}",
+            sep="\n")
+    
+      ## 'if(checked === true) {' +
+      ##   '_transportToR(' + shQuote(.$ID) +
+      ##     ',' +
+      ##       'Ext.util.JSON.encode({value:' + i + '})' +
+      ##       ');}' + '\n'         # i passed into transportValue()!
 
     return(out)
   }
@@ -142,12 +152,13 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   ## override to put with checked===true
   widget$writeHandlerFunction <- function(., signal, handler) {
     out <- String() +
-          'if(checked === true) {' +
-            'runHandlerJS(' + handler$handlerID
+      'function(' + .$handlerArguments(signal) + ') {' +
+        'if(checked === true) {' +
+          'runHandlerJS(' + handler$handlerID
     if(!is.null(handler$handlerExtraParameters))
       out <- out + ',' + handler$handlerExtraParameters
     out <- out + ');' + 
-      '};' + '\n'
+      '};}' + '\n'
     return(out)
   }
 
