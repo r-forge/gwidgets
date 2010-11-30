@@ -101,6 +101,43 @@ gwindow <- function(title="title", visible=TRUE,
                         ..actions = list(),
                        ..children = list())
   class(w) <- c("gWindow",class(w))
+
+##' assign values
+##' 
+##' @param . self
+##' @param id id of widget
+##' @param value value to assign
+w$assignValue <- function(., id, value) {
+  widget <- .$getWidgetByID(id)
+  widget$assignValue(value)
+}
+
+## track Children
+##' Add a child to list of children
+##' @param . self
+##' @param child child to add (widget instance)
+w$addChild <- function(., child) {
+  if(!.$has_local_slot("..children"))
+    l <- list()
+  else
+    l <- .$..children
+  l[[child$ID]] <- child
+  .$..children <- l
+}
+
+##' retrieve child instance from its ID
+##' 
+##' @param .  self
+##' @param id id of child (child$ID yields this)
+w$getWidgetByID <- function(., id) {
+  if(.$has_local_slot("..children")) {
+    l <- .$..children
+    l[[id]]
+  } else {
+    NULL
+  }
+}
+
   
   ## no parent container -- so no ID. We fix this
   w$ID <- "gWidgetID0"                  # XXX Issue if more than one per page!
