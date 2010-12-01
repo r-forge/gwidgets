@@ -56,17 +56,6 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
   widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
     ## we need to revers logic from AWidgtet$getValue
     out <- .$..data
-    ## if(exists("..shown",envir=.,inherits=FALSE)) {
-    ##   ## get from widget ID
-    ##   out <- try(get(.$ID,envir=.),silent=TRUE) ## XXX work in index here?
-    ##   if(!inherits(out,"try-error")) {
-    ##     if(is.character(out))
-    ##       out <- eval(parse(text = out))          # transport ischaracter
-    ##   } else {
-    ##     out <- .$..data
-    ##   }
-    ## }
-    ## no index -> index TRUE
 
     if(is.null(index)) index <- TRUE
     if(index)
@@ -166,8 +155,7 @@ gcheckboxgrouptable <- function(items,
                                  handler = NULL, action = NULL,
                                  container = NULL, ...) {
 
-  widget <- EXTComponentWithStore$new(toplevel=container$toplevel
-                                      )
+  widget <- EXTComponentWithStore$new(toplevel=container$toplevel)
   
   class(widget) <- c("gCheckboxGroupTable",class(widget))
   
@@ -190,23 +178,6 @@ gcheckboxgrouptable <- function(items,
     out <- .$..data
     values <- .$..store$data
     
-    ## if(exists("..shown",envir=.,inherits=FALSE)) {
-    ##   ## get from widget ID
-    ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-    ##   ## XXX
-    ##   if(!inherits(out,"try-error")) {
-    ##     ## out may be "" or it may be like :2:3
-    ##     if(grepl("^:", out)) {
-    ##       out <- as.integer(strsplit(out, ":")[[1]][-1]) # remove initial ":"
-    ##     } else {
-    ##       out <- integer(0)
-    ##     }
-    ##     .$..data <- sort(out)                 # update data
-    ##   } else {
-    ##     out <- .$..data
-    ##   }
-    ## }
-
     ## no index -- return values
     if(!is.null(index) && index) {
       return(as.numeric(out))
@@ -234,7 +205,7 @@ gcheckboxgrouptable <- function(items,
   }
 
 
-  
+  ## values refer to indices
   widget$setValue <- function(., index=NULL,..., value) {
     ## if index --
     index <- getWithDefault(index, is.numeric(value))
@@ -252,10 +223,6 @@ gcheckboxgrouptable <- function(items,
     if(exists("..shown",envir=., inherits=FALSE)) 
       .$addJSQueue(.$setValueJS(index=index, ...))
   }
-
-  ## set up widget
-  n <- nrow(items); checked <- rep(checked, length.out=n)
-  widget$setValue(value = which(checked), index=FALSE)
 
 
   widget$setValueJS <- function(., ...) {
@@ -418,6 +385,11 @@ gcheckboxgrouptable <- function(items,
                  )
   }
 
+
+  ## set up widget
+  n <- nrow(items); checked <- rep(checked, length.out=n)
+  widget$setValue(value = which(checked), index=FALSE)
+  
   
   if(!is.null(handler))
     widget$addHandlerChanged(handler, action=action)

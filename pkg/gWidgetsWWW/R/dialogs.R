@@ -21,6 +21,19 @@
 ## The respond to the handler
 
 ## parent can be a container or a widget
+##' A basic dialog called by others
+##'
+##' 
+##' @param type type of dialog
+##' @param message message for dialog
+##' @param text secondary text message. Ignored
+##' @param title title is for title bar of dialog's window
+##' @param icon icon to accompany dialog
+##' @param parent Used for animation
+##' @param handler Called when dialog is activated
+##' @param action passed to handler
+##' @param ... 
+##' @param doanimEl gWidgetsWWW option. Logical. Do we animate?
 .gshowdialog <- function(type=c("message","confirm","input"),
                         message, text, title=type,
                         icon = c("info","warning","error","question"),
@@ -52,30 +65,28 @@
      handlerid <- widget$addHandler(signal=NULL, handler=handler, action=action)
      if(type == "confirm") {
        handlerFunction <- String() +
-         'function(btn) {' +
-           'if(btn == "ok") {' +
-             ##           'alert(btn);' + ## makes a *big* difference -- why?
-             'runHandlerJS('+handlerid + ',"","");' +
-               '}'+
-                 '}'
+         paste('function(btn) {',
+               '  if(btn == "ok") {',
+               sprintf('    runHandlerJS("%s","","");',handlerid),
+               '  }',
+               '}',
+               sep="\n")
      } else if(type == "input") {
        ## Here we call the handler with the value from the widget passed in through
        ## h$context -- not h$input
        handlerFunction <- String() +
-         'function(btn,text) {' +
-           'if(btn == "ok") {' +
-             'runHandlerJS('+handlerid + ',' +
-               'Ext.util.JSON.encode({input:text})' +
-                 ');' +
-               '}'+
-                 '}'
+         paste('function(btn,text) {',
+               '  if(btn == "ok") {',
+               sprintf('runHandlerJS(%s,Ext.util.JSON.encode({input:text}));', handlerid), 
+               '  }',
+               '}',                     # no trailing ";"
+               sep="\n")
      }
    }
      
   ## doesn't like \n below
   message <- gsub("\n","<p>",message)
-
-
+  
   lst <- list(id = id,
               title = escapeHTML(title),
               msg = escapeHTML(message),
@@ -83,7 +94,7 @@
               animEl = parent$ID,
               icon =  String("Ext.MessageBox.") + icon
               )
-  if(!doanimEl) ## trouble with deep down handlers??????
+  if(!doanimEl) 
     lst[["animEl"]] <- NULL
   
   if(handlerFunction != "")
@@ -99,6 +110,16 @@
   widget$addJSQueue(out)
 }
 
+##' A simple message dialog.
+##' 
+##' @param message main message.
+##' @param title Title for dialog's window
+##' @param icon icon to decorate dialog
+##' @param parent parent container (the main window instance)
+##' @param handler handler passed to dialog when confirmed
+##' @param action action passed to handler
+##' @param ... ignored
+##' @export
 gmessage <- function(message, title="message",
                      icon = c("info", "warning", "error", "question"),
                      parent = NULL,
@@ -111,6 +132,16 @@ gmessage <- function(message, title="message",
   
 }
 
+##' Confirmation dialog
+##' 
+##' @param message message
+##' @param title title for dialog's window
+##' @param icon icon
+##' @param parent parent container (main window instance)
+##' @param handler handler passed to dialog if confirmed
+##' @param action passed to any handler
+##' @param ... ignored
+##' @export
 gconfirm <- function(message, title="Confirm",
                      icon = c("info", "warning", "error", "question"),
                      parent = NULL,
@@ -122,8 +153,17 @@ gconfirm <- function(message, title="Confirm",
                       handler=handler, action=action,...)
 }
 
-## input -- can't figure out how to get handler the value of input
-## likely needs to be set as a global variable
+##' input dialog.
+##'
+##' Used for getting a text string to pass to a handler
+##' @param message message
+##' @param title title for dialog's window
+##' @param icon icon
+##' @param parent parent container (main window instance)
+##' @param handler handler passed to dialog if confirmed
+##' @param action passed to any handler
+##' @param ... ignored
+##' @export
 ginput <- function(message, text="", title="Input",
                    icon = c("info", "warning","error", "question"),
                    parent=NULL,
@@ -135,38 +175,41 @@ ginput <- function(message, text="", title="Input",
 }
   
 
-
+##' means to turn a widget into a dialog
+##'
+##' Not written
+##' @param title title
+##' @param widget widget
+##' @param parent parent
+##' @param handler handler
+##' @param action action
 gbasicdialog <- function(title = "Dialog", widget,
                          parent=NULL, handler = NULL, action=NULL) {
   stop("XXX not written")
 }
 
 
-##
-## gfile -- upload a file (not find a file on filesytem)
-## XXX this is different
-gfile <- function() {
-  stop("XXX write me to upload a file")
-}
+## gfile in gfile.R
 
-
-
-## quick alert message -- not modal or obtrusive (dropped from above in extjs)
+##' quick alert message -- not modal or obtrusive (dropped from above in extjs)
+##' 
+##' @param message message to display
+##' @param title title of message
+##' @param delay delay in seconds
+##' @param parent parent window, typically gwindow instance. Necessary
 galert <- function(message, title = "message", delay=3, parent=NULL) {
   ## parent not used here
   if(missing(message))
     message <- ""
 
   if(is.null(parent)) {
-    parent <- gwindow("XXXX")
+    stop("Needs parent")
   }
   
-  
-  out <- String() +
-    'Ext.example.msg(' + shQuoteEsc(title) + ',' +
-      shQuoteEsc(message) + ',' + delay + ');'
+  out <- sprintf("Ext.example.msg(%s, %s, %s);",
+                 shQuoteEsc(title),
+                 shQuoteEsc(message),
+                 delay)
 
   parent$addJSQueue(out)
-#  cat(out)
-#  invisible(out)
 }

@@ -27,24 +27,27 @@
 
 ## get working:
 ## names<-, names for headers
-## integrate -- filter fun: maybe never
 
 
 ##' A table widget
 ##'
-##' A table widget
-##' @param items 
-##' @param multiple 
-##' @param chosencol 
-##' @param icon.FUN 
-##' @param filter.column 
-##' @param filter.labels 
-##' @param filter.FUN 
-##' @param handler 
-##' @param action 
-##' @param container 
-##' @param ... 
-##' @note
+##' A widget for displaying a data frame in tabular format
+##' @param items items (data frame) to display. Can be modified with
+##' \code{[<-} method. Changing column types is not supported.
+##' @param multiple logical. Do we allow multiple selection
+##' @param chosencol The svalue() method returns a single value, by default. This species column of that value.
+##' @param icon.FUN A function to generate icons given by items. Icons should return urls, as does getStockIcons()
+##' @param filter.column Ignored in gWidgetsWWW
+##' @param filter.labels Ignored in gWidgetsWWW
+##' @param filter.FUN Ignored in gWidgetsWWW. Implement filtering manually. The visible<- method is automatically available (some toolkits need \code{filter.FUN="manual"}). Also there is a \code{$filter} proto method for filtering by a regular expression. Sorting is enabled through the headers
+##' @param handler single click handlers
+##' @param action action passed to handler
+##' @param container parent container
+##' @param ... passed to parent container's \code{add} method
+##' @note The default size of the widget is lacking. The \code{size<-}
+##' method is often needed for proper layout. No \code{names} or
+##' \code{names<-} method.
+##' @export
 gtable <- function(items, multiple = FALSE, chosencol = 1,
                    icon.FUN = NULL,
                    filter.column = NULL, filter.labels = NULL,
@@ -147,39 +150,30 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
       .$addJSQueue(.$setValuesJS(...))
   }
 
-  ##' visibility
-  ##
-  ## Use filter method and ..index column to filter. Would be ugly for large tables!
-  widget$setVisible <- function(., value) {
-    n <- nrow(.$getValues())
-    value <- rep(value, length.out=n)
-    .$..visible <- value                # XXX???
-    inds <- which(value)
-    reg <- paste("^",inds,"$", sep="", collapse="|")
-    .$filter("..index", reg)
-  }
+ 
 
-
-  
+  ## transport mouse clicks back as row indices. Can be multiple or single
   widget$transportSignal <- c("cellclick")
   widget$transportValue <- function(.,...) {
     ## we packed in ..index so we can get the index even if we've sorted
     if(.$..multiple) {
        ## work a bit to get the value
        out <- String() +
-         'var store = w.getStore();' +
-           'var selModel = w.getSelectionModel();' +
-             'var values = selModel.getSelections();' +
-               'var value = new Array();' +
-                 'for(var i = 0, len=values.length; i < len; i++) {' +
-                   'var record = values[i];' +
-                     'var data = record.get("..index");' +
-                         'value[i] = data' +
-                           '};'
+         paste('var store = w.getStore();',
+               'var selModel = w.getSelectionModel();',
+               'var values = selModel.getSelections();',
+               'var value = new Array();', # value is return value
+               'for(var i = 0, len=values.length; i < len; i++) {',
+               '  var record = values[i];',
+               '  var data = record.get("..index");',
+               '  value[i] = data',
+               '};',
+               sep="")
      } else {
        out <- String() +
-         'var record = w.getStore().getAt(rowIndex);' +
-           'var value = record.get("..index");' 
+         paste('var record = w.getStore().getAt(rowIndex);',
+               'var value = record.get("..index");',
+               sep="")
      }
     return(out)
   }
@@ -190,33 +184,9 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
                 columns = String(.$makeColumnModel()),
                 stripeRows = TRUE,
                 enableRowBody = TRUE, 
-                frame = FALSE
-                ,autoExpandColumn=tail(names(.$..store$data), n=1)
+                frame = FALSE,
+                autoExpandColumn=tail(names(.$..store$data), n=1)
                 ) ## also autoExpandColumn, XXX
-    
-    ## paging -- doesn't work -- doesn't get no. of fields from store
-##     out[['bbar']] = String() +
-##       paste("new Ext.PagingToolbar({",
-##             "pageSize: 10,",
-##             (String("store:") + .$..store$asCharacter() + ','),
-##             "displayInfo: true,",
-##             "displayMsg: 'Displaying topics {0} - {1} of {2}',",
-##             "emptyMsg: 'No topics to display',",
-##             "items:[",
-##             "'-', {",
-##             "pressed: true,",
-##             "enableToggle:true,",
-##             "text: 'Show Preview',",
-##             "cls: 'x-btn-text-icon details',",
-##             "toggleHandler: function(btn, pressed){",
-##             (String("var view =") + .$asCharacter() + ".getView();"),
-##             "view.showPreview = pressed;",
-##             "view.refresh();",
-##             "}",
-##           "}]",
-##           "})",
-##             collapse="\n")
-
     
     if(.$..multiple) {
       out[["sm"]] <- String() +
@@ -240,108 +210,10 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
     return(out)
   }
 
-
-  
-##   widget$makeColumnModel <- function(.) {
-##     ## return array for columns
-##     ## id, header, sortable, renderer, dataIndex, tooltip
-## ##     columns: [
-## ##               {id:'company',header: "Company", sortable: true, dataIndex: 'company'},
-## ##               {header: "Price",  sortable: true, renderer: 'usMoney', dataIndex: 'price'},
-## ##               {header: "Change", sortable: true, renderer: change, dataIndex: 'change'},
-## ##               {header: "% Change", sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-## ##               {header: "Last Updated", sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
-## ##               ],
-
-##     mapRenderer <- function(type) {
-##       switch(type,
-##              "character"="",
-##              "String" = "",
-##              "integer" = ",renderer:gtableInteger",
-##              "numeric" = ",renderer:gtableNumeric",
-##              "logical" = ",renderer:gtableLogical",
-##              "factor" = "",
-##              "icon" = ",width: 16,renderer:gtableIcon",              # for icons(we create this)
-##              "date" = "",               # we create this?
-##              "")
-##     }
-
-##     df <- .$..store$data
-##     renderers <- sapply(df[,-1, drop=FALSE], function(i) mapRenderer(class(i)[1]))
-##     colNames <- names(df)[-1]           # XXX
-## ##    colNames <- names(df)
-##     colNames <- shQuoteEsc(colNames)
-
-##     ## widths
-##     fontWidth <- 10
-##     colWidths <- sapply(df[,-1, drop=FALSE], function(i) max(nchar(as.character(i))) + 1)
-##     colWidths <- pmax(colWidths, nchar(names(df[,-1, drop=FALSE])) + 1)
-##     totalWidth <- ifelse(exists("..width", envir=., inherits=FALSE), .$..width, "auto")
-##     if(totalWidth == "auto" || fontWidth * sum(colWidths) > totalWidth)
-##       colWidths <- colWidths * fontWidth       # fontWidth pixels per character
-##     else
-## #      colWidths <- floor(fontWidth * colWidths * totalWidth/sum(colWidths))
-##       colWidths <- colWidths * fontWidth       # fontWidth pixels per character
-    
-##     ## didn't work for header:
-##     trimDD <- function(x) {
-##       ind <- grep("^..", x)
-##       if(length(ind) > 0)
-##         x[ind] <- "''"
-##       return(x)
-##     }
-
-##     tmp <- paste('{',
-##                  'id:',colNames,
-##                  ', header:',colNames,
-##                  ', sortable:true',
-##                  ', width:', colWidths,
-##                  ', dataIndex:',colNames,
-##                  renderers,
-##                  '}',
-##                  sep="")
-##     out <- paste('[\n', paste(tmp,collapse=",\n"), ']', collapse="")
-
-##     return(out)
-##   }
-##   widget$makeFields <- function(.) {
-##     ## return something like this with name, type
-##     ##     fields: [
-##     ##            {name: 'company'},
-##     ##            {name: 'price', type: 'float'},
-##     ##            {name: 'change', type: 'float'},
-##     ##            {name: 'pctChange', type: 'float'},
-##     ##            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-##     ##         ]
-##     ## types in DataField.js
-##     mapTypes <- function(type) {
-##       switch(type,
-##              "character"="",
-##              "String" = ",type: 'string'",
-##              "integer" = ",type: 'int'",
-##              "numeric" = ",type: 'float'",
-##              "logical" = ",type: 'boolean'",
-##              "factor"  = "",
-##              "date" = ",type:date",
-##              "")
-##     }
-##     df <- .$..store$data
-##     types <- sapply(df[,-1, drop=FALSE], function(i) mapTypes(class(i)[1]))
-##     colNames <- shQuoteEsc(names(df)[-1])
-##     tmp <- paste("{name:", colNames, types, "}", sep="")
-##     out <- paste("[",tmp,"]", collapse="\n")
-
-##     return(out)
-##   }
-
   widget$footer <- function(.) {
     sprintf('%s.getSelectionModel().selectFirstRow();',.$asCharacter())
   }
   
-  
-  ###
-  container$add(widget,...)
-
   ## changed = clicked
   widget$addHandlerClicked <- function(.,handler, action=NULL, ...) {
 
@@ -364,6 +236,10 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
                  handlerValue = "var value = rowIndex + 1;")
   }
   
+  
+  ###
+  container$add(widget,...)
+
   if(!is.null(handler))
     widget$addHandlerChanged(handler, action=action)
   

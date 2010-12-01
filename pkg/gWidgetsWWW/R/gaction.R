@@ -21,9 +21,69 @@
 ## d) the enabled<- should set for all instances
 ## XXX Actions *must* be added prior to showing the window (integrate into gsubwindow otherwise)
 
-
+##' Trait for action instances
 EXTAction = EXTComponent$new()
 
+##' method to set javascript when value (label) for action is set
+##'
+##' @param . self
+##' @param ... ignored
+
+EXTAction$setValueJS <- function(.,...) {
+  out <- sprintf("%s.setText(%s)", .$asCharacter(), shQuoteEsc(svalue(.)))
+  return(out)
+}
+
+##' method for \code{enabled<-} interaction
+##'
+##' @param . self
+##' @param ... ignored
+EXTAction$setEnabledJS <- function(.,...) {
+  val <-  tolower(as.character(!.$..enabled))
+  out <- sprintf("%s.setDisabled(%s)", .$asCharacter(), val)
+  ## out <- String() +
+  ##   .$asCharacter() + '.setDisabled(' + tolower(as.character(!.$..enabled)) + ');'
+  return(out)
+}
+
+##' Method so set icon class
+##'
+##' @param . self
+##' @param icon class of icon. Url is not class, rather name of class)
+##' @param ... ignored
+##' @note no S3 method
+EXTAction$extSetIconClassJS <- function(.,icon,...) {
+  out <- String() +
+    .$asCharacter() + '.setIconClass(' + svalue(.) + ');'
+  return(out)
+}
+
+##' Javascript code to override  handler
+##'
+##' @param . self
+##' @param handler handler to call
+##' @param ... ignored
+EXTAction$extSetHandlerJS <- function(.,handler,...) {
+  .$handlerID <- .$window$addHandler(signal = NULL, handler = handler)
+  handlerString <- String() +
+    'function() {runHandlerJS(' +
+      .$handlerID + ',\'""\',\'""\')}'
+  out <- String() +
+    .$asCharacter() + '.setHandler(' + handlerString + ');'
+  return(out)
+  
+}
+
+##' gaction implementation
+##'
+##' actions are reusable encapsulations of actions
+##' @param label Text for action
+##' @param tooltip tooltip
+##' @param icon action icon
+##' @param handler handler called when action activated
+##' @param parent toplevel window of action (where it can be
+##' called). Required here
+##' @param ... ignored
 gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
 
   ## parent should be a toplevel container
@@ -65,41 +125,6 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
     return(out)
   }
 
-  ## main methods are
-  ## svalue to set text
-  ## enabled to en/dis-able
-  widget$setValueJS <- function(.,...) {
-    out <- sprintf("%s.setText(%s)", .$asCharacter(), shQuoteEsc(svalue(.)))
-    ## out <- String() +
-    ##   .$asCharacter() + '.setText(' + shQuoteEsc(svalue(.)) + ');'
-    return(out)
-  }
-
-  widget$setEnabledJS <- function(.,...) {
-    val <-  tolower(as.character(!.$..enabled))
-    out <- sprintf("%s.setDisabled(%s)", .$asCharacter(), val)
-    ## out <- String() +
-    ##   .$asCharacter() + '.setDisabled(' + tolower(as.character(!.$..enabled)) + ');'
-    return(out)
-  }
-
-  ## no S3 method for these
-  widget$extSetIconClassJS <- function(.,icon,...) {
-    out <- String() +
-      .$asCharacter() + '.setIconClass(' + svalue(.) + ');'
-    return(out)
-  }
-
-  widget$extSetHandlerJS <- function(.,handler,...) {
-    .$handlerID <- .$window$addHandler(signal = NULL, handler = handler)
-    handlerString <- String() +
-      'function() {runHandlerJS(' +
-        .$handlerID + ',\'""\',\'""\')}'
-    out <- String() +
-      .$asCharacter() + '.setHandler(' + handlerString + ');'
-    return(out)
-    
-  }
 
 
   return(widget)
@@ -108,4 +133,3 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
 }
 
 
-## implemented setIconClass, setHandler as in ext but no S3 methods here

@@ -1,14 +1,11 @@
 ## TODO for gWidgetsWWW
-DONE* put in assignValue call into widget, into AJAX guy. Cleans up
-cruft
-DONE * tidy up javascript creation commands
+* killed ex-ggplot2 demo. Need to resurrect
+* should I make some useful apps: installpackage, edit object,
+  workspace browser...
+* spotfire-like example
 * date renderer in ComponentWithStore's makeColumnModel
-* fix rapache script for assign
 * need to move methods out of widget, into Traits.
 * clean up use of statusbar for ajax messages. (Timers)
-* spotfire-like example
-DONE * togglebutton
-* checkbox in grid FIX CHECKED INIT
 * doc with roxygen
 * why is 3.3 an issue with chrome, safari?
 * fix SIGPIPE error with local
@@ -21,8 +18,15 @@ DONE * togglebutton
 * gfile: server version, now its local only 
 * Implement  defaultWidget, 
 * gtree -- grid, not single column
+* forgot to do a popup: addpopupmenu, add3rdmouse ...
+* drag and drop functions
+* checkbox in grid FIX CHECKED INIT
+DONE * togglebutton
+DONE* put in assignValue call into widget, into AJAX guy. Cleans up cruft
+DONE * fix rapache script for assign
+DONE * tidy up javascript creation commands
 DONE * gtree (needs 3.3+??)
- DONE (moved to file)* scripts issue: glabel in gsubwindow doesn't work. Should I preload
+DONE (moved to file)* scripts issue: glabel in gsubwindow doesn't work. Should I preload
 these? Simple JS call and cleans up code
 DONE * actions in general don't seem to be working well (menu, ex-actions)
 DONE * change JS handlers to return strings, not cat it out. Then we
@@ -44,8 +48,6 @@ DONE * gcombobox, need to deal with sequencing events -- put each call separate
 DONE * Add in canvas package for drawing -- Jeffrey Horner -- question about ctx name
 * implement  isExtant 
 * gdf fixes
-* forgot to do a popup: addpopupmenu, add3rdmouse ...
-* drag and drop functions
 * gdf improvements: names<-, row names (EZ), logical, NA values,
   adding columns, adding rows, dates, ... Much more is possible
 DIDN"T WORK?* Add in codemirror code: http://marijn.haverbeke.nl/codemirror/manual.html for gcommandline

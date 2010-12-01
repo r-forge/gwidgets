@@ -660,31 +660,6 @@ localProxyStore <- function(id, sessionID, query) {
 }
   
 
-## ## find file and run from package
-## ## This one requires us to put in headers. This allows
-## ## files other than .R files to be served
-## mimeTypes <- function(ext) {
-##   switch(ext,
-##          "R","text/javascript",
-##          "txt"="text/plain",
-##          "htm"="text/html",
-##          "html"="text/html",
-##          "gif"="image/gif",
-##          "jpg"="image/jpeg",
-##          "png"="image/png",
-##          "svg"="image/svg+xml",
-##          "xbm"="image/x-xbitmap",
-##          "css"="text/css",
-##          "js "="application/x-javascript",
-##          "htc"="text/x-component",
-##          "xml"="text/xml",
-##          "pdf"="application/pdf",
-##          "eps"="application/postscript",
-##          "ps"="application/postscript",
-##          "text/html"
-##          )
-## }
-
 ##' Make a page header for a locally served script
 ##'
 ##' @return html code for the page header
@@ -776,7 +751,7 @@ makegWidgetsWWWpage <- function(results, script=TRUE, .=new.env()) {
 ##' start local server.
 ##' @param file file to open with. If file not null, then calls makeIndex on current directory
 ##' @param port port to open. May conflict with help server,
-##' @package If file and package  not given, opens default. Otherwise, file and package combined through localServerOpen
+##' @param package If file and package  not given, opens default. Otherwise, file and package combined through localServerOpen
 ##' @export
 ## localServerStart <- function(file="", port=8079, package=NULL) {
 ##   startRpadServer("index.gWWW", port)   # just to keep it quiet

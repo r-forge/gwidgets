@@ -159,13 +159,12 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
     sprintf("%s.getSelectionModel().selectFirstRow();\n", .$asCharacter())
   }
   
+  ## ## changed = double clicked
+  widget$addHandlerChanged <- widget$addHandlerDoubleclick
+
   
   ###
   container$add(widget,...)
-
-  ## ## changed = double clicked
-
-  widget$addHandlerChanged <- widget$addHandlerDoubleclick
 
   if(!is.null(handler))
     widget$addHandlerChanged(handler, action=action)

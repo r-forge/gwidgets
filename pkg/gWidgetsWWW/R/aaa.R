@@ -1109,8 +1109,8 @@ EXTContainer$Show <- function(., queue=FALSE) {
   .$..shown <- TRUE                     # set shown
 
   ## handlers ## gwindow only
-  if(exists("..setHandlers",envir=.,inherits=FALSE)) # gwindow only
-     .$showPart(.$..setHandlers, queue=queue)
+  ## if(exists("..setHandlers",envir=.,inherits=FALSE)) # gwindow only
+  ##    .$showPart(.$..setHandlers, queue=queue)
 
   if(exists("..footer",envir=.,inherits=FALSE))  .$showPart(.$..footer, queue=queue)
   .$showPart(.$footer, queue=queue)
@@ -1750,7 +1750,6 @@ EXTComponentWithStore$makeColumnModel <- function(.) {
     df <- .$..store$data
     renderers <- sapply(df[,-1, drop=FALSE], function(i) mapRenderer(class(i)[1]))
     colNames <- names(df)[-1]           # XXX
-##    colNames <- names(df)
     colNames <- shQuoteEsc(colNames)
 
     ## widths
@@ -2649,11 +2648,12 @@ EXTWidget$writeHandlerJS <- function(.,signal="",handler=NULL) {
   out <- String()
   if(signal == "idle") {
     out <- out +
-      sprintf("setInterval(function() {runHandlerJS(%s%s)})\n",
+      sprintf("setInterval(function() {runHandlerJS(%s%s)}, %s)\n",
               handler$handlerID,
               ifelse(!is.null(handler$handlerExtraParameters),
                      paste(",", handler$handlerExtraParameters, sep=""),
-                     "")
+                     ""),
+              handler$handlerArguments                     # duration
               )
 
     ## out <- out +
@@ -2709,6 +2709,7 @@ EXTWidget$writeHandlerJS <- function(.,signal="",handler=NULL) {
   return(out)
 }
 
+##' Loops to write out all handlers
 EXTWidget$writeHandlersJS <- function(.) {
   if(exists("..handlers", envir=., inherits=FALSE))
     allHandlers <- .$..handlers

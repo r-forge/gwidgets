@@ -21,6 +21,18 @@
 ## svalue<- works
 ## names 
 ## names<-  NO METHOD setBoxLabel
+
+##' checkbox widget
+##' 
+##' @param text character. text label for checkbox. (Should be that it
+##' can be set later with \code{[<-}, but this isn't implemented)
+##' @param checked logical. initial state (Set later with \code{svalue<-})
+##' @param use.togglebutton logical. If TRUE, represent with a togglebutton, else use check box 
+##' @param handler handler called when state is toggled. Check value
+##' @param action action passed to handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of container.
+##' @export
 gcheckbox = function(text, checked = FALSE, use.togglebutton=FALSE,
   handler = NULL, action = NULL,  container = NULL,...) {
 
@@ -136,7 +148,5 @@ gtogglebutton <- function(text="", checked=TRUE,
   invisible(widget)
 }
   
-
-### A check box group
 
 

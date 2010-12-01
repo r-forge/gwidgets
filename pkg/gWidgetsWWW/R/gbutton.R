@@ -23,6 +23,16 @@
 ## *IF* handler = NULL and action a gaction instance then
 ## will use that action. Not for addHandlerClicked though.
 
+##' button widget
+##'
+##' 
+##' @param text button text. See \code{svalue} to change
+##' @param border logical. If \code{FALSE} will not draw border
+##' @param handler click handler
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of container
+##' @export
 gbutton <- function(text="", border=TRUE,
                     handler = NULL, action=NULL, container, ...) {
   ## components
@@ -68,6 +78,7 @@ gbutton <- function(text="", border=TRUE,
   }
 
   ## intercept action possibility
+  ## XXX Issue here -- doesn't work with subwindows/
   widget$writeConstructor <- function(.) {
     ID <- .$asCharacter()
     if(.$doAction()) {

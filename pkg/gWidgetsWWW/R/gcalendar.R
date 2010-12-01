@@ -13,6 +13,15 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+##' calendar widget
+##'
+##' @param text date as text
+##' @param format formate of date
+##' @param handler handler called when date changed
+##' @param action action passed to handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of container
+##' @exoprt
 gcalendar <- function(text = "", format = "%Y-%m-%d",
                       handler=NULL, action=NULL, container = NULL, ... ) {
 
@@ -67,17 +76,25 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
         lst[["height"]] <- "auto"
       
       out <- String() +
-        'o' + .$ID + 'date = new Ext.Panel({' + # no var -- global
-          'id:' + shQuote(.$ID) + ',' +
-            'renderTo:Ext.getBody(),' +
-              'items: [' +
-                .$mapRtoObjectLiteral(lst) +
-                  ']\n' +
-                    '});'
+        paste(sprintf("%sdate = new Ext.Panel({", .$asCharacter()),
+              sprintf("id: '%s',", .$ID),
+              sprintf("items:[%s]", .$mapRtoObjectLiteral(lst)),
+              "});",
+              sep="")
 
       out <- out +
-        'o' + .$ID + ' = o' + .$ID + 'date' + # no var -- global
-          '.getComponent(0);' + '\n'
+        sprintf("%s = %sdate.getComponent(0);\n", .$asCharacter(), .$asCharacter())
+
+      ## 'o' + .$ID + 'date = new Ext.Panel({' + # no var -- global
+        ##   'id:' + shQuote(.$ID) + ',' +
+        ##     'renderTo:Ext.getBody(),' +
+        ##       'items: [' +
+        ##         .$mapRtoObjectLiteral(lst) +
+        ##           ']\n' +
+        ##             '});'
+      ## out <- out +
+      ##   'o' + .$ID + ' = o' + .$ID + 'date' + # no var -- global
+      ##     '.getComponent(0);' + '\n'
 
       return(out)
     }

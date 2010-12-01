@@ -39,7 +39,7 @@
 ##' @param pointsize size of fonts
 ##' @param container parent container
 ##' @param ... passed to container's add method
-##' 
+##' @export
 gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL, ...) {
   widget <- EXTComponent$new(toplevel = container$toplevel,
                              ..width = width,
@@ -75,22 +75,27 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
   }
 
 
-  widget$asCharacter <- function(.) sprintf("processing%s", .$ID)
-  
+  widget$asProcessingCharacter <- function(.) sprintf("processing%s", .$ID)
+  widget$..writeConstructor <- function(.) {
+    ## create element
+    out <- String() + "\n" + "// ------- \n" +
+      sprintf("var %s = new Processing(document.getElementById('%s'));", .$asProcessingCharacter(), .$ID) +
+        sprintf("%s.size(%s, %s);", .$asProcessingCharacter(), .$..width, .$..height) +
+          .$out + "\n"
+    out
+  }
+    
   widget$footer <- function(.) {
     ID <- .$ID
     pID <- .$asCharacter()
-   ## create element
-    out <- String() + "\n" + "// ------- \n" +
-      sprintf("var %s = new Processing(document.getElementById('%s'));", .$asCharacter(), .$ID) +
-        sprintf("%s.size(%s, %s);", .$asCharacter(), .$..width, .$..height) +
-          .$out + "\n"
+
+    out <- String()
     
-     ## for i in handlers, call
-     ## these are javascript to call direct avoiding R handlers.
-     for(i in .$processingEvents) {
-       f <- .[[i]]
-       if(!is.null(f)) {
+    ## for i in handlers, call
+    ## these are javascript to call direct avoiding R handlers.
+    for(i in .$processingEvents) {
+      f <- .[[i]]
+      if(!is.null(f)) {
          val <- f()
          pID <- String("processing") + ID
          fnHead <- pID + "." + i + "= function() {\n"

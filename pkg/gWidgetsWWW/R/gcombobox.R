@@ -17,8 +17,24 @@
 ## gcombobox aka gdroplist
 ## XXX -- needs two or more values
 
-gcombobox <- gdroplist <- 
-  function(items, selected=1, editable=FALSE, coerce.with=NULL,
+##' combobox implementation
+##'
+##' The \code{svalue<-} method is used to specify value by name or by
+##' index. The \code{[<-} method can be used to update the data to
+##' select from.
+##' @param items a vector of items to choose from. Or a data frame with 1 column (items), two columns (items, icons), or three columns (items, icons, tooltip)
+##' @param selected initially selected item, by index. Use \code{0L} for none.
+##' @param editable logical. Does combobox allow editing
+##' @param coerce.with Function. If given, called on value before returning
+##' @param handler handler
+##' @param action action
+##' @param container parent container
+##' @param ... passed to \code{add} method of parent
+##' @note See the  \code{..tpl} to modify template for what is
+##' displayed. Override \code{..hideTrigger} and \code{..typeAhead} to
+##' change behaviours.
+##' @export
+gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...) {
 
     widget <- EXTComponentWithStore$new(toplevel=container$toplevel,
@@ -247,3 +263,8 @@ gcombobox <- gdroplist <-
     
     invisible(widget)
   }
+
+##' Old name for widget
+##'
+##' Deprecated
+gdroplist <- gcombobox

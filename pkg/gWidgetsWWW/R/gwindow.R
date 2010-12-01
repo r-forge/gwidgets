@@ -22,6 +22,12 @@
 
 ## Trait for top-level windows
 EXTTopLevel <- EXTContainer$new()
+
+##' Property. Where to render this window to. Default is the entire webpage
+##'
+##' May not work otherwise, needs testing
+EXTTopLevel$..renderTo <- "Ext.getBody()"
+
 ##' assign values
 ##' 
 ##' @param . self
@@ -58,6 +64,34 @@ EXTTopLevel$getWidgetByID <- function(., id) {
   }
 }
 
+## handlers for proxy stores
+## These methods are used by gbigtable and by gtree to dynamically populate data
+## XXX Might make sense to make all objects with stores use this (gcombobox, ...)
+
+##' Property. We need to look up proxy stores when we process. This needs to be set in widget
+EXTTopLevel$proxyStores <- list()
+
+##' add a proxy store for later lookup
+##' 
+##' @param . self
+##' @param store store instance. Stores within list
+EXTTopLevel$addStore <- function(., store) {
+  l <- .$proxyStores
+  l[[store$asCharacter()]] <- store
+  .$proxyStores <- l
+}
+
+##' get a proxy store from its id
+##'
+##' @param . self
+##' @param id id of store, eg. gWidget34store
+##' @return store instance
+EXTTopLevel$getStoreById <- function(., id) {
+  .$proxyStores[[id]]
+}
+
+  
+
 ##' Main top level window
 ##'
 ##' Each script needs to have one and only one instance as a global
@@ -77,9 +111,11 @@ EXTTopLevel$getWidgetByID <- function(., id) {
 ##' @note There are some \pkg{proto} properties that can be set to adjust the values. These are \code{loadingText}; \code{doLoadingText}; \code{..show\_error\_message}; \code{AJAXtimeout}
 ##' @examples
 ##' \dontrun{
-##' w <- gwindow("hello test")
+##' w <- gwindow("hello test")  ## must be global
 ##' gbutton("Click me", cont=w, handler=function(h,...) galert("Hello world", parent=w))
-##' visible(w) <- TRUE
+##' visible(w) <- TRUE          ## call to cat out values to web browser
+##' }
+##' @export
 gwindow <- function(title="title", visible=TRUE,
                     name=title,
                     width = NULL, height = NULL, parent = NULL,
@@ -91,7 +127,7 @@ gwindow <- function(title="title", visible=TRUE,
 
    ## make a subwindow?
    if(!is.null(container))
-     return(.gsubwindow(title=title,handler=handler, action=action,
+     return(gsubwindow(title=title,handler=handler, action=action,
                         visible=visible,
                         width = width, height = height,
                         container=container,...))
@@ -124,7 +160,8 @@ gwindow <- function(title="title", visible=TRUE,
   w$..blocked_handlers <- c()           # IDs of handlers not to call
   theArgs <- list(...)
   w$..AJAXtimeout <- ifelse(is.null(theArgs$AJAXtimeout), 10000, theArgs$AJAXtimeout)
-
+  w$proxyStores <- list()         # local instance
+  
   ## store name in title for handlers.
   w$titlename <- make.names(title)
   assign(w$titlename,w, envir=.GlobalEnv)
@@ -154,41 +191,41 @@ gwindow <- function(title="title", visible=TRUE,
         for(i in names(context))
           h[[i]] <- context[[i]]
       }
-      ## XXX changed to use queue. Each handler should
       ## Each XXXJS call  adds to the JSQueue, it isn't done here
       out <- try(lst$handler(h), silent=TRUE)          # add to JS Queue
-#      return(lst$handler(h))
+      if(inherits(out, "try-error"))
+        stop(sprintf("<br />Error running handler: %s", out))
     }
-    if(inherits(out, "try-error"))
-      stop(sprintf("<br />Error running handler: %s", out))
     .$runJSQueue()                      # run the queue
   }
-
+  
 
   
   ## for top-level window visible same as print
   w$setVisible <- function(., value) {
-    ## same as print
-    if(value) {
+    if(as.logical(value)) 
       .$Show()
-    } else {
-      cat("can't hide top-level window\n", file=stdout())
-    }
+    else 
+      stop(sprintf("Can't hide top level window"))
   }
+  ## can't dispose of top-level window
+  w$visible <- function(.) {}
 
   w$addAction <- function(., action) 
     .$..actions <- c(.$..actions, action)
   
   ## set title
+  ## XX should this be just for Ext.getBody() cases?
   w$setValueJS <- function(.) {
-    if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
-     
-     out <- String() +
-       'document.title = ' + shQuote(.$..data) +';'
-     return(out)
-   }
-   
-   
+    if(exists("..setValueJS", envir=., inherits=FALSE))
+      .$..setValueJS(...)
+    
+    out <- sprintf("document.title = %s;", shQuote(.$..data))
+    
+    return(out)
+  }
+  
+  
    ## css and scripts are different for gwindow instances, as these
    ## are the toplevel instances -- sub classes place there values into
    ## these lists.
@@ -223,96 +260,115 @@ gwindow <- function(title="title", visible=TRUE,
               ## XXX make better
 
               if(.$has_local_slot("..show_error_messages")) {
-                processFailure <- paste("function processFailure(response, options) {",
-                                        "Ext.example.msg('Error:', response.responseText, 4);",
-                                        if(.$has_local_slot("..statusBar")) {
-                                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
-                                        },
-                                        "};",
-                                        sep="\n")
+                processFailure <-
+                  paste("function processFailure(response, options) {",
+                        "Ext.example.msg('Error:', response.responseText, 4);",
+                        if(.$has_local_slot("..statusBar")) {
+                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                        },
+                        "};",
+                        sep="\n")
               } else {
-                processFailure <- paste("function processFailure(response, options) {",
-                                        "eval(response.responseText);",
-                                        if(.$has_local_slot("..statusBar")) {
-                                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
-                                        },
-                                        "};",
-                                        sep="\n")                
+                processFailure <-
+                  paste("function processFailure(response, options) {",
+                        "eval(response.responseText);",
+                        if(.$has_local_slot("..statusBar")) {
+                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                        },
+                        "};",
+                        sep="\n")                
               }
               out <- out +
                 processFailure +
                   "\n" +
-                    "function evalJSONResponse(response, options) {" +
-                      "eval(response.responseText);" +
-                        ifelse(.$has_local_slot("..statusBar"),
-                               sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID),
-                               "") +
-                                 "};" + "\n"
+                    paste("function evalJSONResponse(response, options) {",
+                          "  eval(response.responseText);",
+                          ifelse(.$has_local_slot("..statusBar"),
+                                 sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID),
+                                 ""),
+                          "};\n",
+                          sep="")
               
               ## code to run a javascript handler
               out <- out +
-                'runHandlerJS = function(id,context) {' +
-                  ifelse(.$doLoadingText,
-                         ifelse(.$has_local_slot("..statusBar"),
-                                sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('busy...');", .$ID),
-                                sprintf("Ext.getBody().mask('%s');", .$loadingText)
-                                ),
-                         "") + "\n" +
-                  "Ext.Ajax.request({" +
-                    "url: '" + .$..gWidgetsWWWAJAXurl + "'," +
-                      "success: evalJSONResponse," +
-                        "failure: processFailure," +
-                          "method: 'POST', " +
-                            "timeout:" + .$..AJAXtimeout + "," +
-                              "params: { type: 'runHandler', " +
-                                "sessionID: sessionID," +
-                                  "id: id," +
-                                    "context: context" +
-                                        #                                    "extra: extra" +
-                                      "}" +
-                                        "}); " +
-                                          '};' + "\n"
+                paste('runHandlerJS = function(id,context) {',
+                      ifelse(.$doLoadingText,
+                             ifelse(.$has_local_slot("..statusBar"),
+                                    sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('busy...');", .$ID),
+                                    sprintf("Ext.getBody().mask('%s');", .$loadingText)
+                                    ),
+                             ""),
+                      "\n",
+                      "Ext.Ajax.request({",
+                      sprintf("  url: '%s',",.$..gWidgetsWWWAJAXurl),
+                      "  success: evalJSONResponse,",
+                      "  failure: processFailure,",
+                      "  method: 'POST', " ,
+                      sprintf("  timeout: %s,", .$..AJAXtimeout),
+                      "  params: { type: 'runHandler', ",
+                      "    sessionID: sessionID,",
+                      "    id: id,",
+                      "    context: context",
+                      "  }",
+                      "});",
+                      '};',
+                      "\n",
+                      sep="")
 
               ## show loading text box if requested
               if(.$doLoadingText) {
                 out <- out +
-                  "Ext.Ajax.on('requestcomplete', function() {Ext.getBody().unmask() }, this);" +
-                    "Ext.Ajax.on('requestexception', function() {Ext.getBody().unmask()}, this);" + "\n"
+                  paste("Ext.Ajax.on('requestcomplete', function() {Ext.getBody().unmask() }, this);",
+                        "Ext.Ajax.on('requestexception', function() {Ext.getBody().unmask()}, this);",
+                        "\n", sep="")
               }
               
               ## transportToR copies data in widget back into R
               ## using a global variable IDXXX
               ## We don't expect a return value
               out <- out +
-                '_transportToR = function(id, val) {' +
-                  ifelse(.$has_local_slot("..statusBar"),
-                         sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('transferring...');", .$ID),
-                         "") +
-                  "Ext.Ajax.request({" +
-                    "url: '" + gWidgetsWWWAJAXurl + "'," +
-## JV                     "success: evalJSONResponse," +
+                paste('_transportToR = function(id, val) {',
+                      ifelse(.$has_local_slot("..statusBar"),
+                             sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('transferring...');", .$ID),
+                             ""),
+                      "Ext.Ajax.request({",
+                      sprintf("  url: '%s',", gWidgetsWWWAJAXurl),
+
+                      ## What to do with return value. This commented out code ignores.
+                      ## we added in an eval in case there is some reason we want to return from an assign
+                      ## it makes sense as then R can communicate back to WWW when a value is assigned
                       ## we get some XML back, not JSON
-                      "success: function(response, opts)" +
-                        ifelse(.$has_local_slot("..statusBar"),
-                               sprintf("{sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);},", .$ID),
-                               "{},") +
-                                   "failure: processFailure," +
-                                     sprintf("timeout: %s,", .$..AJAXtimeout) +
-                                       "method: 'POST'," +
-                                         "params: { type: 'assign', " +
-                                           "sessionID: sessionID," +
-                                             "variable: id," +
-                                               "value: val" +
-                                                 "}})};" + "\n"
+                      ## "  success: function(response, opts)",
+                      ## ifelse(.$has_local_slot("..statusBar"),
+                      ##        sprintf("{sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);},", .$ID),
+                      ##        "{},"),
+                      "  success: evalJSONResponse,",
+                      "  failure: processFailure,",
+                      sprintf("timeout: %s,", .$..AJAXtimeout),
+                      "  method: 'POST'," ,
+                      "  params: { type: 'assign', ",
+                      "    sessionID: sessionID,",
+                      "    variable: id,",
+                      "    value: val",
+                      "  }",
+                      "})",
+                      "};",
+                      "\n",
+                      sep="")
               
               out <- out +
-                'function clearSession() {' +
-                  "Ext.Ajax.request({" +
-                    "url: '" + gWidgetsWWWAJAXurl + "'," +
-                      "method: 'POST'," +
-                        "params: { type: 'clearSession', " +
-                          "sessionID: sessionID" +
-                            "}})};" + "\n"
+                paste('function clearSession() {',
+                      "Ext.Ajax.request({",
+                      sprintf("  url: '%s',", gWidgetsWWWAJAXurl),
+                      "  method: 'POST',",
+                      "  params: {",
+                      "    type: 'clearSession', ",
+                      "    sessionID: sessionID",
+                      "  }",
+                      "})",
+                      "};",
+                      "\n",
+                      sep="")
               
 
               
@@ -356,7 +412,8 @@ gwindow <- function(title="title", visible=TRUE,
 
      return(out)
    }
-   
+
+  ## simple header
    w$header <- function(.) {
      out <- String() + .$makeIconClasses()
      .$Cat(out)
@@ -365,71 +422,57 @@ gwindow <- function(title="title", visible=TRUE,
    
   w$footer <- function(.) {
   
-     ## clear out any old IDS
-     remove(list=ls(pat="^gWidgetID",envir=.),envir=.)
+     ## ## clear out any old IDS
+     ## remove(list=ls(pat="^gWidgetID",envir=.),envir=.)
 
      ## doLayout()
-     out <- String() +
-       .$asCharacter() + '.doLayout();' + '\n'
+     out <- String()
 
+     out <- out +
+       sprintf("%s.doLayout();", .$asCharacter())
      ## set title 
      out <- out +
-       'document.title =' +shQuote(.$getValue()) + ';\n' 
+       sprintf("document.title=%s;\n",shQuote(.$getValue()))
 
      ## write out sessionID
      out <- out +
-       'var sessionID =' + shQuote(.$sessionID) + ';' + '\n'
+       sprintf("var sessionID = '%s';\n", .$sessionID)
      
      .$Cat(out)
-
-
    }
-
-  ## can't dispose of top-level window
-  w$visible <- function(.) {}
-
-  w$..setHandlers <- function(.) {
-     ## deprecated, see addHandler now
-     return("")
-   }
-
-  ## handlers for proxy stores
-  ## These methods are used by gbigtable and by gtree to dynamically populate data
-
-  ##' Property. We need to look up proxy stores when we process
-  w$proxyStores <- list()
-
-  ##' add a proxy store for later lookup
-  w$addStore <- function(., store) {
-    l <- .$proxyStores
-    l[[store$asCharacter()]] <- store
-    .$proxyStores <- l
-  }
-
-  ##' get a proxy store from its id
-  w$getStoreById <- function(., id) {
-    .$proxyStores[[id]]
-  }
-
   
+
+  ## w$..setHandlers <- function(.) {
+  ##    ## deprecated, see addHandler now
+  ##    return("")
+  ##  }
+
   
   ## unload handler
   if(!is.null(handler)) 
     w$addHandler("onunload",handler, action=action)
 
    
-    invisible(w)
+  invisible(w)
  }
 
-## gsubwindow
-## a subwindow appears on top of a regular window
-## style properties width, height (size) and x, y are used
-## should be draggable -- but doesn't seem to work
-##
-## svalue<- sets title
-## visible(obj) TRUE is showing
-## visible(obj) <- FALSE/TRUE hides/shows
-.gsubwindow <- function(title="Subwindow title", visible=TRUE,
+##' gsubwindow
+##' 
+##' a subwindow appears on top of a regular window
+##' style properties width, height (size) and x, y are used
+##' should be draggable -- but doesn't seem to work
+##' svalue<- sets title
+##' visible(obj) TRUE is showing
+##' visible(obj) <- FALSE/TRUE hides/shows
+##' @param title title of window
+##' @param visible ignored
+##' @param width width of subwindow
+##' @param height height of subwindow
+##' @param handler close handler
+##' @param action value passed to handler
+##' @param container parent container for subwindow
+##' @param ... passed to container's add method
+gsubwindow <- function(title="Subwindow title", visible=TRUE,
                         width=500, height=300,
                         handler = NULL, action=NULL, container=NULL,...) {
 
@@ -469,7 +512,6 @@ gwindow <- function(title="title", visible=TRUE,
       .$Show(queue=TRUE)
   }
 
-  ## odd inheritance here
   widget$setVisibleJS <- function(.) {
     if(.$has_local_slot("..setVisibleJS"))
       .$..setVisibleJS()
@@ -501,11 +543,14 @@ gwindow <- function(title="title", visible=TRUE,
     ## statusbar. Menu? Tool?
     if(.$has_local_slot("..statusBar")) {
       sbText <- String() +
-        'new Ext.ux.StatusBar({' +      # as of 3.0 not in ext -- uses toolbar instead
-          'id: "' + .$ID + 'statusBar",' +
-            'defaultText: "",' +
-              'text:' + shQuote(.$..statusBarText) +
-                '})'
+        paste('new Ext.ux.StatusBar({',    # as of 3.0 not in ext -- uses toolbar instead
+              sprintf('  id: "%sstatusBar",', .$ID),
+              sprintf('defaultText: "Powered by %s, extjs and gWidgetsWWW."',
+                      ifelse(gWidgetsWWWIsLocal(), "the R help server",
+                             "RApache")),
+              sprintf('text: %s', shQuote(.$..statusBarText)),
+              '})',
+              sep="")
       out[['bbar']] <- sbText
       .$..statusBar$..shown <- TRUE
     }
@@ -513,15 +558,14 @@ gwindow <- function(title="title", visible=TRUE,
     return(out)
   }
 
-  
-
   widget$header <- function(.) {}
   widget$footer <- function(.) {
     ## render and show
     out <- String() +
       sprintf("%s.render();", .$asCharacter())
     if(visible(.))
-      out <- out + sprintf("%s.show();", .$asCharacter())
+      out <- out +
+        sprintf("%s.show();", .$asCharacter())
 
     out
   }

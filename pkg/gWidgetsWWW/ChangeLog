@@ -1,3 +1,8 @@
+2010-11-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdf.R (widget$assignValue): fixed how values are transported
+	to R
+
 2010-11-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaa.R: tidied up the combining of strings to make javascript calls.

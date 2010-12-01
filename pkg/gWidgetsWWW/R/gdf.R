@@ -59,43 +59,67 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
 
   ## set up widget
 
+
+  widget$assignValue <- function(., value) {
+    ## assign value. Here values i list value, row, column
+    coerceValue <- function(x, value) UseMethod("coerceValue")
+    coerceValue.default <- function(x, value) format(value)
+    coerceValue.character <- function(x, value) as.character(value)
+    coerceValue.integer <- function(x, value) as.integer(value)
+    coerceValue.numeric <- function(x, value) as.numeric(value)
+    coerceValue.logical <- function(x, value)  as.logical(toupper(value))
+    coerceValue.factor <- function(x, value) ifelse(value %in% levels(x), value, NA)
+  
+
+    df <- .$..store$data
+    i <- as.numeric(value[[2]])
+    j <- as.numeric(value[[3]])
+    val <- value[[1]]
+    df[i,j] <- coerceValue(df[[j]], val)
+  .$..store$data <- df
+  }
+
+  ## return data frame
   widget$getValues <- function(., ...) {
+    items <- .$..store$data
+    return(items)
+    
     ## transport puts new values into
     ## "gWidgetIDX.R.C" where R = row, C = column
     ## all values stored as characters!
 
     ## first we pt the new values into the data frame
-    items <- .$..store$data
+    ## items <- .$..store$data
 
-    newVals <- ls(pat = String("^") + .$ID + '\\.', envir=.$toplevel)
-    if(length(newVals) > 0) {
-      for(i in newVals) {
-        tmp <- unlist(strsplit(i, "\\."))
-        row <- as.numeric(tmp[2])
-        col <- as.numeric(tmp[3])
-        value <- get(i, envir=.$toplevel)
+    ## newVals <- ls(pat = String("^") + .$ID + '\\.', envir=.$toplevel)
+    ## if(length(newVals) > 0) {
+    ##   for(i in newVals) {
+    ##     tmp <- unlist(strsplit(i, "\\."))
+    ##     row <- as.numeric(tmp[2])
+    ##     col <- as.numeric(tmp[3])
+    ##     value <- get(i, envir=.$toplevel)
 
-        colType <- class(items[,col, drop=TRUE])[1]
+    ##     colType <- class(items[,col, drop=TRUE])[1]
 
-        value <- switch(colType,
-                        "numeric" = as.numeric(value),
-                        "integer" = as.numeric(value),
-                        "logical" = as.logical(value),
-                        as.character(value))
-        items[row,col] <- value
+    ##     value <- switch(colType,
+    ##                     "numeric" = as.numeric(value),
+    ##                     "integer" = as.numeric(value),
+    ##                     "logical" = as.logical(value),
+    ##                     as.character(value))
+    ##     items[row,col] <- value
 
-        rm(list = i, envir=.$toplevel)                           # remove
-      }
-    }
+    ##     rm(list = i, envir=.$toplevel)                           # remove
+    ##   }
+    ## }
 
-    ## update data store
-    .$..store$data <- items
+    ## ## update data store
+    ## .$..store$data <- items
 
-    return(items)
+    ## return(items)
 
   }
 
-  
+  ## transport
   widget$transportSignal <- c("afteredit")
   widget$transportValue <- function(.,...) {
     ## XXX use id.row.col <- value to update cell
@@ -106,9 +130,10 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     ## write to id.row.col
 
     out <- String() +
-      'var rowIndex = e.row + 1; var colIndex = e.column + 1;' +
-        'var id = "' + .$ID + '" + "." + rowIndex.toString() + "." + colIndex.toString();' +
-          '_transportToR(id, Ext.util.JSON.encode({value:e.value}));'
+      sprintf("_transportToR('%s', Ext.util.JSON.encode({value:e.value,row:e.row + 1, column:e.column+1}));", .$ID)
+      ## 'var rowIndex = e.row + 1; var colIndex = e.column + 1;' +
+      ##   'var id = "' + .$ID + '" + "." + rowIndex.toString() + "." + colIndex.toString();' +
+      ##     '_transportToR(id, Ext.util.JSON.encode({value:e.value}));'
     return(out)
   }
 

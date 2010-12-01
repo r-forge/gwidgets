@@ -117,10 +117,10 @@ if(!require(ggplot2) || !require(RSVGTipsDevice)) {
   aesWidgets <- list()
   tbl <- glayout(cont = f)
   tbl[1,1] <- "x"
-  tbl[1,2] <- (aesWidgets[["x"]] <- gcombobox(c("",names(bb)), editable=TRUE, cont = tbl))
+  tbl[1,2] <- (aesWidgets[["x"]] <- gcombobox(c("",names(bb)), editable=TRUE, cont = tbl, selected=0))
   
   tbl[2,1] <- "y"
-  tbl[2,2] <- (aesWidgets[["y"]] <- gcombobox(c("",names(bb)), editable=TRUE, cont = tbl))
+  tbl[2,2] <- (aesWidgets[["y"]] <- gcombobox(c("",names(bb)), editable=TRUE, cont = tbl, selected=0))
   
   
   
@@ -143,7 +143,7 @@ if(!require(ggplot2) || !require(RSVGTipsDevice)) {
     glabel("+ ", cont = g1)
     n <- length(GeomCb)
     GeomCb[[n+1]] <<- list()
-    GeomCb[[n+1]]$widget <<- gcombobox(GeomDf, cont = g1,  handler = function(h,...) {
+    GeomCb[[n+1]]$widget <<- gcombobox(GeomDf, selected=0, cont = g1,  handler = function(h,...) {
       out <- sapply(GeomCb, function(i) svalue(i$widget))
       if(!any(sapply(out, function(i) i == "")))
         makeGeomSelector(f)
@@ -306,11 +306,12 @@ makePlots <- function() {
   }
   p <- ggplot(bb) +
     do.call("aes_string",l)
-  
+
+
   geoms <- Units$Geom
   for(i in GeomCb) {
     val <- svalue(i$widget)
-    if(is.character(val)) {
+    if(is.character(val) && nchar(val)) {
       type <- geoms[lowerToUpper(val) == geoms]         # check that we match
       if(length(type)) {
         l <- list()
@@ -334,7 +335,7 @@ makePlots <- function() {
   stats <- Units$Stat
   for(i in StatCb) {
     val <- svalue(i$widget)
-    if(is.character(val)) {
+    if(is.character(val) && nchar(val)) {
       type <- stats[lowerToUpper(val) == stats]         # check that we match
       if(length(type)) {
         p <- p + do.call(val, list())     # do aes
@@ -357,7 +358,7 @@ makePlots <- function() {
   scales <- c(scales, gsub("_x","_y",scales))
   for(i in ScaleCb) {
     val <- svalue(i$widget)
-    if(is.character(val)) {
+    if(is.character(val) && nchar(val)) {
       type <- scales[val == scales]         # check that we match
       if(length(type)) {
         p <- p + do.call(val, list())     # do aes
@@ -375,6 +376,7 @@ makePlots <- function() {
   dev.off()
 
   if(inherits(out, "try-error")) {
+    assign("error", p, envir=.GlobalEnv)
     gmessage(out, parent=w)
   } else {
     ## update graphic    

@@ -4,19 +4,23 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+* use statusbar to display information about AJAX calls, when present
+* added options use.table (gcheckboxgroup), use.togglebutton (gcheckbox)
+* changed back-end handling of assign transport
 * resurrected gprocessingjs widget. An alternative to gcanvas as it
 has a mouse handler.
-* new widget gtreeg
+* new widget gtree
 * new widget, gbigtable which implements exts's paging framework
 allowing very large data sets to be displayed (as it only shows a page
 at a time)
 * size<- method for tables can be a list with component columnWidths
 to specify the individual column widths in pixels. The defaults are
-taken from the column's entries at time of construction.
+taken from the column's entries at time of construction. (Thanks Dirk)
 * extended timeout period for AJAX calls. Can set with value specified
-to gwindow.
-* simplified RApache configuration; 
-* fixed bug with static files
+to gwindow.(Thanks Dirk)
+* simplified RApache configuration. For Ubuntu, very simple
+now. (Thanks Dirk)
+* fixed bug with static files (Thanks Dirk)
 * moved js code from widgets into standalong file. Compressed by compress.R
 * internal change to how handlers are evaluated. Trying to cut down on
 SIGPIPE error. STILL HAVEN'T FOOUND THEM ALL.
