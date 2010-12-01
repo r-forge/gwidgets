@@ -1,3 +1,9 @@
+2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (updateCallback): replace idle handler with
+	taskCallback for update. Seems much nicer, although possibly
+	fragile as a  user can remove the callback too easily.
+
 2010-11-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): New logic to handle

@@ -90,7 +90,8 @@ setMethod(".gbutton",
 
             action@e$buttons <- c(action@e$buttons, obj)
             
-            gtkaction$connectProxy(button)
+            #gtkaction$connectProxy(button)
+            button$setRelatedAction(gtkaction)
             ## icon
             icon <- gtkaction['stock-id']
             if(!is.null(icon)) {

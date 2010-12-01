@@ -41,7 +41,12 @@ setMethod(".gcheckbox",
           })
 
 as.gWidgetsRGtk2.GtkCheckButton <- function(widget,...) {
-  obj = new("gCheckboxRGtk",block=widget, widget=widget,
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(0,0,0,0)
+    parent$add(widget)
+  }
+  obj = new("gCheckboxRGtk",block=parent, widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
   return(obj)

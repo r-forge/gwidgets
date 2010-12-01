@@ -1,3 +1,4 @@
+* gtable, gdf -- size<- list(width, height, columnWidths)
 * selection by rectangle in gtable 
 * fix height on gcombobox, buttons -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.

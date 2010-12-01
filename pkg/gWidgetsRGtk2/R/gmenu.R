@@ -283,7 +283,8 @@ setReplaceMethod(".leftBracket",
       if("always-show-image" %in% names(item))
         item['always-show-image'] <- TRUE
       subMenu$Append(item)
-      action$connectProxy(item)
+      ##action$connectProxy(item)
+      item$setRelatedAction(action)
     }  else if(!.isLeaf(data)) {
       ## do submenu
       item = gtkMenuItem(i)
