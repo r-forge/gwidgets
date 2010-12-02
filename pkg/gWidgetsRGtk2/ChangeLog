@@ -1,3 +1,7 @@
+2010-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): put in check that we aren't redoing a text tag
+
 2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (updateCallback): replace idle handler with

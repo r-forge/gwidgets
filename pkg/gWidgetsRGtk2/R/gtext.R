@@ -19,7 +19,6 @@ setBufferFonts <- function(textview, font.attr) {
   ## now for color
   if("color" %in% nms) {
     color <- font.attr['color']
-    print(color)
     textview$modifyText(GtkStateType['normal'], color)
   }
 }
@@ -128,18 +127,24 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
   ## weights
   fontWeights = names(PangoWeight)
   fontWeights = fontWeights[fontWeights != "normal"] # also in Styles
-  for(i in fontWeights)
-    buffer$createTag(i, weight = PangoWeight[i])
+
+  tagtbl <- buffer$getTagTable()
+  
+  for(i in fontWeights)  
+    if(is.null(tagtbl$lookup(i)))
+      buffer$createTag(i, weight = PangoWeight[i])
   
   ## styles
   fontStyles = names(PangoStyle)
   for(i in fontStyles)
-    buffer$createTag(i, style = PangoStyle[i])
+    if(is.null(tagtbl$lookup(i)))
+      buffer$createTag(i, style = PangoStyle[i])
   ## family
   buffer$createTag("monospace",family = "monospace")
 
-  for(i in names(fontSizes)) 
-    buffer$createTag(i, scale = fontSizes[i])
+  for(i in names(fontSizes))
+    if(is.null(tagtbl$lookup(i)))
+      buffer$createTag(i, scale = fontSizes[i])
   
   ## colors -- 
   ##             fontColors = c("black","blue","red","yellow","brown","green","pink")
@@ -149,7 +154,9 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
   ##             }
   fontColors <-  colors()
   sapply(colors(), function(i) {
-    buffer$createTag(i,foreground = i)
+    if(is.null(tagtbl$lookup(i))) 
+      buffer$createTag(i,foreground = i)
+    if(is.null(tagtbl$lookup(Paste(i,".background"))))
     buffer$createTag(Paste(i,".background"),background = i)
   })
   
