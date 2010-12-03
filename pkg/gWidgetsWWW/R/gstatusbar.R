@@ -20,7 +20,7 @@
 ## statusbar is different from gstatusbar -- does not pop to last message
 gstatusbar <- function(text = "", container=NULL, ...) {
 
-  widget <- EXTComponent$new(toplevel=container$toplevel)
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel)
   class(widget) <- c("gStatusbar",class(widget))
 
   widget$setValue(value=text)
@@ -57,7 +57,12 @@ gstatusbar <- function(text = "", container=NULL, ...) {
         .$sbContainer$ID + 'statusBar' + '");'
     return(out)
   }
-    
+
+  widget$setValue <- function(., index=NULL, ..., value) {
+    .$..data <- value
+    if(exists("..shown",envir=., inherits=FALSE)) 
+      .$addJSQueue(.$setValueJS(index=index, ...))
+  }
   widget$setValueJS <- function(.,...) {
     if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
 

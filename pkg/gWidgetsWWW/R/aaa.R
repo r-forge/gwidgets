@@ -188,7 +188,7 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
     }
     .$..data <- newVal
     if(.$ID != "")
-      assign(.$ID, newVal, envir=.$toplevel)
+     assign(.$ID, newVal, envir=.$toplevel)
   }
   ## now process if shown
   if(exists("..shown",envir=., inherits=FALSE)) 
@@ -438,7 +438,7 @@ EXTWidget$getSize <- function(.) {
 ##' @return a list with the options. List is passed to mapRtoObjectLiteral
 EXTWidget$ExtStdCfgOptions <- function(.) {
   out <- list(
-              "renderTo"=String("Ext.getBody()"),
+              "renderTo"=String(.$toplevel$..renderTo), #String("Ext.getBody()"),
               "id"=.$ID
               )
   if(exists("..enabled",envir=., inherits = FALSE))
@@ -684,7 +684,8 @@ EXTWidget$init <- function(.) {
 ##' @param . self
 ##' @param value value to assign. May be a vector or list (from JSON conversion)
 EXTWidget$assignValue <- function(., value) {
-  svalue(., index=TRUE) <- value[[1]]   # value is a list
+  .$..data <- value[[1]]
+#  svalue(., index=TRUE) <- value[[1]]   # value is a list
 }
 
 ##################################################
@@ -763,6 +764,22 @@ EXTComponent$setValueJS <- function(.,...) {
 
 ### Different components ##################################################
 
+##' A component without items (so can't set value the same way)
+EXTComponentNoItems <- EXTComponent$new()
+EXTComponentNoItems$setValue <- function(., index=NULL, ..., value) {
+  ## override locally if desired
+  if(exists("..setValue",envir=., inherits=FALSE)) {
+    .$..setValue(index=index, ..., value=value)
+  } else {
+    .$..data <- value
+  }
+  ## now process if shown
+  if(exists("..shown",envir=., inherits=FALSE)) 
+    .$addJSQueue(.$setValueJS(index=index, ...))
+ }
+
+
+
 ##' a resizable component
 EXTComponentResizable <- EXTComponent$new()
 
@@ -837,7 +854,7 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
            sep="\n")
    }
 
-   out <- out + "}\n"
+   out <- out + "}\n\n"
    
    ## ## wrap inside conditional
    ## if(!is.null(handler$args$key)) {
@@ -2039,7 +2056,7 @@ EXTComponentInPanel$writeConstructor <- function(.) {
               hideBorders = TRUE,
               width = ifelse(exists("..width", ., inherits=FALSE),
                 .$..width,"auto"),
-              renderTo = String("Ext.getBody()"),
+              renderTo = String(.$toplevel$..renderTo), #String("Ext.getBody()"),
               items = String("[") + .$mapRtoObjectLiteral() + ']'
               )
   out <- String() +

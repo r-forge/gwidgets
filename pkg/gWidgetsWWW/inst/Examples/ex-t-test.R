@@ -47,7 +47,7 @@ addHandlerChanged(selData, handler = function(h,...) {
   enabled(selMu) <- FALSE
   enabled(selAlt) <- FALSE
   enabled(buttonGroup) <- FALSE
-  
+  svalue(outputArea) <- ""
 })
 
 addHandlerChanged(selVariable, handler = function(h,...) {

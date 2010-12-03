@@ -26,7 +26,7 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
                       handler=NULL, action=NULL, container = NULL, ... ) {
 
 
-    widget <- EXTComponent$new(toplevel=container$toplevel,
+    widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                                ..format = format)
     class(widget) <- c("gCalendar",class(widget))
 
@@ -54,6 +54,7 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
     ## override writeConstructor of show method
     widget$writeConstructor <- function(.) {
       lst <- list(xtype = "datefield",
+                  
                   id =  as.character(String(.$ID) + "date"))
       if(is.na(.$getValue()) || .$getValue() == "") {
         lst['emptyText'] <- "Select a date..."
@@ -78,6 +79,7 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
       out <- String() +
         paste(sprintf("%sdate = new Ext.Panel({", .$asCharacter()),
               sprintf("id: '%s',", .$ID),
+              sprintf("renderTo: %s,",.$toplevel$..renderTo),
               sprintf("items:[%s]", .$mapRtoObjectLiteral(lst)),
               "});",
               sep="")
