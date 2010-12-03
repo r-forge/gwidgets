@@ -160,7 +160,16 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
   }
   
   ## ## changed = double clicked
-  widget$addHandlerChanged <- widget$addHandlerDoubleclick
+  ## double click is default
+  widget$addHandlerDoubleclick <- widget$addHandlerChanged <- function(.,handler, action=NULL, ...) {
+    ## we need to set up some stuff
+    .$addHandler(signal="dblclick",
+                 handler = handler,
+                 action = action,
+                 handlerArguments = "grid, rowIndex, colIndex, e",
+                 handlerValue = "var value = rowIndex + 1;")
+  }
+
 
   
   ###

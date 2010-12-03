@@ -1,5 +1,5 @@
 ## TODO for gWidgetsWWW
-* killed ex-ggplot2 demo. Need to resurrect
+* ex-ggplot2 demo is being buggy
 * should I make some useful apps: installpackage, edit object,
   workspace browser...
 * spotfire-like example

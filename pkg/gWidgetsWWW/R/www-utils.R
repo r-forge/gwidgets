@@ -287,12 +287,19 @@ toJSArray.logical <- function(x,doBrackets=TRUE) {
   toJSArray.String(x, doBrackets)
 }
 
+toJSArray.character <- function(x, doBrackets=TRUE) {
+  x <- sprintf("%s", ourQuote(x))
+  toJSArray.String(x, doBrackets)
+}
+
 toJSArray.matrix <- function(x, doBrackets=TRUE) {
   out <- paste(apply(x,1,toJSArray), collapse=",")
   if(doBrackets) out <- paste("[", out, "]", sep="")
   return(out)
 }
 
+
+  
 toJSArray.list <- function(x, doBrackets=TRUE) {
   sapply(x, function(i) toJSArray(i,doBrackets))
 }

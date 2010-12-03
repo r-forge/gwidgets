@@ -111,7 +111,9 @@ gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...) {
                  activeTab = tabNo,
                  enableTabScroll = TRUE,
                  defaults = String("{autoScroll: true}"),
-                 tabPosition = tabpos, width=200)
+                 tabPosition = tabpos
+                 )
+
      return(out)
      
    }
