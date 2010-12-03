@@ -13,6 +13,7 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+## DEPRECATED
 
 ## Simple interface to googlemaps
 
@@ -32,7 +33,7 @@
 ggooglemaps <- function(x, title = "",  type = c("map","panorama"),
                         key="ABQIAAAAYpRTbDoR3NFWvhN4JrY1ahS5eHnalTx_x--TpGz1e2ncErJceBS7FrNBqzV5DPxkpbheIzZ9nTJPsQ", # for 127.0.0.1:8079; only for local. For server, set in RApache.conf
                         container, ...) {
-
+  
   return(glabel("XXX This needs updating to version 3 of ggoglemaps", cont=container))
 
   

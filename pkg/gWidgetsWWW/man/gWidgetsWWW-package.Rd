@@ -11,40 +11,59 @@ javascript libraries.
 }
 \details{
   
-  This package ports the gWidgets API to WWW, allowing the creation of
-  interactive webpages. 
-
-  The webpages can be seen locally through a local server or viewed through the internet. The local version is installed with the package and uses a small webserver run the the \pkg{tcltk} package. This is modified from that accompanying the \pkg{Rpad} package
+  This package ports the gWidgets API to WWW, allowing the authoring of
+  interactive webpages within R commands.
+  \cr
   
-The server version requires \pkg{RApache} to be installed and configured.	
-
- The webpages themselves use the Ext toolkit
-  (\url{www.extjs.com}) to render the widgets. This toolkit must be
-  installed separately and configured to work. A copy of these libraries is included.
+  The webpages can be seen locally through a local server or viewed
+  through the internet:The local version is installed with the package
+  and uses R's internal web server for serving help pages. 
+  The server version requires the \pkg{RApache} module for Apache to be
+  installed and configured. (More later.)
+  \cr
+  
+ The webpages themselves use the excellent Extjs toolkit (\url{www.sencha.com}) to
+ render the widgets. This toolkit is installed with the package.
+ \cr
  
+  The \pkg{gWidgets} API is meant to be multi-toolkit. For its other
+  implementations (\pkg{gWidgetsRGtk2}, \pkg{gWidgetsQt},
+  \pkg{gWidgetstcltk}) the main methods are defined in the
+  \pkg{gWidgets} package, with toolkit packages providing the link
+  between the graphical widget library and R. The \pkg{gWidgetsWWW} is
+  different, it is a more-or-less faithful implementation of the API,
+  but this is not enforced by using the \pkg{gWidgets} pacakge. This was
+  chosen, as there are some significant differences between an
+  interactive desktop GUI and a webpage.
+  \cr
   
-  As \pkg{gWidgets} is meant to be multi-toolkit, this file documents
-  differences from the API, of which there are many. However, this
-  package is not compatible with the \pkg{gWidgets} package so reading
-  that documentation is best done with a separate R process.
 
+  As the differences are not great, this file documents differences from
+  the API. We defer to the \pkg{gWidgets} documentation for more
+  detail. (However, this package is not compatible with the
+  \pkg{gWidgets} package so reading that documentation is best done with
+  a separate R process.)
+  \cr
+  
   \bold{Overview:}\cr
 
   The \pkg{gWidgetsWWW} package at one level maps \R\/ commands to
-  javascript commands. A more sophisticated treatment (like
-  \code{pyjamas} for python) would compile the R code into javascript,
-  but that does not happen here. This package is a simple mapping.
+  javascript commands. Basically it just pastes together a bunch of
+  javascript commands to send to the browser. A more sophisticated
+  treatment (like \code{pyjamas} for python) would compile the R code
+  into javascript, but that does not happen here. This package is a
+  simple mapping.
+  \cr
 
-
-The communication between \R\/ and the browser works as
-  follows. Before a page is rendered, it can be constructed using the
-  gWidget constructors and methods. When the top-level window is shown
-  (via its \code{print} method), the javascript code to produce the
-  page is created. This javascript code takes advantage of the freely
-  available Ext libraries which greatly enhance the base javascript
-  language.  This code should be contained in or sourced into a web
-  page so that it can be rendered in a browser. The \pkg{gWidgetsWWW}
-  package provides several examples of how this works.
+  The communication between \R\/ and the browser works as follows. Before
+  a page is rendered, it can be constructed using the gWidget
+  constructors and methods. When the top-level window is shown (via its
+  \code{print} method), the javascript code to produce the page is
+  created. This javascript code takes advantage of the freely available
+  Ext libraries which greatly enhance the base javascript language.
+  This code should be contained in or sourced into a web page so that it
+  can be rendered in a browser. The \pkg{gWidgetsWWW} package provides
+  several examples of how this works.
 
  
   The interactivity of a GUI is created through httpxmlrequests back to
@@ -59,25 +78,20 @@ The communication between \R\/ and the browser works as
   aware of the state of the web page. On the downside, this may cause a
   lag in performance.
 
-  Prior to version 0.8.0, gWidgetsWWW used RPad to provide
-  interactivity. This opened up the security risk that RPad has. One can
-  run Rpad from a virtual machine to reduce the risk, but still a user
-  could issue any R command they wanted. The RApache backend end
-  severely limits what a user can request from an R process. Basically
-  they can assign a variable and initiate a handler that a gWidgetsWWW
-  script defines. Still be careful when processing user input, as that
-  can open security risks, as it does with all web programming.
+  
 
 
   \bold{Installation:}\cr
   
-  To run the local version of \pkg{gWidgetsWWW} no installation is necessary.
+  To run the local version of \pkg{gWidgetsWWW} no installation is
+  necessary beyond installing the package. The command
+  \code{localServerStart} can be used to load a script.
+  \cr
 
 
   Installation for the server requires several steps: a) installing RApache, b)
-  installing gWidgetsWWW c) configuring RApache for gWidgetsWWW,
-  d) installing the extjs libraries,  e) installing the gWidgetsWWW
-  icons on the web browsers path and f) creating some webpages
+  installing gWidgetsWWW c) configuring RApache for gWidgetsWWW, and
+  d) creating some webpages
   \cr
   
   Installing RApache is documented at the RApache website. Installing
@@ -86,31 +100,53 @@ The communication between \R\/ and the browser works as
 
   To configure RApache for gWidgetsWWW, a sample configuration is
   included in the templates directory. There are several variables to
-  configure. As well, one can use to show pages one of two ways.
+  configure. The defaults work with a recent version of Ubuntu, so it
+  can be as easy as simply copying the file into the appropriate place
+  for the web server to read it.
   \cr
   
   The \code{Ext} libraries are included in the \code{basehtml/ext}
-  directory. Or more recent copies may be downloaded from
-  \url{www.extjs.com}. Ext has a dual-license model, offering an open
+  directory. Ext has a dual-license model, offering an open
   source LGPL license along with a per-developer, royalty-free
-  commercial license. The \pkg{gWidgetsWWW} package makes no
-  assumptions about where this library is installed, as you configure
-  it in the RApache configuration, but they must be accessible through a URL. \cr
+  commercial license. The standard configuration reads these files from
+  where the R package is installed. (This may need adjustment), so no
+  installation is necessary.
+  \cr
 
   To complete the installation, the \pkg{gWidgetsWWW} package provides
-  some stock icons. As with the extjs libraries, these can be installed
-  whereever, but where they are installed must be specified in the
-  RApache configuration. These image files are in the \code{basehtml/images} directory.
+  some stock icons in the \code{basehtml/images} directory.. As with the
+  extjs libraries, these can be installed whereever, but the default
+  configuration finds them where R installs the package.
+  The author would very much appreciate that a coherent set of icons be contributed.
   \cr
 
-  Web pages can be made in two ways. Either using brew templates to call
-  back into R to make standalone pages. The Examples directory has a
-  template and an example. Or, one can use a script to source in R files
-  where the filename is part of the url the user specifies. This allows
-  the webpage designer to only use gWidgets commands to produce webpages
-  -- no HTML needed.
+  Web pages can be made in two ways. Once can use a brew template and
+  call back into R to generate the page. However, it is much easier to
+  write a standalone R script and call that.
   \cr
 
+  For local installs, the function \code{localServerOpen} is used to
+  open a file. For server installs, the script need only be put into the
+  proper directory. (This is \code{/var/www/gWidgetsWWW} in the default
+  configuration.) The script is loaded by calling the proper URL, which
+  takes the form: \code{servername/gWidgetsWWWrun/scriptname}, where
+  \code{servername{ is the \code{http:///www.yourhost.com} bit,
+  \code{gWidgetsWWWrun} is the \emph{default} name for the invocation
+  and \code{scriptname} the file in the directory (or directories)
+  specified to search through.
+  \cr
+
+  The scripts themselves have a pretty standard structure: there must be
+  a global \code{gwindow} instance (corresponding to the main web page,
+  or which there can only be on), \pkg{gWidgetsWWW} commands for layout,
+  and finally a call to the \code{visible<-} method of \code{gwindow} to
+  print out the javascript commands generated by the package. The
+  Examples directory has many examples. (Try
+  \code{localServerOpen("Examples/ex-index.R", pacakge="gWidgetsWWW")}
+  to see.)
+
+
+  
   \bold{Sessions:}
 
   \pkg{gWidgetsWWW} uses sessions to store data when a web page is
@@ -119,44 +155,47 @@ The communication between \R\/ and the browser works as
   interactions. The use of AJAX allows pieces of a page to be updated
   without the entire page, making pages appear much more
   responsive. This involves callbacks into a R process that are executed
-  within the environment stored for the session.
-  \cr
-  The environments do not
-  remember which packages are loaded, so if your callback requires a
-  package beyond the base and \pkg{gWidgetsWWW} you will need to include
-  the appropriate \code{require} command in the callback.
-  \cr
+  within the environment stored for the session.  \cr
+  
+  The environments do not remember which packages are loaded, so if your
+  callback requires a package beyond the base and \pkg{gWidgetsWWW} you
+  will need to include the appropriate \code{require} command in the
+  callback.  \cr
+  
   Sometimes the database driver will complain. Likely this is due to the
-  database not being locked while a transaction is being completed.
-  \cr
+  database not being locked while a transaction is being completed.  \cr
+  
   The sessions are stored by default in files under a directory using
   filehash. This has the advantage of being easy to remove using regular
-  cron jobs, but may be slower than other forms of storage.
+  cron jobs, but may be slower than other forms of storage.  \cr
+  
+  This is all a bit of a hack, so any report of bugs is appreciated.
   \cr
-  This is all a
-  bit of a hack, so any report of bugs is appreciated.
+
   
 
 \bold{Containers:}
   \cr
-
-  The \code{gwindow} container is treated differently in
-  \pkg{gWidgetsWWW} than in \pkg{gWidgets}. There can be only one
-  top-level window, as this maps to a webpage. Subwindows are possible
-  though. These are constructed with the same constructor, but one
-  passes in the top-level window to the \code{parent} argument. The
-  window object is a bit different than other \code{gWidgets}
-  implementations, as the object isn't rendered until the web page is
-  ready to display. This rendering is done through the \code{print}
-  method. In particular, the \code{visible} argument is ignored. After
-  rendering, new widgets can be added but it doesn't happen by the same
-  process and may not work as desired. To be on the safe side, you can
-  add child widgets and make them not visible to begin.  The default
-  handler is assigned to the \code{unload} signal which is called when a
-  page is left. One thing to remember, is that web pages in
-  \pkg{gWidgetsWWW} will lose state when reloaded. For windows, only the
-  \code{svalue<-} method, for adjusting the title, is defined.  \cr
+  We now describe implementation of the basic widgets in
+  \pkg{gWidgetsWWW} beginning with the containers.
   \cr
+
+  A primary difference in \pkg{gWidgetsWWW} over \pkg{gWidgets} for
+  other toolkits is the restriction to only one top-level window, which
+  maps to the webpage.  Subwindows are possible though. These are
+  constructed with the same constructor, but one passes in the top-level
+  window to the \code{parent} argument. The window object is a bit
+  different than other \code{gWidgets} implementations, as the object
+  is not rendered until the web page is ready to display. This rendering
+  is done through the \code{visible<-} method. (In particular, the
+  constructor's \code{visible} argument is ignored.) After rendering,
+  new widgets can be added but it doesn't happen by the same process and
+  may not work as desired. To be on the safe side, you can add child
+  widgets and make them not visible to begin.  The default handler is
+  assigned to the \code{unload} signal which is called when a page is
+  left. One thing to remember, is that web pages in \pkg{gWidgetsWWW}
+  will lose state when reloaded. For windows, only the \code{svalue<-}
+  method, for adjusting the title, is defined.  \cr \cr
 
   There are a few \pkg{proto} properties to adjust the page. The
   property \code{doLoadingText} can be set to \code{FALSE} to suppress
@@ -211,8 +250,8 @@ The communication between \R\/ and the browser works as
   tab names. The \code{dispose} method deletes the current tab.
     \cr
   
-  Tje \code{gformlayout} widget is used to layout widgets using
-  \code{glayout} is imlemented.
+  The \code{gformlayout} widget, used to layout widgets using
+  \code{glayout}, is imlemented.
 
   \bold{Widgets:}\cr
 
@@ -226,7 +265,7 @@ The communication between \R\/ and the browser works as
 
   The \code{gbutton} widget: Can accept a \code{gaction} object to
   define the click handler. Pass in the action to the \code{action}
-  component and \code{NULL} for the \code{handler} argument.
+  component and \code{NULL} for the \code{handler} argument. 
   \cr
 
 
@@ -326,7 +365,7 @@ The communication between \R\/ and the browser works as
   \cr
   
   The \code{gsvg} widget creates a space in a page to use the		
-  \pkg{RSVGTipsDevice} to display graphics within a web page.
+  \pkg{RSVGTipsDevice} package to display SVG graphics within a web page.
   \cr
 
   The \code{gfilebrowse} widget is written only for local
@@ -357,7 +396,11 @@ The communication between \R\/ and the browser works as
   each column in pixels. Otherwise these are intuited from the maxmim
   number of characters in each column at time of construction.
 
-  The formatting of the columns is controlled by a few javascript functions. For example the formatting of numeric variables by the javascript function \code{gtableNumeric}. This can be overridden. For example if \code{tbl} is a table widget, then before the GUI is drawn, this code will overwrite the default definition:
+  The formatting of the columns is controlled by a few javascript
+  functions. For example the formatting of numeric variables by the
+  javascript function \code{gtableNumeric}. This can be overridden. For
+  example if \code{tbl} is a table widget, then before the GUI is drawn,
+  this code will overwrite the default definition: 
 
 
 \code{tbl$..scripts <- function(.) \{}\cr
@@ -371,10 +414,10 @@ The communication between \R\/ and the browser works as
 
 
 
-  The \code{gbigtable} widget allows very large tables to be
-  displayed, at it only shows part of the table at once. The number of
-  lines displayed is specified by the \code{pageSize} argument, with
-  default of 25.
+  The \code{gbigtable} widget allows very large tables to be displayed,
+  at it only shows part of the table at once. The number of lines
+  displayed is specified by the \code{pageSize} argument, with default
+  of 25.
 
 
   The \code{gdf} widget is implemented but limited. The widget
@@ -390,14 +433,13 @@ The communication between \R\/ and the browser works as
   row names. One could add these to \code{items} first as a character
   vector to edit. and then take them off again. \cr
 
-  The \code{visible<-} method is use to restrict the rows that are
-  shown by a specification of a logical vector. In addition, a proto
-  method \code{filter} is available to filter by a column name and
-  regular expression after the widget is shown. The \code{ex-gtable}
-  example has a sample usage. The \code{visible<-} method uses
-  \code{filter} in an inefficient manner, so using filter is suggested
-  for large data sets. (Although it is not portable across gWidgets
-  toolkits).\cr
+  The \code{visible<-} method is use to restrict the rows that are shown
+  by a specification of a logical vector. In addition, a proto method
+  \code{filter} is available to filter by a column name and regular
+  expression after the widget is shown. The \code{ex-gtable} example has
+  a sample usage. The \code{visible<-} method uses \code{filter} in an
+  inefficient manner, so using filter is suggested for large data
+  sets. (Although it is not portable across gWidgets toolkits).\cr
 
 
   The \code{gtree} widget works, but only for single columns. (No grid).
@@ -440,8 +482,7 @@ The communication between \R\/ and the browser works as
 
 
   The \code{\link{ggooglemaps}} widget allows one to integrate google
-  maps into an application. It is working for the local server, but
-  may not work on a server install. This constructor is
+  maps into an application. It is not working. This constructor is
   \pkg{gWidgetsWWW} specific and is documented in its own help file.
   
   \bold{Dialogs:}\cr  
@@ -584,9 +625,7 @@ The communication between \R\/ and the browser works as
   would expect. This should be addressed. If not fixed, then one can use
   global variables within the handler.
 
-  Handlers write out javascript to be interpreted by the web browser. No
-  other output to STDOUT should be inside the handler body. That is,
-  don't use \code{print} or \code{cat}.
+
 
   \bold{Drag and Drop:}\cr
 
@@ -648,7 +687,7 @@ The communication between \R\/ and the browser works as
   \code{JS}. For instance, \code{svalue<-} calls the proto method
   \code{setValue} which in turn calls \code{setValueJS}. The latter can
   be overridden, or can be added to by setting a method for
-  \code{..setValueJS}. This should \code{cat} out javascript code.
+  \code{..setValueJS}. 
 
   If you do this, and think your code should be integrated into the main
   code, please share it.

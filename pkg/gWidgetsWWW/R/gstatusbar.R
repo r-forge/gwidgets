@@ -60,12 +60,13 @@ gstatusbar <- function(text = "", container=NULL, ...) {
     
   widget$setValueJS <- function(.,...) {
     if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
-    
-    out <- String() +
-      .$getSBJS() +
-        'widget.setStatus({' +
-          'text:' + shQuote(svalue(.)) + ',' +
-            'clear: true, iconCls: "x-status-valid" });' + '\n'
+
+    out <- paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
+                 sprintf("widget.setText(%s);", ourQuote(svalue(.))),
+                 sep="")
+
+    ## 'text:' + shQuote(svalue(.)) + ',' +
+    ##        'clear: true, iconCls: "x-status-valid" });' + '\n'
     
     return(out)
   }
@@ -74,16 +75,29 @@ gstatusbar <- function(text = "", container=NULL, ...) {
   ## a statusbar had *lots* of other things we could do here through Ext:
   ## menus, toolbars, busy signals, a clear after a certain time period
   ## we add these here as extra methods not in API
-  widget$showBusy <- function(.) {
-    out <- .$getSBJS() +
-#      'widget.showBusy();';
-      'widget.showStatus({text: "Busy...", iconCls:"x-status-busy"});';
+  widget$showBusy <- function(., text="Busy...") {
+    out <- 
+      paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
+            sprintf('widget.setBusyText("%s");', text),
+            sep="")
+    
+    .$addJSQueue(out)
+  }
+  widget$clearBusy <- function(.) {
+    out <- 
+      paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
+            'widget.setBusyText("");',
+            sep="")
+    
     .$addJSQueue(out)
   }
   widget$clearStatus <- function(.) {
-    out <- .$getSBJS() +
+    paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
+          'widget.clearStatus();',
+          sep="")
+#    out <- .$getSBJS() +
 #      'widget.clearStatus();';
-      sprintf('widget.showStatus({text: "%s", iconCls:"x-status-valid"});', .$getValue())
+#      sprintf('widget.showStatus({text: "%s", iconCls:"x-status-valid"});', .$getValue())
     .$addJSQueue(out)
   }
 

@@ -154,6 +154,15 @@ strip_slashes <- function(x, leading=TRUE, trailing=TRUE) {
   x
 }
   
+##' make a string safe to pass in as HTML fragment.
+##'
+##' We pass in strings that work with '....' so we replace ' with \" an d" with \"
+##' @param x a string to replace ' with
+##' @result string with quotes escaped and placed within ''
+ourQuote <- function(x) {
+  x <- gsub("'",'"',x)
+  sprintf("'%s'", x)
+}
 
 
 ##################################################

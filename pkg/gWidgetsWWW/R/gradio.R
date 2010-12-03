@@ -47,15 +47,7 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
     ## we need to revers logic from AWidgtet$getValue
     out <- .$..data
-    ## if(exists("..shown",envir=.$toplevel,inherits=FALSE)) {
-    ##   ## get from widget ID
-    ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-    ##   if(!inherits(out,"try-error")) {
-    ##     out <- as.numeric(out)          # is character
-    ##   } else {
-    ##     out <- .$..data
-    ##   }
-    ## }
+ 
     ## no index -- return values
     if(is.null(index)) index <- FALSE
     if(index)

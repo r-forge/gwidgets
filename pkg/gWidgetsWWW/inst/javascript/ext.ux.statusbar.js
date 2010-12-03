@@ -1,5 +1,6 @@
 
 // http://extjs.com/forum/showthread.php?t=65632
+// some modifications by John Verzani
 
 Ext.namespace('Ext.ux');
 
@@ -34,12 +35,15 @@ Ext.ux.StatusBar = Ext.extend(Ext.Toolbar, {
     autoClear: 5000,
     task: null,
     initComponent: function() {
+	this.busyID = Ext.id();
         this.textId = Ext.id();
         this.defaultText = this.initialConfig.defaultText || '';
         var text = this.initialConfig.text || this.defaultText;
-        
+        var busyText = "";
+
         var config = {
             items: [
+		'<span id="' + this.busyID + '">'+busyText+'</span>', // busy text
                 '<span id="'+this.textId+'">'+text+'</span>',    // status text
                 '->'                            // make it greedy
             ]
@@ -102,7 +106,43 @@ Ext.ux.StatusBar = Ext.extend(Ext.Toolbar, {
         this.setText(this.defaultText);
         this.task.cancel();
     },
+    setBusy: function(config) {
+        var defaults = {
+            clear: {
+                wait: this.autoClear,
+                anim: true,
+                useDefaults: true
+            }
+        };
+        
+        if (config.clear === true) {
+            delete config.clear;
+        }
+        if (!Ext.isArray(config)) {
+            config = {
+                text: config.text || ''
+            }
+        }
+        Ext.apply(config, defaults);
+        var el = Ext.get(this.busyID);
+        el.update(config.text);
+        var clear = config.clear;
+        var defaultText = this.defaultText;
+        if (clear.wait) {
+            this.task.delay(clear.wait);
+        }
+        else {
+            this.task.cancel();
+        }
+    },
+    setBusyText: function(text) {
+	var el = Ext.get(this.busyID);
+	el.update(text)
+    },
+    clearBusy: function() {
+	this.setBusyText("")
+    },
     showBusy: function(msg) {
-        // stub for now
+        
     }
 });

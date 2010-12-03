@@ -220,7 +220,7 @@ gwindow <- function(title="title", visible=TRUE,
     if(exists("..setValueJS", envir=., inherits=FALSE))
       .$..setValueJS(...)
     
-    out <- sprintf("document.title = %s;", shQuote(.$..data))
+    out <- sprintf("document.title = %s;", ourQuote(.$..data))
     
     return(out)
   }
@@ -264,7 +264,8 @@ gwindow <- function(title="title", visible=TRUE,
                   paste("function processFailure(response, options) {",
                         "Ext.example.msg('Error:', response.responseText, 4);",
                         if(.$has_local_slot("..statusBar")) {
-                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                          #sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID)
                         },
                         "};",
                         sep="\n")
@@ -273,7 +274,8 @@ gwindow <- function(title="title", visible=TRUE,
                   paste("function processFailure(response, options) {",
                         "eval(response.responseText);",
                         if(.$has_local_slot("..statusBar")) {
-                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                          #sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
+                          sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID)
                         },
                         "};",
                         sep="\n")                
@@ -284,7 +286,7 @@ gwindow <- function(title="title", visible=TRUE,
                     paste("function evalJSONResponse(response, options) {",
                           "  eval(response.responseText);",
                           ifelse(.$has_local_slot("..statusBar"),
-                                 sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID),
+                                 sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID),
                                  ""),
                           "};\n",
                           sep="")
@@ -294,7 +296,8 @@ gwindow <- function(title="title", visible=TRUE,
                 paste('runHandlerJS = function(id,context) {',
                       ifelse(.$doLoadingText,
                              ifelse(.$has_local_slot("..statusBar"),
-                                    sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('busy...');", .$ID),
+#                                    sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('busy...');", .$ID),
+                                    sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.setBusyText('busy...   ');", .$ID),
                                     sprintf("Ext.getBody().mask('%s');", .$loadingText)
                                     ),
                              ""),
@@ -329,7 +332,7 @@ gwindow <- function(title="title", visible=TRUE,
               out <- out +
                 paste('_transportToR = function(id, val) {',
                       ifelse(.$has_local_slot("..statusBar"),
-                             sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('transferring...');", .$ID),
+                             sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.setBusyText('Transferring...   ');", .$ID),                             
                              ""),
                       "Ext.Ajax.request({",
                       sprintf("  url: '%s',", gWidgetsWWWAJAXurl),
@@ -403,7 +406,7 @@ gwindow <- function(title="title", visible=TRUE,
      x <- getStockIcons();
      nms <- names(x)
      for(i in 1:length(x)) {
-       out <- out +
+       out <- out +x0
          'Ext.util.CSS.createStyleSheet("' +
            paste("button.",nms[i], "{background-image:url(",x[i],")};", sep="",
                  collapse="") +
@@ -432,11 +435,11 @@ gwindow <- function(title="title", visible=TRUE,
        sprintf("%s.doLayout();", .$asCharacter())
      ## set title 
      out <- out +
-       sprintf("document.title=%s;\n",shQuote(.$getValue()))
+       sprintf("document.title=%s;\n",ourQuote(.$getValue()))
 
      ## write out sessionID
      out <- out +
-       sprintf("var sessionID = '%s';\n", .$sessionID)
+       sprintf("var sessionID = %s;\n", ourQuote(.$sessionID))
      
      .$Cat(out)
    }
@@ -497,7 +500,7 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
   if(.$has_local_slot("..setValueJS"))
     .$..setValueJS(...)
   
-  out <-  sprintf("%s.setTitle(%s);\n", .$asCharacter(), shQuote(escapeHTML(.$..data)))
+  out <-  sprintf("%s.setTitle(%s);\n", .$asCharacter(), ourQuote(escapeHTML(.$..data)))
   .$addJSQueue(out)
   }
 
@@ -548,7 +551,7 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
               sprintf('defaultText: "Powered by %s, extjs and gWidgetsWWW."',
                       ifelse(gWidgetsWWWIsLocal(), "the R help server",
                              "RApache")),
-              sprintf('text: %s', shQuote(.$..statusBarText)),
+              sprintf('text: %s', ourQuote(.$..statusBarText)),
               '})',
               sep="")
       out[['bbar']] <- sbText
