@@ -22,7 +22,7 @@
 ## XXX Actions *must* be added prior to showing the window (integrate into gsubwindow otherwise)
 
 ##' Trait for action instances
-EXTAction = EXTComponent$new()
+EXTAction = EXTComponentNoItems$new()
 
 ##' method to set javascript when value (label) for action is set
 ##'

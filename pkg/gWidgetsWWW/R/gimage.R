@@ -20,7 +20,7 @@ gimage <- function(filename = "", dirname = "",  size = "",
                    ) {
 
   if(!resizable) {
-    widget <- EXTComponent$new(toplevel=container$toplevel)
+    widget <- EXTComponentNoItems$new(toplevel=container$toplevel)
     class(widget) <- c("gImage", class(widget))
   } else {
     widget <- EXTComponentResizable$new(toplevel=container$toplevel)

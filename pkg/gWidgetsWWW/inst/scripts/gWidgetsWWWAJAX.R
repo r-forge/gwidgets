@@ -249,9 +249,9 @@ if(!.sendError && !is.null(type)) {
 
 ## Question: how to return the error message to browser. I get stuck
 ## with general 500 warning
-#if(.sendError) {
-#   cat(paste(capture.output(.sendErrorMessage), collapse="\n"), "\n", file="/tm#p/error.txt")
-#}
+if(.sendError) {
+  try(cat(paste(capture.output(.sendErrorMessage), collapse="\n"), "\n", file="/tmp/error.txt"), silent=TRUE)
+}
 if(.sendError) {
   HTTP_INTERNAL_SERVER_ERROR
 } else {

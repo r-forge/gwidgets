@@ -31,7 +31,7 @@ gsvg <- function(f, width=480, height=400,
   if(!bypassRequire("RSVGTipsDevice"))
     return(glabel(gettext("gsvg needs the RSVGTipsDevice package to be installed"), cont=container))
 
-  widget <- EXTComponent$new(toplevel=container$toplevel,
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                              ..width=as.numeric(width),
                              ..height=as.numeric(height))
   

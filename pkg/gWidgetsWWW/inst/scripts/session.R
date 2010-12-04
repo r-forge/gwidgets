@@ -40,7 +40,7 @@ initDb <- function(file=sessionDbFile, type=sessionDbType) {
 
 ## session API
 validKey <- function(db, key) {
-  return(list(retval=TRUE)) ## DEBUG
+  ## return(list(retval=TRUE)) ## DEBUG
 
 
   val <- try(dbExists(db, key), silent=TRUE)

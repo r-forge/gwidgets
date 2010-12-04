@@ -41,7 +41,7 @@
 ##' @param ... passed to container's add method
 ##' @export
 gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL, ...) {
-  widget <- EXTComponent$new(toplevel = container$toplevel,
+  widget <- EXTComponentNoItems$new(toplevel = container$toplevel,
                              ..width = width,
                              ..height = height,
                              ..pointsize = pointsize)

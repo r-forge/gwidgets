@@ -1,5 +1,8 @@
 2010-12-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/aaa.R (EXTComponentNoItems): added new trait so that svalue<-
+	doesn't call into ..values (when no items, not [ method, so no ..values)
+
 	* R/gnotebook.R (widget$ExtCfgOptions): remove erroneous size
 	setting in config
 

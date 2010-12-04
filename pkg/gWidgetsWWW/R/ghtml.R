@@ -23,7 +23,7 @@ ghtml <- function(x, container = NULL, ...) {
   ## components
 
   
-  widget <- EXTComponent$new(toplevel=container$toplevel)
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel)
   class(widget) <- c("gHtml",class(widget))
   widget$setValue(value=x)
 

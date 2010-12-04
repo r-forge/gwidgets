@@ -25,7 +25,7 @@ gfile <- function(text="Choose a file",
     stop("Not for non-local user")
 
   
-  widget <- EXTComponent$new(toplevel=container$toplevel,
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                              ..text = text, ..type=type, ..filter=filter
                              )
   class(widget) <- c("gFile",class(widget))

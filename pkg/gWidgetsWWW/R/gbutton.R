@@ -36,7 +36,7 @@
 gbutton <- function(text="", border=TRUE,
                     handler = NULL, action=NULL, container, ...) {
   ## components
-  widget <- EXTComponent$new(toplevel=container$toplevel,
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                              ..handler = handler,
                              ..action=action
                              )

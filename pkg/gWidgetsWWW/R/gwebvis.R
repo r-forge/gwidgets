@@ -30,7 +30,7 @@ gwebvis <- function(wv,
     return(glabel(gettext("gwebvis needs the webvis package to be installed"), cont=container))
 
   
-  widget <- EXTComponent$new(toplevel=container$toplevel)
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel)
   
   class(widget) <- c("gWebvis",class(widget))
   widget$toplevel$do_gwebvis <- TRUE

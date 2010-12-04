@@ -765,7 +765,13 @@ EXTComponent$setValueJS <- function(.,...) {
 ### Different components ##################################################
 
 ##' A component without items (so can't set value the same way)
+##'
+##' Examples are buttons, statusbar, ... These don't have a \code{[} method or a getValues/setValues bit
 EXTComponentNoItems <- EXTComponent$new()
+
+##' setValue for componets without items
+##'
+##' setValue just stuffs into \code{..data}
 EXTComponentNoItems$setValue <- function(., index=NULL, ..., value) {
   ## override locally if desired
   if(exists("..setValue",envir=., inherits=FALSE)) {
@@ -776,10 +782,10 @@ EXTComponentNoItems$setValue <- function(., index=NULL, ..., value) {
   ## now process if shown
   if(exists("..shown",envir=., inherits=FALSE)) 
     .$addJSQueue(.$setValueJS(index=index, ...))
- }
+}
 
 
-
+##################################################
 ##' a resizable component
 EXTComponentResizable <- EXTComponent$new()
 

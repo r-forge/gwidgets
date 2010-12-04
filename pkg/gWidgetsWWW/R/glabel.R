@@ -16,7 +16,7 @@
 glabel <- function(text = "", markup = FALSE, editable = FALSE,
                    handler = NULL, action = NULL, container = NULL,...) {
 
-  widget <- EXTComponent$new(toplevel=container$toplevel,
+  widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                              ..editable = editable,
                              ..markup = markup
                              )

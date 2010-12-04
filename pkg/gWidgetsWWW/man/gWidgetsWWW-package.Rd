@@ -130,7 +130,7 @@ javascript libraries.
   proper directory. (This is \code{/var/www/gWidgetsWWW} in the default
   configuration.) The script is loaded by calling the proper URL, which
   takes the form: \code{servername/gWidgetsWWWrun/scriptname}, where
-  \code{servername{ is the \code{http:///www.yourhost.com} bit,
+  \code{servername} is the \code{http:///www.yourhost.com} bit,
   \code{gWidgetsWWWrun} is the \emph{default} name for the invocation
   and \code{scriptname} the file in the directory (or directories)
   specified to search through.
@@ -403,12 +403,12 @@ javascript libraries.
   this code will overwrite the default definition: 
 
 
-\code{tbl$..scripts <- function(.) \{}\cr
-\code{  paste("gtableNumeric = function(val) \{ ",}\cr
-\code{        "return '<span  style=\"text-align:right; color:blue\"><h1>' + val + '</h1></span>';",}\cr
-\code{        "\}",}\cr
-\code{        sep="\n")}\cr
-\code{\}}\cr
+% \code{tbl$..scripts <- function(.) \{}\cr
+% \code{  paste("gtableNumeric = function(val) \{ ",}\cr
+% \code{        "return '<span  style=\"text-align:right; color:blue\"><h1>' + val + '</h1></span>';",}\cr
+% \code{        "\}",}\cr
+% \code{        sep="\n")}\cr
+% \code{\}}\cr
    
 
 
