@@ -400,7 +400,7 @@ javascript libraries.
   functions. For example the formatting of numeric variables by the
   javascript function \code{gtableNumeric}. This can be overridden. For
   example if \code{tbl} is a table widget, then before the GUI is drawn,
-  this code will overwrite the default definition: 
+  defing a new function in the \code{..scripts} method can override the default.
 
 
 % \code{tbl$..scripts <- function(.) \{}\cr

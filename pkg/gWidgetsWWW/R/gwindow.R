@@ -188,7 +188,7 @@ gwindow <- function(title="title", visible=TRUE,
       lst <- .$jscriptHandlers[[as.numeric(id)]]
       h <- list(obj=lst$obj, action = lst$action)
       if(!missing(context) &&  is.list(context)) {
-        for(i in names(context))
+        for(i in names(context)) 
           h[[i]] <- context[[i]]
       }
       ## Each XXXJS call  adds to the JSQueue, it isn't done here
@@ -264,7 +264,6 @@ gwindow <- function(title="title", visible=TRUE,
                   paste("function processFailure(response, options) {",
                         "Ext.example.msg('Error:', response.responseText, 4);",
                         if(.$has_local_slot("..statusBar")) {
-                          #sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
                           sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID)
                         },
                         "};",
@@ -274,7 +273,6 @@ gwindow <- function(title="title", visible=TRUE,
                   paste("function processFailure(response, options) {",
                         "eval(response.responseText);",
                         if(.$has_local_slot("..statusBar")) {
-                          #sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.setText(sbwidget.oldtext);", .$ID)
                           sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID)
                         },
                         "};",
@@ -296,7 +294,6 @@ gwindow <- function(title="title", visible=TRUE,
                 paste('runHandlerJS = function(id,context) {',
                       ifelse(.$doLoadingText,
                              ifelse(.$has_local_slot("..statusBar"),
-#                                    sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.oldtext=sbwidget.text; sbwidget.setText('busy...');", .$ID),
                                     sprintf("sbwidget=Ext.getCmp('%sstatusBar'); sbwidget.setBusyText('busy...   ');", .$ID),
                                     sprintf("Ext.getBody().mask('%s');", .$loadingText)
                                     ),

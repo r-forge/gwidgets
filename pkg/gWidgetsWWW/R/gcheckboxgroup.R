@@ -51,18 +51,12 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
   class(widget) <- c("gCheckboxgroup",class(widget))
 
   
-  ## we store either a logical vector of character of same to indicate
-  ## values
-  widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
-    ## we need to revers logic from AWidgtet$getValue
-    out <- .$..data
 
-    if(is.null(index)) index <- TRUE
-    if(index)
-      return(out)
-    else
-      return(.$..values[out])
+  widget$assignValue <- function(., value) {
+    value <- value$value     # a list
+    .$..data <- as.logical(value)
   }
+
 
   widget$setValue <- function(., index=NULL,..., value) {
     ## values can be set by index, logical, or names
@@ -77,7 +71,7 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
       cat("Value should be logical vector, vector of indices, or character vector of names\n")
     }
 
-    .$..data <- value
+    .$..data <- rep(value, length=n)
 
     if(exists("..shown",envir=., inherits=FALSE))
       ##cat(.$setValueJS())
@@ -85,12 +79,28 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
   }
   widget$setValueJS <- function(.) {
     out <- String() +
-      'var ans = [' + paste(tolower(as.character(.$..data)),collapse=",") +
-        '];' +
-          'for( var i = 0; i < ' + .$length() + ';i++) {' +
-            .$asCharacter() + '.getComponent(i).setValue(ans[i]);' +
-              '};'
+      paste(sprintf("var ans = [%s];", paste(tolower(as.character(.$..data)), collapse=",")),
+            sprintf("for(var i=0; i < %s; i++) {", .$length()),
+            sprintf("  %s.getComponent(i).setValue(ans[i]);", .$asCharacter()),
+            sprintf("};"),
+            collapse="")
+      ## 'var ans = [' + paste(tolower(as.character(.$..data)),collapse=",") +
+      ##   '];' +
+      ##     'for( var i = 0; i < ' + .$length() + ';i++) {' +
+      ##       .$asCharacter() + '.getComponent(i).setValue(ans[i]);' +
+      ##         '};'
     return(out)
+  }
+
+  widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
+    ## we need to reverse logic from AWidgtet$getValue
+    out <- .$..data
+
+    index <- getWithDefault(index, FALSE)
+    if(index)
+      return(which(out))                # indices -- not logical
+    else
+      return(.$..values[out])
   }
 
   widget$xtype <- "checkbox"
@@ -108,17 +118,14 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
     return(out)
   }
 
+  ## value is array of logicals to transport  back
   widget$transportValue <- function(.,...) {
     out <- String() +
-      'var ans = new Array();' +
-        'var value = "c(";' +
-          'for(var i = 0; i < ' + length(.) + '; i++) {' +
-            'ans[i] = ' + .$asCharacter() + '.getComponent(i).getValue().toString().toUpperCase();' +
-              'value = value + ans[i] + ",";' +
-                '};' +
-                  're = /,$/;' +
-                    'value = value.replace(re,"");' +
-                      'value = value + ")";' + '\n'
+      paste('var value = new Array();',
+            sprintf('for(var i = 0; i < %s; i++) {', length(.)),
+            sprintf('value[i] = %s.getComponent(i).getValue();', .$asCharacter()),
+            '};',
+            sep="")
     return(out)
   }
 
@@ -129,11 +136,14 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
   widget$setValues(value = items)       # need values before value!
   widget$setValue(value= checked) ## store logical vector -- might be string
 
-  
+  widget$addHandlerChanged <- function(., handler, action=NULL)
+    .$addHandler(signal="check", handler, action)
 
   container$add(widget, ...)
+  
   if(!is.null(handler))
-    id <- widget$addHandler(signal="check", handler, action)
+    addHandlerChanged(widget, handler=handler, action=action)
+
   invisible(widget)
 
 }
@@ -172,38 +182,14 @@ gcheckboxgrouptable <- function(items,
   store$data <- items
   widget$..store <- store
 
-  
-  widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
-    ## we store value as an index
-    out <- .$..data
-    values <- .$..store$data
-    
-    ## no index -- return values
-    if(!is.null(index) && index) {
-      return(as.numeric(out))
-    } else {
-      ## depends on drop
-      values <- values[,-1]             # drop ..index
-      if(is.null(drop) || drop) {
-        return(values[as.numeric(out),1,drop=TRUE])
-      } else {
-        return(values[as.numeric(out),])
-      }
-    }      
-  }
 
   ## assign vlaue
+  ## we untaint by coercion to integer indices
   widget$assignValue <- function(., value) {
-    value <- value$value     # a list
-    ## value may be "" or it may be like :2:3
-    if(grepl("^:", value)) {
-      value <- as.integer(strsplit(value, ":")[[1]][-1]) # remove initial ":"
-    } else {
-      value <- integer(0)
-        }
-    .$..data <- sort(value) 
+    value <- value$value    
+    .$..data <- sort(as.integer(value))
   }
-
+  
 
   ## values refer to indices
   widget$setValue <- function(., index=NULL,..., value) {
@@ -216,7 +202,7 @@ gcheckboxgrouptable <- function(items,
     } else {
       ## match on first column
       values <- .$..store$data[,1, drop=TRUE]
-      .$..data <- which(as.character(values) %in% as.character(value))
+      .$..data <- which(as.character(value) %in% as.character(values))
     }
     
     ## now process if shown
@@ -237,6 +223,36 @@ gcheckboxgrouptable <- function(items,
     return(out)
    }
 
+    
+  widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
+    ## we store value as an index
+    ind <- as.numeric(.$..data)
+
+    index <- getWithDefault(index, FALSE)
+
+    if(length(ind) == 0) {
+      if(index)
+        return(numeric(0))
+      else
+        return(NA)
+    }
+
+    
+    ## no index -- return values
+    if(index) {
+      return(ind)
+    } else {
+      ## depends on drop
+      values <- .$..store$data
+      values <- values[,-1, drop=FALSE]             # drop ..index
+      if(is.null(drop) || drop) {
+        return(values[ind,1,drop=TRUE])
+      } else {
+        return(values[ind,])
+      }
+    }      
+  }
+
   ## should have same dimension as items
   ## i,j ignored here
   widget$setValues <- function(.,i,j,...,value) {
@@ -253,7 +269,7 @@ gcheckboxgrouptable <- function(items,
     ### XXX what to do to set values?
   }
   
-  widget$transportSignal <- NULL
+  widget$transportSignal <- 'cellclick'
 
   widget$ExtConstructor <- "Ext.grid.GridPanel"
   ## convenience like asCharacter
@@ -351,13 +367,13 @@ gcheckboxgrouptable <- function(items,
       paste(
             sprintf("%s.on('selectionchange',",.$selectionModel()),
             "function(selModel) {",
-            '  var value = "";',
+            '  var value = new Array();',
             '  if(selModel.hasSelection()) {',
             '    var sels =  selModel.getSelections();',
             '    for(var i = 0, len=sels.length; i < len; i++) {',
             '      var record = sels[i];',
             '      var data = record.get("..index");',
-            '      value = value + ":" + data;',
+            '      value[i] = data;',
             '    };',
             '  };',
             sprintf("  _transportToR('%s', Ext.util.JSON.encode({value:value}) );",.$ID),

@@ -113,6 +113,9 @@ EXTWidget$showPart <- function(.,part, queue=FALSE) {
 ##' @return a character
 EXTWidget$asCharacter <- function(.) {String('o') +  .$ID}
 
+##' Some widgets are found within a panel. This allows one to override
+EXTWidget$asCharacterPanelName <- function(.) .$asCharacter()
+
 ##' simple function to call an Ext method on the corresponding object
 ##'
 ##' @param methodname name of method
@@ -187,8 +190,6 @@ EXTWidget$setValue <- function(., index=NULL, ..., value) {
       newVal <- value
     }
     .$..data <- newVal
-    if(.$ID != "")
-     assign(.$ID, newVal, envir=.$toplevel)
   }
   ## now process if shown
   if(exists("..shown",envir=., inherits=FALSE)) 
@@ -542,7 +543,8 @@ EXTWidget$writeConstructor <- function(.) {
   out <- String() +
 ### var creates a *local* variable -- issues with safari here
 ###    'var o' + .$ID +
-    'o' + .$ID +
+    .$asCharacterPanelName() +
+      ##'o' + .$ID +
       ' = new ' +.$ExtConstructor + '(\n' +
         .$mapRtoObjectLiteral() +
           ');\n'
@@ -560,7 +562,7 @@ EXTWidget$writeConstructor <- function(.) {
 
   ## add in at the end 
   if(exists("..writeConstructor", envir=., inherits=FALSE)) {
-    out <- out + .$..writeConstructor()
+    out <- out + .$..writeConstructor() + "\n"
   }
 
   return(out)
@@ -822,7 +824,7 @@ EXTComponentText$assignValue <- function(., value) {
 ##' @return javascript string function(...) {...} NO ; at end
 EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
    out <- String()  +
-     sprintf("function(%s) {\nrunHandlerJS(%s%s);\n",
+     sprintf("function(%s) {runHandlerJS(%s%s);",
              .$handlerArguments(signal),
              handler$handlerID,
              ifelse(!is.null(handler$handlerExtraParameters),
@@ -1536,25 +1538,15 @@ EXTComponentWithStore$assignValue <- function(., value) {
 ##' @param index logical. If TRUE return index
 ##' @param drop logical. If TRUE drop dimensions when possible
 ##' @return the main value associated with the widget
-EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
+EXTComponentWithStore$getValue <- function(., index=NULL, drop=NULL,...) {
   ## we store value as an index
   out <- .$..data
   values <- .$..store$data
+
   ## hack to make chosenCol work with combobox
   chosenCol <- getWithDefault(.$..store$chosenCol, 1)
   if(is.character(chosenCol) && !(chosenCol %in% names(values)))
     chosenCol <- 1
-
-  ## if(exists("..shown",envir=.,inherits=FALSE)) {
-  ##   ## get from widget ID
-  ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-  ##   if(!inherits(out,"try-error")) {
-  ##     .$..data <- out                 # update data
-  ##   } else {
-  ##     out <- .$..data
-  ##   }
-  ## }
-  out <- .$..data
 
   if(!is.numeric(out)) {
     if(any(tmp <- out == values[,chosenCol]))
@@ -1570,9 +1562,6 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
   if(!is.null(index) && index) {
     return(out)
   } else {
-    ## depends on drop
-    if(names(values)[1] == "..index")
-      values <- values[,-1, drop=FALSE]             # drop ..index
 
     if(is.null(drop) || drop) {
       return(values[out, chosenCol, drop=TRUE])
@@ -1585,11 +1574,11 @@ EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
 
 ##' getValue method for component with stores
 ##'
-##' @returns values in store
+##' @returns values in store dropping ..index
 EXTComponentWithStore$getValues <- function(., ...) {
   tmp <- .$..store$data
   if(names(tmp)[1] == "..index")
-    tmp <- tmp[,-1]
+    tmp <- tmp[,-1, drop=FALSE]
   tmp
 }
 
@@ -1599,6 +1588,9 @@ EXTComponentWithStore$getValues <- function(., ...) {
 EXTComponentWithStore$getLength <- function(.)
   length(.$getValues())
 
+##' size of data frame
+EXTComponentWithStore$.dim <- function(.) dim(.$getValues())
+
 ##' names of values in store
 ##'
 ##' @return character names
@@ -1607,20 +1599,59 @@ EXTComponentWithStore$getNames <- function(.)
 
 ## XXX names<- not defined
 
+##' getValue
+##'
+##' ..data holds indices, here we can return either
+EXTComponentWithStore$getValue <- function(.,index=NULL ,drop=NULL,...) {
+  ## we store value as an index
+  out <- .$..data
+  if(!is.null(index) && index) {
+    return(as.numeric(out))
+  } else {
+    ## depends on drop
+    values <- .$getValues()
+    if(is.null(drop) || drop) {
+      return(values[as.numeric(out),.$..store$chosenCol,drop=TRUE])
+    } else {
+      return(values[as.numeric(out),])
+    }
+  }      
+}
+
+
+##' setValue in widget. Values stored are the indices that are selected
+EXTComponentWithStore$setValue <- function(., index=NULL, ..., value) {
+  if(.$has_local_slot("..setValue")) {
+    .$..setValue(index=index, ..., value=value)
+  } else{
+    index <- getWithDefault(index, FALSE)
+    if(index) {
+      .$..data <- as.integer(value)
+    } else {
+      ## must match value against first column
+      values <- .$getValues()[,.$..store$chosenCol,drop=TRUE]
+      tmp <- unique(match(value, values))
+      .$..data <- tmp[!is.na(tmp)]
+    }
+  }
+  ## now process if shown
+  if(.$has_local_slot("..shown"))
+    .$addJSQueue(.$setValueJS(index=index, ...))
+
+}
+
 ##' Synchronize the values in the R widget with the GUI
 ##'
 ##' @param ,,, passed to serValueJS of any instance overrides
 EXTComponentWithStore$setValueJS <- function(., ...) {
   if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
   
-  ind <- .$getValue(index=TRUE, drop=TRUE)
-  if(ind <= 0)
+  ind <- sort(.$getValue(index=TRUE, drop=TRUE))
+  if(ind[1] <= 0)
     out <- sprintf("%s.clearValue()", .$asCharacter())
   else
     out <- sprintf("%s.getSelectionModel().selectRows(%s);", .$asCharacter(), toJSON(ind-1))
-#    out <- String() +
-#      'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
-  
+
   return(out)
 }
 
@@ -1632,6 +1663,7 @@ EXTComponentWithStore$setValueJS <- function(., ...) {
 ##' @param value values to store
 EXTComponentWithStore$setValues <- function(.,i,j,...,value) {
   ## XXX need to include i,j stuff
+  items <- cbind("..index"=seq_len(nrow(value)), value)
   .$..store$data <- value
   if(.$has_local_slot("..shown"))
     .$addJSQueue(.$setValuesJS(...))
@@ -1651,7 +1683,33 @@ EXTComponentWithStore$setValuesJS <- function(.) {
   return(out)
 }
 
-  
+##' Write out transport value part.
+##'
+##' Just defines the value variable in javascript to pass back to R via _transportToR
+EXTComponentWithStore$transportValue <- function(.,...) {
+  ## we packed in ..index so we can get the index even if we've sorted
+  if(.$has_local_slot("..multiple") &&.$..multiple) {
+    ## work a bit to get the value
+    out <- String() +
+      paste('var store = w.getStore();',
+            'var selModel = w.getSelectionModel();',
+            'var values = selModel.getSelections();',
+            'var value = new Array();', # value is return value
+            'for(var i = 0, len=values.length; i < len; i++) {',
+            '  var record = values[i];',
+            '  var data = record.get("..index");',
+            '  value[i] = data',
+            '};',
+            sep="")
+  } else {
+    out <- String() +
+      paste('var record = w.getStore().getAt(rowIndex);',
+            'var value = record.get("..index");',
+            sep="")
+  }
+  return(out)
+}
+
 
 ##' set the size of component with store.
 ##'
@@ -1699,8 +1757,6 @@ EXTComponentWithStore$filter <- function(., colname, regex) {
     }
 
     ## should check for regex via ^/(.*)/$ but instead we just assume a regular expression
-
-    
     if(missing(regex) || regex=="") {
       out <- sprintf("o%s.getStore().clearFilter();", .$ID)
     } else {
@@ -1781,7 +1837,12 @@ EXTComponentWithStore$makeColumnModel <- function(.) {
     } else {
       
       fontWidth <- 10
-      colWidths <- sapply(df[,-1, drop=FALSE], function(i) max(nchar(as.character(i))) + 1)
+      colWidths <- sapply(df[,-1, drop=FALSE], function(i) {
+        if(length(i))
+           max(nchar(as.character(i))) + 1
+        else
+          20
+      })
       colWidths <- pmax(colWidths, nchar(names(df[,-1, drop=FALSE])) + 1)
       totalWidth <- ifelse(exists("..width", envir=., inherits=FALSE), .$..width, "auto")
       if(totalWidth == "auto" || fontWidth * sum(colWidths) > totalWidth)
@@ -2641,14 +2702,16 @@ EXTWidget$handlerArguments <- function(.,signal) {
 ##' @param handler handler list, prepared elsewhere
 EXTWidget$writeHandlerFunction <- function(., signal, handler) {
 
-  out <- sprintf("function(%s) {runHandlerJS(%s%s);}\n",
-                 .$handlerArguments(signal),
-                 handler$handlerID,
-                 ifelse(!is.null(handler$handlerExtraParameters),
-                        paste(",", handler$handlerExtraParameters, sep=""),
-                        "")
-                 )
-  
+  out <- String() +
+    sprintf("function(%s) {runHandlerJS(%s%s);}",
+            .$handlerArguments(signal),
+            handler$handlerID,
+            ifelse(!is.null(handler$handlerExtraParameters),
+                   paste(",", handler$handlerExtraParameters, sep=""),
+                   "")
+            )
+
+  out <- out + "\n"
   ## out <- String() +
   ##   'function(' + .$handlerArguments(signal) + ') {'  +
   ##     'runHandlerJS(' + handler$handlerID
@@ -2693,7 +2756,7 @@ EXTWidget$writeHandlerJS <- function(.,signal="",handler=NULL) {
     ## XXX code to pass values createDelegate ....
     if(!is.null(.$transportSignal) && signal %in% .$transportSignal) {
       out <- out +
-        sprintf("%s.on('%s', function(%s) {%s}, this, {delay:1, buffer:1, single:false});",
+        sprintf("%s.on('%s', function(%s) {%s}, this, {delay:1, buffer:1, single:false});\n",
                 .$asCharacter(),
                 signal,
                 .$handlerArguments(signal),
@@ -2887,6 +2950,7 @@ addHandlerMouseclick.gWidget <- function(obj,handler, action=NULL)
   obj$addHandlerMouseclick(handler, action)
 
 ## addHandlerKeystroke
+## key passed in is ASCII code.
 EXTWidget$addHandlerKeystroke <- function(., handler, action=NULL,...) {
   .$addHandler(signal="keydown",handler, action,
                handlerArguments="b,e",

@@ -17,8 +17,18 @@
 ## svalue<- only works for urls, not for text
 ## pass object of S3 class URL if want url and not absolute  (eg. http:///)
 
-
-ghtml <- function(x, container = NULL, ...) {
+##' widget to render HTML text pages
+##'
+##' 
+##' @param x an HTML string or a URL. (However, URL's are not working!)
+##' \code{svalue<-}. If an HTML fragment, then assumed to be HTML. THe
+##' \code{svalue<-} method has an extra argument \code{encode}, which
+##' if \code{TRUE} will encode the HTML bits. This is \code{FALSE} by
+##' default.
+##' @param container parent container
+##' @param ... passed to add method of parent container
+##' @export
+ghtml <- function(x, container = NULL,  ...) {
   ## x is a url or a character vector to show
   ## components
 
@@ -27,14 +37,21 @@ ghtml <- function(x, container = NULL, ...) {
   class(widget) <- c("gHtml",class(widget))
   widget$setValue(value=x)
 
+  ## helper function
+  widget$htmlEscape <- function(., val) {
+    val <- gsub("'", "&#146;", val)   # get rid of ' issue
+    val <- escapeQuotes(val)
+    val
+  }
+
+
   widget$setValueJS <- function(.,...) {
     if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
     
     val <- .$..data
     out <- String() + 'o' + .$ID
     if(isURL(val)) {
-      out <- out +
-        '.load(' + shQuote(val) + ');'
+      out <- sprintf("%s.load(%s); %s.update();", .$asCharacter(), ourQuote(val), .$asCharacter())
     } else {
       ## this depends on local or non-local
       if(gWidgetsWWWIsLocal()) {
@@ -43,10 +60,10 @@ ghtml <- function(x, container = NULL, ...) {
         val <- paste(val, collapse="\\n")
       }
 
-      val <- gsub("'", "&#146;", val)   # get rid of ' issue
-      val <- escapeQuotes(val)
-      out <- out +
-        '.setText(' + shQuoteEsc(val) + ', false);'
+      ## do we encode? By default yes
+      doEncode <- ifelse(getFromDots(..., var="encode", default=FALSE), "true", "false")
+      
+      out <- sprintf("%s.setText('%s', %s);", .$asCharacter(), escapeQuotes(val), doEncode)
     }
     return(out)
   }
@@ -60,14 +77,12 @@ ghtml <- function(x, container = NULL, ...) {
     out[['border']] <- FALSE
     
     if(isURL(svalue(.)))
-      out[['autoLoad']] <- svalue(.)
+      out[['autoLoad']] <- list(url=svalue(.))
     else
-      out[['html']] <- paste(escapeQuotes(gsub("'","&#146;",svalue(.))), collapse=" ") # was \\\\n but gives issues locally
+      out[['html']] <- paste(.$htmlEscape(svalue(.)), collapse=" ") # was \\\\n but gives issues locally
     
     return(out)
   }
-  
-  
   
   ## add after CSS, scripts defined
   container$add(widget,...)

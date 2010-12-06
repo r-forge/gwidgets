@@ -29,20 +29,6 @@ clearSessionId <- function(ID) {
 getBaseObjectFromSessionID <- function(sessionID, envir=.GlobalEnv) {
   sessionEnv <- get("..gWidgets_sessionEnv",  envir=.GlobalEnv)  
   return(sessionEnv[[sessionID]])
-  ## XXX delete me
-  ## get the gWindow instance matching session ID
-  ## return object or NULL
-  gWindowObjects <- getBaseObjectsFromEnvironment(envir)
-
-  if(length(gWindowObjects)) {
-    for(i in gWindowObjects) {
-      w <- get(i, envir=envir)
-      if(w$sessionID == sessionID) {
-        return(w)
-      }
-    }
-  }
-  return(NULL)
 }
 
 ##' return all gWindow instances in an environment
@@ -642,7 +628,6 @@ localProxyStore <- function(id, sessionID, query) {
   OK <- 200L; ERROR <- 419L
   ret <- list(out="", retval=OK)
   
-  e <- getBaseObjectFromSessionID(sessionID)
   ## sanity checks
   if(is.null(e)) {
     ret$out <- "alert('No session for this id');"

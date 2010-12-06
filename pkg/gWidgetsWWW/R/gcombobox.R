@@ -96,14 +96,6 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
 
 
     widget$..store <- store
-
-    if(selected >= 1) {
-      widget$setValue(value=items[selected,1,drop=TRUE]) # items is a data frame!
-    } else {
-      widget$setValue(value="")         # selected == 0 --> no entry
-    }
-##    widget$setValues(value=items) ## done in store not here
-
     ## properties 
     widget$..width <- 200
     widget$..emptyText <- ""
@@ -132,36 +124,95 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
     widget$getValueJSMethod <- "getRawValue"
     widget$setValueJSMethod <- "setValue"
 
+    ## we redefine the setvalue bit. We use the raw value here so that
+    ## editable and not are the same. In get value we coerce to index,
+    ## if possible, to make sure value is one we want
     widget$assignValue <- function(., value) {
-      svalue(., index=NULL) <- value[[1]]
+      .$..data <- value[[1]]
     }
-    
-    widget$..setValue <- function(., index=NULL, ..., value) {
+
+    ##' we override get value to make sure we check that value is in
+    widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
+      ## we store value as an index
+      index <- getWithDefault(index, FALSE)
+      
+      out <- .$..data
+      values <- .$getValues()
+      ## hack to make chosenCol work with combobox
+      chosenCol <- 1
+      values <- values[, chosenCol, drop=TRUE]
+
+      ## if editable then we just return
+      if(.$..editable) {
+        if(index) {
+          ind <- values %in% out
+          if(any(ind))
+            return(ind[1])
+          else
+            return(0L)
+        } else {
+          return(out)
+        }
+      }
+
+      ## otherwise, we get the index first (to untaint) then go from there
+      ind <- which(as.character(values) %in% as.character(out))
+
+      if(length(ind) == 0)              # no match
+        if(index)
+          return(0)
+        else
+          return("")                    # not editable, so we clobber
+
+      ind <- ind[1]
+      ## no index -- return values
+      if(index) {
+        return(ind)
+      } else {
+        values <- .$..store$data
+        ## depends on drop
+        if(names(values)[1] == "..index")
+          values <- values[,-1, drop=FALSE]             # drop ..index
+        
+        if(is.null(drop) || drop) {
+          return(values[ind, chosenCol, drop=TRUE])
+        } else {
+          return(values[ind,])
+        }
+      }      
+    }
+
+
+    widget$setValue <- function(., index=NULL, ..., value) {
+      
       ## can set by text or by index.
-      if(!is.null(index) && index) {
+      index <- getWithDefault(index, FALSE)
+      if(index) {
         values <- .$getValues()
         if(value >= 1)
           value <- values[value,1]        # get from data frame
         else
           value = ""                    # empty if selected = 0
       }
-      .$..data <- as.character(value)
-#      if(.$ID != "")
-#        assign(.$ID,value, envir=.$toplevel)
+      .$..data <- value
+      
+      ## now process if shown
+      if(.$has_local_slot("..shown"))
+        .$addJSQueue(.$setValueJS(index=index, ...))
     }
     
     widget$setValueJS <- function(., ...) {
       if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
       ind <- .$getValue(index=TRUE)
+      
       if(ind <= 0)
         out <- sprintf("%s.clearValue()", .$asCharacter())
       else
         out <- sprintf("%s.setValue('%s');", .$asCharacter(), .$getValue(index=FALSE))
-#    out <- String() +
-#      'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
-  
   return(out)
 }
+
+
     widget$setValues <- function(.,i,j,...,value) {
       ## intercept value if not data frame or if only 1 d
       if(!is.data.frame(value)) {
@@ -189,7 +240,6 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
                   store = String(.$..store$asCharacter()),
                   displayField = .$..store$displayField(),
                   valueField = .$..store$displayField(),
-                  value = svalue(.),
                   editable = .$..editable,
                   mode = "local",
                   triggerAction = "all",
@@ -199,7 +249,9 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
                   selectOnFocus = TRUE,
                   tpl =  .$..tpl
                   )
-
+      if(!is.na(svalue(.)))
+        out[['value']] <- svalue(.)     # string, not index
+      
       if(exists("..width",envir = .,inherits=FALSE))
         out[["width"]] <- .$..width
       else
@@ -246,6 +298,14 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
     }
         
     
+    ## initialize after methods are defined.
+    ## This is why we need to make a Trait
+    if(selected >= 1) {
+      widget$setValue(value=items[selected,1,drop=TRUE]) # items is a data frame!
+    } else {
+      widget$setValue(value="")         # selected == 0 --> no entry
+    }
+
 
     
     ## methods

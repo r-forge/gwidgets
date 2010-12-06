@@ -16,6 +16,17 @@
 
 ## XXX only for local
 
+##' File selection function
+##'
+##' This allows a local user to select a file. It does not do file upload (yet!).
+##' The \code{svalue} method only returns the filename, not the path to the file.
+##' @param text Instructional text. Ignored.
+##' @param type only "open" implemented
+##' @param filter ignored
+##' @param handler called when file is selected
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... passed to add method of parent container
 gfile <- function(text="Choose a file",
                   type = c("open"),
                   filter = NULL, 
@@ -30,8 +41,11 @@ gfile <- function(text="Choose a file",
                              )
   class(widget) <- c("gFile",class(widget))
   widget$setValue(value="")             # empty, set on fileselected
-  widget$..width <- 400
+  widget$..width <- getFromDots(..., var="width", default=300) # width is funny
 
+  widget$emptyText <- text;#'select a file'
+  widget$buttonText <- 'Browse...'
+  
   ## CSS
   widget$css <- function(.) {
     out <- paste(
@@ -67,82 +81,49 @@ gfile <- function(text="Choose a file",
     return(out)
   }
                  
-  ## widget$scripts <- function(.) {
-  ##   f <- system.file("javascript","ext.ux.form.fileuploadfield.js", package="gWidgetsWWW")
-  ##   out <- paste(readLines(f), collapse="\n")
-  ##   return(out)
-  ## }
-  
   ## methods
 #  widget$getValueJSMethod <- "getValue"
 
 #  widget$setValueJSMethod <- "setValue"
-  ## widget$transportSignal <- c("fileselected")
-  ## widget$transportValue <- function(.,...) {
-  ##   out <- String() +
-  ##     'var value = s;'
-  ##   return(out)
-  ## }
   
- ## widget$ExtConstructor <- "Ext.ux.form.FileUploadField"
- ## widget$ExtCfgOptions <- function(.) {
- ##   out <- list("fileupload"=TRUE,
- ##               width=.$..width,
- ##               defaults=list(
- ##                 anchor="100%"
- ##                 ),
- ##               items=list(
- ##                 xtype="fileuploadfield",
- ##                 emptytext=.$..text),
- ##               buttons = list(
- ##                 list(
- ##                      text="Save"
- ##                      ),
- ##                 list(
- ##                      text="reset",
- ##                      handler=String() + "function() {" + .$ID + ".getForm().reset();}"
- ##                      )
- ##                 )
- ##               )
- ##   out <- list(buttonOnly=TRUE)
- ##   return(out)
- ## }
+  widget$transportSignal <- c("fileselected")
+  widget$transportValue <- function(.,...) {
+    out <- 'var value = s;'
+    return(out)
+  }
 
-  ## Try something else
   widget$ExtConstructor <- "Ext.FormPanel"
   widget$ExtCfgOptions <- function(.) {
     out <- list(fileUpload=TRUE,
-#                height=30,
+                                        #                height=30,
                 frame=FALSE,
                 autoHeight=TRUE,
                 items=list(
-                  width=.$..width,
                   xtype='fileuploadfield',
-                  empytText='select a file',
-                  buttonText='Browse...',
-                  listeners=list(
-                    "'fileselected'"=String("function(fb, v) {") + "\n" +
-                    "_transportToR('" + .$ID + "'," + "\n" +
-                    "Ext.util.JSON.encode({value:v})\n)\n}"
-                    )
+                  width=.$..width,
+                  empytText=.$emptyText,
+                  buttonText=.$buttonText
                   )
                 )
     return(out)
   }
 
+  widget$asCharacterPanelName <- function(.) .$asCharacter() + "Panel"
+  widget$..writeConstructor <- function(.) {
+    out <- String() +
+      sprintf("%s = %s.getComponent(0);", .$asCharacter(), .$asCharacterPanelName())
+  }
   
-  if(!is.null(handler))
-    widget$addHandlerClicked(handler=handler,action=action)
-  
-
   
 
   ## add after CSS, scripts defined
   container$add(widget,...)
-
-
+  
+  widget$addHandlerChanged <- function(., handler, action=NULL) 
+    .$addHandler("fileselected",handler=handler,action=action)
+  
   if(!is.null(handler))
-    widget$addHandler("fileselected",handler=handler,action=action)
+    widget$addHandlerChanged(handler, action)
   
   invisible(widget)
 }

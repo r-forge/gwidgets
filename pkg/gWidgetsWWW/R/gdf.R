@@ -56,7 +56,7 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
   
   store$data <- items
   widget$..store <- store
-
+  widget$..data <- numeric(0)           # we store indices
   ## set up widget
 
 
@@ -76,47 +76,13 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     j <- as.numeric(value[[3]])
     val <- value[[1]]
     df[i,j] <- coerceValue(df[[j]], val)
-  .$..store$data <- df
+    .$..store$data <- df
   }
 
   ## return data frame
   widget$getValues <- function(., ...) {
     items <- .$..store$data
     return(items)
-    
-    ## transport puts new values into
-    ## "gWidgetIDX.R.C" where R = row, C = column
-    ## all values stored as characters!
-
-    ## first we pt the new values into the data frame
-    ## items <- .$..store$data
-
-    ## newVals <- ls(pat = String("^") + .$ID + '\\.', envir=.$toplevel)
-    ## if(length(newVals) > 0) {
-    ##   for(i in newVals) {
-    ##     tmp <- unlist(strsplit(i, "\\."))
-    ##     row <- as.numeric(tmp[2])
-    ##     col <- as.numeric(tmp[3])
-    ##     value <- get(i, envir=.$toplevel)
-
-    ##     colType <- class(items[,col, drop=TRUE])[1]
-
-    ##     value <- switch(colType,
-    ##                     "numeric" = as.numeric(value),
-    ##                     "integer" = as.numeric(value),
-    ##                     "logical" = as.logical(value),
-    ##                     as.character(value))
-    ##     items[row,col] <- value
-
-    ##     rm(list = i, envir=.$toplevel)                           # remove
-    ##   }
-    ## }
-
-    ## ## update data store
-    ## .$..store$data <- items
-
-    ## return(items)
-
   }
 
   ## transport
@@ -131,9 +97,6 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
 
     out <- String() +
       sprintf("_transportToR('%s', Ext.util.JSON.encode({value:e.value,row:e.row + 1, column:e.column+1}));", .$ID)
-      ## 'var rowIndex = e.row + 1; var colIndex = e.column + 1;' +
-      ##   'var id = "' + .$ID + '" + "." + rowIndex.toString() + "." + colIndex.toString();' +
-      ##     '_transportToR(id, Ext.util.JSON.encode({value:e.value}));'
     return(out)
   }
 
@@ -235,10 +198,6 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
     return(out)
   }
 
-  ## we don't have a good means for visible<-. Instead we have this
-  ## filter proto method 
-
-  
   widget$footer <- function(.) {}
   
   
@@ -247,7 +206,7 @@ gdf <- function(items = NULL, name = deparse(substitute(items)),
 
   ## handler definitions
   widget$addHandlerChanged <- function(., handler, action = NULL, ...)
-    widget$addHandler(signal = "afteredit", handler, action=action, ...)
+    .$addHandler(signal = "afteredit", handler, action=action, ...)
   
   invisible(widget)
   

@@ -17,6 +17,21 @@
 ## why are there no arrows???
 
 ## others
+
+##' Basic spinbutton
+##'
+##' For some reason the images don't work!
+##' @param from from value
+##' @param to to
+##' @param by by. From to by are same as seq() usage
+##' @param value initial value
+##' @param handler handler for when change is made
+##' @param action passed to the handler, if given
+##' @param container parent container
+##' @param ... passed to add method of parent
+##' @export
+##' @examples /Tests/test-gspinbutton.R
+##' @TODO get icons working. Not sure why they dont (positioning is the likely culprit)
 gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
                     handler = NULL, action = NULL, container = NULL, ...) {
   widget <- EXTComponent$new(toplevel=container$toplevel,
@@ -27,7 +42,9 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
   widget$..coerce.with="as.numeric"
 
   ## no index
-  widget$assignValue <- function(., value) svalue(., index=NULL) <- value
+  widget$assignValue <- function(., value) {
+    .$..data <- as.numeric(value[[1]])
+  }
 
   ## CSS
   ## XXX Get this css to work to get trigger icon for spin
@@ -40,9 +57,9 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
   widget$css <- function(.) {
     ## can't have comments etc., as this goes into one line.
     out <- paste(
-                 ".x-form-spinner-proxy{",
-                 "/*background-color:#ff00cc;*/",
-                 "}",
+#                 ".x-form-spinner-proxy{",
+#                 "/*background-color:#ff00cc;*/",
+#                 "}",
                  ".x-form-field-wrap .x-form-spinner-trigger {",
                    sprintf("background:transparent url('%s/spinner.gif') no-repeat 0 0;",gWidgetsWWWimageUrl),
                  "}",
@@ -92,21 +109,6 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
                  sep="")
     return(out)
   }
-  
-  ## widget$scripts <- function(.) {
-  ##   out <- String()
-
-  ##   ## These should be in a javascript directory on the web server,
-  ##   ## but this is easier (slower too as it doesn't cache)
-  ##   f <- system.file("javascript","ext.ux.spinner.js", package="gWidgetsWWW")
-  ##   out <- out + "\n" + paste(readLines(f), collapse="\n")
-    
-  ##   f <- system.file("javascript","ext.ux.spinnerformfield.js", package="gWidgetsWWW")
-  ##   out <- out + "\n" + paste(readLines(f), collapse="\n")
-    
-  ##   return(out)
-  ## }
-  
   ## methods
   widget$getValueJSMethod <- "getValue"
 
@@ -133,9 +135,12 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
   ## add after CSS, scripts defined
   container$add(widget,...)
 
+  widget$addHandlerChanged <- function(., handler, action=NULL) 
+    .$addHandler(signal="spin",handler, action)
+  
 
   if(!is.null(handler))
-    widget$addHandler("change",handler=handler,action=action)
+    addHandlerChanged(widget, handler, action)
   
   invisible(widget)
 }

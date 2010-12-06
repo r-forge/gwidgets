@@ -13,6 +13,15 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
+##' A label widget
+##' 
+##' @param text text for label. If multiline will be joined with " " or "<br />" (when \code{markup=TRUE})
+##' @param markup If \code{TRUE} then text can be HTML. Useful for newlines
+##' @param editable 
+##' @param handler 
+##' @param action 
+##' @param container 
+##' @param ... 
 glabel <- function(text = "", markup = FALSE, editable = FALSE,
                    handler = NULL, action = NULL, container = NULL,...) {
 
@@ -22,14 +31,19 @@ glabel <- function(text = "", markup = FALSE, editable = FALSE,
                              )
   
   class(widget) <- c("gLabel",class(widget))
-  widget$setValue(value=escapeHTML(text))
+  if(!markup)
+    text <- escapeHTML(text)
+  widget$setValue(value=text)
+
+  widget$getValue <- function(.,...) paste(.$..data, collapse=ifelse(.$..markup, "<br />", " "))
 
   widget$setValueJSMethod = "setValue"
   widget$getValueJSMethod = "setValue"
   widget$ExtConstructor <- "Ext.ux.labelBox"
   widget$ExtCfgOptions <-  function(.) {
-    out <- list()
-    out[["value"]] = unescapeURL(svalue(.))
+    out <- list(
+                value=svalue(.)
+                ) ## was unescapeURL(svalue(.)
     return(out)
   }
   

@@ -33,6 +33,7 @@
 ##' @param container parent container
 ##' @param ... passed to \code{add} method of container.
 ##' @export
+##' @note No method to set label (need setBoxLabel)
 gcheckbox = function(text, checked = FALSE, use.togglebutton=FALSE,
   handler = NULL, action = NULL,  container = NULL,...) {
 
@@ -72,6 +73,7 @@ gcheckbox = function(text, checked = FALSE, use.togglebutton=FALSE,
   }
 
   ## assign value
+  ## we untaint by coercion
   widget$assignValue <- function(., value) {
     svalue(.) <- as.logical(toupper(value[[1]]))
   }

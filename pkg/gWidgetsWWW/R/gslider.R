@@ -18,6 +18,20 @@
 ## propert ..length is added
 
 ## TODO: from being a vecto argument and using indices for slider...
+
+##' slider widget
+##'
+##' Shows sequence of values
+##' @param from starting point
+##' @param to ending point
+##' @param by step size
+##' @param value initial value
+##' @param horizontal orientation
+##' @param handler called when slider moved
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of container
+##' @export
 gslider <- function(from = 0, to = 100, by = 1, value = from,
                     horizontal = TRUE,
                     handler = NULL, action = NULL, container = NULL, ...) {
@@ -35,19 +49,15 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
 
   ## CSS
   
-  ## widget$scripts <- function(.) {
-  ##   ## from main example page 
-  ##   f <- system.file("javascript","ext.ux.slidertip.js", package="gWidgetsWWW")
-  ##   out <- String() + "\n" + paste(readLines(f), collapse="\n")
-  ##   return(out)
-  ## }
   
   ## methods
   widget$getValueJSMethod <- "getValue"
   widget$setValueJSMethod <- "setValue"
+
   ## No methods in extjs to set the values (minValue, maxValue, increment) after construction
   ## so we can't implement [<- method
 
+  ## coerce to numeric -- stores a value
   widget$assignValue <- function(., value) {
     .$..data <- as.numeric(value[[1]])
   }

@@ -40,6 +40,8 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   widget$setValues(value = items)
 
   ## define methods
+  ## The value store is the index -- not the text
+  ## this way we are untainted.
   widget$assignValue <- function(., value) {
     .$..data <- as.numeric(value[[1]])
   }
@@ -57,10 +59,11 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   }
   
   ## override setValue
+  ## We store the index
   widget$setValue <- function(., index=NULL,..., value) {
     ## values can be set by index or character
     if(is.null(index) || !index) {
-      ind <- which(value %in% .$getValues())
+      ind <- which(value == .$getValues())
       if(length(ind) == 0) return()
       ind <- ind[1]
     } else {
@@ -140,6 +143,7 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
     return(out)
   }
 
+  ## kludgy override of where transport is written
   widget$transportFUN <- function(.) return(String(""))
   ## override to put with checked===true
   widget$writeHandlerFunction <- function(., signal, handler) {
@@ -188,8 +192,11 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
 ##     invisible(id)
 ##   }
 
-  widget$addHandlerClicked <- function(., handler, action=NULL, ...) 
+  widget$addHandlerChanged <- function(., handler, action=NULL, ...) 
     .$addHandler(signal="check", handler, action=NULL, ...)
+  
+  
+  widget$addHandlerClicked <- widget$addHandlerChanged
   
 
   ## we add handler regardless, as this introduces transport function

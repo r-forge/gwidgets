@@ -4,6 +4,7 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+* added a Tests directory
 * use statusbar to display information about AJAX calls, when present
 * added options use.table (gcheckboxgroup), use.togglebutton (gcheckbox)
 * changed back-end handling of assign transport

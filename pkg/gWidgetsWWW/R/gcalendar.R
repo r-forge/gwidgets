@@ -21,7 +21,7 @@
 ##' @param action action passed to handler
 ##' @param container parent container
 ##' @param ... passed to \code{add} method of container
-##' @exoprt
+##' @export
 gcalendar <- function(text = "", format = "%Y-%m-%d",
                       handler=NULL, action=NULL, container = NULL, ... ) {
 
@@ -46,7 +46,10 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
     widget$coerceValues <- function(., value) {
       ## Wed Jun 11 2008 00:00:00 GMT-0400 (EDT) -- ext format
       theDate = as.Date(value,.$extDateFormat)
-      return(format(theDate,.$..format))
+      if(is.na(theDate))
+        as.Date(value, .$..format)
+      else
+        format(theDate,.$..format)
     }
       
       
@@ -86,18 +89,6 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
 
       out <- out +
         sprintf("%s = %sdate.getComponent(0);\n", .$asCharacter(), .$asCharacter())
-
-      ## 'o' + .$ID + 'date = new Ext.Panel({' + # no var -- global
-        ##   'id:' + shQuote(.$ID) + ',' +
-        ##     'renderTo:Ext.getBody(),' +
-        ##       'items: [' +
-        ##         .$mapRtoObjectLiteral(lst) +
-        ##           ']\n' +
-        ##             '});'
-      ## out <- out +
-      ##   'o' + .$ID + ' = o' + .$ID + 'date' + # no var -- global
-      ##     '.getComponent(0);' + '\n'
-
       return(out)
     }
         

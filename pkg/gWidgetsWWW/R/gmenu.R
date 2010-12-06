@@ -14,9 +14,19 @@
 ##  http://www.r-project.org/Licenses/
 
 ## XXX no methods defined here!!!
+
+##' Menubar implementation
+##' 
+##' @param menulist list of actions. Actions must have parent specified
+##' @param popup ignored. Logical indicating if this is a popup widget
+##' @param action parameterizes handler in action
+##' @param container parent container
+##' @param ... passed to add method of parent container
+##' @export
 gmenu <- function(menulist,  popup = FALSE, action=NULL, container = NULL,...) {
+
   if(popup) {
-    warning("IMPLEMENT POPUP")
+    warning("gmenu: popup is not implemented")
     return()
   }
   

@@ -15,64 +15,6 @@
 
 ## utility functions
 
-##' Get a static file that can be served by the browser
-##'
-##' @param ext file extension. Leading dot unnecessary
-##' @param filename If given uses this filename, otherwise calls tempfile
-##' @return the the file name.
-##' @seealso \code{\link{convertStaticFileToUrl}} to get corresponding url for serving through the browser.
-##' @examples
-##' ## a basic usage:
-##' \dontrun{
-##' f <- getStaticTempFile(".svg")
-##' svg(f)
-##' hist(rnorm(100))
-##' dev.off
-##' svalue(gsvg_instance) <- convertStaticFileToUrl(f)
-##' }
-##' @export
-getStaticTmpFile <- function(ext="", filename)  {
-  if(gWidgetsWWWIsLocal()) {
-    gWidgetsWWWStaticDir <- get("gWidgetsWWWStaticDir", envir=.GlobalEnv)
-  } else {
-    gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
-  }
-
-  try(dir.create(gWidgetsWWWStaticDir, showWarnings=FALSE), silent=FALSE)
-  ext <- gsub("^[.]{1,}","",ext)        # remove do if there
-  
-  if(missing(filename)) {
-    out <- paste(tempfile(tmpdir=gWidgetsWWWStaticDir),ext,sep=".")
-  } else {
-    filename <- sprintf("%s.%s", filename, ext)
-    out <- file.path(gWidgetsWWWStaticDir,filename)
-  }
-  return(out)
-}
-
-##' convert static file from local file system to url for serving in browser
-##'
-##' @param val filename, usuallly given by getStaticTmpFile
-##' @return a url to serve through browser
-##' @export
-convertStaticFileToUrl <- function(val) {
-  if(gWidgetsWWWIsLocal()) {
-    gWidgetsWWWStaticDir <- get("gWidgetsWWWStaticDir", envir=.GlobalEnv)
-    gWidgetsWWWStaticUrlBase <- get("gWidgetsWWWStaticUrlBase", envir=.GlobalEnv)
-  } else {
-    gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
-    gWidgetsWWWStaticUrlBase <- getOption("gWidgetsWWWStaticUrlBase")
-  }
-  ## strip off static dir from val, append on static url base
-#  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
-
-  
-  if(grepl(gWidgetsWWWStaticDir, val, fixed=TRUE))
-    val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
-
-  ourURLencode(val)
-}
-
 ##' make a session id for keeping track of different instances
 ##'
 ##' @return character. a session id
@@ -84,7 +26,7 @@ makeSessionID <- function() {
   } else if(exists("sessionSecretKey", envir=.GlobalEnv)) {
     key <- get("sessionSecretKey", envir=.GlobalEnv)
   }
-  txt <- as.character(Sys.time())
+  txt <- as.character(as.numeric(runif(1) + Sys.time()))
   key <- paste(key, txt, sep="")
   ID <- digest(key, algo="md5")
   return(ID)

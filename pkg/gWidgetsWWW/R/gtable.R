@@ -32,6 +32,7 @@
 ##' A table widget
 ##'
 ##' A widget for displaying a data frame in tabular format
+##' The \code{[<-} method is only for replacing the data frame and must have the same class columns as the original. One can load the inital data frame with a 0-row data frame
 ##' @param items items (data frame) to display. Can be modified with
 ##' \code{[<-} method. Changing column types is not supported.
 ##' @param multiple logical. Do we allow multiple selection
@@ -88,43 +89,8 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 
   ## set up widget
   widget$setValue(value = 1)            # first column is selected on startup
-  widget$getValue <- function(.,index=NULL ,drop=NULL,...) {
-    ## we store value as an index
-    out <- .$..data
-    values <- .$..store$data
 
-    ## if(exists("..shown",envir=.,inherits=FALSE)) {
-    ##   ## get from widget ID
-    ##   out <- try(get(.$ID,envir=.$toplevel),silent=TRUE) ## XXX work in index here?
-    ##   if(!inherits(out,"try-error")) {
-    ##     .$..data <- out                 # update data
-    ##   } else {
-    ##     out <- .$..data
-    ##   }
-    ## }
-    ## no index -- return values
-    if(!is.null(index) && index) {
-      return(as.numeric(out))
-    } else {
-      ## depends on drop
-      values <- values[,-1]             # drop ..index
-      if(is.null(drop) || drop) {
-        return(values[as.numeric(out),.$..store$chosenCol,drop=TRUE])
-      } else {
-        return(values[as.numeric(out),])
-      }
-    }      
-  }
   
-  widget$setValueJS <- function(., ...) {
-    if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
-
-    ind <- .$getValue(index=TRUE, drop=TRUE)
-    out <- String() +
-       'o' + .$ID + '.getSelectionModel().selectRows(' + toJSON(ind - 1) + ');' # offset by 1
-
-    return(out)
-   }
 
   ## setValues need to add in icons.
   widget$setValues <- function(.,i,j,...,value) {
@@ -154,30 +120,6 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 
   ## transport mouse clicks back as row indices. Can be multiple or single
   widget$transportSignal <- c("cellclick")
-  widget$transportValue <- function(.,...) {
-    ## we packed in ..index so we can get the index even if we've sorted
-    if(.$..multiple) {
-       ## work a bit to get the value
-       out <- String() +
-         paste('var store = w.getStore();',
-               'var selModel = w.getSelectionModel();',
-               'var values = selModel.getSelections();',
-               'var value = new Array();', # value is return value
-               'for(var i = 0, len=values.length; i < len; i++) {',
-               '  var record = values[i];',
-               '  var data = record.get("..index");',
-               '  value[i] = data',
-               '};',
-               sep="")
-     } else {
-       out <- String() +
-         paste('var record = w.getStore().getAt(rowIndex);',
-               'var value = record.get("..index");',
-               sep="")
-     }
-    return(out)
-  }
-
   widget$ExtConstructor <- "Ext.grid.GridPanel"
   widget$ExtCfgOptions <- function(.) {
     out <- list(store = String(.$..store$asCharacter()),

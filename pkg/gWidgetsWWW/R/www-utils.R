@@ -252,15 +252,16 @@ toJS.integer <- toJS.numeric <- function(x) x
 toJS.factor <- function(x) toJS(as.character(x))
 
 
-
 ##' Make a JS array from an R object
 ##'
 ##' @param x R object to make into an array
 ##' @param doBrackets logical Use brackets in ouput []
-##' @return JSON encoded array
+##' @return JSON encoded
+emptyJSArray <- function(doBrackets=TRUE)  ifelse(doBrackets, "[]", "")
 toJSArray <- function(x, doBrackets=TRUE) UseMethod("toJSArray")
 toJSArray.default <- function(x, doBrackets=TRUE) stop("no default method")
 toJSArray.integer <- toJSArray.numeric <- function(x, doBrackets=TRUE) {
+  if(!length(x)) return(emptyJSArray(doBrackets))
   x <- as.character(x)
   x[is.na(x)] <- "'NA'"
   out <- paste(x, collapse=",")
@@ -269,12 +270,14 @@ toJSArray.integer <- toJSArray.numeric <- function(x, doBrackets=TRUE) {
   return(out)
 }
 toJSArray.factor <- toJSArray.character <- function(x, doBrackets=TRUE) {
+  if(!length(x)) return(emptyJSArray(doBrackets))
   x <- gsub("\\n", " ", x)              # \n messes up JS parsing
   out <- paste(shQuoteEsc(as.character(x)), collapse=",")
   if(doBrackets) out <- paste("[", out,"]",sep="")
   return(out)
 }
 toJSArray.String <- function(x, doBrackets=TRUE) {
+  if(!length(x)) return(emptyJSArray(doBrackets))  
   x <- gsub("\\n", " ", x)              # \n messes up JS parsing
   out <- paste(x, collapse=",")
   if(doBrackets) out <- paste("[", out,"]",sep="")
@@ -282,12 +285,14 @@ toJSArray.String <- function(x, doBrackets=TRUE) {
 }
 
 toJSArray.logical <- function(x,doBrackets=TRUE) {
+  if(!length(x)) return(emptyJSArray(doBrackets))
   x <- tolower(as.character(x))
   x[is.na(x)] <- "'NA'"
   toJSArray.String(x, doBrackets)
 }
 
 toJSArray.character <- function(x, doBrackets=TRUE) {
+  if(!length(x)) return(emptyJSArray(doBrackets))  
   x <- sprintf("%s", ourQuote(x))
   toJSArray.String(x, doBrackets)
 }
@@ -306,6 +311,13 @@ toJSArray.list <- function(x, doBrackets=TRUE) {
        
 ## This needs work
 toJSArray.data.frame <- function(x,doBrackets=TRUE) {
+  if(nrow(x) == 0) {
+    n <- ncol(x)
+    out <- paste(rep("[]", n), collapse=",")
+    if(doBrackets)
+      out <- sprintf("[%s]", out)
+    return(out)
+  }
   ## depends on number of cols
   if(ncol(x) == 1)
     return(toJSArray(x[,1,drop=TRUE]))
@@ -320,7 +332,6 @@ toJSArray.data.frame <- function(x,doBrackets=TRUE) {
   if(doBrackets) out <- paste("[",out,"]",sep="")
   return(out)
 }
-               
 
 ##' Get a static file that can be served by the browser
 ##'
@@ -355,5 +366,28 @@ getStaticTmpFile <- function(ext="", filename)  {
     out <- file.path(gWidgetsWWWStaticDir,filename)
   }
   return(out)
+}
+
+##' convert static file from local file system to url for serving in browser
+##'
+##' @param val filename, usuallly given by getStaticTmpFile
+##' @return a url to serve through browser
+##' @export
+convertStaticFileToUrl <- function(val) {
+  if(gWidgetsWWWIsLocal()) {
+    gWidgetsWWWStaticDir <- get("gWidgetsWWWStaticDir", envir=.GlobalEnv)
+    gWidgetsWWWStaticUrlBase <- get("gWidgetsWWWStaticUrlBase", envir=.GlobalEnv)
+  } else {
+    gWidgetsWWWStaticDir <- getOption("gWidgetsWWWStaticDir")
+    gWidgetsWWWStaticUrlBase <- getOption("gWidgetsWWWStaticUrlBase")
+  }
+  ## strip off static dir from val, append on static url base
+#  val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val)
+
+  
+  if(grepl(gWidgetsWWWStaticDir, val, fixed=TRUE))
+    val <- gsub(gWidgetsWWWStaticDir, gWidgetsWWWStaticUrlBase, val, fixed=TRUE) # fixed!
+
+  ourURLencode(val)
 }
 

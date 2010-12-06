@@ -42,7 +42,7 @@ addHandlerChanged(selData, handler = function(h,...) {
   enabled(selVariable) <- TRUE
   df <- svalue(selData)
   df <- get(df, inherits=TRUE)                # string to object
-  selVariable[] <- data.frame(names(df),names(df), stringsAsFactors=FALSE)
+  selVariable[] <- data.frame(names(df), stringsAsFactors=FALSE)
   svalue(selVariable, index=TRUE) <- 0
   enabled(selMu) <- FALSE
   enabled(selAlt) <- FALSE

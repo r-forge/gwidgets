@@ -16,11 +16,15 @@
 
 ##' widget to display svg files
 ##'
+##' Used like a non-interactive device: create file
+##' (\code{getStaticTmpFil(ext=".svg")}), use this with the svg device
+##' (such as \code{devSVGTips} from the \pkg{RSVGTipsDevice} package),
+##' then pass to \code{f} or use \code{svalue<-} to assign.
 ##' @param f filename
 ##' @param width width of widget in pixels
-##' @param height heightof widget in pixels
+##' @param height height of widget in pixels
 ##' @param container parent container
-##' @param ... passed to add method of parent container
+##' @param ... passed to \code{add} method of parent container
 ##' @export
 gsvg <- function(f, width=480, height=400,
 ##                 handler = NULL, action = NULL,
@@ -83,11 +87,17 @@ gsvg <- function(f, width=480, height=400,
       ## convert to URL -- it is in static directory
       value <- convertStaticFileToUrl(value)
       out <- String() +
-        "var el = document.getElementById('svg" + .$ID + "');" + "\n" +
-          "el.innerHTML =  '<embed src=\"" + value + "\" " +
-            "width=" + .$..width + " " +
-              "height=" + .$..height + " " +
-                "type=\"image/svg+xml\">';"
+        paste(sprintf("var el%s = document.getElementById('svg%s');", .$ID, .$ID),
+              sprintf("el%s.innerHTML = '<embed src=\"%s\" width=%s height=%s type=\"image/svg+xml\">';",
+                      .$ID,
+                      escapeQuotes(value),
+                      .$..width, .$..height),
+              collapse="")
+        ## "var el = document.getElementById('svg" + .$ID + "');" + "\n" +
+        ##   "el.innerHTML =  '<embed src=\"" + value + "\" " +
+        ##     "width=" + .$..width + " " +
+        ##       "height=" + .$..height + " " +
+        ##         "type=\"image/svg+xml\">';"
       .$addJSQueue(out)
       ## cat(out)
     } else {
@@ -100,8 +110,8 @@ gsvg <- function(f, width=480, height=400,
   widget$writeHandlersJS <- function(., signal, handler=NULL) { return("")}
 
   ## XXX replace when handler code added
-##   if(!is.null(handler)) 
-##     widget$addHandlerClicked(handler, action)
+  ##   if(!is.null(handler)) 
+  ##     widget$addHandlerClicked(handler, action)
 
   
   ## add after CSS, scripts defined

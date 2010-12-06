@@ -37,6 +37,7 @@
 ##' visible(w) <- TRUE
 ##' }
 ## @seealso \code{\link{gtable}}
+
 gbigtable <- function(items, multiple = FALSE, chosencol = 1,
                       pageSize = 25, handler = NULL, action = NULL,
                       container = NULL, ...) {
