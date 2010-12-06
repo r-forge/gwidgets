@@ -1307,7 +1307,7 @@ EXTStore$show <- function(., queue=FALSE) {
     .$asCharacter() + '= new Ext.data.ArrayStore({' +
       'fields:  ' + .$makeFields() + ',' + '\n' +
         'data: ' + .$asJSArray() +
-          '\n' + '});' + '\n'
+          '});' + '\n'
   .$Cat(out, queue=queue)
 }
 
@@ -1434,11 +1434,28 @@ EXTProxyTreeStore$show <- function(., queue=FALSE) {
   .$Cat(out, queue=queue)
 }
 
+## tree passes in id We need to compute based on that and return a value looking like:
+##     [{
+##     "text": "adapter",
+##     "id": "source\/adapter",
+##     "cls": "folder"
+## }, {
+##     "text": "dd",
+##     "id": "source\/dd",
+##     "cls": "folder"
+## }, {
+##     "text": "debug.js",
+##     "id": "source\/debug.js",
+##     "leaf": true,
+##     "cls": "file"
+## }]
+
 ##' Parse the query and return data as json
 ##'
 ##' Very ext specific. Raise error if not correct
 ##' @param query a list, typically the POST variable
-##' @return the data in javascript or json encoded form
+##' @return the data in javascript or json encoded form, set the ..data variable to a list
+
 EXTProxyTreeStore$parseQuery <- function(., query) {
   df <- .$getData()
   m <- nrow(df)
@@ -1463,9 +1480,11 @@ EXTProxyTreeStore$parseQuery <- function(., query) {
             )
   }
   if(!is.null(query$node)) {
-    path <- split(":",query$node)[-1]         # strip off 1
+    path <- strsplit(query$node, ":")[[1]][-1]         # strip off 1
+    .$..path <- path
+    .$..node <- query$node
     odata <- get("..offspring.data", .)
-    children <- get("..offspring",.)(path, data)         # returns data frame: id, offspring, [icon], text
+    children <- get("..offspring",.)(path, odata)         # returns data frame: id, offspring, [icon], text
     m <- nrow(children)
     if(m == 0) {
       out <- "[]"
@@ -1481,30 +1500,24 @@ EXTProxyTreeStore$parseQuery <- function(., query) {
       }
       
       out <- sprintf("[%s]", paste(sapply(1:m, function(i) {
-        if(is.null(icon.FUN))
-          makeItem(query$node, children[i,1], children[i,2], children[i,-(1:2)])
-        else 
-          makeItemWithIcon(query$node, children[i,1], children[i,2], icons[i], children[i,-(1:2)])
+        if(is.null(icon.FUN)) {
+          if(ncol(children) > 2)
+            makeItem(query$node, children[i,1], children[i,2], children[i,-(1:2)])
+          else
+            makeItem(query$node, children[i,1], children[i,2])
+        } else {
+          if(ncol(children) > 2)
+            makeItemWithIcon(query$node, children[i,1], children[i,2], icons[i], children[i,-(1:2)])
+          else
+            makeItemWithIcon(query$node, children[i,1], children[i,2], icons[i])
+        }
       }), collapse=","))
     }
     out
-    ## tree passes in id We need to compute based on that and return a value looking like:
-    ##     [{
-    ##     "text": "adapter",
-    ##     "id": "source\/adapter",
-    ##     "cls": "folder"
-    ## }, {
-    ##     "text": "dd",
-    ##     "id": "source\/dd",
-    ##     "cls": "folder"
-    ## }, {
-    ##     "text": "debug.js",
-    ##     "id": "source\/debug.js",
-    ##     "leaf": true,
-    ##     "cls": "file"
-    ## }]
   } else {
     out <- ""
+    .$..path <- character(0)                     # the path
+    .$..node <- character(0)
   }
   return(out)
 }
@@ -2087,7 +2100,7 @@ EXTComponentWithProxyTreeStore$addHandlerClicked <- function(.,handler, action=N
 ##' @param action passed to handler
 ##' @param ... ignored
 ##' @return code to add handler
-EXTComponentWithStore$addHandlerDoubleclick  <- function(.,handler, action=NULL, ...) {
+EXTComponentWithProxyTreeStore$addHandlerDoubleclick  <- function(.,handler, action=NULL, ...) {
   ## we need to set up some stuff
   .$addHandler(signal="dblclick",
                handler = handler,

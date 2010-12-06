@@ -1,3 +1,7 @@
+2010-12-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (widget$addHandlerChanged): Bug fixes for gtree, new test
+
 2010-12-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gspinbutton.R (widget$addHandlerChanged): fixed bug in handler

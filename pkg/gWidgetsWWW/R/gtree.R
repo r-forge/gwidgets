@@ -83,10 +83,11 @@ gtree <- function(offspring = NULL,
   store$..offspring <- offspring        
   store$..offspring.data <- offspring.data
   store$..icon.FUN <- icon.FUN
+  store$..path <- character(0)
   widget$..store <- store
 
   
-  widget$..data <- "0:"             # base node with no value
+  widget$..data <- list(path="0", text=NA)             # base node with no value
   ## will need setValues method, ...
 
   
@@ -125,6 +126,12 @@ gtree <- function(offspring = NULL,
     return(out)
   }
 
+  ## what to do with this?
+  widget$assignValue <- function(., value) {
+    value <- value[[1]]                 # could tidy up
+    .$..data <- list(path=strsplit(value[[1]], ":")[[1]][-1], text=value[[2]])
+  }
+  
   ## index=TRUE -- return path
   ## otherwise (default) return text of selected
   ## no means to return the whole path, but could get with offpring and a loop
@@ -141,18 +148,22 @@ gtree <- function(offspring = NULL,
     ##   out <- .$..data
     ## }
     ## out is in form 0:path:text
+
     out <- .$..data
-    
-    tmp <- strsplit(out, ":")[[1]][-1]
-    n <- length(tmp)
-    text <- tmp[n]
-    path <- tmp[-n]
-    ## we don't have a drop implemented
-    ## could get this by calling offspring reapetedly to get text, but we will pass on that for now
-    if(!is.null(index) && index)
-      path
-    else
-      text
+
+    index <- getWithDefault(index, FALSE)
+    drop <- getWithDefault(drop, TRUE)
+
+    if(index) {
+      ind <- out[[1]]
+      if(drop)
+        tail(ind,n=1)
+      else
+        ind
+    } else {
+      out[[2]]
+    }
+
   }
 
   ## update tree. Simply collapses values and when reexpanded will be all new
@@ -183,7 +194,7 @@ gtree <- function(offspring = NULL,
   widget$handlerArguments <- function(...) "node, e"
   widget$transportValue <- function(.,...) {
     ## we pass back both node and the text here
-    out <- "var value = node.id + ':' + node.text;"
+    out <- "var value = {id: node.id, text: node.text};"
     return(out)
   }
 
@@ -191,7 +202,8 @@ gtree <- function(offspring = NULL,
   container$add(widget,...)
 
   ## changed = double clicked
-  widget$addHandlerChanged <- widget$addHandlerDoubleclick
+  widget$addHandlerChanged <- function(., handler, action=NULL)
+    .$addHandler(signal="dblclick",handler, action)
 
   if(!is.null(handler))
     widget$addHandlerChanged(handler, action=action)

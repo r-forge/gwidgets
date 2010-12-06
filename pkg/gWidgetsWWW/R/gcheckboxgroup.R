@@ -379,7 +379,7 @@ gcheckboxgrouptable <- function(items,
             sprintf("  _transportToR('%s', Ext.util.JSON.encode({value:value}) );",.$ID),
             "},",
             "this, {delay:1,buffer:1, single:false});",
-            sep="\n")
+            sep="")
     
     if(!is.null(handler)) {
       out <- out +
