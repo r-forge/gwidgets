@@ -117,7 +117,7 @@ gtogglebutton <- function(text="", checked=TRUE,
   widget$setValues(value=text)
   
 
-  widget$setValueJS <- function(.) {
+  widget$setValueJS <- function(., ...) {
     out <- String() +
       sprintf("var widget = %s;", .$asCharacter()) +
         sprintf("widget.pressed(%s);", tolower(as.character(.$getValue())))

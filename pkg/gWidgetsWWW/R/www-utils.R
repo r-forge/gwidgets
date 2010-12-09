@@ -92,7 +92,7 @@ escapeHTML <- function(x) {
 ##            '®' = "&reg;",       
 ##            '©' = "&copy;",   
 ##            '€' = "&euro;",
-           ' ' = "&nbsp;",
+##              ' ' = "&nbsp;",
            i)
   }
   tmp <- unlist(strsplit(x, ""))
@@ -164,6 +164,24 @@ ourQuote <- function(x) {
   sprintf("'%s'", x)
 }
 
+##' strip off \n and turn ' into \' so that value can be assigned withing javascript call
+##'
+##' Used by ghtml, glabel, gtext, ...
+##' @param x a character vector
+##' @param encode do we escape HTML bits
+stripSlashN <- function(x, encode=FALSE, sep=c("\\n", "<br />"), dostrwrap=TRUE) {
+  x <- gsub("\n"," ", x)
+  x <- gsub("'", "\\\\'",x)
+  if(dostrwrap) {
+    x <- paste(x, collapse="")
+    x <- strwrap(x)
+  }
+  if(encode)
+    x <- gWidgetsWWW:::escapeHTML(x)
+  x <- paste(x, collapse=sep)
+
+  x
+}
 
 ##################################################
 ## Helpers

@@ -202,6 +202,8 @@ galert <- function(message, title = "message", delay=3, parent=NULL) {
   if(missing(message))
     message <- ""
 
+  message <- paste(message, collapse="<br />")
+  
   if(is.null(parent)) {
     stop("Needs parent")
   }

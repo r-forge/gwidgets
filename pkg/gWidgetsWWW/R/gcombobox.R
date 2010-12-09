@@ -274,7 +274,7 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
               'layout:"fit",' +
                 'width:' + .$..width + ',' +
                   'height: "auto",' +
-                    'renderTo: Ext.getBody(),' +
+                    sprintf('renderTo: %s,', .$toplevel$..renderTo) +
                       'items: [' + '\n' + 
                         .$mapRtoObjectLiteral() +
                           ']' + '\n' +

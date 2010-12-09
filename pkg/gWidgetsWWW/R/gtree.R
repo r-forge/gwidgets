@@ -203,7 +203,7 @@ gtree <- function(offspring = NULL,
 
   ## changed = double clicked
   widget$addHandlerChanged <- function(., handler, action=NULL)
-    .$addHandler(signal="dblclick",handler, action)
+      .$addHandler(signal="dblclick",handler, action)
 
   if(!is.null(handler))
     widget$addHandlerChanged(handler, action=action)

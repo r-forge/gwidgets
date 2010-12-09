@@ -32,16 +32,25 @@ EXTGroup$ExtCfgOptions <-  function(.) {
               border = FALSE,
               hideBorders=TRUE,          # key to getting rid of blud
               collapsed=!.$..visible
-              
               )
+  ## orientation
+  ## Here we pick a layout manager. Oddly -- to me -- the "vbox" below does not work
+  ## This is a real issue, as in panels added purely in JS (handler repsonse) the layout fails
+  ## This makes the old delete(g, g1); g1 <<- ggroup(cont=g) trick fail, as the g1 layout
+  ## is always horizontal
   if(exists("..horizontal",envir=., inherits=FALSE)) {
     if(.$..horizontal) {
-      orientation <- "column"
-      out[['layout']] <- orientation
+      out[['layout']] <- list(type="hbox")
+#                              padding=.$..spacing,
+#                              align="left")
+      out[['layout']] <- "column"
       if(exists("..use.scrollwindow", envir=., inherits=FALSE))
         out[['autoScroll']] <- .$..use.scrollwindow
+    } else {
+      ## This is so wierd -- vbox fails here. What is right for vertical layout
+      ## if(.$toplevel$has_local_slot("..shown")
+      ##   out[['layout']] <- list(type="vbox")
     }
-    ## no "row" layout, so we use the default.
   }
   ## size
   ## out[['autoWidth']] <- TRUE

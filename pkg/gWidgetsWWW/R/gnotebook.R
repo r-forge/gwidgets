@@ -27,7 +27,7 @@ gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...) {
    widget$setValue(value=1)             # current tab
    ## Methods
    ## how to set a value
-   widget$setValueJS <- function(.) {
+   widget$setValueJS <- function(., ...) {
      if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
        
      ind <- as.numeric(.$..data - 1)

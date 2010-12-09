@@ -1,4 +1,13 @@
+2010-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaa.R (EXTWidget$writeConstructor): changed x.hidden behaviour
+
+	* R/gwindow.R (w$ExtCfgOptions): added layout="fit" to panel for
+	main window. Issue was resizing. Not sure this makes any difference
+
 2010-12-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (update.gWindow): New method. Will reload window.
 
 	* R/gtree.R (widget$addHandlerChanged): Bug fixes for gtree, new test
 

@@ -80,11 +80,11 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
         lst[["height"]] <- "auto"
       
       out <- String() +
-        paste(sprintf("%sdate = new Ext.Panel({", .$asCharacter()),
+        paste(sprintf("%sdate = new Ext.Panel({\n", .$asCharacter()),
               sprintf("id: '%s',", .$ID),
               sprintf("renderTo: %s,",.$toplevel$..renderTo),
               sprintf("items:[%s]", .$mapRtoObjectLiteral(lst)),
-              "});",
+              "});\n",
               sep="")
 
       out <- out +

@@ -97,7 +97,7 @@ gstatusbar <- function(text = "", container=NULL, ...) {
     .$addJSQueue(out)
   }
   widget$clearStatus <- function(.) {
-    paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
+    out <- paste(sprintf("var widget = Ext.getCmp('%sstatusBar');", .$sbContainer$ID),
           'widget.clearStatus();',
           sep="")
 #    out <- .$getSBJS() +

@@ -35,14 +35,22 @@ glabel <- function(text = "", markup = FALSE, editable = FALSE,
     text <- escapeHTML(text)
   widget$setValue(value=text)
 
+
+  ## strip of \n so we can push thourgh '' in one line.
+  
   widget$getValue <- function(.,...) paste(.$..data, collapse=ifelse(.$..markup, "<br />", " "))
 
   widget$setValueJSMethod = "setValue"
+  ##' ensure we strip off \n values
+  widget$setValueJS <- function(., ...) {
+    out <- sprintf("%s.setValue('%s');", .$asCharacter(), stripSlashN(svalue(.), encode=!.$..markup, dostrwrap=FALSE))
+    return(out)
+  }
   widget$getValueJSMethod = "setValue"
   widget$ExtConstructor <- "Ext.ux.labelBox"
   widget$ExtCfgOptions <-  function(.) {
     out <- list(
-                value=svalue(.)
+                value=stripSlashN(svalue(.), encode=!.$..markup, dostrwrap=FALSE)
                 ) ## was unescapeURL(svalue(.)
     return(out)
   }

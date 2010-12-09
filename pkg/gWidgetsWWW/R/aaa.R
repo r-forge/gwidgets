@@ -119,16 +119,20 @@ EXTWidget$asCharacterPanelName <- function(.) .$asCharacter()
 ##' simple function to call an Ext method on the corresponding object
 ##'
 ##' @param methodname name of method
-##' @param args arguments -- a string!
+##' @param args arguments -- a string! such as "e,w"
 ##' @return a string, JS, to call method
 EXTWidget$callExtMethod <- function(., methodname, args) {
   if(missing(args))
     args <- ""
-  out <- sprintf("%s.%s(%s)", .$asCharacter(), methodname, args)
+  out <- sprintf("%s.%s(%s);\n", .$asCharacter(), methodname, args)
   return(out)
 }
 
-
+##' Is this a toplevel widget?
+##'
+##' @param . self
+##' @return logical
+EXTWidget$isToplevel <- function(.) .$identical(.$toplevel)
 
 
 ## We have both S3 methods and their proto counterparts
@@ -439,9 +443,10 @@ EXTWidget$getSize <- function(.) {
 ##' @return a list with the options. List is passed to mapRtoObjectLiteral
 EXTWidget$ExtStdCfgOptions <- function(.) {
   out <- list(
-              "renderTo"=String(.$toplevel$..renderTo), #String("Ext.getBody()"),
               "id"=.$ID
               )
+  out[["renderTo"]] <- String(.$toplevel$..renderTo) #String("Ext.getBody()"),
+
   if(exists("..enabled",envir=., inherits = FALSE))
     if(!.$..enabled)
       out[['disabled']] <- !.$..enabled   # in Ext.Component
@@ -509,9 +514,9 @@ EXTWidget$mapRtoObjectLiteral <- function(.,values,doBraces=TRUE) {
     }
   }
 
-  res <- paste(names(out), out, sep=":", collapse=",")
+  res <- paste(names(out), out, sep=":", collapse=",\n\t")
   if(doBraces)
-    res <- String('{') + res + '}'
+    res <- String('{\n\t') + res + '\n}'
 
   return(res)
 }
@@ -540,12 +545,12 @@ EXTWidget$separator <- function(.) return("")
 ##' Assumes property \code{ExtConstructor} is set
 ##' @return string container JS code for constructor
 EXTWidget$writeConstructor <- function(.) {
-  out <- String() +
+  out <- String() + "\n" +
 ### var creates a *local* variable -- issues with safari here
 ###    'var o' + .$ID +
     .$asCharacterPanelName() +
       ##'o' + .$ID +
-      ' = new ' +.$ExtConstructor + '(\n' +
+      ' = new ' +.$ExtConstructor + '(' +
         .$mapRtoObjectLiteral() +
           ');\n'
   ## write out x-hidden unless requested not to.
@@ -554,9 +559,9 @@ EXTWidget$writeConstructor <- function(.) {
   if(!is.null(top)) {
     if(!exists("..shown", envir=top, inherits=FALSE) ||
        (exists("..shown", envir=top, inherits=FALSE)  && !top$..shown)) {
-      if(!exists("no.x.hidden",envir=., inherits=FALSE))
-        out <- out +
-          'Ext.get(' + shQuote(.$ID) +').addClass("x-hidden");\n'
+      ## if(.$has_local_slot("x.hidden") && .$x.hidden)
+      ##   out <- out +
+      ##     'Ext.get(' + shQuote(.$ID) +').addClass("x-hidden");\n'
     }
   }
 
@@ -666,6 +671,9 @@ EXTWidget$show <- function(., queue=FALSE) {
           .$writeTooltip() +
             .$writeHandlersJS()           # includes transport
 
+  if(.$has_local_slot("..visible"))
+    .$setVisibleJS()
+  
   .$..shown <- TRUE
   .$Cat(out, queue=queue)
 }
@@ -936,16 +944,15 @@ EXTContainer$add <- function(.,child,...) {
    child$titlename <- .$titlename
 
    ## Move scripts, css to toplevel
-   if(!is.null(child$css)) {
+   if(!is.null(child$css))
      css <- .$toplevel$css
-     if(is.function(child$css))
-       css[[class(child)[1]]] <-
-         list(obj = child, FUN = get("css",child))
-     else if(is.character(child$css))
-       css[[class(child)[1]]] <- child$css
-
-     .$toplevel$css <- css
-   }
+   else if(is.function(child$css))
+     css[[class(child)[1]]] <- list(obj = child, FUN = get("css",child))
+   else if(is.character(child$css))
+     css[[class(child)[1]]] <- child$css
+   
+   .$toplevel$css <- css
+   
 
    ## scripts
    if(!is.null(child$scripts)) {
@@ -986,7 +993,7 @@ EXTContainer$add <- function(.,child,...) {
        .$addJSQueue(.$addJS(child))
      }
    }
- }
+}
 
 
 ##' Write javascipt code to add containers after the GUI has been shown
@@ -994,7 +1001,7 @@ EXTContainer$add <- function(.,child,...) {
 ##'  this is likely not perfect!
 ##' @param child gWidget instance
 EXTContainer$addJS <- function(.,child) {
-  out <- sprintf("%s.add(%s); %s.doLayout();",
+  out <- sprintf("%s.add(%s); %s.doLayout();\n",
                  .$asCharacter(), child$asCharacter(), .$asCharacter())
   return(out)
 }
@@ -1202,14 +1209,35 @@ EXTContainer$makeItems <- function(.) {
 ##' unlike a EXTComponent, here we need to add in the items too
 ##' @param queue do we cat or queue
 EXTContainer$show <- function(., queue=FALSE) {
-  out <- String() +
-    'o' + .$ID + '= new ' + .$ExtConstructor + '({' + '\n' +
-        .$mapRtoObjectLiteral(doBraces=FALSE) +
-          ',' + '\n' +
-            'items:[' +.$makeItems() +
-              ']\n' + '});'
-  .$..shown <- TRUE
+ ## out <- String() + "\n\n" +
+ ##   'o' + .$ID + '= new ' + .$ExtConstructor + '({' + '\n' +
+ ##       .$mapRtoObjectLiteral(doBraces=FALSE) +
+ ##         ',' + '\n' +
+ ##           'items:[' +.$makeItems() +
+ ##             ']' + '});' + "\n"
+
+ out <- String() +
+   sprintf("%s = new %s({\n%s,\n\titems:[%s]});\n",
+           .$asCharacter(), .$ExtConstructor,
+           .$mapRtoObjectLiteral(doBraces=FALSE),
+           .$makeItems())
+
+ ## Wanted to add dynamically, but this just doesn't work for all children (combobx, tables, ...)
+ ##  out <- String() +
+ ##    sprintf("%s = new %s({%s});\n",
+ ##            .$asCharacter(), .$ExtConstructor,
+ ##            .$mapRtoObjectLiteral(doBraces=FALSE)
+ ##            )
+ ## childIDs <- sapply(.$children, function(i) as.character(i$asCharacter()))
+ ##  for(i in childIDs) {
+ ##    out <- out + sprintf("%s.add(%s);\n", .$asCharacter(), i)
+ ##  }
+ ##  out <- out + sprintf("%s.doLayout();\n", .$asCharacter())
+
+  if(.$has_local_slot("..visible"))
+    out <- out + .$setVisibleJS()
   
+  .$..shown <- TRUE
   .$Cat(out, queue=queue)
 }
 
@@ -1685,7 +1713,7 @@ EXTComponentWithStore$setValues <- function(.,i,j,...,value) {
 ##' produce javascript to synchronize R with GUI
 ##'
 ##' @return javascript
-EXTComponentWithStore$setValuesJS <- function(.) {
+EXTComponentWithStore$setValuesJS <- function(., ...) {
   if(exists("..setValuesJS", envir=., inherits=FALSE)) .$..setValuesJS(...)
   
   out <- String() +
@@ -2006,7 +2034,7 @@ EXTComponentDfStore$setValues <- function(., i, j, ..., value) {
   d[i,j] <- value
   .$..store$setData(d)
   if(exists("..shown", envir=., inherits=FALSE)) {
-    .$addJSQueue(.$setValuesJS(i,j,value))
+    .$addJSQueue(.$setValuesJS(i,j,value=value))
   }
 }
 
@@ -2017,7 +2045,7 @@ EXTComponentDfStore$setValues <- function(., i, j, ..., value) {
 ##' @param j column index
 ##' @param value value to set
 ##' @return javascript code is queued up
-EXTComponentDfStore$setValuesJS <- function(., i,j,value) {
+EXTComponentDfStore$setValuesJS <- function(., i,j,..., value) {
   if(missing(i) && missing(j)) {
     .$..store$replaceStore()
     return()
@@ -2139,7 +2167,7 @@ EXTComponentInPanel$writeConstructor <- function(.) {
               renderTo = String(.$toplevel$..renderTo), #String("Ext.getBody()"),
               items = String("[") + .$mapRtoObjectLiteral() + ']'
               )
-  out <- String() +
+  out <- String() + "\n" +
     'o' + .$ID + 'panel = new Ext.Panel(' + # no var -- global
       .$mapRtoObjectLiteral(lst) +
         ');' + '\n'
@@ -2163,8 +2191,8 @@ EXTComponentWithItems$xtype <- ""       # eg "checkbox", "radio"
 EXTComponentWithItems$itemname <- "item"
 ##' property Which ext constructor to use
 EXTComponentWithItems$ExtConstructor <- "Ext.Panel"
-##' property. The no.x.hidden property, when TRUE, will suppress hiding, then showing of widget
-EXTComponentWithItems$no.x.hidden <- TRUE
+## ##' property. The x.hidden property, when TRUE, will first hide widget
+## EXTComponentWithItems$x.hidden <- FALSE
 
 ##' assign value
 EXTComponentWithItems$assignValue <- function(., value) {

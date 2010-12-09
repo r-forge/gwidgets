@@ -1,14 +1,16 @@
 ## TODO for gWidgetsWWW
+* Need to fix ggroup layout for handler responses.
+* should I use proxystore type trick for gtext, glabel, gedit,
+... Otherwise I need to strip off \n from strings
 * ghtml and URLs. Was this working before?
 * should I make some useful apps: installpackage, edit object,
   workspace browser...
 * spotfire-like example
 * date renderer in ComponentWithStore's makeColumnModel
 * need to move methods out of widget, into Traits.
-* clean up use of statusbar for ajax messages. (Timers)
 * doc with roxygen
 * why is 3.3 an issue with chrome, safari?
-* fix SIGPIPE error with local
+DONE? * fix SIGPIPE error with local
 * integrate hanging events ala r-studio
 * menu images (sort out)  makeIconClasses was removed tomake things
   work with IE. This definitely messes up icons in menus???
@@ -21,6 +23,7 @@
 * forgot to do a popup: addpopupmenu, add3rdmouse ...
 * drag and drop functions
 * checkbox in grid FIX CHECKED INIT
+DONE* clean up use of statusbar for ajax messages. (Timers) 
 DONE * ex-ggplot2 demo is being buggy
 DONE * togglebutton
 DONE* put in assignValue call into widget, into AJAX guy. Cleans up cruft

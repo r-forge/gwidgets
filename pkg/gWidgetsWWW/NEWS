@@ -4,7 +4,9 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
-* added a Tests directory
+* added update method for gwindow instances. This will refresh a page.
+* added a Tests directory along with many tests. (need to be run by
+  manually clicking, not automated)
 * use statusbar to display information about AJAX calls, when present
 * added options use.table (gcheckboxgroup), use.togglebutton (gcheckbox)
 * changed back-end handling of assign transport

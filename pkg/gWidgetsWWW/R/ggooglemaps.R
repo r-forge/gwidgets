@@ -169,7 +169,7 @@ widget$makeMarkers <- function(.) {
     return(out)
   }
 
-  widget$setValueJS <- function(.) {
+  widget$setValueJS <- function(., ...) {
     value <- svalue(.)
     if(length(value) == 2)
       .$panTo(value)

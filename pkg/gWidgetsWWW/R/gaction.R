@@ -107,7 +107,7 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
   widget$handlerID <- window$addHandler(signal = NULL, handler = handler)
   
   ## make Show method -- will call show when added as a handler?
-  widget$no.x.hidden <- TRUE
+#  widget$x.hidden <- TRUE
   widget$ExtConstructor <- "Ext.Action"
   widget$ExtCfgOptions <- function(.) {
     handlerString <- String() +

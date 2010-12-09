@@ -54,16 +54,17 @@ ghtml <- function(x, container = NULL,  ...) {
       out <- sprintf("%s.load(%s); %s.update();", .$asCharacter(), ourQuote(val), .$asCharacter())
     } else {
       ## this depends on local or non-local
-      if(gWidgetsWWWIsLocal()) {
-        val <- paste(val, collapse="\\\\n")
-      } else {
-        val <- paste(val, collapse="\\n")
-      }
+      ## if(gWidgetsWWWIsLocal()) {
+      ##   val <- paste(val, collapse="\\\\n")
+      ## } else {
+      ##   val <- paste(val, collapse="\\n")
+      ## }
 
-      ## do we encode? By default yes
+      ## do we encode? By default false
       doEncode <- ifelse(getFromDots(..., var="encode", default=FALSE), "true", "false")
-      
-      out <- sprintf("%s.setText('%s', %s);", .$asCharacter(), escapeQuotes(val), doEncode)
+
+      ## was stripSlashN bit
+      out <- sprintf("%s.setText('%s', %s);", .$asCharacter(), paste(.$htmlEscape(svalue(.)), collapse=" "), doEncode)
     }
     return(out)
   }

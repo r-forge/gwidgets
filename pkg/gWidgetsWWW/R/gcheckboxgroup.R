@@ -77,7 +77,7 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
       ##cat(.$setValueJS())
       .$addJSQueue(.$setValueJS())
   }
-  widget$setValueJS <- function(.) {
+  widget$setValueJS <- function(., ...) {
     out <- String() +
       paste(sprintf("var ans = [%s];", paste(tolower(as.character(.$..data)), collapse=",")),
             sprintf("for(var i=0; i < %s; i++) {", .$length()),

@@ -90,7 +90,13 @@ EXTTopLevel$getStoreById <- function(., id) {
   .$proxyStores[[id]]
 }
 
-  
+
+##' Reload the window
+EXTTopLevel$reload <- function(.) {
+  if(.$has_local_slot("..shown")) {
+    .$addJSQueue("document.location.reload(true);")
+  }
+}
 
 ##' Main top level window
 ##'
@@ -216,7 +222,7 @@ gwindow <- function(title="title", visible=TRUE,
   
   ## set title
   ## XX should this be just for Ext.getBody() cases?
-  w$setValueJS <- function(.) {
+  w$setValueJS <- function(.,...) {
     if(exists("..setValueJS", envir=., inherits=FALSE))
       .$..setValueJS(...)
     
@@ -387,7 +393,8 @@ gwindow <- function(title="title", visible=TRUE,
                  border = TRUE,
 #                 bodyBorder = FALSE,
                  hideBorders = FALSE,
-                 autoScroll = TRUE
+                 autoScroll = TRUE,
+                 layout="fit"           # one item only, will expand
                  )
      
      return(out)
@@ -403,7 +410,7 @@ gwindow <- function(title="title", visible=TRUE,
      x <- getStockIcons();
      nms <- names(x)
      for(i in 1:length(x)) {
-       out <- out +x0
+       out <- out +
          'Ext.util.CSS.createStyleSheet("' +
            paste("button.",nms[i], "{background-image:url(",x[i],")};", sep="",
                  collapse="") +
@@ -429,7 +436,22 @@ gwindow <- function(title="title", visible=TRUE,
      out <- String()
 
      out <- out +
-       sprintf("%s.doLayout();", .$asCharacter())
+       sprintf("%s.doLayout();\n", .$asCharacter())
+
+
+     ## hide children if requested
+     hide <- function(.) {
+       if(.$has_local_slot("children")) {
+         sapply(.$children, hide)
+       }
+       if(.$has_local_slot("..visible") && !.$..visible) {
+         out <<- out + .$setVisibleJS()
+       }
+     }
+     hide(.)
+
+
+     
      ## set title 
      out <- out +
        sprintf("document.title=%s;\n",ourQuote(.$getValue()))
@@ -493,7 +515,7 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
   widget$dispose <- function(.) visible(.) <- FALSE
 
   ## set title
-  widget$setValueJS <- function(.) {
+  widget$setValueJS <- function(., ...) {
   if(.$has_local_slot("..setValueJS"))
     .$..setValueJS(...)
   
@@ -519,7 +541,7 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
     ## opposite -- we already changed if we got here
     out <- sprintf("%s.%s();", .$asCharacter(),
                    ifelse(.$..visible, "show", "hide"))
-    .$addJSQueue(out)
+## XXX    .$addJSQueue(out)
   }
 
 
@@ -563,6 +585,8 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
     ## render and show
     out <- String() +
       sprintf("%s.render();", .$asCharacter())
+
+    ## show if ready
     if(visible(.))
       out <- out +
         sprintf("%s.show();", .$asCharacter())
@@ -577,3 +601,12 @@ gsubwindow <- function(title="Subwindow title", visible=TRUE,
   ## return
   invisible(widget)
 }
+
+
+##' Reload document
+##'
+##' Reloads document from server
+##' @param object gwindow object
+##' @param ... ignored
+##' @export
+update.gWindow <- function(object, ...) object$reload()

@@ -89,7 +89,7 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   
   ## to set values we a) remove old values b) add new ones c) handlers?
   ## XXX doesn't work!!!
-##   widget$setValuesJS <- function(.) {
+##   widget$setValuesJS <- function(.,...) {
 ##     out <- String()
 
 ##     ## JS to remove values

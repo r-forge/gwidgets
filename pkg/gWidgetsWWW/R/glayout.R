@@ -24,7 +24,7 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
 
 
   tbl <- EXTContainer$new(toplevel=container$toplevel,
-                          ..spacing = spacing,
+                          ..spacing = as.numeric(spacing),
                           ..noRows = 0, ..noCols = 0
                          )
   class(tbl) <- c("gLayout",class(tbl))
@@ -54,20 +54,48 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
         style["text-align"] = "center"
       else if(anchor[1] == 1)
         style["text-align"] = "right"
+      if(anchor[2] == -1)
+        style["text-valign"] = "bottom"
+      else if(anchor[2] == 0)
+        style["text-valign"] = "center"
+      else if(anchor[2] == 1)
+        style["text-valign"] = "top"
+      
     }
     value$..style <- style
   }
 
-  
+  ## css to style alignment
+  tbl$footer <- function(.) {
+    out <- paste("Ext.util.CSS.createStyleSheet('",
+                 ".td-northwest {vertical-align: top; align: left} ",
+                 ".td-north {vertical-align: top} ",
+                 ".td-northeast {vertical-align: top; align: right} ",
+                 ".td-west {align: left} ",
+                 ".td-center {} ",
+                 ".td-east {align: right} ",
+                 ".td-southwest {vertical-align: bottom; align: left} ",
+                 ".td-south {vertical-align: bottom} ",
+                 ".td-southeast {vertical-align: bottom; align: right} ",
+                 "');",
+                 sep="")
+    return(out)
+  }
+          
   tbl$ExtConstructor <- "Ext.Panel" ## inherits
   tbl$ExtCfgOptions <- function(.) { ## ih
-    defaults <- String('{') +
-      'bodyStyle:"padding:' + .$..spacing + 'px"}'
-    layoutConfig <- String('{') +
+#    defaults <- String('{') +
+#      'bodyStyle:"padding:' + .$..spacing + 'px"}'
+    defaults <- list(bodyStyle = sprintf("padding:%spx", .$..spacing))
+    layoutConfig <- list(columns=.$..noCols,
+                         align="left",
+                         valign="top")
+
+      String('{') +
       'columns:' + .$..noCols + '}'
     
     out <- list(layout="table",
-                defaults = String(defaults),
+                defaults = defaults,
                 border=FALSE,
                 layoutConfig = layoutConfig
                 )
@@ -77,6 +105,38 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
 
   tbl$makeItemsFixedItems <- "border:false,"
   tbl$makeItems <- function(.) {
+    ## helper function
+    mapAnchorToCSSClass <- function(anchor) {
+      if(is.null(anchor))
+        return("td-northwest")
+
+      out <-
+        if(anchor[2] == 1) {
+          if(anchor[1] == -1)
+            "td-northwest"
+          else if(anchor[1] == 0)
+            "td-north"
+          else
+            "td-northeast"
+        } else if(anchor[2] == 0) {
+          if(anchor[1] == -1)
+            "td-west"
+          else if(anchor[1] == 0)
+            "td-center"
+          else
+            "td-east"
+        } else if(anchor[2] == -1) {
+          if(anchor[1] == -1)
+            "td-southwest"
+          else if(anchor[1] == 0)
+            "td-south"
+          else
+            "td-southeast"
+        }
+    }
+        
+
+
     ## key to this is a simple algorithm which could be optimized
     ## but likely isn't worth the trouble
 
@@ -142,6 +202,8 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
       } else {
         out <- out + contentEl
       }
+      out <- out + "," + sprintf("cellCls:'%s'", mapAnchorToCSSClass(i$anchor))
+      
       return(out)
     })
 

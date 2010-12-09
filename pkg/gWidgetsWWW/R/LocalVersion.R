@@ -286,11 +286,12 @@ processAJAX <- function(path, query, ...) {
   switch(type,
          "runHandler"= {
            l <- gWidgetsWWW:::localRunHandler(query$id, query$context, query$sessionID)
-           ret <- list(payload=l$out,
+           ret <- list("payload"=l$out,
                        "content-type"="application/javascript",
                        "headers"=NULL,
                        "status code"=l$retval
                        )
+           return(ret)
          },
          "assign" = {
            ## pass back return value. Assign does nothing otherwise
@@ -367,7 +368,6 @@ gw.httpd.handler <- function(path, query, ...) {
                 "gWidgetsWWWRunExternal"=processExternalRun(path[-1], query, ...),
                 processBasehtmlFile(c("",path), query,  ...)
                 )
-  ## assign("out", out, envir=.GlobalEnv)
   return(out)
 }
 

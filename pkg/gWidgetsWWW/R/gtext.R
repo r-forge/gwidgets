@@ -71,9 +71,11 @@ gtext <- function(text = NULL, width = NULL, height = 300,
     } else {
       theData <- paste(.$..data, collapse="\\n")
     }
-    out <- String() +
-      .$asCharacter() + '.setValue(' +
-        shQuote(theData) + ');' + '\n'
+
+    out <- sprintf("%s.setValue('%s');", .$asCharacter(), stripSlashN(.$..data, dostrwrap=FALSE))
+    ## out <- String() +
+    ##   .$asCharacter() + '.setValue(' +
+    ##     shQuote(theData) + ');' + '\n'
 
     return(out)
 
@@ -91,7 +93,7 @@ gtext <- function(text = NULL, width = NULL, height = 300,
   widget$ExtConstructor <- "Ext.form.TextArea"
   widget$ExtCfgOptions <- function(.) {
     out <- list()
-    out[["value"]] = paste(svalue(.), collapse="\\\\n")
+    out[["value"]] = stripSlashN(svalue(.), sep="\\\\n", dostrwrap=FALSE)
     if(!is.null(.$..width)) {
       out[["width"]] <- .$..width
     } else {
