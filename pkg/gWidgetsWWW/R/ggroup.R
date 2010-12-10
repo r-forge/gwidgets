@@ -42,6 +42,7 @@ EXTGroup$ExtCfgOptions <-  function(.) {
   ## commented out below *along* with using layout="fit" in gwindow
   ## will work, but I had no luck even with updating to 3.3.0, which
   ## has its own issues with this code base.
+  ## http://stackoverflow.com/questions/2479342/problem-with-extjs-vbox-layout-nested-in-a-hbox-layout
   if(exists("..horizontal",envir=., inherits=FALSE)) {
     if(.$..horizontal) {
 #      out[['layoutConfig']] <- list(type="hbox")
