@@ -1000,7 +1000,7 @@ EXTContainer$add <- function(.,child,...) {
 ##'
 ##'  this is likely not perfect!
 ##' @param child gWidget instance
-EXTContainer$addJS <- function(.,child) {
+EXTContainer$addJS <- function(., child) {
   out <- sprintf("%s.add(%s); %s.doLayout();\n",
                  .$asCharacter(), child$asCharacter(), .$asCharacter())
   return(out)

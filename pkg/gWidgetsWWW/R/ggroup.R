@@ -33,23 +33,28 @@ EXTGroup$ExtCfgOptions <-  function(.) {
               hideBorders=TRUE,          # key to getting rid of blud
               collapsed=!.$..visible
               )
-  ## orientation
-  ## Here we pick a layout manager. Oddly -- to me -- the "vbox" below does not work
-  ## This is a real issue, as in panels added purely in JS (handler repsonse) the layout fails
-  ## This makes the old delete(g, g1); g1 <<- ggroup(cont=g) trick fail, as the g1 layout
-  ## is always horizontal
+  ## orientation Here we pick a layout manager. Oddly -- to me -- the
+  ## "vbox" below does not work This is a real issue, as in panels
+  ## added purely in JS (handler repsonse) the layout fails This makes
+  ## the old delete(g, g1); g1 <<- ggroup(cont=g) trick fail, as the
+  ## g1 layout is always horizontal There is a stack overflow post
+  ## suggesting that a combination of layoutConfig and dfautls, as
+  ## commented out below *along* with using layout="fit" in gwindow
+  ## will work, but I had no luck even with updating to 3.3.0, which
+  ## has its own issues with this code base.
   if(exists("..horizontal",envir=., inherits=FALSE)) {
     if(.$..horizontal) {
-      out[['layout']] <- list(type="hbox")
-#                              padding=.$..spacing,
-#                              align="left")
+#      out[['layoutConfig']] <- list(type="hbox")
+#      out[['defaults']] <- list(flex=0,frame=FALSE)
       out[['layout']] <- "column"
       if(exists("..use.scrollwindow", envir=., inherits=FALSE))
         out[['autoScroll']] <- .$..use.scrollwindow
     } else {
-      ## This is so wierd -- vbox fails here. What is right for vertical layout
-      ## if(.$toplevel$has_local_slot("..shown")
-      ##   out[['layout']] <- list(type="vbox")
+      ## This is  wierd -- vbox fails here. What is right for vertical layout
+#      out[['layout']] <- "vbox"
+#      out[['layoutConfig']] <-  list(type="vbox")
+#      out[['defaults']] <- list(flex=0,frame=FALSE)
+#      out[['autoscroll']] <- TRUE
     }
   }
   ## size

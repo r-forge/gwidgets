@@ -393,8 +393,8 @@ gwindow <- function(title="title", visible=TRUE,
                  border = TRUE,
 #                 bodyBorder = FALSE,
                  hideBorders = FALSE,
-                 autoScroll = TRUE,
-                 layout="fit"           # one item only, will expand
+                 autoScroll = TRUE
+#                 ,layout="fit"           # one item only, will expand
                  )
      
      return(out)
