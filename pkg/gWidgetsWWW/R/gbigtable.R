@@ -23,6 +23,8 @@
 ##' @param action passed to handler
 ##' @param container standard container object
 ##' @param ... passed to add method
+##' @param width integer pixel width. A grid object must have width and height
+##' @param height integer pixel height
 ##' @return a widget instance
 ##' @examples
 ##' \dontrun{
@@ -37,13 +39,15 @@
 ##' visible(w) <- TRUE
 ##' }
 ## @seealso \code{\link{gtable}}
-
 gbigtable <- function(items, multiple = FALSE, chosencol = 1,
                       pageSize = 25, handler = NULL, action = NULL,
-                      container = NULL, ...) {
+                      container = NULL, ...,
+                      width=200, height=200
+                      ) {
   
   widget <- EXTComponentWithProxyStore$new(toplevel=container$toplevel,
-                                           ..multiple = multiple
+                                           ..multiple = multiple,
+                                           ..width=width, ..height=height
                                            )
 
   class(widget) <- c("gTable",class(widget))
@@ -69,6 +73,7 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
   ## set up widget
   widget$setValue(value = 1)            # first column is selected on startup
 
+  
   widget$setValues <- function(.,i,j,...,value) {
     ## XXX need to include i,j stuff
     ## XXX value must be a data frame of the same size as original

@@ -279,10 +279,14 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
                         .$mapRtoObjectLiteral() +
                           ']' + '\n' +
                             '});' + '\n'
+
+      out <- out + sprintf("o%spanel.addClass('x-hidden');\n", .$ID)
+
       out <- out +
         'o' + .$ID + ' = ' + # no var -- global
                     'o' + .$ID + 'panel.getComponent(0);' + '\n'
 
+      
       return(out)
     }
 

@@ -94,6 +94,7 @@ gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...) {
      else
        label <- "tab"
      child$..label <- label
+     child$x.hidden <- TRUE
      ## tooltips
      if(!is.null(theArgs$tooltip))
        child$..tabTooltip <- theArgs$tooltip

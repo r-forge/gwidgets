@@ -1,5 +1,5 @@
 w <- gwindow("Example of gWidgetsWWW widgets")
-g1 <- ggroup(cont=w)
+g1 <- ggroup(cont=w, horizontal=FALSE)
 l <- glabel("This page shows the status of several of the widgets in gWidgetsWWW.",cont=g1)
 
 g = gexpandgroup("gmenu", cont=g1)

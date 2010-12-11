@@ -155,6 +155,7 @@ gwindow <- function(title="title", visible=TRUE,
   w$doLoadingText <- gWidgetsWWWIsLocal() # do we print a message when calling a handler
   w$loadingText <- gettext("Loading...")  # prints when a handler is called to indicate a request.
   ##  w$..visible <- FALSE
+  w$x.hidden <- FALSE                   # don't hide.
 
   
 

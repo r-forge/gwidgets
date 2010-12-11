@@ -105,6 +105,7 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
   
   window$addAction(widget)              # for printing
   widget$handlerID <- window$addHandler(signal = NULL, handler = handler)
+  widget$x.hidden <- FALSE
   
   ## make Show method -- will call show when added as a handler?
 #  widget$x.hidden <- TRUE

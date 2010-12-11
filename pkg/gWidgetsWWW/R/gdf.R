@@ -32,19 +32,20 @@
      
 gdf <- function(items = NULL, name = deparse(substitute(items)),
                 do.subset = FALSE,
-                container = NULL, ...) {
+                container = NULL, ...,
+                width=200, height=200   # gWidgetsWWW defaults
+                ) {
 
   
   widget <- EXTComponentDfStore$new(toplevel=container$toplevel,
                                       ..name = name,
-                                      ..do.subset = do.subset
+                                      ..do.subset = do.subset,
+                                    ..width = width,
+                                    ..height= height
                                       )
   class(widget) <- c("gDf",class(widget))
 
-  ## process width, height if given
-  theArgs <- list(...)
-  if(!is.null(theArgs$width)) widget$..width <- theArgs$width
-  if(!is.null(theArgs$height)) widget$..height <- theArgs$height
+
 
   
   ## set up store

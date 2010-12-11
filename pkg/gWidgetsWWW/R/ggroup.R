@@ -44,17 +44,26 @@ EXTGroup$ExtCfgOptions <-  function(.) {
   ## has its own issues with this code base.
   ## http://stackoverflow.com/questions/2479342/problem-with-extjs-vbox-layout-nested-in-a-hbox-layout
   if(exists("..horizontal",envir=., inherits=FALSE)) {
+    frame <- .$has_local_slot("..debug")
+
     if(.$..horizontal) {
-#      out[['layoutConfig']] <- list(type="hbox")
-#      out[['defaults']] <- list(flex=0,frame=FALSE)
-      out[['layout']] <- "column"
+
+      ## was
+#      out[['layout']] <- "column"
+
+      out[['layout']] <- "hbox"
+      out[['defaults']] <- list(frame=frame, defaultAnchor="t", flex=0)#,flex=0)
+      
       if(exists("..use.scrollwindow", envir=., inherits=FALSE))
         out[['autoScroll']] <- .$..use.scrollwindow
     } else {
+
+      out[['layoutConfig']] <-  list(type="vbox", pack="start")#, align="stretch")
+      out[['defaults']] <- list(flex=0, defaultAnchor="l", frame=frame)
+
+      
       ## This is  wierd -- vbox fails here. What is right for vertical layout
 #      out[['layout']] <- "vbox"
-#      out[['layoutConfig']] <-  list(type="vbox")
-#      out[['defaults']] <- list(flex=0,frame=FALSE)
 #      out[['autoscroll']] <- TRUE
     }
   }

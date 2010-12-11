@@ -565,6 +565,13 @@ EXTWidget$writeConstructor <- function(.) {
     }
   }
 
+
+  
+  if(!.$has_local_slot("..shown") && (.$has_local_slot("x.hidden") && .$x.hidden))
+    out <- out +
+      sprintf("Ext.get('%s').addClass('x-hidden');\n", .$ID)
+
+  
   ## add in at the end 
   if(exists("..writeConstructor", envir=., inherits=FALSE)) {
     out <- out + .$..writeConstructor() + "\n"
@@ -778,6 +785,7 @@ EXTComponent$setValueJS <- function(.,...) {
 ##'
 ##' Examples are buttons, statusbar, ... These don't have a \code{[} method or a getValues/setValues bit
 EXTComponentNoItems <- EXTComponent$new()
+EXTComponentNoItems$x.hidden <- TRUE
 
 ##' setValue for componets without items
 ##'
@@ -904,8 +912,9 @@ EXTComponentText$writeHandlerFunction <- function(., signal, handler) {
 ## Show -- to show object -- loops over children
 
 EXTContainer <- EXTWidget$new(children = list(),
-                              width = "auto",
-                              height = "auto",
+##XXX                              width = "auto",
+##                              height = "auto",
+                              width=NULL, height=NULL, ## JV XXX
                               makeItemsFixedItems = "" # to make items[]
                               )
 ##' A new id
@@ -1217,7 +1226,7 @@ EXTContainer$show <- function(., queue=FALSE) {
  ##             ']' + '});' + "\n"
 
  out <- String() +
-   sprintf("%s = new %s({\n%s,\n\titems:[%s]});\n",
+   sprintf("%s = new %s({\n\t%s,\n\titems:[%s]});\n",
            .$asCharacter(), .$ExtConstructor,
            .$mapRtoObjectLiteral(doBraces=FALSE),
            .$makeItems())
@@ -1234,6 +1243,10 @@ EXTContainer$show <- function(., queue=FALSE) {
  ##  }
  ##  out <- out + sprintf("%s.doLayout();\n", .$asCharacter())
 
+ if(!.$has_local_slot('..shown') && (.$has_local_slot("x.hidden") && .$x.hidden))
+   out <- out +
+     sprintf("%s.addClass('x-hidden');\n", .$asCharacter())
+ 
   if(.$has_local_slot("..visible"))
     out <- out + .$setVisibleJS()
   
@@ -2171,11 +2184,15 @@ EXTComponentInPanel$writeConstructor <- function(.) {
     'o' + .$ID + 'panel = new Ext.Panel(' + # no var -- global
       .$mapRtoObjectLiteral(lst) +
         ');' + '\n'
+
+ if(!.$has_local_slot('..shown') && (.$has_local_slot("x.hidden") && .$x.hidden))  
+   out <- out +
+     sprintf("%s.addClass('x-hidden');\n", .$asCharacter())
+  
   ## get component from first child object
   out <- out +
     'o' + .$ID + ' = ' +                # no var -- global
       'o' + .$ID + 'panel.getComponent("' + .$getItemID() + '");' + '\n'
-  
   return(out)
 }
 
@@ -2192,7 +2209,7 @@ EXTComponentWithItems$itemname <- "item"
 ##' property Which ext constructor to use
 EXTComponentWithItems$ExtConstructor <- "Ext.Panel"
 ## ##' property. The x.hidden property, when TRUE, will first hide widget
-## EXTComponentWithItems$x.hidden <- FALSE
+EXTComponentWithItems$x.hidden <- TRUE
 
 ##' assign value
 EXTComponentWithItems$assignValue <- function(., value) {

@@ -88,6 +88,9 @@ gcalendar <- function(text = "", format = "%Y-%m-%d",
               sep="")
 
       out <- out +
+        sprintf("%sdate.addClass('x-hidden');\n", .$asCharacter())
+      
+      out <- out +
         sprintf("%s = %sdate.getComponent(0);\n", .$asCharacter(), .$asCharacter())
       return(out)
     }

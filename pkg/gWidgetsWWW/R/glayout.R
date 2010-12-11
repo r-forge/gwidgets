@@ -81,7 +81,8 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
                  sep="")
     return(out)
   }
-          
+
+  tbl$x.hidden <- FALSE
   tbl$ExtConstructor <- "Ext.Panel" ## inherits
   tbl$ExtCfgOptions <- function(.) { ## ih
 #    defaults <- String('{') +

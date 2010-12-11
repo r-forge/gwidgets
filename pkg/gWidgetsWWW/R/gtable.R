@@ -53,11 +53,14 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
                    icon.FUN = NULL,
                    filter.column = NULL, filter.labels = NULL,
                    filter.FUN = NULL, handler = NULL, action = NULL,
-                   container = NULL, ...) {
+                   container = NULL, ...,
+                   width=200, height=200
+                   ) {
 
   widget <- EXTComponentWithStore$new(toplevel=container$toplevel,
                                       ..multiple = multiple,
-                                      ..icon.FUN = icon.FUN
+                                      ..icon.FUN = icon.FUN,
+                                      ..width=200, ..height=200
                                       )
 
   class(widget) <- c("gTable",class(widget))
@@ -89,7 +92,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
 
   ## set up widget
   widget$setValue(value = 1)            # first column is selected on startup
-
+  
   
 
   ## setValues need to add in icons.

@@ -1,4 +1,5 @@
 ## TODO for gWidgetsWWW
+*notebooks, ext3.3?
 * Need to fix ggroup layout for handler responses.
 * should I use proxystore type trick for gtext, glabel, gedit,
 ... Otherwise I need to strip off \n from strings
