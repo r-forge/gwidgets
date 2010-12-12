@@ -950,7 +950,7 @@ EXTContainer$add <- function(.,child,...) {
    child$init()                        # initialize
    
    ## pass along parent properties
-   child$titlename <- .$titlename
+##XXX   child$titlename <- .$titlename
 
    ## Move scripts, css to toplevel
    if(!is.null(child$css))

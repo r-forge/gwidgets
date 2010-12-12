@@ -112,7 +112,7 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
   widget$ExtConstructor <- "Ext.Action"
   widget$ExtCfgOptions <- function(.) {
     handlerString <- String() +
-      sprintf("function() {runHandlerJS(%s, '', '')};\n", .$handlerID)
+      sprintf("function() {runHandlerJS(%s, '', '')}", .$handlerID)
       ## 'function() {runHandlerJS(' +
       ##   .$handlerID + ',\'""\',\'""\')}'
 

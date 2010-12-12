@@ -796,6 +796,6 @@ gw_package <- function() {
 ##' @return Creates a web page for browsing objects in the workspace
 ##' @export
 gw_browseEnv <- function() {
-  localServerOpen("apps/gw_browser.R", package="gWidgetsWWW")
+  localServerOpen("apps/gw_browse.R", package="gWidgetsWWW")
 }
   

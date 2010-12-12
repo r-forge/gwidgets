@@ -170,8 +170,8 @@ gwindow <- function(title="title", visible=TRUE,
   w$proxyStores <- list()         # local instance
   
   ## store name in title for handlers.
-  w$titlename <- make.names(title)
-  assign(w$titlename,w, envir=.GlobalEnv)
+##XXX  w$titlename <- make.names(title)
+##XXX  assign(w$titlename,w, enxvir=.GlobalEnv)
 
   ## Find values from apache config or from local config
 

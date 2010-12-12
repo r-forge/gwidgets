@@ -47,7 +47,7 @@ if(is.null(file))  {
     dbCreate(sessionDbFile, type=sessionDbType)
   db <- initDb(sessionDbFile, type=sessionDbType)
   ..e <- new.env()
-  sessionID <- newSession(db, e=..e) ## XXX what is e?
+##  sessionID <- newSession(db, e=..e) ## XXX what is e?
 
   
   ## create output
@@ -144,10 +144,19 @@ if(is.null(file))  {
   cat("</script>\n")
 
 
-
-
+  ## get sessionID from environment. It is defined in displaying gwindow
+  nms <- ls(..e)
+  ind <- sapply(nms, function(i) {
+    is(get(i, envir=..e), "gWindow")
+  })
+  if(any(ind)) {
+    w <- get(nms[min(ind)], envir=..e)
+    saveSession(db, w$sessionID, ..e)
+  } else {
+    ## XXX a big error here
+  }
   ## This saves the session and disconnects the data base
-  saveSession(db, sessionID, ..e)
+
   try(dbDisconnect(db), silent=TRUE)
 
   cat("</BODY></HTML>\n")

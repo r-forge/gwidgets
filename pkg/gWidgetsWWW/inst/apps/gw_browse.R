@@ -58,17 +58,17 @@ detailOn.data.frame <- function(x, varname, cont, ...) {
   detailOn.matrix(x, varname, cont, ...)
 }
 detailOn.list <- function(x, varname, cont, width, height, ...) {
-  getInfo <- function(x) data.frame(Name=names(x),
-                                    has.offspring=sapply(names(x), function(i) is.recursive(x[[i]])),
-                                    stringsAsFactors=FALSE)
   offspring <- function(path, offspring.data, ...) {
+    getInfo <- function(x) data.frame(Name=names(x),
+                                      has.offspring=sapply(names(x), function(i) is.recursive(x[[i]])),
+                                      stringsAsFactors=FALSE)
     if(length(path) == 0)
       getInfo(offspring.data)
     else
       getInfo(offspring.data[[path]])
   }
   t <- gtree(offspring=offspring, offspring.data=x, cont=cont)
-  size(t) <- c(width, height)
+#  size(t) <- c(width, height)
 }
 
 ##################################################
@@ -95,5 +95,5 @@ workspace_objects <- gtable(list_objects(), cont=g,
   visible(w1) <- TRUE
 })
 
-gstatusbar("Object browser. Click update to refresh list", cont=w)
+gstatusbar("Object browser. Click update to refresh list. Double click for detail.", cont=w)
 visible(w) <- TRUE
