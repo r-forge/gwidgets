@@ -98,12 +98,6 @@ if(is.null(file))  {
   ##   out <- out + '</script>'
 
 
-  ## this is for processing code -- isn't working without Rpad
-  ##   out <- out +
-  ##     '<script type="text/javascript">' +
-  ##       paste(readLines(system.file("javascript","processing.js", package="gWidgetsWWW")), collapse="\n") +
-  ##         paste(readLines(system.file("javascript","processinginit.js", package="gWidgetsWWW")), collapse="\n") +
-  ##           '</script>'
   
   out <- out +
     '</head>' + '\n'
@@ -150,14 +144,14 @@ if(is.null(file))  {
     is(get(i, envir=..e), "gWindow")
   })
   if(any(ind)) {
-    w <- get(nms[min(ind)], envir=..e)
+    w <- get(nms[min(which(ind))], envir=..e)
+    ## This saves the session and disconnects the data base
     saveSession(db, w$sessionID, ..e)
+    try(dbDisconnect(db), silent=TRUE)
   } else {
-    ## XXX a big error here
+    ## XXX a big error here -- no sessionID
   }
-  ## This saves the session and disconnects the data base
 
-  try(dbDisconnect(db), silent=TRUE)
 
   cat("</BODY></HTML>\n")
 }

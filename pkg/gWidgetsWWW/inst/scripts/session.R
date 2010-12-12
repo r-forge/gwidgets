@@ -39,17 +39,20 @@ initDb <- function(file=sessionDbFile, type=sessionDbType) {
 }
 
 ## session API
+##' Is this key still valid
+##'
+##' return list with retval componet and reason component
+##' @param db database object
+##' @param key sessionID
 validKey <- function(db, key) {
   ## return(list(retval=TRUE)) ## DEBUG
-
-
   val <- try(dbExists(db, key), silent=TRUE)
   if(inherits(val, "try-error"))
      return(list(retval=FALSE, reason="no such key"))
   if(!val)
     return(list(retval=FALSE, reason="no such key"))
   ## check that not timed out
-  e <- db[['key']]
+  e <- db[[key]]
   if(sessionHasTimedout(e)) {
      return(list(retval=FALSE, reason="Session has expired"))
   }
