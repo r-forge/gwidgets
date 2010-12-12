@@ -33,18 +33,15 @@ EXTGroup$ExtCfgOptions <-  function(.) {
               hideBorders=TRUE,          # key to getting rid of blud
               collapsed=!.$..visible
               )
-  ## orientation Here we pick a layout manager. Oddly -- to me -- the
-  ## "vbox" below does not work This is a real issue, as in panels
-  ## added purely in JS (handler repsonse) the layout fails This makes
-  ## the old delete(g, g1); g1 <<- ggroup(cont=g) trick fail, as the
-  ## g1 layout is always horizontal There is a stack overflow post
-  ## suggesting that a combination of layoutConfig and dfautls, as
-  ## commented out below *along* with using layout="fit" in gwindow
-  ## will work, but I had no luck even with updating to 3.3.0, which
-  ## has its own issues with this code base.
+  ## We consulted:
   ## http://stackoverflow.com/questions/2479342/problem-with-extjs-vbox-layout-nested-in-a-hbox-layout
+  ## There had been an issue and for some odd reason these argument
+  ## were a bit fussy -- put in the wrong ones and thewhole thing
+  ## blows up. Anyways, these seem to work, although there are issues with some nested ggroup containers.
   if(exists("..horizontal",envir=., inherits=FALSE)) {
-    frame <- .$has_local_slot("..debug")
+
+
+    frame <- !is.null(getOption("gWidgetsWWW_debug"))
 
     if(.$..horizontal) {
 
@@ -52,13 +49,13 @@ EXTGroup$ExtCfgOptions <-  function(.) {
 #      out[['layout']] <- "column"
 
       out[['layout']] <- "hbox"
-      out[['defaults']] <- list(frame=frame, defaultAnchor="t", flex=0)#,flex=0)
+      out[['defaults']] <- list(frame=frame, defaultAnchor="t", flex=0)
       
       if(exists("..use.scrollwindow", envir=., inherits=FALSE))
         out[['autoScroll']] <- .$..use.scrollwindow
     } else {
 
-      out[['layoutConfig']] <-  list(type="vbox", pack="start")#, align="stretch")
+      out[['layoutConfig']] <-  list(type="vbox", pack="start") #, align="stretch")
       out[['defaults']] <- list(flex=0, defaultAnchor="l", frame=frame)
 
       
@@ -98,6 +95,18 @@ EXTGroup$addSpace <- function(., value, horizontal=TRUE, ...) {
 EXTGroup$addSpring <- function(.) {invisible("")}
 
 ##' ggroup is the basic box container
+##'
+##' Basic box container.
+##' Warning: When groups are nested, it may be necessary to
+##' set the width of a horizontal box container, as otherwise sibling
+##' components to the right of the container will not be displayed.
+##' @param horizontal logical. If True a hbox, else a vbox
+##' @param spacing spacing between child components
+##' @param use.scrollwindow ignored
+##' @param container parent container
+##' @param ... passed to \code{add} method of parent
+##' @example Tests/test-ggroup.R
+##' @export
 ggroup <- function(horizontal=TRUE, spacing=5, use.scrollwindow = FALSE,
                     container,...) {
    ## a group
@@ -127,6 +136,14 @@ EXTFrame$ExtCfgOptions <- function(.) {
 EXTFrame$setValueJSMethod = "setTitle"
 
 ##' gframe is a title-decorated ggroup box container
+##'
+##' Use \code{svalue<-} to adjust the title
+##' @param text label text
+##' @param pos position of label. Ignored?
+##' @param horizontal logical. A hbox or vbox?
+##' @param container parent container
+##' @param ... passed to add method of parent
+##' @rdname ggroup
 gframe <- function(text = "", pos = 0, horizontal=TRUE, container=NULL,...) {
 
   cont <- EXTFrame$new(toplevel = container$toplevel,
@@ -160,6 +177,17 @@ EXTExpandGroup$ExtCfgOptions <- function(.) {
 }
 
 ##' gexpandgroup is a group with trigger icon and label
+##'
+##' Use \code{svalue<-} to adjust the title. The \code{visible<-}
+##' method is used to programatically change display
+##' @param text label text
+##' @param horizontal logical. Indicates direction children are added
+##' @param handler Called when expanded or closed
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... passed to add method of parent
+##' @rdname ggroup
+##' @export
 gexpandgroup <- function(text = "", horizontal = TRUE,
                          handler = NULL, action=NULL,
                          container=NULL, ...) {

@@ -777,3 +777,25 @@ localServerRestart <- restartRpadServer <- function() .Deprecated("",msg="No lon
 ##   port <- get("RpadPort", envir = .RpadEnv)
 ##   browseURL(sprintf("http://127.0.0.1:%s/%s", port, file))
 ## }
+
+
+## Some "apps" from the apps directory
+
+##' a package browser/installer
+##'
+##' Available for local installs only
+##' @return makes a web page for managing installation/loading of packages
+##' @export
+gw_package <- function() {
+  localServerOpen("apps/gw_package.R", package="gWidgetsWWW")
+}
+
+##' A simple workspace browser
+##'
+##' Available for local use
+##' @return Creates a web page for browsing objects in the workspace
+##' @export
+gw_browseEnv <- function() {
+  localServerOpen("apps/gw_browser.R", package="gWidgetsWWW")
+}
+  

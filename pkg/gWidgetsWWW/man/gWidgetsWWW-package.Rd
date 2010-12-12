@@ -219,6 +219,12 @@ javascript libraries.
   defined.   
   \cr
 
+  Nested horizontal groups will expand to fill all the space to the
+  right. To stop this behaviour -- which is desired as you can't
+  display other widgets -- set the width of the container via the
+  \code{size<-} method.
+
+
   The \code{gframe} container simply adds a title to a \code{ggroup}
   instance. This can be adjusted with the \code{svalue<-} method.
   \cr

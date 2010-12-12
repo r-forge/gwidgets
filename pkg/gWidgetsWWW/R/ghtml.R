@@ -39,6 +39,7 @@ ghtml <- function(x, container = NULL,  ...) {
 
   ## helper function
   widget$htmlEscape <- function(., val) {
+    val <- gsub("\n","<br />", val)
     val <- gsub("'", "&#146;", val)   # get rid of ' issue
     val <- escapeQuotes(val)
     val

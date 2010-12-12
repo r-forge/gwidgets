@@ -1,11 +1,7 @@
 ## TODO for gWidgetsWWW
-*notebooks, ext3.3?
-* Need to fix ggroup layout for handler responses.
 * should I use proxystore type trick for gtext, glabel, gedit,
 ... Otherwise I need to strip off \n from strings
 * ghtml and URLs. Was this working before?
-* should I make some useful apps: installpackage, edit object,
-  workspace browser...
 * spotfire-like example
 * date renderer in ComponentWithStore's makeColumnModel
 * need to move methods out of widget, into Traits.
@@ -18,12 +14,15 @@ DONE? * fix SIGPIPE error with local
 * gbutton and actions in subwindows  
 * spinbutton trigger icons -- need to work with css to get this going. Wait until part of Ext, not Ext.ux
 * gsvg -- need to implement adding a handler. Requires hacking into svg code produced by the device
-* gfile: server version, now its local only 
+* gfile: Local -- a mess;  server version, now its local only 
 * Implement  defaultWidget, 
 * gtree -- grid, not single column
 * forgot to do a popup: addpopupmenu, add3rdmouse ...
 * drag and drop functions
 * checkbox in grid FIX CHECKED INIT
+STARTED * should I make some useful apps: installpackage, edit object,workspace browser...
+DONE * notebooks
+DONE * Need to fix ggroup layout for handler responses.
 DONE* clean up use of statusbar for ajax messages. (Timers) 
 DONE * ex-ggplot2 demo is being buggy
 DONE * togglebutton

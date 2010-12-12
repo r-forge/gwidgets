@@ -60,7 +60,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
   widget <- EXTComponentWithStore$new(toplevel=container$toplevel,
                                       ..multiple = multiple,
                                       ..icon.FUN = icon.FUN,
-                                      ..width=200, ..height=200
+                                      ..width=width, ..height=height
                                       )
 
   class(widget) <- c("gTable",class(widget))

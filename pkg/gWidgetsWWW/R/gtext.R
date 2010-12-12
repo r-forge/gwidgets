@@ -66,13 +66,13 @@ gtext <- function(text = NULL, width = NULL, height = 300,
   widget$setValueJS <- function(.,...) {
     if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
 
-    if(gWidgetsWWWIsLocal()) {
-      theData <- paste(.$..data, collapse="\\n")
-    } else {
-      theData <- paste(.$..data, collapse="\\n")
-    }
+    ## if(gWidgetsWWWIsLocal()) {
+    ##   theData <- paste(.$..data, collapse="\\n")
+    ## } else {
+    ##   theData <- paste(.$..data, collapse="\\n")
+    ## }
 
-    out <- sprintf("%s.setValue('%s');", .$asCharacter(), stripSlashN(.$..data, dostrwrap=FALSE))
+    out <- sprintf("%s.setValue('%s');", .$asCharacter(), stripSlashN(.$..data, sep=" ", dostrwrap=FALSE))
     ## out <- String() +
     ##   .$asCharacter() + '.setValue(' +
     ##     shQuote(theData) + ');' + '\n'

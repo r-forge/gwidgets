@@ -4,6 +4,8 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+* added a few local apps: gw_package and gw_browseEnv
+* reworked ggroup to improve nested layouts.
 * added update method for gwindow instances. This will refresh a page.
 * added a Tests directory along with many tests. (need to be run by
   manually clicking, not automated)

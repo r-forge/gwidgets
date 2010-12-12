@@ -105,15 +105,16 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
   
   window$addAction(widget)              # for printing
   widget$handlerID <- window$addHandler(signal = NULL, handler = handler)
-  widget$x.hidden <- FALSE
+  widget$x.hidden <- FALSE              # not for actinos, undefined.
   
   ## make Show method -- will call show when added as a handler?
 #  widget$x.hidden <- TRUE
   widget$ExtConstructor <- "Ext.Action"
   widget$ExtCfgOptions <- function(.) {
     handlerString <- String() +
-      'function() {runHandlerJS(' +
-        .$handlerID + ',\'""\',\'""\')}'
+      sprintf("function() {runHandlerJS(%s, '', '')};\n", .$handlerID)
+      ## 'function() {runHandlerJS(' +
+      ##   .$handlerID + ',\'""\',\'""\')}'
 
     out <- list(id = NULL,
                 renderTo = NULL,

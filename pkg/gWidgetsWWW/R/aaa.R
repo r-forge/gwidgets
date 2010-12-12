@@ -1010,8 +1010,18 @@ EXTContainer$add <- function(.,child,...) {
 ##'  this is likely not perfect!
 ##' @param child gWidget instance
 EXTContainer$addJS <- function(., child) {
-  out <- sprintf("%s.add(%s); %s.doLayout();\n",
-                 .$asCharacter(), child$asCharacter(), .$asCharacter())
+  out <- String() +
+    sprintf("%s.add(%s); %s.doLayout();",
+            .$asCharacter(), child$asCharacter(), .$asCharacter())
+  ## walk back tree
+  toplevel <- .$toplevel
+  parent <- .$parent
+  while(!parent$identical(toplevel)) {
+    out <- out +
+      sprintf("%s.doLayout();\n", parent$asCharacter())
+    parent <- parent$parent
+  }
+  
   return(out)
 }
 
