@@ -4,6 +4,8 @@ NEWS for gWidgetsWWW
 
 Changes for 0.0-22
 -------------------
+
+* upgraded ext to ext-3.3.0
 * added a few local apps: gw_package and gw_browseEnv
 * reworked ggroup to improve nested layouts.
 * added update method for gwindow instances. This will refresh a page.

@@ -40,7 +40,7 @@ gradio <- function(items, selected = 1, horizontal=FALSE,
   widget$setValues(value = items)
 
   ## define methods
-  ## The value store is the index -- not the text
+  ## The value stored is the index -- not the text
   ## this way we are untainted.
   widget$assignValue <- function(., value) {
     .$..data <- as.numeric(value[[1]])

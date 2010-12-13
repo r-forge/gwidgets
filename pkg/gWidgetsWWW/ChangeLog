@@ -1,3 +1,12 @@
+2010-12-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* upgraded to ext-3.3.0. Some widgets now need explicit size
+	(gsvg). Others seem to be working
+
+2010-12-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/LocalVersion.R (gw_package): New functions for use locally.
+
 2010-12-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gnotebook.R (widget$add): put x.hidden attribute here, not elsewhere.

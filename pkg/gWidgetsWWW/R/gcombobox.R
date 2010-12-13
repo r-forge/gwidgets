@@ -171,8 +171,8 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
       } else {
         values <- .$..store$data
         ## depends on drop
-        if(names(values)[1] == "..index")
-          values <- values[,-1, drop=FALSE]             # drop ..index
+        if(names(values)[1] == "__index")
+          values <- values[,-1, drop=FALSE]             # drop __index
         
         if(is.null(drop) || drop) {
           return(values[ind, chosenCol, drop=TRUE])

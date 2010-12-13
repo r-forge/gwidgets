@@ -87,25 +87,32 @@ makeNewPage <- function(cont, width=600, height=500) {
   
   addHandlerDoubleclick(packageTable, handler=function(h,...) {
    pkgname <- svalue(h$obj)
-   out <- try(do.call("install.packages", list(pkgname)), silent=TRUE)
-   if(inherits(out, "try-error"))
-     galert(sprintf("Error trying to install %s", pkgname), parent=w)
-   else
-     galert(sprintf("Installed package %s", pkgname), parent=w)
+   type <- svalue(package_type)
+   depends <- svalue(package_depends)
+   gconfirm(sprintf("Install package %s?", pkgname), parent=w,
+            handler=function(h,...) {
+              out <- try(do.call("install.packages", h$action), silent=TRUE)
+              if(inherits(out, "try-error"))
+                galert(sprintf("Error trying to install %s", pkgname), parent=w)
+              else
+                galert(sprintf("Installed package %s", pkgname), parent=w)
+            },
+            action=list(pkgs=pkgname, type=type, dependencies=depends)
+            )
  })
 
   
   lyt <- glayout(cont=g)
   lyt[1,1:2] <- "Double click a package to install. Options for install.packages:"
   lyt[2,1] <- "Type:"
-  lyt[2,2] <- gcombobox(c("source", "mac.binary", "mac.binary.leopard", "win.binary", "win64.binary"),
-                        cont=lyt)
+  lyt[2,2] <- (package_type <- gcombobox(c("source", "mac.binary", "mac.binary.leopard", "win.binary", "win64.binary"),
+                        cont=lyt))
 
   lyt[3,1] <- "Dependencies"
-  lyt[3,2] <- gcheckboxgroup(c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances"),
+  lyt[3,2] <- (package_depends <- gcheckboxgroup(c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances"),
                               checked=c(TRUE, TRUE, FALSE, TRUE, FALSE),
                               cont=lyt,
-                              horizontal=FALSE)
+                              horizontal=FALSE))
   
 }
 

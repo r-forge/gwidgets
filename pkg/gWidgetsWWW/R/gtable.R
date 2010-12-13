@@ -86,7 +86,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
     ## must up the chosen col by 1
     store$chosenCol <- store$chosenCol + 1
   }
-  items <- cbind(..index=seq_len(nrow(items)), items)
+  items <- cbind("__index"=seq_len(nrow(items)), items)
   store$data <- items
   widget$..store <- store
 
@@ -111,7 +111,7 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
         items <- items[,c(n+1,1:n)]
       }
     }
-    items <- cbind("..index"=seq_len(nrow(items)), items)
+    items <- cbind("__index"=seq_len(nrow(items)), items)
     .$..store$data <- items
 
     if(exists("..shown",envir=., inherits=FALSE))

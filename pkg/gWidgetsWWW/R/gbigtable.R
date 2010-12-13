@@ -66,7 +66,7 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
     items <- data.frame(items, stringsAsFactors=FALSE)
   }
   
-  items <- cbind(..index=seq_len(nrow(items)), items)
+  items <- cbind("__index"=seq_len(nrow(items)), items)
   store$data <- items
   widget$..store <- store
 
@@ -79,7 +79,7 @@ gbigtable <- function(items, multiple = FALSE, chosencol = 1,
     ## XXX value must be a data frame of the same size as original
     ## add in icons if present
     items <- value
-    items <- cbind("..index"=seq_len(nrow(items)), items)
+    items <- cbind("__index"=seq_len(nrow(items)), items)
     .$..store$data <- items
 
     if(exists("..shown",envir=., inherits=FALSE))

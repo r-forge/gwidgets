@@ -68,7 +68,7 @@ addHandlerClicked(doButton, handler = function(h,...) {
        t.test(df[,var], mu=as.numeric(mu), alt=as.character(alt))
      })
      
-     svalue(outputArea) <- val
+     svalue(outputArea) <- paste(val, collapse="\\n")
    }
 })
 
@@ -76,7 +76,7 @@ addHandlerClicked(doGraph, handler = function(h,...) {
   df <- svalue(selData)
   var <- svalue(selVariable)
   width <- 400; height <- 300
-
+  dpi <- 118
 
 
   w1 <- gwindow("EDA", parent = w, width=width, height=height+2*25 + 20 + 30)
@@ -87,7 +87,7 @@ addHandlerClicked(doGraph, handler = function(h,...) {
 
   ## call within callback, otherwise may not be present
   require(RSVGTipsDevice, quietly=TRUE, warn=FALSE)
-  devSVGTips(f <- getStaticTmpFile(ext=".svg"))
+  devSVGTips(f <- getStaticTmpFile(ext=".svg"), width=width/dpi, height=height/dpi)
   df <- get(df, inherits=TRUE)
   hist(df[, var], main=var)
   dev.off()

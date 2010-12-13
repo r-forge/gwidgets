@@ -553,20 +553,9 @@ EXTWidget$writeConstructor <- function(.) {
       ' = new ' +.$ExtConstructor + '(' +
         .$mapRtoObjectLiteral() +
           ');\n'
+
   ## write out x-hidden unless requested not to.
   ## x-hidden causes the widget not to display until added to parent
-  top <- .$toplevel
-  if(!is.null(top)) {
-    if(!exists("..shown", envir=top, inherits=FALSE) ||
-       (exists("..shown", envir=top, inherits=FALSE)  && !top$..shown)) {
-      ## if(.$has_local_slot("x.hidden") && .$x.hidden)
-      ##   out <- out +
-      ##     'Ext.get(' + shQuote(.$ID) +').addClass("x-hidden");\n'
-    }
-  }
-
-
-  
   if(!.$has_local_slot("..shown") && (.$has_local_slot("x.hidden") && .$x.hidden))
     out <- out +
       sprintf("Ext.get('%s').addClass('x-hidden');\n", .$ID)
@@ -785,7 +774,7 @@ EXTComponent$setValueJS <- function(.,...) {
 ##'
 ##' Examples are buttons, statusbar, ... These don't have a \code{[} method or a getValues/setValues bit
 EXTComponentNoItems <- EXTComponent$new()
-EXTComponentNoItems$x.hidden <- TRUE
+EXTComponentNoItems$x.hidden <- FALSE
 
 ##' setValue for componets without items
 ##'
@@ -1638,10 +1627,10 @@ EXTComponentWithStore$getValue <- function(., index=NULL, drop=NULL,...) {
 
 ##' getValue method for component with stores
 ##'
-##' @returns values in store dropping ..index
+##' @returns values in store dropping __index
 EXTComponentWithStore$getValues <- function(., ...) {
   tmp <- .$..store$data
-  if(names(tmp)[1] == "..index")
+  if(names(tmp)[1] == "__index")
     tmp <- tmp[,-1, drop=FALSE]
   tmp
 }
@@ -1706,12 +1695,14 @@ EXTComponentWithStore$setValue <- function(., index=NULL, ..., value) {
 
 ##' Synchronize the values in the R widget with the GUI
 ##'
-##' @param ,,, passed to serValueJS of any instance overrides
+##' @param . object
+##' @param ... passed to serValueJS of any instance overrides
 EXTComponentWithStore$setValueJS <- function(., ...) {
-  if(exists("..setValueJS", envir=., inherits=FALSE)) .$..setValueJS(...)
+    if(.$has_local_slot("..setValueJS"))
+      .$..setValueJS(...)
   
   ind <- sort(.$getValue(index=TRUE, drop=TRUE))
-  if(ind[1] <= 0)
+  if(length(ind) == 0 || ind[1] <= 0)
     out <- sprintf("%s.clearValue()", .$asCharacter())
   else
     out <- sprintf("%s.getSelectionModel().selectRows(%s);", .$asCharacter(), toJSON(ind-1))
@@ -1727,7 +1718,7 @@ EXTComponentWithStore$setValueJS <- function(., ...) {
 ##' @param value values to store
 EXTComponentWithStore$setValues <- function(.,i,j,...,value) {
   ## XXX need to include i,j stuff
-  items <- cbind("..index"=seq_len(nrow(value)), value)
+  items <- cbind("__index"=seq_len(nrow(value)), value)
   .$..store$data <- value
   if(.$has_local_slot("..shown"))
     .$addJSQueue(.$setValuesJS(...))
@@ -1751,7 +1742,7 @@ EXTComponentWithStore$setValuesJS <- function(., ...) {
 ##'
 ##' Just defines the value variable in javascript to pass back to R via _transportToR
 EXTComponentWithStore$transportValue <- function(.,...) {
-  ## we packed in ..index so we can get the index even if we've sorted
+  ## we packed in __index so we can get the index even if we've sorted
   if(.$has_local_slot("..multiple") &&.$..multiple) {
     ## work a bit to get the value
     out <- String() +
@@ -1761,14 +1752,14 @@ EXTComponentWithStore$transportValue <- function(.,...) {
             'var value = new Array();', # value is return value
             'for(var i = 0, len=values.length; i < len; i++) {',
             '  var record = values[i];',
-            '  var data = record.get("..index");',
+            '  var data = record.get("__index");',
             '  value[i] = data',
             '};',
             sep="")
   } else {
     out <- String() +
       paste('var record = w.getStore().getAt(rowIndex);',
-            'var value = record.get("..index");',
+            'var value = record.get("__index");',
             sep="")
   }
   return(out)
@@ -1840,7 +1831,7 @@ EXTComponentWithStore$setVisible <- function(., value) {
   .$..visible <- value                # XXX???
   inds <- which(value)
   reg <- paste("^",inds,"$", sep="", collapse="|")
-  .$filter("..index", reg)
+  .$filter("__index", reg)
 }
 
 
@@ -1982,7 +1973,7 @@ EXTComponentWithStore$transportSignal <- c("cellclick")
 ##' @param ... ignored
 ##' @return javascript string
 EXTComponentWithStore$transportValue <- function(.,...) {
-    ## we packed in ..index so we can get the index even if we've sorted
+    ## we packed in __index so we can get the index even if we've sorted
     if(.$..multiple) {
        ## work a bit to get the value
        out <- String() +
@@ -1992,13 +1983,13 @@ EXTComponentWithStore$transportValue <- function(.,...) {
                'var value = new Array();' +
                  'for(var i = 0, len=values.length; i < len; i++) {' +
                    'var record = values[i];' +
-                     'var data = record.get("..index");' +
+                     'var data = record.get("__index");' +
                          'value[i] = data' +
                            '};'
      } else {
        out <- String() +
          'var record = w.getStore().getAt(rowIndex);' +
-           'var value = record.get("..index");' 
+           'var value = record.get("__index");' 
      }
     return(out)
   }
@@ -2219,7 +2210,7 @@ EXTComponentWithItems$itemname <- "item"
 ##' property Which ext constructor to use
 EXTComponentWithItems$ExtConstructor <- "Ext.Panel"
 ## ##' property. The x.hidden property, when TRUE, will first hide widget
-EXTComponentWithItems$x.hidden <- TRUE
+EXTComponentWithItems$x.hidden <- FALSE
 
 ##' assign value
 EXTComponentWithItems$assignValue <- function(., value) {

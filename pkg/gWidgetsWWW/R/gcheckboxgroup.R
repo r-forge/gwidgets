@@ -178,7 +178,7 @@ gcheckboxgrouptable <- function(items,
     items <- data.frame(items, stringsAsFactors=FALSE)
   }
   
-  items <- cbind(..index=seq_len(nrow(items)), items) # a data frame
+  items <- cbind("__index"=seq_len(nrow(items)), items) # a data frame
   store$data <- items
   widget$..store <- store
 
@@ -244,7 +244,7 @@ gcheckboxgrouptable <- function(items,
     } else {
       ## depends on drop
       values <- .$..store$data
-      values <- values[,-1, drop=FALSE]             # drop ..index
+      values <- values[,-1, drop=FALSE]             # drop __index
       if(is.null(drop) || drop) {
         return(values[ind,1,drop=TRUE])
       } else {
@@ -257,7 +257,7 @@ gcheckboxgrouptable <- function(items,
   ## i,j ignored here
   widget$setValues <- function(.,i,j,...,value) {
     items <- value
-    items <- cbind("..index"=seq_len(nrow(items)), items)
+    items <- cbind("__index"=seq_len(nrow(items)), items)
     .$..store$data <- items
 
     if(exists("..shown",envir=., inherits=FALSE))
@@ -332,7 +332,7 @@ gcheckboxgrouptable <- function(items,
     
     
     df <- .$..store$data
-    colNames <- names(df)[-1]           # no ..index
+    colNames <- names(df)[-1]           # no __index
     colNames <- shQuoteEsc(colNames)
 
     
@@ -372,7 +372,7 @@ gcheckboxgrouptable <- function(items,
             '    var sels =  selModel.getSelections();',
             '    for(var i = 0, len=sels.length; i < len; i++) {',
             '      var record = sels[i];',
-            '      var data = record.get("..index");',
+            '      var data = record.get("__index");',
             '      value[i] = data;',
             '    };',
             '  };',

@@ -21,7 +21,7 @@
 
 ##' slider widget
 ##'
-##' Shows sequence of values
+##' Shows sequence of values. Can modify the tooltip via the tooltipTemplate argument (hidden)
 ##' @param from starting point
 ##' @param to ending point
 ##' @param by step size
@@ -45,7 +45,7 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
   widget$..coerce.with="as.numeric"
   widget$..length = if(horizontal) 300 else 100
   ## modify this. It needs to have {0} somewhere
-  ## widget$..tooltipTemplate <- getFromDots(..., var="tooltipTemplate", default="{0}")
+  widget$..tooltipTemplate <- getFromDots(..., var="tooltipTemplate", default="{0}")
 
   ## CSS
   
@@ -77,9 +77,10 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
                 "maxValue" = .$..to,
                 "enableKeyEvents"=TRUE,
                 "vertical"= !.$..horizontal,
-                ## This works with 3.3.0, but other stuff doesn't so we revert
-#                plugins = String(sprintf("new Ext.slider.Tip({getText: function(thumb){return String.format('%s', thumb.value)}})", .$..tooltipTemplate))
-                plugins = String("new Ext.ux.SliderTip()")
+                ## This works with 3.3.0,
+                plugins = String(sprintf("new Ext.slider.Tip({getText: function(thumb){return String.format('%s', thumb.value)}})", .$..tooltipTemplate))
+                ## needed for 3.0.0
+#                plugins = String("new Ext.ux.SliderTip()")
               )
 
     if(.$..horizontal)
