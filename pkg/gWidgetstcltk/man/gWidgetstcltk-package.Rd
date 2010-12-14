@@ -213,18 +213,20 @@ constructor, this will be passed to the \code{format} function's
 
 Sizing is an issue. There may be a bug in the widget regarding
 horizontal scrolling (for Mac OS X anyways, where this is being
-developed), or more likely something is just coded wrong.  There is some
-Tk code for "autoscrolling" that works (with an idiosyncrasy) so that
-the initial size of the widget is correct, but only when this size is set
-via arguments \code{width} and \code{height} passed to the constructor
--- not with the \code{size<-} method. This feature is not on by default, as
-when it is used any widgets on the right of the table are not shown in
-the initial window, and are only exposed by resizing the window. If
-you want to try it, pass in the hidden argument \code{do.autoscroll=TRUE}.
-However, the \code{size<-} method has another use. It can also take a
-list for value. If so, then the first component specifies the widths
-of each column in character size and the second component (if given)
-the number of rows to be visible.  \cr
+developed), or more likely something is just coded wrong.  There is
+some Tk code for "autoscrolling" that works (with an idiosyncrasy) so
+that the initial size of the widget is correct, but only when this
+size is set via arguments \code{width} and \code{height} passed to the
+constructor -- not with the \code{size<-} method. This feature is not
+on by default, as when it is used any widgets on the right of the
+table are not shown in the initial window, and are only exposed by
+resizing the window. If you want to try it, pass in the hidden
+argument \code{do.autoscroll=TRUE}.  However, the \code{size<-} method
+has another use. It can also take a list for value. This list has
+optional components \code{width}, \code{height}, \code{columnWidths}
+(to specify each column width individually), and \code{noRowsVisible}
+(to specify height by number of rows, not pixels).
+      \cr
 
 \code{gtext()} The \code{size<-} method can be used to resize the
 widget. This method guesses at the converstion from pixels to characters

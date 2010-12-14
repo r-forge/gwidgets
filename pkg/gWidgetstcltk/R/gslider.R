@@ -43,10 +43,10 @@ setMethod(".gslider",
             tt <- getWidget(container)
             SliderValue <- tclVar(as.character(value))
             
-            ## use old school
+            ## use old school. ttk:::scale doesn't allow steps, using other values.
             slider <- tkscale(tt, from=1L, to=length(x),
                               showvalue=FALSE, variable=SliderValue,
-                    resolution=1L, orient=orientation)
+                              resolution=1L, orient=orientation)
             
             obj <- new("gSlidertcltk",block=slider, widget=slider,
                        toolkit=toolkit, ID=getNewID(), e = new.env())

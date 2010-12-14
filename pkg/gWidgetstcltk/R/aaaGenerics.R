@@ -434,7 +434,8 @@ setMethod("isExtant",signature(obj="gWidgettcltk"),
 setMethod(".isExtant",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ...) {
-            return(TRUE)
+            w <- getWidget(obj)
+            as.logical(as.numeric(tkwinfo("exists", w)))
           })
 
 
