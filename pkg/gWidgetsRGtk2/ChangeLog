@@ -1,3 +1,8 @@
+2010-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fix minimum column width under windows (15 was
+	too narrow a minimum)
+
 2010-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (.addTags): put in check that we aren't redoing a text tag

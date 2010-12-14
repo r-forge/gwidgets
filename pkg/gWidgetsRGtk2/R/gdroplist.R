@@ -133,7 +133,7 @@ setMethod(".gdroplist",
               if(dim(items)[1] > 0) {
                 colChars <- max(sapply(items[,1,drop=TRUE],nchar))
                 if(colChars < 3)
-                  combo['width-request'] <- 15*(1 + colChars)
+                  combo['width-request'] <- 15*(4 + colChars)
               }
             }
             

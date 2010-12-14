@@ -1735,8 +1735,8 @@ setMethod("gsubsetby",
             
             vars = names(gridObj)
             group = ggroup(container = container, ...)
-            subsetVar = gdroplist(c("NA",vars),selected=1,container = group)
-            subsetHow = gdroplist(c(""), editable=TRUE, selected=1, container=group)
+            subsetVar = gdroplist(c("NA",vars), width=25*8, selected=1,container = group)
+            subsetHow = gdroplist(c(""), width=25*8, editable=TRUE, selected=1, container=group)
             leftArrow = gimage("larrow",dirname="stock",container = group)
             rightArrow = gimage("rarrow",dirname="stock",container = group)
 

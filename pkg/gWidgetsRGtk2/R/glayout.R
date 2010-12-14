@@ -84,8 +84,10 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
           function(x, toolkit, i, j, ..., value) {
 
-            if(missing(i) || missing(j)) {
-              cat(gettext("glayout: [ needs to have both i and j specified."))
+            if(missing(i))
+              i <- dim(x)[1] + 1
+            if(missing(j)) {
+              cat(gettext("glayout: [ needs to have a column specified."))
               return(x)
             }
 
