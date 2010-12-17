@@ -37,6 +37,7 @@ findFile <- function(file) {
 ## check that we have get data
 file <- SERVER$path_info
 if(is.null(file) || file == "/") file <- "/index"
+file <- gsub("[/]*$", "", file)       # trailing slash
 file <- gsub("\\.R$", "", file)
 if(is.null(file))  {
   simpleMsg("No file specified.")
