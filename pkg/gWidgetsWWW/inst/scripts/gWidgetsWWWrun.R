@@ -25,7 +25,8 @@ simpleMsg <- function(msg) {
 findFile <- function(file) {
   dirs <- getOption("gWidgetsWWWrunBaseDirectory")
   dirs <- gsub("/{1,}$","",dirs) ## remove slashes
-  file <- gsub("^/{1,}","",file)	
+  file <- gsub("^/{1,}","",file)
+  file <- gsub("[/]*$", "", file)       # trailing slash
   files <- file.path(dirs, paste(file, ".R", sep=""))
   ind <- sapply(files, file.exists)
   return(head(files[ind], n=1))         # length == 0 if none

@@ -355,6 +355,8 @@ gw.httpd.handler <- function(path, query, ...) {
   
   ## strip off /custom/url_base/
   path <- gsub(sprintf("^/custom/%s/",url_base), "", path)
+  ## strip any trailing slash
+  path <- gsub("[/]*$", "", path)
   path <- unlist(strsplit(path, "/"))
 
 
