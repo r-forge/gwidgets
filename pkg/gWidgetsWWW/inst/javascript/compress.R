@@ -5,14 +5,14 @@
 jsFiles <- c("ext.ux.canvas.js",
              "ext.ux.example.js",
              "ext.ux.form.CodeMirror.js",
-             "ext.ux.form.fileuploadfield.js",
+#             "ext.ux.form.fileuploadfield.js",
              "ext.ux.labelbox.js",
              "ext.ux.imageBox.js",
-             "ext.ux.slidertip.js",
-             "ext.ux.spinner.js",
-             "ext.ux.spinnerformfield.js",
+#             "ext.ux.slidertip.js",
+#             "ext.ux.spinner.js",
+#             "ext.ux.spinnerformfield.js",
              "ext.ux.statusbar.js",
-             "FileUploadField.js",
+#             "FileUploadField.js",
              "gw-gtable.js"
 #             "GMapPanel.js"
              ,"processing-0.9.1.js"

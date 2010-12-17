@@ -14,11 +14,6 @@ hasCRAN <- function() {
 ##'
 ##' From getCRANmirrors
 listCRANMirrors <- function() {
-  ## con <- url("http://cran.r-project.org/CRAN_mirrors.csv")
-  ## m <- try(open(con, "r"), silent = TRUE)
-  ## if (!inherits(m, "try-error")) 
-  ##   m <- try(read.csv(con, as.is = TRUE))
-  ## else
     m <- read.csv(file.path(R.home("doc"), "CRAN_mirrors.csv"), 
                   as.is = TRUE)
   m
@@ -89,7 +84,7 @@ makeNewPage <- function(cont, width=600, height=500) {
    pkgname <- svalue(h$obj)
    type <- svalue(package_type)
    depends <- svalue(package_depends)
-   gconfirm(sprintf("Install package %s?", pkgname), parent=w,
+   gconfirm(sprintf("Install package %s? It may take some time.", pkgname), parent=w,
             handler=function(h,...) {
               out <- try(do.call("install.packages", h$action), silent=TRUE)
               if(inherits(out, "try-error"))
@@ -138,7 +133,10 @@ makeInstalledPage <- function(cont, width=250, height=400) {
 }
 
 
-## Make a package Description
+##' Make a package Description
+##' 
+##' @param g container
+##' @param pkgname package name. If missing makes an invisible template to fill in
 makePackageDescription <- function(g, pkgname) {
   ## workaround for layout issue with deleting/adding containers
   ## two phases, first sets up widgets and then leaves not visible
@@ -213,7 +211,7 @@ makePackageDescription <- function(g, pkgname) {
 
 
 ##################################################
-
+## Make GUI
 w <- gwindow(gettext("Package manager"))
 g <- ggroup(cont=w, horizontal = FALSE)
 

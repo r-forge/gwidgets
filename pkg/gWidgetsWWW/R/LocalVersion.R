@@ -681,7 +681,11 @@ makegWidgetsWWWPageHeader <- function(.) {
 
                "<script type='text/javascript' src='/custom/gw/ext/ext-all.js'></script>",
 #               "<script type='text/javascript' src='/custom/gw/ext/ext-all-debug-w-comments.js'></script>",
+               "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading extra libraries...';</script>",
+
+               "<script type='text/javascript' src='/custom/gw/ext/examples/ux/ux-all.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
+               
                ## conditional includes -- values set in constructor on toplevel
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
                ## ## google stuff -- move out
