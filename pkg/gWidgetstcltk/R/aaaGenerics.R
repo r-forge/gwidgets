@@ -80,7 +80,7 @@ setClass("gContainertcltk",
 
 ## make tcltk S3 object S4 objects
 
-oldclasses = c("tkwin")
+oldclasses = c("tkwin", "tclVar")
 for(i in oldclasses) {
   setOldClass(i)
   setIs(i,"guiWidgetORgWidgettcltkORtcltkObject")

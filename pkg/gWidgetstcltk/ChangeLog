@@ -1,3 +1,7 @@
+2010-12-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: changed backend to use a widget designed for autocompletion.
+
 2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R: fixed isExtant
