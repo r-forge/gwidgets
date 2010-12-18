@@ -1,9 +1,8 @@
-
-/**
- * Ext JS Library 3.0.0
- * Copyright(c) 2006-2009 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
+/*!
+ * Ext JS Library 3.3.1
+ * Copyright(c) 2006-2010 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
  */
 Ext.ns('Ext.ux.form');
 
@@ -66,15 +65,7 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
         this.wrap = this.el.wrap({cls:'x-form-field-wrap x-form-file-wrap'});
         this.el.addClass('x-form-file-text');
         this.el.dom.removeAttribute('name');
-
-        this.fileInput = this.wrap.createChild({
-            id: this.getFileInputId(),
-            name: this.name||this.getId(),
-            cls: 'x-form-file',
-            tag: 'input',
-            type: 'file',
-            size: 1
-        });
+        this.createFileInput();
 
         var btnCfg = Ext.applyIf(this.buttonCfg || {}, {
             text: this.buttonText
@@ -89,11 +80,49 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
             this.wrap.setWidth(this.button.getEl().getWidth());
         }
 
-        this.fileInput.on('change', function(){
-            var v = this.fileInput.dom.value;
-            this.setValue(v);
-            this.fireEvent('fileselected', this, v);
-        }, this);
+        this.bindListeners();
+        this.resizeEl = this.positionEl = this.wrap;
+    },
+    
+    bindListeners: function(){
+        this.fileInput.on({
+            scope: this,
+            mouseenter: function() {
+                this.button.addClass(['x-btn-over','x-btn-focus'])
+            },
+            mouseleave: function(){
+                this.button.removeClass(['x-btn-over','x-btn-focus','x-btn-click'])
+            },
+            mousedown: function(){
+                this.button.addClass('x-btn-click')
+            },
+            mouseup: function(){
+                this.button.removeClass(['x-btn-over','x-btn-focus','x-btn-click'])
+            },
+            change: function(){
+                var v = this.fileInput.dom.value;
+                this.setValue(v);
+                this.fireEvent('fileselected', this, v);    
+            }
+        }); 
+    },
+    
+    createFileInput : function() {
+        this.fileInput = this.wrap.createChild({
+            id: this.getFileInputId(),
+            name: this.name||this.getId(),
+            cls: 'x-form-file',
+            tag: 'input',
+            type: 'file',
+            size: 1
+        });
+    },
+    
+    reset : function(){
+        this.fileInput.remove();
+        this.createFileInput();
+        this.bindListeners();
+        Ext.ux.form.FileUploadField.superclass.reset.call(this);
     },
 
     // private
@@ -118,20 +147,27 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
         Ext.ux.form.FileUploadField.superclass.onDestroy.call(this);
         Ext.destroy(this.fileInput, this.button, this.wrap);
     },
+    
+    onDisable: function(){
+        Ext.ux.form.FileUploadField.superclass.onDisable.call(this);
+        this.doDisable(true);
+    },
+    
+    onEnable: function(){
+        Ext.ux.form.FileUploadField.superclass.onEnable.call(this);
+        this.doDisable(false);
+
+    },
+    
+    // private
+    doDisable: function(disabled){
+        this.fileInput.dom.disabled = disabled;
+        this.button.setDisabled(disabled);
+    },
 
 
     // private
     preFocus : Ext.emptyFn,
-
-    // private
-    getResizeEl : function(){
-        return this.wrap;
-    },
-
-    // private
-    getPositionEl : function(){
-        return this.wrap;
-    },
 
     // private
     alignErrorIcon : function(){

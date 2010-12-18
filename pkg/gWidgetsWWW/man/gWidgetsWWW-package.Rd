@@ -377,7 +377,10 @@ javascript libraries.
   The \code{gfilebrowse} widget is written only for local
   installs. The handler does not work. The basic idea is that gfile is
   like an edit box with a button (like gfilebrowse in gWidgets) and a
-  \code{svalue} method.  \cr
+  \code{svalue} method.  However, the behaviour is limited. No path
+  information is included. Even more, on Chrome that path has an extra
+  windows-specific bit added called "fakepath". In short, this widget
+  needs work.\cr
 
 
   The \code{gtable} widget: when using \code{[<-} to replace values,

@@ -942,14 +942,14 @@ EXTContainer$add <- function(.,child,...) {
 ##XXX   child$titlename <- .$titlename
 
    ## Move scripts, css to toplevel
-   if(!is.null(child$css))
+   if(!is.null(child$css)) {
      css <- .$toplevel$css
-   else if(is.function(child$css))
-     css[[class(child)[1]]] <- list(obj = child, FUN = get("css",child))
-   else if(is.character(child$css))
-     css[[class(child)[1]]] <- child$css
-   
+     if(is.function(child$css))
+       css[[class(child)[1]]] <- list(obj = child, FUN = get("css",child))
+     else if(is.character(child$css))
+       css[[class(child)[1]]] <- child$css
    .$toplevel$css <- css
+   }
    
 
    ## scripts

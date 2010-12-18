@@ -5,7 +5,7 @@
 jsFiles <- c("ext.ux.canvas.js",
              "ext.ux.example.js",
              "ext.ux.form.CodeMirror.js",
-#             "ext.ux.form.fileuploadfield.js",
+             "ext.ux.form.fileuploadfield.js",
              "ext.ux.labelbox.js",
              "ext.ux.imageBox.js",
 #             "ext.ux.slidertip.js",

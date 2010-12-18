@@ -18,8 +18,10 @@
 
 ##' File selection function
 ##'
-##' This allows a local user to select a file. It does not do file upload (yet!).
-##' The \code{svalue} method only returns the filename, not the path to the file.
+##' This allows a local user to select a file. It does not do file
+##' upload (yet!).  The \code{svalue} method only returns the
+##' filename, not the path to the file. The behaviour under some
+##' browser, such as Chrome, actually puts in a fakepath.
 ##' @param text Instructional text. Ignored.
 ##' @param type only "open" implemented
 ##' @param filter ignored
@@ -39,7 +41,7 @@ gfile <- function(text="Choose a file",
   widget <- EXTComponentNoItems$new(toplevel=container$toplevel,
                              ..text = text, ..type=type, ..filter=filter
                              )
-  class(widget) <- c("gFile",class(widget))
+  class(widget) <- c("gFile", class(widget))
   widget$setValue(value="")             # empty, set on fileselected
   widget$..width <- getFromDots(..., var="width", default=300) # width is funny
 
@@ -82,9 +84,9 @@ gfile <- function(text="Choose a file",
   }
                  
   ## methods
-#  widget$getValueJSMethod <- "getValue"
-
-#  widget$setValueJSMethod <- "setValue"
+  widget$getValueJSMethod <- "getValue"
+  widget$setValueJSMethod <- "setValue"
+#  widget$ExtConstructor <- "Ext.ux.form.FileUploadField"
   
   widget$transportSignal <- c("fileselected")
   widget$transportValue <- function(.,...) {
@@ -92,28 +94,29 @@ gfile <- function(text="Choose a file",
     return(out)
   }
 
-  widget$ExtConstructor <- "Ext.FormPanel"
-  widget$ExtCfgOptions <- function(.) {
-    out <- list(fileUpload=TRUE,
-                                        #                height=30,
-                frame=FALSE,
-                autoHeight=TRUE,
-                items=list(
-                  xtype='fileuploadfield',
-                  width=.$..width,
-                  empytText=.$emptyText,
-                  buttonText=.$buttonText
-                  )
+widget$ExtConstructor <- "Ext.FormPanel"
+widget$ExtCfgOptions <- function(.) {
+  out <- list(fileUpload=TRUE,
+                                      #                height=30,
+              frame=FALSE,
+              autoHeight=TRUE,
+              items=list(
+                xtype='fileuploadfield',
+                width=.$..width,
+                empytText=.$emptyText,
+                buttonText=.$buttonText
                 )
-    return(out)
-  }
+              )
+  return(out)
+}
 
-  widget$asCharacterPanelName <- function(.) .$asCharacter() + "Panel"
-  widget$..writeConstructor <- function(.) {
-    out <- String() +
-      sprintf("%s = %s.getComponent(0);", .$asCharacter(), .$asCharacterPanelName())
-  }
-  
+widget$asCharacterPanelName <- function(.) .$asCharacter() + "Panel"
+widget$..writeConstructor <- function(.) {
+  out <- String() +
+    sprintf("%s = %s.getComponent(0);", .$asCharacter(), .$asCharacterPanelName())
+}
+
+
   
 
   ## add after CSS, scripts defined
