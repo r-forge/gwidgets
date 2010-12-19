@@ -129,6 +129,8 @@ AC <- setRefClass("AutoComplete",
                     ##' Add bindings to entry box
                     addBindings = function() {
                       tkbind(e, "<KeyRelease>", function(W, K) {
+                        ## set out virtual event, as otherwise we can;t have addHandlerKeystrike
+                        tcl("event","generate", e, "<<KeyRelease>>")#, "keysym"=K) ## can't send in keysymbol here
                         ## Main bindings
                         if(nchar(K) == 1 || K == "BackSpace") {
                           ## single letter, popup menu
@@ -396,6 +398,7 @@ setReplaceMethod(".visible",signature(toolkit="guiWidgetsToolkittcltk", obj="gEd
 ## changed is called after a commit (svalue, Return key in widget -- not drop down menu)
 ## keystroke is called when widget display changes
 
+## Use Virtual Event for KeyRelease, as other one is used by class above
 
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
@@ -409,6 +412,6 @@ setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             widget <- tag(obj, "widget")
-            .addHandler(widget$e, toolkit, signal="<KeyRelease>", handler, action, actualobj=obj)
+            .addHandler(widget$e, toolkit, signal="<<KeyRelease>>", handler, action, actualobj=obj)
           })
 
