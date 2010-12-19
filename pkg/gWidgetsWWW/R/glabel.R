@@ -16,7 +16,10 @@
 ##' A label widget
 ##' 
 ##' @param text text for label. If multiline will be joined with " " or "<br />" (when \code{markup=TRUE})
-##' @param markup If \code{TRUE} then text can be HTML. Useful for newlines
+##' @param markup If \code{TRUE} then text can be HTML. Useful for
+##' newlines. A value of \code{FALSE} will cause HTML constructs to be
+##' escaped. This is useful if user-supplied values are being
+##' displayed.
 ##' @param editable 
 ##' @param handler 
 ##' @param action 
