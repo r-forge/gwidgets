@@ -17,4 +17,3 @@ Description: Port of the gWidgets API to program dynamic websites.
 License: GPL (>= 3)
 URL: http://gwidgets.r-forge.r-project.org/
 LazyLoad: FALSE
-
