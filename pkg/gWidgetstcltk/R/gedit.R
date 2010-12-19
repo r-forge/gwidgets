@@ -51,7 +51,8 @@ AC <- setRefClass("AutoComplete",
                     ##' set text value
                     ##' @param text value to set
                     setValue = function(text) {
-                      tclvalue(v) <- text
+                      v_local <- v
+                      tclvalue(v_local) <- text
                       lindex <<- 0
                       tcl(e, "icursor", "end")
                       tcl("event","generate", e, "<<Changed>>")
@@ -82,9 +83,9 @@ AC <- setRefClass("AutoComplete",
                       ## compute max.height -- number of words that can be shown
                       screenheight <- as.numeric(tkwinfo("screenheight", e))
                       y <- as.numeric(tclvalue(tkwinfo("rooty",e)))
-                      max.words <- min(max.words, floor((screenheight - y)/char.height))
-                      if(length(wds) > max.words)
-                        wds <- c(wds[1:max.words], "...")
+                      max_words <- min(max.words, floor((screenheight - y)/char.height))
+                      if(length(wds) > max_words)
+                        wds <- c(wds[1:max_words], "...")
                       tkdelete(l, "0.0", "end")
                       tkinsert(l, "end", paste(wds, collapse="\n"))
                       lindex <<- 1; no.wds <<- length(wds)
