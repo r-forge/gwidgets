@@ -70,7 +70,8 @@ setMethod(".gexpandgroup",
             tag(obj, "state") <- FALSE
             tag(obj, "rightArrow") <- rightArrow
             tag(obj, "downArrow") <- downArrow
-
+            tag(obj, "height") <- tkcget(getWidget(obj), "-height")
+              
             changeState = function(h,...) {
               if((state <- tag(obj,"state"))) {
                 visible(obj) <- FALSE
@@ -167,14 +168,20 @@ setMethod(".visible",
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gExpandgrouptcltk"),
                  function(obj, toolkit, ..., value) {
-                   cg = tag(obj,"containerGroup")
-                   eg = tag(obj,"expandGroup")
+                   W <- getWidget(obj)
+                   ## cg = tag(obj,"containerGroup")
+                   ## eg = tag(obj,"expandGroup")
                    if( (value <- as.logical(value)) ) {
                     ## true, expand
-                     add(cg, eg, expand=TRUE)
+                     ##                     add(cg, eg, expand=TRUE)
+                     tkpack("propagate", W, TRUE)
+                     tkconfigure(W, height=tag(obj, "height"))
                      svalue(tag(obj,"icon")) <- tag(obj,"downArrow")
                    } else {
-                     delete(cg,eg)
+                     ##                     delete(cg,eg)
+                     tag(obj, "height") <- tkwinfo("height", W)
+                     tkpack("propagate", W, FALSE)
+                     tkconfigure(W, height=1)
                      svalue(tag(obj,"icon")) <- tag(obj,"rightArrow")
                    }
                    tag(obj,"state") <-value

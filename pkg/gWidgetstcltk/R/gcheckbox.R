@@ -131,7 +131,8 @@ setMethod(".addhandlerchanged",
             theArgs <- list(...); actualobj <- theArgs$actualobj
             if(is.null(actualobj))
               actualobj <- obj
-            
+
+            ## Should bind to command here
              addhandler(obj,toolkit, signal="<Button-1>",
                         action=action, actualobj=actualobj,
                         handler = function(h,...) {

@@ -1,6 +1,3 @@
-## Poor mans version of this, do it yourself version
-
-
 ## editable has entry widget that can be edited
 setClass("gDroplisttcltk",
          contains="gComponenttcltk",
@@ -36,7 +33,7 @@ setMethod(".gdroplist",
             if(inherits(items,"data.frame")) {
               items <- items[,1, drop=TRUE]
             }
-            ## no icons in tcltk
+            ## no icons, tooltip in tcltk
             
             
             ## items must be a vector here
@@ -117,8 +114,9 @@ setMethod(".svalue",
               return(ind)
             }
 
-            
-            if(tag(obj,"editable")) {
+
+            editable <- as.character(tkcget(widget, "-state")) != "readonly"
+            if(editable) {
               val <- tclvalue(tcl(widget,"get"))
             } else {
               if(ind == 0) {
@@ -171,8 +169,7 @@ setReplaceMethod(".svalue",
 
                    ##  if editable do differently
                    ## editable not implented
-                   editable <- tag(obj,"editable")
-
+                   editable <- as.character(tkcget(widget, "-state")) != "readonly"
                    ## if index, set
                    if(index) {
                      if(value > 0 && value <= n)
@@ -198,6 +195,23 @@ setReplaceMethod(".svalue",
                    
                    return(obj)
                  })
+
+## I want a editable<- method for gdf, gcombobox, glabel
+## setMethod(".editable",
+##           signature(x = "gDroplisttcltk"),
+##           function(x, toolkit) {
+##             as.character(tkcget(widget, "-state")) != "readonly"
+##           })
+
+## setReplaceMethod(".editable",
+##           signature(x = "gDroplisttcltk"),
+##           function(x, toolkit, ..., value) {
+##             widget <- getWidget(x)
+##             tkcget(widget, "state"=ifelse(value, "normal", "readonly"))
+##             return(x)
+##           })
+
+
 
 setMethod("length",
           signature(x="gDroplisttcltk"),
@@ -277,8 +291,9 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gDroplisttcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             .addHandler(obj,toolkit,"<<ComboboxSelected>>",handler,action,...)
-            
-            if(tag(obj,"editable"))
+
+            editable <- as.character(tkcget(getWidget(obj), "-state")) != "readonly"
+            if(editable) ## tag(obj,"editable"))
               .addHandler(obj, toolkit, signal="<Return>", handler, action)
             
           })

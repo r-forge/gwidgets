@@ -18,9 +18,10 @@
   .Tcl("option add *tearOff 0")         # disable tearoff menus
 
   ## load in tcl packages
-  tcl("source",system.file("tcl","autoscroll.tcl",package="gWidgetstcltk"))
+  ## from tcltk2 we have this
   tclRequire("autoscroll")
-  tcl("namespace","import","::autoscroll::autoscroll")
+#  tcl("source",system.file("tcl","autoscroll.tcl",package="gWidgetstcltk"))
+#  tcl("namespace","import","::autoscroll::autoscroll")
 
   ## genearte stock icons
   loadGWidgetIcons()

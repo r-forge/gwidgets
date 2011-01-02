@@ -62,9 +62,13 @@ setMethod(".gtext",
             tkgrid.columnconfigure(gp, 0, weight=1)
             tkgrid.rowconfigure(gp, 0, weight=1)
 
-            ## call in autoscroll
-#            tcl("autoscroll", xscr)
-#            tcl("autoscroll", yscr)
+            ## from tcltk2 package, this package is installed
+            tclRequire("autoscroll")
+            if(windowingsystem() != "aqua") {
+              tcl("autoscroll::autoscroll", xscr)
+              tcl("autoscroll::autoscroll", yscr)
+            }
+
             
             ## set point
             tkmark.set(txt,"insert","0.0")

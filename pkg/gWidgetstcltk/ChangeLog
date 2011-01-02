@@ -1,3 +1,19 @@
+2011-01-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: similar to gradio. Now based on R5 class
+
+	* R/gradio.R: based on R5 class now, not on older. Allows one to
+	extend/shorten length of radio group
+
+2010-12-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R: added key.accel value. key.accel should be like "Control-a"
+
+	* R/aaaGenerics.R (setenabled_ttkwidget): fixed enabled<- method
+
+	* R/gexpandgroup.R: changed visible<- method to adjust height, not
+	remove widget. Latter didn't resize gracefully.
+
 2010-12-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R: changed backend to use a widget designed for autocompletion.

@@ -104,9 +104,10 @@ setMethod(".gtree",
 
             
             ## call in autoscroll if requested -- has issues with sizing
-            if(getWithDefault(theArgs$do.autoscroll, FALSE)) {
-              tcl("autoscroll", xscr)
-              tcl("autoscroll", yscr)
+            if(getWithDefault(theArgs$do.autoscroll, TRUE) &&
+               windowingsystem() != "aqua") {
+              tcl("autoscroll::autoscroll", xscr)
+              tcl("autoscroll::autoscroll", yscr)
             }
 
             ## turn on alternating shading if more than 1 column

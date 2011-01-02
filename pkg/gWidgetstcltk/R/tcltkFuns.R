@@ -1,3 +1,49 @@
+##' Coerce tclObj object to logical value
+##'
+##' @param x should be a "0" or "1" value
+##' @param ... ignored
+##' @return a logical or NA
+as.logical.tclObj <- function(x, ...) as.logical(as.numeric(x))
+
+
+##' Does object exists as tcl variable
+##'
+##' @param x character string with name of variable
+##' @return logical
+tclObj_exists <- function(x) as.logical(.Tcl(sprintf("info exists %s", x)))
+
+##' create a tcl image from the file
+##'
+##' @param basename basename of image. We add some bit to avoid filename collisions
+##' @param file file of image
+##' @return image name
+make_tcl_image <- function(basename, file) {
+  already_defined <- function(nm) any(nm == as.character(tcl("image","names")))
+  
+  nm <- sprintf("::tcl::%s", basename)
+  if(!already_defined(nm)) {
+    tcl("image","create","photo", nm ,file=file)
+  }
+  return(nm)
+}
+
+##' Heuristic to determine if widget is a ttk widget
+##'
+##' @param x tk object or its id
+##' @return logical indicating is  ttk widget or not
+isTtkWidget <- function(x) {
+  cl <- as.character(tkwinfo("class",x))
+  grepl("^[A-Z]{2,}", cl)
+}
+
+##' what windowing system?
+##'
+##' @return one of c("x11", "win32", "aqua")
+windowingsystem <- function() {
+  ## one of x11 (X11-based), win32 (MS Windows), or aqua (Mac OS X Aqu
+  as.character(.Tcl("tk windowingsystem"))
+}
+
 ## return tk widget from obj
 ## ** This should be a method **
 getWidget = function(obj) {

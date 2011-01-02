@@ -12,7 +12,8 @@ setMethod(".gaction",
                    tooltip = NULL,
                    icon = NULL,
                    key.accel = NULL,
-                   handler = NULL, action = NULL, 
+                   handler = NULL, action = NULL,
+                   parent=NULL,
                    ...) {
             
             force(toolkit)
@@ -24,9 +25,20 @@ setMethod(".gaction",
                         handler = handler,
                         action = action)
 
-            e <- new.env(); e$buttons <- e$menuitems <- e$toolbaritems <- list()
+            e <- new.env(); e$state <- TRUE; e$buttons <- e$menuitems <- e$toolbaritems <- list()
             e$label <- label
             obj <- new("gActiontcltk", widget = lst, e =e)
+
+            if(!is.null(key.accel) && !is.null(parent)) {
+              toplevel <- tkwinfo("toplevel", getWidget(parent))
+              tkbind(toplevel, sprintf("<%s>",key.accel), function() {
+                if(obj@e$state) {
+                  h <- list(action=action)
+                  handler(h)
+                }
+              })
+            }
+              
             return(obj)
           })
 
@@ -44,6 +56,8 @@ setReplaceMethod(".enabled",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gActiontcltk"),
                  function(obj, toolkit, ..., value) {
                    e <- obj@e
+                   e$state <- as.logical(value)
+                   
                    if(length(e$buttons) > 0)
                      sapply(e$buttons, function(i) enabled(i) <- as.logical(value))
 

@@ -255,10 +255,10 @@ setMethod(".gtable",
             tkgrid.rowconfigure(gp, 0, weight=1)
 
             ## call in autoscroll
-            do.autoscroll <- getWithDefault(theArgs$do.autoscroll, FALSE)
-            if(do.autoscroll) {
-              tcl("autoscroll", xscr)
-            ##            tcl("autoscroll", yscr)
+            do.autoscroll <- getWithDefault(theArgs$do.autoscroll, TRUE)
+            if(do.autoscroll && windowingsystem() != "aqua") {
+              tcl("autoscroll::autoscroll", xscr)
+              tcl("autoscroll::autoscroll", yscr)
             }
             ##
             ######################

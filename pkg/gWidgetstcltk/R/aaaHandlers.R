@@ -7,13 +7,22 @@
 ##' @param signal the signal (handler list keyed by signal)
 ##' @param h list with proper components from call
 runHandlers <- function(obj, signal, h, ...) {
-  l <- tag(obj, "..handlers")
-  signalList <- l[[signal]]
-  sapply(signalList, function(i) {
-    if(!i$blocked) {
-      i$handler(h, ...)
-    }
-  })
+  ## check if enabled
+  W <- getWidget(obj)
+  if(isTtkWidget(W))
+    enabled <- enabled_ttkwidget(W)
+  else
+    enabled <- enabled_tkwidget(W)
+
+  if(enabled) {
+    l <- tag(obj, "..handlers")
+    signalList <- l[[signal]]
+    sapply(signalList, function(i) {
+      if(!i$blocked) {
+        i$handler(h, ...)
+      }
+    })
+  }
 }
 
 ##' add a handler to an object
@@ -81,9 +90,17 @@ setMethod(".addHandler",
             theobj = theArgs$actualobj
 
             handler <- force(handler)
-            tkbind(obj,signal, function(...) {
-              h = list(obj=theobj, action=action)
-              handler(h,...)
+            tkbind(obj, signal, function(...) {
+              ## check if enabled
+              if(isTtkWidget(obj))
+                enabled <- enabled_ttkwidget(obj)
+              else
+                enabled <- enabled_tkwidget(obj)
+
+              if(enabled) {
+                h = list(obj=theobj, action=action)
+                handler(h,...)
+              }
             })
             invisible(list(type=NULL,handlerID=NULL))
           })

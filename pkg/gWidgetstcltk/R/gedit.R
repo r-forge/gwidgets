@@ -237,8 +237,8 @@ setMethod(".gedit",
 
            tt <- getWidget(container)
 
-           e <- getRefClass("AutoComplete")$new(tt)
-           obj <- new("gEdittcltk", block=e$widget(), widget = e$widget(),
+           e <- getRefClass("Entry")$new(tt)
+           obj <- new("gEdittcltk", block=e$get_widget(), widget = e$get_widget(),
                       toolkit=toolkit,ID=getNewID(), e = new.env(),
                       coercewith=coerce.with)
            tag(obj, "widget") <- e
@@ -299,7 +299,7 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             widget <- tag(obj, "widget")
-            val <- widget$getValue()
+            val <- widget$get_value()
             ## val = tclvalue(tag(obj,"tclVar"))
             if(val == "<NA>")
               val <- NA
@@ -318,7 +318,7 @@ setReplaceMethod(".svalue",
                      value <- "<NA>"
 
                    widget <- tag(obj, "widget")
-                   widget$setValue(value)
+                   widget$set_value(value)
                    ## tclvalue(tag(obj, "tclVar")) <- value
                    return(obj)
           })
@@ -356,7 +356,7 @@ setReplaceMethod(".leftBracket",
               vals <- value
             else
               vals[i] <- value
-            widget$setWords(vals)
+            widget$set_words(vals)
             ## tag(x, "typeAhead") <- vals
             return(x)
           })
@@ -405,7 +405,7 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             widget <- tag(obj, "widget")
-            .addHandler(widget$e, toolkit, signal="<<Changed>>", handler, action, actualobj=obj)
+            .addHandler(widget$get_widget(), toolkit, signal="<<Changed>>", handler, action, actualobj=obj)
           })
 
 
@@ -413,6 +413,6 @@ setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             widget <- tag(obj, "widget")
-            .addHandler(widget$e, toolkit, signal="<<KeyRelease>>", handler, action, actualobj=obj)
+            .addHandler(widget$get_widget(), toolkit, signal="<<KeyRelease>>", handler, action, actualobj=obj)
           })
 
