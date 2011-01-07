@@ -1278,12 +1278,12 @@ setMethod(".addhandlerrightclick",
           function(obj, toolkit,
                    handler, action=NULL, ...) {
 
-            if(windowingingsystem() == "aqua" ||
+            if(windowingsystem() == "aqua" ||
                grepl("^mac",.Platform$pkgType)) {
               id <- lapply(c("<Control-1>", "<Button-2>", "<Button-3>"), function(i) {
                 id <- .addHandler(obj, toolkit, signal=i,
                             handler=handler, action=action, ...)
-                list(obj=obj, id=id)    # for remove/block/unblock
+                list(obj=obj, id=id, signal=i)    # for remove/block/unblock
               })
             } else {
               id <- .addHandler(obj, toolkit, signal="<Button-3>", 

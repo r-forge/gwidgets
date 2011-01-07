@@ -243,7 +243,7 @@ setMethod(".removehandler",
             } else if(is.null(ID$id) && !is.null(ID[[1]]$obj)) {
               ## might be a list of IDs (gradio, gcheckboxgroup), we check here
               sapply(ID, function(i) {
-                .removehandler(i$obj, toolkit, ID=i$id)
+                removehandler(i$obj, ID=i)
               })
               return()
             } else {
