@@ -134,7 +134,8 @@ setReplaceMethod(".size",
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gButtontcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            ID <- .addHandler(obj,toolkit,"<Button-1>", handler, action)
+#            ID <- .addHandler(obj,toolkit,"<Button-1>", handler, action)
+            ID <- .addHandler(obj,toolkit,"command", handler, action)
             return(ID)
           })
 setMethod(".addhandlerchanged",

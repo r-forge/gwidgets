@@ -47,6 +47,8 @@ setMethod(".gcheckboxgroup",
                        toolkit=toolkit, coercewith = coerce.with, e = new.env())
             tag(obj, "cbg_widget") <- cbg_widget
 
+            svalue(obj) <- checked
+            
             
             ## checked = rep(checked, length(items))
 
@@ -143,8 +145,8 @@ setReplaceMethod(".svalue",
                      cbg_widget$set_index(value)
                    } else if(is.logical(value)) {
                      n <- length(obj)
-                     value <- rep(value, lenght.out=n)
-                     cbg_widget$set_index(value)
+                     value <- rep(value, length.out=n)
+                     cbg_widget$set_index(which(value))
                    } else {
                      cbg_widget$set_value(value)
                    }
@@ -268,7 +270,8 @@ setMethod(".addhandlerclicked",
           function(obj, toolkit, handler, action=NULL, ...) {
             cbg_widget <- tag(obj, "cbg_widget")
             user.data=list(obj=obj, handler=handler, action=action)
-            id <- cbg_widget$add_handler("<ButtonRelease-1>",
+##            id <- cbg_widget$add_handler("<ButtonRelease-1>",
+            id <- cbg_widget$add_handler("command",
                                         handler=function(user.data) {
                                           h <- user.data[c("obj", "action")]
                                           user.data$handler(h)

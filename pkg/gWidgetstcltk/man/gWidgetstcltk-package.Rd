@@ -57,10 +57,11 @@ and R 2.7-0 or newer.
 \bold{Containers:}
 \cr
 
-\code{gwindow()} The \code{visible=} argument is ignored. The top-level
-window is always produced. The \code{width=} and  \code{height=}
-arguments refer to the minimum window size, not the preferred default size.
-\cr
+\code{gwindow()} The \code{visible=} argument is ignored. The
+top-level window is always produced. The \code{width=} and
+\code{height=} arguments refer to the minimum window size, not the
+preferred default size. The \method{update} can be called to resize
+the window to accomodate the child widgets.  \cr
 
 \code{ggroup()} also has the \code{expand=} and \code{anchor=}
 arguments. If \code{expand=TRUE} the widget takes up as much space as
@@ -83,7 +84,7 @@ markup.
 \cr
 
 
-\code{gexpandgroup()} Works as expected.
+\code{gexpandgroup()} Works as expected, although sizing issues may frustrate.
 
 
 \code{gdfnotebook()} Works with the addition of ttknotebook.
@@ -133,23 +134,25 @@ the possible space for a widget, even if \code{expand=TRUE} is given.
 \code{gcalendar()} is a hack.
 \cr
 
-\code{gcheckbox()} works as advertised
+\code{gcheckbox()} works as advertised. \code{use.togglebutton} implemented.
 \cr
 
-\code{gcheckboxgroup()} works as advertised, except the \code{use.table} argument is ignored
+\code{gcheckboxgroup()} works as advertised, except the \code{use.table} argument is ignored. One can now resize the list.
 \cr
 
-\code{gdf()} is implemented if the user has installed the \code{tktable} package in Tcl. This is an additional download from \url{tktable.sourceforge.net}.
+\code{gcombobox()} Works as expected, although no icons or tooltips are available.
 \cr
 
-\code{gdroplist()} Works as expected. 
 
-
-\code{gedit()}, unlike the \pkg{gWidgetsRGtk2} widget, has no type-ahead
-support via drop down boxes. The widget does not resize
-automatically. Set the width with \code{width=} at time of construction
-or with \code{size<-}
+\code{gdf()} is implemented if the user has installed the \code{tktable} package in Tcl. This is an additional download from \url{tktable.sourceforge.net}. Most of the code comes second hand from \pkg{tcltk2}'s \code{dfedit} function.
 \cr
+
+\code{gedit()}: The widget does not resize automatically. Set the
+width with \code{width=} at time of construction or with
+\code{size<-}. There is now type ahead support, although the pop-down
+menu only pops down, so don't use near the bottom of a screen ;) The
+hidden argument \code{init_msg} can be used to place an initial
+message for the event there is no text in the box.  \cr
 
 \code{gfilebrowse()} works.
 \cr
@@ -181,14 +184,16 @@ Under Mac OS X, menus display in the top menu bar area, not in the parent window
 
 
 \code{gaction()} is implemented for buttons, menubars and
-toolbars. The \code{key.accel} component is ignored. \cr
+toolbars. The \code{key.accel} component is now implemented but one
+must pass in a parent argument (The binding is to the top-level window
+containing the parent). \cr
 
 \code{gradio()} has an extra argument \code{coerce.with=}, as otherwise
 it would treat everything as a character vector. It tries to guess when
-instantiated, if not explicitly given.
+instantiated, if not explicitly given. One can now resize the number of items to select from.
 \cr
 
-\code{gseparator()} works as expected.
+\code{gseparator()} works as expected but must be in a container with \code{expand=TRUE}.
 
 \code{gslider()} in \pkg{tcltk} works with integer steps only. If the
 \code{by=} argument is less than 1 a \code{gspinbutton()} is used in
@@ -283,8 +288,9 @@ when Filter by: value is changed.
 \code{ginput()} works.
 \cr 
 
-\code{gdialog()} is implemented. It it is a container. When the \code{visible(obj,TRUE)} command is issued, the container is shown and made modal.
-\cr
+\code{gbasicdialog()} is implemented. It it is a container. When the
+\code{visible(obj,TRUE)} command is issued, the container is shown and
+made modal.  \cr
 
 
 
@@ -294,7 +300,7 @@ when Filter by: value is changed.
 
 
 Handlers were rewritten so that one can have more than one handler per
-signal (although not with radio buttons and checkboxgroups). The
+signal. The
 \code{blockHandler}, \code{unblockHandler} and \code{removeHandler}
 methods are now working.  \cr
 

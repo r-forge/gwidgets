@@ -1,3 +1,20 @@
+2011-01-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixed addHandlerRightClick. Thanks Marie V
+
+2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaR5classes.R: can use "command" signal, not just tkbind.
+
+	* R/gslider.R: using ttk::scale for themed widget. We give up the
+	theme, but canuse the "command" binding.
+
+2011-01-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: new method update to get window to naturally resize
+
+	* R/glayout.R: added dim method
+
 2011-01-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gcheckboxgroup.R: similar to gradio. Now based on R5 class

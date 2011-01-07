@@ -6,191 +6,191 @@ library(tcltk)
 ##'
 ##' An ttkentry box with an accompanying set of words that are matched for when the entry box is filled out.
 ##' 
-AC <- setRefClass("AutoComplete",
-                  fields=list(
-                    v = "tclVar",       # text variable holding entry value
-                    e = "tkwin",        # text entry widget
-                    m = "tkwin",        # toplevel transient window
-                    l = "tkwin",        # selection wi1dget
-                    lindex = "integer",  # index of selection widget
-                    no.wds = "integer",  # track number of possible wds to choose from
-                    words = "character",
-                    max.words = "numeric" # maximum words in a display
-                    ),
-                  methods=list(
-                    ##' @param parent parent container
-                    ##' @param text Initial text for widget
-                    initialize = function(parent, text="", words, max.words = 20, ...) {
-                      "Initialize widget. parent is parent widget, text is intial text"
-                      v <<- tclVar(text)
-                      e <<- ttkentry(parent, textvariable=v)
-                      tclServiceMode(FALSE)
-                      m <<- tktoplevel()
-                      tkwm.overrideredirect(m, TRUE)
-                      tkwm.withdraw(m)
-                      tclServiceMode(TRUE)                      
-                      l <<- tktext(m); tkpack(l)
-                      lindex <<- 0      # index of selected
-                      max.words <<- max.words
-                      if(!missing(words))
-                        setWords(words)
-                      addBindings()
-                      .self
-                    },
-                    widget = function() {
-                      "Return entry widget"
-                      e
-                    },
-                    ##' Set the words
-                    ##' @param words character vector of auto completion words
-                    setWords = function(words) {
-                      words <<- unique(as.character(words))
-                    },
-                    ##' Get text value
-                    getValue = function() as.character(tclvalue(v)),
-                    ##' set text value
-                    ##' @param text value to set
-                    setValue = function(text) {
-                      v_local <- v
-                      tclvalue(v_local) <- text
-                      lindex <<- 0
-                      tcl(e, "icursor", "end")
-                      tcl("event","generate", e, "<<Changed>>")
-                    },                                               
-                    ## find match in word list
-                    findMatch = function(x) {
-                      ind <- grepl(sprintf("^%s", tolower(x)), tolower(words))
-                      words[ind]
-                    },
-                    ##' show the word list
-                    ##' @param str a string. If
-                    ##' missing do nothing, otherwise match against
-                    ##' string to generate word list. Popup menu
-                    ##' depending on length
-                    showWordList = function(str) {
-                      ## put m into right place,
-                      if(missing(str))
-                        return()
+## AC <- setRefClass("AutoComplete",
+##                   fields=list(
+##                     v = "tclVar",       # text variable holding entry value
+##                     e = "tkwin",        # text entry widget
+##                     m = "tkwin",        # toplevel transient window
+##                     l = "tkwin",        # selection wi1dget
+##                     lindex = "integer",  # index of selection widget
+##                     no.wds = "integer",  # track number of possible wds to choose from
+##                     words = "character",
+##                     max.words = "numeric" # maximum words in a display
+##                     ),
+##                   methods=list(
+##                     ##' @param parent parent container
+##                     ##' @param text Initial text for widget
+##                     initialize = function(parent, text="", words, max.words = 20, ...) {
+##                       "Initialize widget. parent is parent widget, text is intial text"
+##                       v <<- tclVar(text)
+##                       e <<- ttkentry(parent, textvariable=v)
+##                       tclServiceMode(FALSE)
+##                       m <<- tktoplevel()
+##                       tkwm.overrideredirect(m, TRUE)
+##                       tkwm.withdraw(m)
+##                       tclServiceMode(TRUE)                      
+##                       l <<- tktext(m); tkpack(l)
+##                       lindex <<- 0      # index of selected
+##                       max.words <<- max.words
+##                       if(!missing(words))
+##                         setWords(words)
+##                       addBindings()
+##                       .self
+##                     },
+##                     widget = function() {
+##                       "Return entry widget"
+##                       e
+##                     },
+##                     ##' Set the words
+##                     ##' @param words character vector of auto completion words
+##                     setWords = function(words) {
+##                       words <<- unique(as.character(words))
+##                     },
+##                     ##' Get text value
+##                     getValue = function() as.character(tclvalue(v)),
+##                     ##' set text value
+##                     ##' @param text value to set
+##                     setValue = function(text) {
+##                       v_local <- v
+##                       tclvalue(v_local) <- text
+##                       lindex <<- 0
+##                       tcl(e, "icursor", "end")
+##                       tcl("event","generate", e, "<<Changed>>")
+##                     },                                               
+##                     ## find match in word list
+##                     findMatch = function(x) {
+##                       ind <- grepl(sprintf("^%s", tolower(x)), tolower(words))
+##                       words[ind]
+##                     },
+##                     ##' show the word list
+##                     ##' @param str a string. If
+##                     ##' missing do nothing, otherwise match against
+##                     ##' string to generate word list. Popup menu
+##                     ##' depending on length
+##                     showWordList = function(str) {
+##                       ## put m into right place,
+##                       if(missing(str))
+##                         return()
 
-                      char.height <- 16 ## or compute from font metrics
-                      wds <- findMatch(str)
-                      if(length(wds) == 0) {
-                        no.wds <<- 0
-                        hideWordList()
-                        return()
-                      }
+##                       char.height <- 16 ## or compute from font metrics
+##                       wds <- findMatch(str)
+##                       if(length(wds) == 0) {
+##                         no.wds <<- 0
+##                         hideWordList()
+##                         return()
+##                       }
 
-                      ## compute max.height -- number of words that can be shown
-                      screenheight <- as.numeric(tkwinfo("screenheight", e))
-                      y <- as.numeric(tclvalue(tkwinfo("rooty",e)))
-                      max_words <- min(max.words, floor((screenheight - y)/char.height))
-                      if(length(wds) > max_words)
-                        wds <- c(wds[1:max_words], "...")
-                      tkdelete(l, "0.0", "end")
-                      tkinsert(l, "end", paste(wds, collapse="\n"))
-                      lindex <<- 1; no.wds <<- length(wds)
+##                       ## compute max.height -- number of words that can be shown
+##                       screenheight <- as.numeric(tkwinfo("screenheight", e))
+##                       y <- as.numeric(tclvalue(tkwinfo("rooty",e)))
+##                       max_words <- min(max.words, floor((screenheight - y)/char.height))
+##                       if(length(wds) > max_words)
+##                         wds <- c(wds[1:max_words], "...")
+##                       tkdelete(l, "0.0", "end")
+##                       tkinsert(l, "end", paste(wds, collapse="\n"))
+##                       lindex <<- 1; no.wds <<- length(wds)
 
-                      ## set geometry
-                      x <- as.numeric(tclvalue(tkwinfo("rootx",e)))
-                      y <- as.numeric(tclvalue(tkwinfo("rooty",e)))
-                      geo <- as.character(tkwinfo("geometry",e))
-                      geo <- as.numeric(strsplit(geo, "[x+]")[[1]])
-                      tkwm.geometry(m, sprintf("%sx%s+%s+%s", geo[1], 10 + char.height*length(wds), x, y + geo[2]))
-                      ## popup
-                      tcl("wm","attributes", m, "topmost"=TRUE) 
-                      tcl("wm","attributes", m, "alpha"=0.8)
-                      tkwm.deiconify(m)
-                      tcl("raise", m)
-                      highlightWordList()
-                    },
-                    ## hide the word list
-                    hideWordList = function() {
-                      tcl("wm","attributes", m, "topmost"=FALSE) # not working!
-                      tkwm.withdraw(m)
-                    },
-                    ## highlight word on lindex
-                    highlightWordList = function() {
-                      if(lindex > 0) {
-                         tktag.remove(l, "selectedWord", "0.0", "end")
-                         tktag.add(l,"selectedWord",sprintf("%s.0", lindex), sprintf("%s.end", lindex))
-                         tktag.configure(l, "selectedWord", font="bold")
-                       }
-                    },
-                    ## get current word. From lineindex if applicable, or from entry widget itself
-                    getCurrentWord = function() {
-                      if(no.wds > 0)
-                        if(lindex > 0) {
-                          tclvalue(tkget(l, sprintf("%s.0", lindex), sprintf("%s.end", lindex)))
-                        } else {
-                          ""
-                        }
-                      else
-                        tclvalue(v)
-                    },
-                    ##' Add bindings to entry box
-                    addBindings = function() {
-                      tkbind(e, "<KeyRelease>", function(W, K) {
-                        ## set out virtual event, as otherwise we can;t have addHandlerKeystrike
-                        tcl("event","generate", e, "<<KeyRelease>>")#, "keysym"=K) ## can't send in keysymbol here
-                        ## Main bindings
-                        if(nchar(K) == 1 || K == "BackSpace") {
-                          ## single letter, popup menu
-                          val <- tclvalue(tcl(W, "get"))
-                          showWordList(val)
-                        } else if(K == "Down") {
-                          ## down arrow. Open if empty, but also scroll down list
-                          if(nchar(val <- getCurrentWord()) == 0) {
-                            showWordList(".")
-                            lindex <<- 0
-                          }
-                          lindex <<- min(lindex + 1, no.wds)
-                          highlightWordList()
-                        } else if(K == "Up") {
-                          ## move up list
-                          lindex <<- max(lindex - 1, 1)
-                          highlightWordList()
-                        } else if(K == "Return") {
-                          ## get value and put into e widget
-                          hideWordList()
-                          if(lindex > 0) {
-                            setValue(getCurrentWord())
-                          } else {
-                            tcl("event","generate", e, "<<Changed>>")
-                          }
-                        } else if(K == "Escape") {
-                          ## close the word list
-                          hideWordList()
-                          lindex <<- 0
-                        }
-                      })
-                      ## show or hide, depending
-                      tkbind(e, "<Map>", showWordList)
-                      tkbind(tcl("winfo", "toplevel", e), "<Configure>", hideWordList)
-                      tkbind(e, "<Destroy>", hideWordList)
-                      tkbind(e, "<FocusOut>", hideWordList())
-                      tkbind(e, "<Unmap>", hideWordList)
+##                       ## set geometry
+##                       x <- as.numeric(tclvalue(tkwinfo("rootx",e)))
+##                       y <- as.numeric(tclvalue(tkwinfo("rooty",e)))
+##                       geo <- as.character(tkwinfo("geometry",e))
+##                       geo <- as.numeric(strsplit(geo, "[x+]")[[1]])
+##                       tkwm.geometry(m, sprintf("%sx%s+%s+%s", geo[1], 10 + char.height*length(wds), x, y + geo[2]))
+##                       ## popup
+##                       tcl("wm","attributes", m, "topmost"=TRUE) 
+##                       tcl("wm","attributes", m, "alpha"=0.8)
+##                       tkwm.deiconify(m)
+##                       tcl("raise", m)
+##                       highlightWordList()
+##                     },
+##                     ## hide the word list
+##                     hideWordList = function() {
+##                       tcl("wm","attributes", m, "topmost"=FALSE) # not working!
+##                       tkwm.withdraw(m)
+##                     },
+##                     ## highlight word on lindex
+##                     highlightWordList = function() {
+##                       if(lindex > 0) {
+##                          tktag.remove(l, "selectedWord", "0.0", "end")
+##                          tktag.add(l,"selectedWord",sprintf("%s.0", lindex), sprintf("%s.end", lindex))
+##                          tktag.configure(l, "selectedWord", font="bold")
+##                        }
+##                     },
+##                     ## get current word. From lineindex if applicable, or from entry widget itself
+##                     getCurrentWord = function() {
+##                       if(no.wds > 0)
+##                         if(lindex > 0) {
+##                           tclvalue(tkget(l, sprintf("%s.0", lindex), sprintf("%s.end", lindex)))
+##                         } else {
+##                           ""
+##                         }
+##                       else
+##                         tclvalue(v)
+##                     },
+##                     ##' Add bindings to entry box
+##                     addBindings = function() {
+##                       tkbind(e, "<KeyRelease>", function(W, K) {
+##                         ## set out virtual event, as otherwise we can;t have addHandlerKeystrike
+##                         tcl("event","generate", e, "<<KeyRelease>>")#, "keysym"=K) ## can't send in keysymbol here
+##                         ## Main bindings
+##                         if(nchar(K) == 1 || K == "BackSpace") {
+##                           ## single letter, popup menu
+##                           val <- tclvalue(tcl(W, "get"))
+##                           showWordList(val)
+##                         } else if(K == "Down") {
+##                           ## down arrow. Open if empty, but also scroll down list
+##                           if(nchar(val <- getCurrentWord()) == 0) {
+##                             showWordList(".")
+##                             lindex <<- 0
+##                           }
+##                           lindex <<- min(lindex + 1, no.wds)
+##                           highlightWordList()
+##                         } else if(K == "Up") {
+##                           ## move up list
+##                           lindex <<- max(lindex - 1, 1)
+##                           highlightWordList()
+##                         } else if(K == "Return") {
+##                           ## get value and put into e widget
+##                           hideWordList()
+##                           if(lindex > 0) {
+##                             setValue(getCurrentWord())
+##                           } else {
+##                             tcl("event","generate", e, "<<Changed>>")
+##                           }
+##                         } else if(K == "Escape") {
+##                           ## close the word list
+##                           hideWordList()
+##                           lindex <<- 0
+##                         }
+##                       })
+##                       ## show or hide, depending
+##                       tkbind(e, "<Map>", showWordList)
+##                       tkbind(tcl("winfo", "toplevel", e), "<Configure>", hideWordList)
+##                       tkbind(e, "<Destroy>", hideWordList)
+##                       tkbind(e, "<FocusOut>", hideWordList())
+##                       tkbind(e, "<Unmap>", hideWordList)
 
-                      tkbind(l, "<Motion>", function(x, y) {
-                        tmp <- as.character(tcl(l, "index", sprintf("@%s,%s", x, y)))
-                        lindex <<- as.numeric(strsplit(tmp, "\\.")[[1]][1])
-                        highlightWordList()
-                      })
+##                       tkbind(l, "<Motion>", function(x, y) {
+##                         tmp <- as.character(tcl(l, "index", sprintf("@%s,%s", x, y)))
+##                         lindex <<- as.numeric(strsplit(tmp, "\\.")[[1]][1])
+##                         highlightWordList()
+##                       })
                       
-                      ## bind to text widget
-                      tkbind(l, "<Button-1>", function(x,y) {
-                        wd <- getCurrentWord()
-                        hideWordList()
-                        if(wd != "...") {
-                          setValue(getCurrentWord())
-                        }
-                      })
-                      ## we don't want focus on l
-                      tkbind(l, "<FocusIn>", function() {
-                        tkfocus(e)
-                      })
-                    }
-                  )
-            )
+##                       ## bind to text widget
+##                       tkbind(l, "<Button-1>", function(x,y) {
+##                         wd <- getCurrentWord()
+##                         hideWordList()
+##                         if(wd != "...") {
+##                           setValue(getCurrentWord())
+##                         }
+##                       })
+##                       ## we don't want focus on l
+##                       tkbind(l, "<FocusIn>", function() {
+##                         tkfocus(e)
+##                       })
+##                     }
+##                   )
+##             )
 
                 
                 
@@ -208,7 +208,8 @@ setMethod(".gedit",
           signature(toolkit="guiWidgetsToolkittcltk"),
           function(toolkit,
                    text="", width=25,
-                   coerce.with = NULL, 
+                   coerce.with = NULL,
+                   initial.msg = "", 
                    handler=NULL, action=NULL,
                    container=NULL,
                    ...
@@ -242,8 +243,15 @@ setMethod(".gedit",
                       toolkit=toolkit,ID=getNewID(), e = new.env(),
                       coercewith=coerce.with)
            tag(obj, "widget") <- e
-           
-           svalue(obj) <- text
+
+           if(nchar(text))
+             svalue(obj) <- text
+
+           ## initial message
+           if(nchar(initial.msg) > 0 && nchar(text) == 0) {
+             e$set_init_msg(initial.msg)
+             e$show_init_msg()
+           }
            
            ## entryValue = tclVar("")
            ## entry = ttkentry(tt, width=as.character(width),

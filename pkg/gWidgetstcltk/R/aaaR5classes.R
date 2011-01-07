@@ -1,5 +1,5 @@
-## A widget framework for tcltk
-## This provides some R5 classes for working with tcltk widgets. A few new ones are used within gWidgetstcltk
+## A widget framework for tcltk. Mostly just for fun, but useful for 3 widgets so far.
+## This provides some R reference classes for working with tcltk widgets. A few new ones are used within gWidgetstcltk
 ## Namely: gradio and gcheckboxgroup, as we can now extend and lengthen the number of options
 ##         and gedit for the autocompletion code
 
@@ -78,7 +78,10 @@ setRefClass("TcltkWidget",
                 ##' @param return id
                 ##' @note hackery to get substitution variables passed along
                 "Bind run_handlers for give signal."
-                tkbind(widget, signal, make_f(signal))
+                if(signal == "command") 
+                  tkconfigure(widget, command=make_f(signal))
+                else
+                  tkbind(widget, signal, make_f(signal))
               },
               ##
               ##
@@ -303,32 +306,33 @@ setRefClass("CheckButton",
               set_image=function(image, compound) {
 #                if(tclObj_exists(image))
                   tkconfigure(widget, image=image, compound=compound)
-              },
-              make_f = function(signal) {
-                ##' Make a function for the handler. Involves hackery to get signature correct
-                f <- function() {
-                  h <- list()
-                  for(i in handler_args) h[[i]] <- get(i)
-                  h[['signal']] <- signal
-                  tcl("after", 150, function(...) {
-                    run_handlers(h)
-                  })
-                }
-                if(length(handler_args)) {
-                  ## do an eval/parse hack. Not sure how else to work with alist.
-                  txt <- paste("alist","(",
-                               paste(c(handler_args), "=", sep="", collapse=","),
-                               ")", sep="")
-                  formals(f) <- eval(parse(text=txt))
-                }
-                f
-              }
+              } ##,
+              ## make_f = function(signal) {
+              ##   ##' Make a function for the handler. Involves hackery to get signature correct
+              ##   f <- function() {
+              ##     h <- list()
+              ##     for(i in handler_args) h[[i]] <- get(i)
+              ##     h[['signal']] <- signal
+              ##     ##tcl("after", 150, function(...) {
+              ##       run_handlers(h)
+              ##     ##})
+              ##   }
+              ##   if(length(handler_args)) {
+              ##     ## do an eval/parse hack. Not sure how else to work with alist.
+              ##     txt <- paste("alist","(",
+              ##                  paste(c(handler_args), "=", sep="", collapse=","),
+              ##                  ")", sep="")
+              ##     formals(f) <- eval(parse(text=txt))
+              ##   }
+              ##   f
+              ## }
 
               ),
             )
 
 
 ## entry with type ahead
+##' configuration property. (tkconfigure(widget, foreground="gray")??
 setRefClass("Entry",
             contains=c("TcltkWidgetWithTclvariable"),
             fields=list(
@@ -337,7 +341,8 @@ setRefClass("Entry",
               lindex = "integer",  # index of selection widget
               no.wds = "integer",  # track number of possible wds to choose from
               words = "character",
-              max.words = "numeric" # maximum words in a display
+              max.words = "numeric", # maximum words in a display
+              init_msg = "character" # an initial message
               ),
               
             methods=list(
@@ -363,6 +368,8 @@ setRefClass("Entry",
                 max.words <<- max.words
                 if(!missing(words))
                         set_words(words)
+                ##
+                set_init_msg("")
                 addBindings()
               },
               set_words = function(words) {
@@ -443,6 +450,41 @@ setRefClass("Entry",
                 else
                   tclvalue(v)
               },
+              ##' initial message code
+               get_value = function() {
+                "Get the text value"
+                if(!is_init_msg())
+                  as.character(tclvalue(v))
+                else
+                  ""
+              },
+              set_text = function(text, hide=TRUE) {
+                "Set text into widget"
+                if(hide)
+                  hide_init_msg()
+                set_value(text)
+              },
+              set_init_msg=function(txt) {
+                "Set the initial message"
+                init_msg <<- txt
+              },
+              is_init_msg=function() {
+                "Is the init text showing?"
+                as.character(tclvalue(v)) == init_msg
+              },
+              hide_init_msg= function() {
+                "Hide the initial text"
+                if(is_init_msg()) {
+                  tkconfigure(widget, foreground="black")
+                  set_text("", hide=FALSE)
+                }
+              },
+              show_init_msg=function() {
+                "Show the intial text"
+#                tkconfigure(widget, style="Gray.TEntry")
+                tkconfigure(widget, foreground="gray")
+                set_text(init_msg, hide=FALSE)
+              },
               ##' Add bindings to entry box
               addBindings = function() {
                 add_handler("<KeyRelease>", function(W, K) {
@@ -483,7 +525,12 @@ setRefClass("Entry",
                 add_handler("<Map>", showWordList)
                 tkbind(tcl("winfo", "toplevel", widget), "<Configure>", hideWordList)
                 tkbind(widget,"<Destroy>", hideWordList)
+                add_handler("<FocusIn>", hide_init_msg)
                 add_handler("<FocusOut>", hideWordList)
+                add_handler("<FocusOut>", function() {
+                  if(nchar(get_value()) == 0 && nchar(init_msg) > 0)
+                    show_init_msg()
+                })
                 add_handler("<Unmap>", hideWordList)
 
                 tkbind(l, "<Motion>", function(x, y) {
@@ -676,6 +723,8 @@ setRefClass("RadioButton",
                   state_variable_local <- state_variable
                   tclvalue(state_variable_local) <- value
                 }
+                if(is_enabled())
+                  tcl(button_items[[get_index()]]$get_widget(), "invoke")
               },
               make_new_item=function(i, has_image, compound) {
                 "Make a new item. Pass in image information"
@@ -750,27 +799,27 @@ setRefClass("RadioButtonItem",
               set_image=function(image, compound="none") {
                 "Configure image for radio button"
                 tkconfigure(widget, image=image, compound=compound)
-              },
-              make_f = function(signal) {
-                ##' Make a function for the handler. Involves hackery to get signature correct
-                f <- function() {
-                  h <- list()
-                  for(i in handler_args) h[[i]] <- get(i)
-                  h[['signal']] <- signal
-                  tcl("after", 150, function(...) {
-                    if(.self$is_checked())
-                      run_handlers(h)
-                  })
-                }
-                if(length(handler_args)) {
-                  ## do an eval/parse hack. Not sure how else to work with alist.
-                  txt <- paste("alist","(",
-                               paste(c(handler_args), "=", sep="", collapse=","),
-                               ")", sep="")
-                  formals(f) <- eval(parse(text=txt))
-                }
-                f
-              }
+              } ##,
+              ## make_f = function(signal) {
+              ##   ##' Make a function for the handler. Involves hackery to get signature correct
+              ##   f <- function() {
+              ##     h <- list()
+              ##     for(i in handler_args) h[[i]] <- get(i)
+              ##     h[['signal']] <- signal
+              ##     ##tcl("after", 150, function(...) {
+              ##       if(.self$is_checked())
+              ##         run_handlers(h)
+              ##     ##})
+              ##   }
+              ##   if(length(handler_args)) {
+              ##     ## do an eval/parse hack. Not sure how else to work with alist.
+              ##     txt <- paste("alist","(",
+              ##                  paste(c(handler_args), "=", sep="", collapse=","),
+              ##                  ")", sep="")
+              ##     formals(f) <- eval(parse(text=txt))
+              ##   }
+              ##   f
+              ## }
 
               )
             )
@@ -789,6 +838,7 @@ setRefClass("CheckButtonGroup",
                 widget <<- ttkframe(parent)
                 orientation <<- ifelse(horizontal, "left", "top") # pack arguments for side
                 set_items(items, compound)
+                set_value(selected)
               },
               make_new_item = function(i, has_image, compound) {
                 "Make a new item. Pass in image information"
@@ -808,7 +858,12 @@ setRefClass("CheckButtonGroup",
               },
               set_value=function(value) {
                 ##' @param value vector of values from items
-                ind <- which(get_items() %in% value)
+                if(is.logical(value)) {
+                  value <- rep(value, length.out=no_items())
+                  ind <- which(value)
+                } else {
+                  ind <- which(get_items() %in% value)
+                }
                 set_index(ind)
               },
               get_index=function() {
@@ -816,8 +871,12 @@ setRefClass("CheckButtonGroup",
                 which(sapply(button_items, function(i) i$get_value()))
               },
               set_index=function(ind) {
-                sapply(seq_len(no_items()), function(i)
-                       button_items[[i]]$set_value(i %in% ind))
+                sapply(seq_len(no_items()), function(i) {
+                  if(i %in% ind)
+                    ## invoke calls command **and** changes state so we set_value after
+                    tcl(button_items[[i]]$get_widget(), "invoke")
+                  button_items[[i]]$set_value(i %in% ind)
+                })
                 invisible()
               }
               )
@@ -844,14 +903,14 @@ setRefClass("CheckButtonGroup",
 
 ## rb <- getRefClass("RadioButton")$new(parent=w, items=state.name[1:3], horizontal=TRUE)
 ## tkpack(rb$get_widget())
-## rb$add_handler("<ButtonRelease-1>", handler=function(user.data) {
+## rb$add_handler("command", handler=function(user.data) {
 ##   print(user.data$get_value())
 ## }, user.data=rb)
 
 ## cbg <- getRefClass("CheckButtonGroup")$new(parent=w, horizontal=FALSE, items=state.name[1:3])
 ## tkpack(cbg$get_widget())
 
-## id <- cbg$add_handler("<ButtonRelease-1>", handler=function(user.data) {
+## id <- cbg$add_handler(command", handler=function(user.data) {
 ##   print(user.data$get_value())
 ## }, user.data=cbg)
 

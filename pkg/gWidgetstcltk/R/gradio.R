@@ -84,6 +84,8 @@ setMethod(".gradio",
               toolkit=toolkit, ID=getNewID(), e = new.env(),
               coercewith = coerce.with)
             tag(obj, "rb_widget") <- rb_widget
+
+            svalue(obj, index=TRUE) <- selected
             
 ##             tag(obj,"items") <- items
 ## #            tag(obj,"theLabels") <- theLabels
@@ -142,7 +144,7 @@ setReplaceMethod(".svalue",
 
                    if(is.data.frame(value))
                      value <- value[,1, drop=TRUE]
-
+                   
                    rb_widget <- tag(obj, "rb_widget")
                    
                    index <- getWithDefault(index, FALSE)
@@ -284,12 +286,14 @@ setReplaceMethod(".enabled",
 ##' only one handler per widget
 ##'
 ##' This could be changed, but only if asked ...
+##' This does not get called by svalue -- it should?
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             rb_widget <- tag(obj, "rb_widget")
             user.data=list(obj=obj, handler=handler, action=action)
-            id <- rb_widget$add_handler("<ButtonRelease-1>",
+##            id <- rb_widget$add_handler("<ButtonRelease-1>",
+            id <- rb_widget$add_handler("command",
                                         handler=function(user.data) {
                                           h <- user.data[c("obj", "action")]
                                           user.data$handler(h)

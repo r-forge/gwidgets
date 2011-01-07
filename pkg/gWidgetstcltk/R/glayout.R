@@ -155,3 +155,14 @@ setReplaceMethod(".leftBracket",
             ##   }
             
           })
+
+
+## dim
+setMethod(".dim",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gLayouttcltk"),
+          function(x, toolkit) {
+            w <- getWidget(x)
+            d <- rev(as.numeric(tcl("grid","size", w)))
+            names(d) <- c("nrow", "ncol")
+            d
+          })

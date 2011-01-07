@@ -530,14 +530,29 @@ setReplaceMethod(".names",
 setReplaceMethod(".size", 
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gTabletcltk"),
                  function(obj, toolkit, ..., value) {
+                   if(is.list(value) && !is.null(value$columnWidths)) {
+                     ## do column widths
+                     widths <- value$columnWidths
+                     widths <- rep(widths, length.out=dim(obj)[2])
+                     sapply(seq_along(widths[-length(widths)]), function(j) {
+                       tcl(getWidget(obj), "column", j,  width=widths[j], stretch=TRUE) # -1?
+                     })
+                   }
+
+                   if(is.list(value) && !is.null(value$noRowsShown)) {
+                     tkconfigure(getBlock(obj), height = value$noRowsShown * 16) # XXX compute font size
+                   }
+
+                   ## set basic size of widget block
                    if(is.list(value)) {
-                     width <- value$width
+                     width <- value$width   # possibly NULL
                      height <- value$height # possibly NULL
                    } else {
+                     ## a vector c(width, height)
                      width <- value[1]
                      height <- ifelse(length(value) > 1, value[2], NULL)
                    }
-
+                   
                    ## set width -- value in pixels
                    if(!is.null(width))
                      tkconfigure(getBlock(obj), width=width)
@@ -545,20 +560,6 @@ setReplaceMethod(".size",
                      tkconfigure(getBlock(obj), height=height)
                    
                    
-
-                   if(is.list(value)) {
-                     ## process columnWidths, visibleRows
-                     if(!is.null(value$columnWidths)) {
-                       widths <- rep(value$columnWidths, length.out=dim(obj)[2])
-                       sapply(seq_along(widths[-length(widths)]), function(j) {
-                         tcl(getWidget(obj), "column", j,  width=widths[j], stretch=TRUE) # -1?
-                       })
-                     }
-
-                     if(!is.null(value$noRowsShown)) {
-                       tkconfigure(getBlock(obj), height = value$noRowsShown * 16) # XXX compute font size
-                     }
-                   }
                    return(obj)
                  })
 

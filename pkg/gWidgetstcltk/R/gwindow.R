@@ -154,6 +154,8 @@ setMethod(".add",
             #do.call("tkpack", packArgs)
             packArgs$side <- NULL       # clera out for test
             do.call("tkgrid", packArgs)
+
+            
           })
 
 ## return window -- not frame
@@ -261,7 +263,19 @@ setReplaceMethod(".visible",
             return(obj)
             })
           
-
+##' update will cause window to resize to natural size
+##'
+##' @param object gwindow object
+##' @param toolkit name of toolkit
+##' @param ... ignored
+##' @return NULL
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gWindowtcltk"),
+          function(object, toolkit, ...) {
+            w <- getBlock(object)
+            tkwm.geometry(w, "")
+            invisible()
+          })
 ##################################################
 ## handlers
 

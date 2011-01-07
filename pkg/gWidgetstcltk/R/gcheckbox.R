@@ -132,13 +132,11 @@ setMethod(".addhandlerchanged",
             if(is.null(actualobj))
               actualobj <- obj
 
-            ## Should bind to command here
-             addhandler(obj,toolkit, signal="<Button-1>",
+            ## bind to command, not ButtonRelease-1. That binding requires a pause
+            addhandler(obj,toolkit, signal="command",
                         action=action, actualobj=actualobj,
                         handler = function(h,...) {
-                            tcl("after",150,function(...) {
-                              changeHandler(h,...) ## need to pause
-                            })
+                              changeHandler(h,...)
                           })
           })
 

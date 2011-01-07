@@ -1129,6 +1129,7 @@
 \alias{update,ANY-method}
 \alias{update,guiWidget-method}
 \alias{update,gWidgettcltk-method}
+\alias{update,gWindowtcltk-method}
 \alias{update,gSubsetbytcltk-method}
 \alias{update,gTreetcltk-method} 
 %%

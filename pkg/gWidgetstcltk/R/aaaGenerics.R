@@ -842,7 +842,7 @@ setMethod(".add",
             do.call("tkpack",argList)
 
             tcl("update","idletasks")
-
+            
             if(!is.null(widget <- .tag(obj,toolkit, "scrollable.widget"))) {
               ## get scrollbars to add to end etc.
               tcl("event","generate",getWidget(obj),"<Configure>")
@@ -1277,10 +1277,18 @@ setMethod(".addhandlerrightclick",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
-            f = function(h,...) {
-             .addHandler(obj, toolkit, signal="<Button-3>",
-                        handler=handler, action=action, ...)
-           }
+
+            if(windowingingsystem() == "aqua" ||
+               grepl("^mac",.Platform$pkgType)) {
+              id <- lapply(c("<Control-1>", "<Button-2>"), function(i) {
+                .addHandler(obj, toolkit, signal=i,
+                            handler=handler, action=action, ...)
+              })
+            } else {
+              id <- .addHandler(obj, toolkit, signal="<Button-3>", 
+                          handler=handler, action=action, ...)
+            }
+            invisible(id)
           })
 
 

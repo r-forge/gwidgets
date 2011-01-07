@@ -30,6 +30,7 @@ runHandlers <- function(obj, signal, h, ...) {
 ##' The basic idea is that a list of handlers (keyed by the signal) is kept along with a flag
 ##' indicating whether the handler is blocked or not
 ##' The binding is done to call the runHandlers function so that this flag can be intercepted
+##' For signal="command" we use the command option of the widget, otherwise we bind with tkbind
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit,
@@ -75,7 +76,11 @@ setMethod(".addHandler",
                 runHandlers(obj, signal, h, ...)
               }
             }
-            tkbind(getWidget(obj), signal, FUN)
+
+            if(signal == "command")
+              tkconfigure(getWidget(obj), command=FUN)
+            else
+              tkbind(getWidget(obj), signal, FUN)
 
             ## return id
             invisible(id)

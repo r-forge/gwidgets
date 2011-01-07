@@ -43,22 +43,25 @@ setMethod(".gslider",
             tt <- getWidget(container)
             SliderValue <- tclVar(as.character(value))
             
-            ## use old school. ttk:::scale doesn't allow steps, using other values.
-            slider <- tkscale(tt, from=1L, to=length(x),
-                              showvalue=FALSE, variable=SliderValue,
-                              resolution=1L, orient=orientation)
+            ## ## use old school. ttk:::scale doesn't allow steps, using other values.
+            ## slider <- tkscale(tt, from=1L, to=length(x),
+            ##                   showvalue=FALSE, variable=SliderValue,
+            ##                   resolution=1L, orient=orientation)
+
+            slider <- tkwidget(tt, "ttk::scale", from=1L, to=length(x), variable=SliderValue,
+                               orient=orientation)
             
             obj <- new("gSlidertcltk",block=slider, widget=slider,
                        toolkit=toolkit, ID=getNewID(), e = new.env())
             tag(obj,"..tclVar") <- SliderValue
             tag(obj, "..byIndexValues") <- x
 
-            ## modify label
-            modifyLabel <- function() {
-              tkconfigure(slider, label=format(svalue(obj), digts=3))
-            }
-            modifyLabel()
-            tkbind(slider, "<Motion>", modifyLabel)
+            ## ## modify label
+            ## modifyLabel <- function() {
+            ##   tkconfigure(slider, label=format(svalue(obj), digts=3))
+            ## }
+            ## modifyLabel()
+            ## tkbind(slider, "<Motion>", modifyLabel)
             
             
             add(container, obj,...)
@@ -99,8 +102,8 @@ setReplaceMethod(".svalue",
                       value >= 1 &&
                       value <= n) 
                      tclvalue(tag(obj,"..tclVar")) <- value
-                   ## update label
-                   tkconfigure(getWidget(obj), label=format(svalue(obj), digts=3))
+                   ## ## update label
+                   ## tkconfigure(getWidget(obj), label=format(svalue(obj), digts=3))
                    return(obj)
                })
 
@@ -146,7 +149,8 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gSlidertcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            .addHandler(obj,toolkit, signal="<ButtonRelease-1>",handler,action)
+#            .addHandler(obj,toolkit, signal="<ButtonRelease-1>",handler,action)
+            .addHandler(obj,toolkit, signal="command",handler,action)
           })
 
 
