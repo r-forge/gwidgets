@@ -1,7 +1,7 @@
 
 #' Constructor for gdfedit widget
 #'
-#" gdfedit is a light-weight interface to RGtk2Extras data editor widget of Thomas Taverner
+#" gdfedit is a light-weight interface to RGtk2Extra's excellent data editor widget by Thomas Taverner
 
 gdfedit <- function(
                     items = NULL,
@@ -46,6 +46,7 @@ setMethod(".gdfedit",
             if(!do.call("require",list("RGtk2Extras")))
               stop(sprintf("Must have %s package installed", "RGtk2Extras"))
             do.call("require", list("RGtk2"))
+
             
             widget <- gtkDfEdit(items, dataset.name=name) ## how to add
             obj <- new("gDfEditRGtk", block=widget, widget=widget, toolkit=toolkit)
@@ -62,6 +63,15 @@ setMethod(".gdfedit",
 
             return(obj)
           })
+
+
+##' needed when adding as child
+setOldClass("GtkDfEdit")
+setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkDfEdit"),
+          function(obj, toolkit, i, drop=TRUE, ...) {
+            NULL
+          })
+
 
 ## data frame methods
 

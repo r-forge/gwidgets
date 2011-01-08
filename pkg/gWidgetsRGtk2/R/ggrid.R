@@ -951,6 +951,43 @@ setMethod(".names",
             return(theNames)
           })
 
+setReplaceMethod(".size", 
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
+                 function(obj, toolkit, ..., value) {
+
+                   w <- getWidget(obj)
+
+                   if(is.list(value) && !is.null(value$columnWidths)) {
+                     colWidths <- value$columnWidths
+                     colWidths <- rep(colWidths, length.out=dim(obj)[2])
+                     sapply(seq_len(colWidths), function(i) {
+                       col <- w$getColumn(i-1)
+                       col$setMinWidth(colWidths[i])
+                     })
+                   }
+
+                   if(is.list(value) && !is.null(value$rowHeights)){
+                     ## no height method
+                   }
+
+                   ## width/height now
+                   if(is.list(value)) {
+                     width <- value$width # possibly NULL
+                     height <- value$height
+                   } else {
+                     width <- value[1]
+                     height <- ifelse(length(value) > 1, value[2], -1)
+                   }
+                   if(is.null(width))
+                     width <- -1
+                   if(is.null(height))
+                     height <- -1
+
+                   if(!is.null(width))
+                     w$SetSizeRequest(width,height)
+
+                  return(obj)
+                })
 
 setReplaceMethod(".names",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="gGridRGtk"),

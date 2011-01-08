@@ -286,11 +286,15 @@ setMethod(".addhandlerclicked",
               if(!isFirstMouseClick(e))
                 return(FALSE)
 
-              allocation = w$GetAllocation()
+              ## changes to allocation storage with newer RGtk2
+              allocation = w$allocation ## GetAllocation()
               xclick = e$GetX()
               yclick = e$GetY()
-              x = xclick/allocation$width
-              y = (allocation$height - yclick)/allocation$height
+              width <- allocation$allocation$width
+              height <- allocation$allocation$height 
+
+              x = xclick/width
+              y = (height - yclick)/height
 
               ## put into usr coordinates
               h$x <- grconvertX(x, from="ndc", to="user")
@@ -332,13 +336,16 @@ setMethod(".addhandlerchanged",
 ##' Draw a rectangle for rubber banding
 daDrawRectangle <- function(da,  x0, x, y0, y) {
 
-  x <- c(x0,x); y <- c(y0, y)
+  x <- c(x0, x); y <- c(y0, y)
   x0 <- min(x); x <- max(x)
   y0 <- min(y); y <- max(y)
   
+  allocation = da$allocation ## GetAllocation()
+  da.w <- allocation$allocation$width
+  da.h <- allocation$allocation$height 
 
-  da.w <- da$getAllocation()$width
-  da.h <- da$getAllocation()$height
+#  da.w <- da$getAllocation()$width
+#  da.h <- da$getAllocation()$height
 
   ## background style
   gcb <- gdkGCNew(da$window)
@@ -389,8 +396,12 @@ drawableToNDC <- function(da) {
   x.pixel <- sort(c(e$x0, e$x))
   y.pixel <- sort(c(e$y0, e$y))
   
-  da.w <- da$getAllocation()$width
-  da.h <- da$getAllocation()$height
+  allocation = da$allocation ## GetAllocation()
+  da.w <- allocation$allocation$width
+  da.h <- allocation$allocation$height 
+
+#  da.w <- da$getAllocation()$width
+#  da.h <- da$getAllocation()$height
 
   ndc <- list(x=x.pixel/da.w, y= 1- rev(y.pixel/da.h))
   return(ndc)

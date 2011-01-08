@@ -13,7 +13,8 @@ setMethod(".gaction",
                    tooltip = NULL,
                    icon = NULL,
                    key.accel = NULL,
-                   handler = NULL, action = NULL, 
+                   handler = NULL, action = NULL,
+                   parent = NULL,
                    ...) {
             
             force(toolkit)
@@ -33,6 +34,33 @@ setMethod(".gaction",
             ## should be defined when used in a menu bar.
             tag(obj,"key.accel") <- key.accel
             obj@e$buttons <- list()     # for svalue<- with buttons, menu items work
+
+
+            ## accel buttons
+            if(!is.null(key.accel) && !is.null(parent)) {
+              toplevel <- getBlock(parent)$toplevel
+              ## mask Shift-1, Control-4 alt-8
+              ## key sprintf("GDK_%s",key)
+              ## flag GtkAccelFlags -- 1
+              if(grepl("^Control", key.accel) ||
+                 grepl("^Alt", key.accel) ||
+                 grepl("^Shift", key.accel)) {
+                tmp <- strsplit(key.accel, "-")[[1]]
+                modifier <- c(Shift="shift-mask", "Control"="control-mask", Alt="mod1-mask")[tmp[1]]
+                key <- sprintf("GDK_%s", tmp[2])
+              } else {
+                modifier <- "modifier-mask"
+                key <- sprintf("GDK_%s", key.accel)
+              }
+              a <- gtkAccelGroup()
+              toplevel$addAccelGroup(a)
+              a$connect(get(key), modifier, "visible", function(...) {
+                h <- list(action=action)
+                handler(h, ...)
+                TRUE
+              })
+            }
+
             
             if(!is.null(handler))
               addHandlerChanged(obj, handler, action)

@@ -4,16 +4,14 @@ setMethod(".gedit",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    text="", width=25,
-                   coerce.with = NULL, 
+                   coerce.with = NULL,
+                   initial.msg = "",
                    handler=NULL, action=NULL,
                    container=NULL,
                    ...
                    ) {
             
             force(toolkit)
-
-            if (is.null(text)) text<-""
-  
 
             entry <- gtkEntryNew()
 
@@ -25,10 +23,23 @@ setMethod(".gedit",
             ## of values that can be completed use gEditobject[]<- values
             
             ##  entry$setMaxLength(max(width,length(unlist(strsplit(text,"")))))
-            entry$SetText(text)
-            tag(obj,"value")  <- text        # store for later
+            svalue(obj) <- text
             tag(obj,"completion") <- NULL    # a completion object if set via [<-
 
+            ## process initial message if applicable
+            tag(obj, "init_msg") <-  initial.msg
+            if(nchar(text) == 0 && nchar(initial.msg) > 0) {
+              entry$modifyText(GtkStateType[1], "gray")
+              entry$setText(tag(obj, "init_msg"))
+              id <- gSignalConnect(entry, "focus-in-event", function(...) {
+                entry$setText("")
+                entry$modifyText(GtkStateType[1], "black")
+                gSignalHandlerDisconnect(entry,id)
+              })
+            }
+              
+
+            
             ## width -- ths sets minimum -- it ay expand to fill space
             if(!is.null(width))
               entry$setWidthChars(as.numeric(width))
@@ -103,6 +114,9 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             val = obj@widget$getText()
+
+            if(val == tag(obj, "init_msg")) val <- ""
+            
             if(!is.null(tag(obj,"coerce.with")))
               val = do.call(tag(obj,"coerce.with"), list(val))
 

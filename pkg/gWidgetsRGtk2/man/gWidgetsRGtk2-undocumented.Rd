@@ -613,6 +613,7 @@
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.size<-,gGridRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
@@ -694,6 +695,8 @@
 \alias{.tag,guiWidget,guiWidgetsToolkitRGtk2-method}
 \alias{.tag,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.tag,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+\alias{.tag,GtkDfEdit,guiWidgetsToolkitRGtk2-method}
+
 %%
 %% --  tag<- --
 %%
@@ -1173,6 +1176,7 @@
 \alias{.update,gComponentRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.update,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.update,gTreeRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.update,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .length --
 %%

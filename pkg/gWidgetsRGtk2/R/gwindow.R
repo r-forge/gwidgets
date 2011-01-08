@@ -160,6 +160,13 @@ setMethod(".size",
             return(unlist(theSize[2:3]))
           })
 
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
+          function(object, toolkit, ...) {
+            w <- getWidget(object)
+            w$setSizeRequest(-1, -1)
+            invisible()
+          })
 
 ## Add and delete. Special methods for [menu|tool|status]bars
 ##  add
