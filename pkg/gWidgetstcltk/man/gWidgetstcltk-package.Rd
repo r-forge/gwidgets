@@ -41,13 +41,14 @@ and R 2.12-0 or newer.
 \bold{Containers:}
 \cr
 
-\code{gwindow()}: The \code{visible} argument is ignored. The
-top-level window is always produced. The \code{width=} and
-\code{height=} arguments refer to the minimum window size, not the
-preferred default size. The \code{update} method can be called to resize
+\code{gwindow()}: The \code{width=} and \code{height=} arguments refer
+to the minimum window size, not the preferred default size. It is best
+to set \code{visible=FALSE} for the constructor and then when the GUI
+is layed out call \code{visible<-}. This will get the proper size for
+the window. Otherwse, the \code{update} method can be called to resize
 the window to accomodate the child widgets.  \cr
 
-\code{ggroup()} also has the \code{expand=} and \code{anchor=}
+\code{ggroup()}  has the \code{expand=} and \code{anchor=}
 arguments. If \code{expand=TRUE} the widget takes up as much space as
 possible. The \code{anchor=} argument adjusts a widget left or right, up
 or down, within its space. Only one component works at a time for the
@@ -57,13 +58,13 @@ be used to move a value left or right. The default is c(-1,1) so that
 horizontal layouts are towards the top, and vertical layouts towards the
 left.
 
-The \code{use.scrollwindows} feature is now implemented.
+The \code{use.scrollwindows} feature is now implemented. (but seems buggy)
 
-The \code{addSpring} method is not working as desired.
+The \code{addSpring} method only works if the parent container is set to expand.
 \cr
 
 
-\code{gframe()} no markup in title. Use \code{font<-} to give it
+\code{gframe()} The \code{markup} argument is ignored. Use \code{font<-} to give the title
 markup. 
 \cr
 
@@ -109,7 +110,7 @@ this after showing the GUI. The \code{delete} method can be used to
 delete a widget. It may be added back with the \code{add} method.  \cr
 
 
-\bold{The basic widgets or components:} (These may also be known as controls)
+\bold{The basic widgets or components:} (These are also known as controls)
 \cr
 
 \code{gbutton()} mostly works. The button won't resize to take up all
@@ -118,7 +119,7 @@ the possible space for a widget, even if \code{expand=TRUE} is given.
 \code{gcalendar()} is a hack.
 \cr
 
-\code{gcheckbox()} works as advertised. \code{use.togglebutton} implemented.
+\code{gcheckbox()} works as advertised, \code{use.togglebutton} implemented.
 \cr
 
 \code{gcheckboxgroup()} works as advertised, except the \code{use.table} argument is ignored. One can now resize the list.
@@ -128,8 +129,10 @@ the possible space for a widget, even if \code{expand=TRUE} is given.
 \cr
 
 
-\code{gdf()} is implemented if the user has installed the \code{tktable} package in Tcl. This is an additional download from \url{tktable.sourceforge.net}. Most of the code comes second hand from \pkg{tcltk2}'s \code{dfedit} function.
-\cr
+\code{gdf()} is implemented if the user has installed the
+\code{tktable} package in Tcl. This is an additional download from
+\url{tktable.sourceforge.net}. Most of the code comes second hand from
+\pkg{tcltk2}'s \code{dfedit} function.  \cr
 
 \code{gedit()}: The widget does not resize automatically. Set the
 width with \code{width=} at time of construction or with
@@ -138,33 +141,30 @@ menu only pops down, so don't use near the bottom of a screen ;) The
 hidden argument \code{init_msg} can be used to place an initial
 message for the event there is no text in the box.  \cr
 
-\code{gfilebrowse()} works.
-\cr
+\code{gfilebrowse()} works.  \cr
 
 \code{ggraphics()} Not implemented. The \pkg{tkrplot} package could be
-used in some way, but this does not provide a fully embeddable graphics
-device.
-\cr
+used in some way, but this does not provide a fully embeddable
+graphics device.  \cr
 
 \code{ghelp()} Works as advertised. Uses a popup menu instead of a
-notebook, as gWidgetsRGtk2.
-\cr
+notebook, as gWidgetsRGtk2. Best to just use \pkg{helpr} though.  \cr
 
 \code{gimage()} Only works with gif and pnm files, as the underlying
-tcltk widget only uses these by default. 
-\cr
+tcltk widget only uses these by default.  \cr
 
-\code{glabel()} No markup available. Use \code{font<-} instead.
-\cr
+\code{glabel()} No markup available. Use \code{font<-} instead.  \cr
 
-\code{gmenu()} adds only to the top window, not any container. This is a tcltk
-limitation. Use a popupmenu instead. 
+\code{gmenu()} adds only to the top window, not any container. This is
+a tcltk limitation. Use a popupmenu instead.
 
-Under Mac OS X, menus display in the top menu bar area, not in the parent window.
-\cr
+Under Mac OS X, menus display in the top menu bar area, not in the
+parent window.  \cr
 
-\code{gtoolbar()} A hack made from a \code{ggroup} object that packs in \code{gbutton} instances. The buttons take up alot of screen real estate, on the default Aqua them of OS X the buttons are rounded, so the toolbar looks odd, ... 
-\cr
+\code{gtoolbar()} A hack made from a \code{ggroup} object that packs
+in \code{gbutton} instances. The buttons take up alot of screen real
+estate, on the default Aqua them of OS X the buttons are rounded, so
+the toolbar looks odd, ...  \cr
 
 
 \code{gaction()} is implemented for buttons, menubars and
@@ -172,26 +172,27 @@ toolbars. The \code{key.accel} component is now implemented but one
 must pass in a parent argument (The binding is to the top-level window
 containing the parent). \cr
 
-\code{gradio()} has an extra argument \code{coerce.with=}, as otherwise
-it would treat everything as a character vector. It tries to guess when
-instantiated, if not explicitly given. One can now resize the number of items to select from.
-\cr
+\code{gradio()} has an extra argument \code{coerce.with=}, as
+otherwise it would treat everything as a character vector. It tries to
+guess when instantiated, if not explicitly given. One can now resize
+the number of items to select from.  \cr
 
-\code{gseparator()} works as expected but must be in a container with \code{expand=TRUE}.
+\code{gseparator()} works as expected but must be in a container with
+\code{expand=TRUE}.
 
-\code{gslider()} in \pkg{tcltk} works with integer steps only. If the
-\code{by=} argument is less than 1 a \code{gspinbutton()} is used in
-place.
-\cr
+\code{gslider()} now works with non-integer steps. If first argument
+\code{from} is a vector it will slide over those values after
+sorting. This uses a themed widget which might be buggy under some
+styles.  \cr
 
 \code{gspinbutton()} Works as expected. The change handler responds to
-clicks of the arrows or to the return key in the text area.
-\cr
+clicks of the arrows or to the return key in the text area.  This is a
+non-themed widget and can look a bit odd.\cr
 
 \code{gstatusbar()} A hack. Just a \code{ggroup()} instance in
 disguise. By default it must have a gwindow instance for a parent
-container. If the hidden argument  \code{not.toplevel=TRUE} is specified,
-a \code{ggroup} container may be used.  \cr
+container. If the hidden argument \code{not.toplevel=TRUE} is
+specified, a \code{ggroup} container may be used.  \cr
 
 \code{gtable()} This is built on the underlying tree widget. It is not
 ideal, but avoids needing to have a separate library (eg. Tktable)
@@ -214,22 +215,21 @@ argument \code{do.autoscroll=TRUE}.  However, the \code{size<-} method
 has another use. It can also take a list for value. This list has
 optional components \code{width}, \code{height}, \code{columnWidths}
 (to specify each column width individually), and \code{noRowsVisible}
-(to specify height by number of rows, not pixels).
-      \cr
+(to specify height by number of rows, not pixels).  \cr
 
 \code{gtext()} The \code{size<-} method can be used to resize the
-widget. This method guesses at the converstion from pixels to characters
-(width) and lines of text (height) used by the underlying widget. The
-\code{svalue()} method returns all the text unless some text is selected
-by the mouse and : \code{index=TRUE} in which case the indices of the
-selected text are returned or \code{drop=TRUE} in which case only the
-selected text is returned.
-\cr
+widget. The initial default size is quit large. This method guesses at
+the converstion from pixels to characters (width) and lines of text
+(height) used by the underlying widget. The \code{svalue()} method
+returns all the text unless some text is selected by the mouse and :
+\code{index=TRUE} in which case the indices of the selected text are
+returned or \code{drop=TRUE} in which case only the selected text is
+returned.  \cr
 
 
-\code{gtree()} Implemented using ttktreeview. It is slow however, so use
-on smaller trees only. Has same issues with scrollbars as \code{gtable}.
-\cr
+\code{gtree()} Implemented using ttktreeview. It is slow however, so
+use on smaller trees only. Has same issues with scrollbars as
+\code{gtable}.  \cr
 
 
 
@@ -244,24 +244,21 @@ improved.
 \cr
 
 \code{ggenericwidget()} Some kinks need ironing out when the main
-variable is a formula.
-\cr
+variable is a formula.  \cr
 
-\code{gdfnotebook()} No \code{gdf} so no notebook
-\cr
+\code{gdfnotebook()} Not implemented.\cr
 
 \code{ggraphicsnotebook()} No \code{ggraphics} so no notebook.
 \cr
 
 \code{gvarbrowser()} Uses a tree to show heirarchical structure of
 workspace. Does not poll to update workspace. It does reread workspace
-when Filter by: value is changed.
-\cr
+when Filter by: value is changed.  \cr
 
-\bold{Dialogs:} (These are modal, hence they have no methods (basically).)
-\cr
-\code{gfile()} works as advertised.
-\cr
+\bold{Dialogs:} (These are modal, hence they have no methods
+(basically).)  \cr 
+
+\code{gfile()} works as advertised.  \cr
 
 \code{gmessage()} works.
 \cr
@@ -274,7 +271,15 @@ when Filter by: value is changed.
 
 \code{gbasicdialog()} is implemented. It it is a container. When the
 \code{visible(obj,TRUE)} command is issued, the container is shown and
-made modal.  \cr
+made modal.  
+
+\preformatted{
+dlg <- gbasicdialog("A modal dialog", handler=function(h,...) print("hi"))
+l = glabel("some widget in the dialog", cont=dlg)
+visible(dlg, set=TRUE)
+}
+
+\cr
 
 
 
@@ -284,22 +289,21 @@ made modal.  \cr
 
 
 Handlers were rewritten so that one can have more than one handler per
-signal. The
-\code{blockHandler}, \code{unblockHandler} and \code{removeHandler}
-methods are now working.  \cr
+signal. The \code{blockHandler}, \code{unblockHandler} and
+\code{removeHandler} methods are now working.  \cr
 
 The \code{addHandlerBlur} method should be called when a widget loses
 focuses, but here is called whenever a widget loses focus \emph{and}
 whenever the mouse leaves the widget. This can mean the handler is
 called twice. If you don'l like that, you can add the callback through
 \code{addHandler(obj, signal, handler)} where \code{signal} is
-\code{<FocusOut>} or \code{<Leave>}.
-\cr
+\code{<FocusOut>} or \code{<Leave>}.  \cr
 
-\code{adddroptarget()}, \code{adddropsource()}, and \code{adddropmotion}
-work for tcltk widgets. The cursor changes to a funny looking cursor,
-but nothing resembling a drag and drop cursor. One was chosen from the
-standard cursors. Dragging from other applications is not supported.
+\code{adddroptarget()}, \code{adddropsource()}, and
+\code{adddropmotion} work for tcltk widgets. The cursor changes to a
+funny looking cursor, but nothing resembling a drag and drop
+cursor. One was chosen from the standard cursors. Dragging from other
+applications is not supported.
 
 
 
