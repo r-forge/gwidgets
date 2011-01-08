@@ -33,7 +33,7 @@ make_tcl_image <- function(basename, file) {
 ##' @return logical indicating is  ttk widget or not
 isTtkWidget <- function(x) {
   cl <- as.character(tkwinfo("class",x))
-  grepl("^[A-Z]{2,}", cl)
+  (cl %in% c("Treeview")) ||  grepl("^[A-Z]{2,}", cl)
 }
 
 ##' what windowing system?

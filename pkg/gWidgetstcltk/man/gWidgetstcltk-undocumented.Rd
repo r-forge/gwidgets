@@ -1137,8 +1137,9 @@
 %%
 \alias{.update-methods}
 \alias{.update,gComponenttcltk,guiWidgetsToolkittcltk-method}
-\alias{.update,gVarbrowsertcltk,guiWidgetsToolkittcltk-method}
 \alias{.update,gTreetcltk,guiWidgetsToolkittcltk-method}
+\alias{.update,gVarbrowsertcltk,guiWidgetsToolkittcltk-method}
+\alias{.update,gWindowtcltk,guiWidgetsToolkittcltk-method}
 %%
 %% --  .length --
 %%
@@ -1165,6 +1166,7 @@
 %%
 \alias{.dim-methods}
 \alias{.dim,gGridtcltk,guiWidgetsToolkittcltk-method}
+\alias{.dim,gLayouttcltk,guiWidgetsToolkittcltk-method}
 \alias{.dim,gTabletcltk,guiWidgetsToolkittcltk-method}
 \alias{.dim,gTableWithFiltertcltk,guiWidgetsToolkittcltk-method}
 \alias{.dim,gWidgettcltk,guiWidgetsToolkittcltk-method} 

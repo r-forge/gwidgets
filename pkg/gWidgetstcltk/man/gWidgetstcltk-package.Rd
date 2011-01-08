@@ -21,27 +21,11 @@ limited version that comes with the standard Windows installation of R.
 
 Notes on this implementation:
 
-The primary difference in this version is that each widget requires a
-container when being constructed. The container is given to the
-\code{container} argument. The value may be the logical \code{TRUE}
-indicating that a new window is constructed, or a container widget. This
-precludes the two-step process of creating a widget, then adding it to a
-container. As such, use the arguments to \code{add} in the construction
-of the widget. that is
-
-\preformatted{
-  g = ggroup(cont=gwindow("An example"))
-  b = gbutton("a button")
-  add(g, b, expand=TRUE)
-}
-
-Would be combined, as in:
-
-\preformatted{
-  g = ggroup(cont=gwindow("An example"))
-  gbutton("a button", container=g, expand=TRUE)
-  }
-
+The primary difference in this interface, as opposed to that for
+\pkg{RGtk2}, is that each widget requires a container when being
+constructed. The container is given to the \code{container}
+argument. The value may be the logical \code{TRUE} indicating that a
+new window is constructed, or a container widget.
 
 Other differences are that tcltk does not seem to have a markup language
 like Pango for GTK or HTML for JAVA, as such the \code{markup} argument
@@ -51,16 +35,16 @@ for several widgets that is used to format text is not available. The
 Until version 8.5 of tk, the basic tcltk installation did not include
 several widgets that appear in other toolkits. For instance a grid
 widget, a notebook widget, etc. This package now requires tk 8.5 to work
-and R 2.7-0 or newer.
+and R 2.12-0 or newer.
 \cr
 
 \bold{Containers:}
 \cr
 
-\code{gwindow()} The \code{visible=} argument is ignored. The
+\code{gwindow()}: The \code{visible} argument is ignored. The
 top-level window is always produced. The \code{width=} and
 \code{height=} arguments refer to the minimum window size, not the
-preferred default size. The \method{update} can be called to resize
+preferred default size. The \code{update} method can be called to resize
 the window to accomodate the child widgets.  \cr
 
 \code{ggroup()} also has the \code{expand=} and \code{anchor=}
