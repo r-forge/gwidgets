@@ -8,13 +8,23 @@ setClass("gAction",
 
 ##' An action constructor
 ##'
-##' @exports
+##' @param label label for action
+##' @param tooltip toolktip for actin
+##' @param icon icon (stock icon name) for icon
+##' @param key.accel keyboard accelerator. If given, parent must be specified.
+##' @param handler handler to call when action is invoked
+##' @param action values passed to parameterize action
+##' @param parent parent window. Needed if keyboard accelerator used.
+##' @param ... 
+##' @param toolkit 
+##' @export
+##' @return a gaction instance
 gaction <- function(
                     label, tooltip=NULL, icon = NULL, key.accel = NULL,
-                    handler = NULL, action = NULL, ...,
+                    handler = NULL, action = NULL, parent=NULL, ...,
                     toolkit=guiToolkit()) {
   widget <- .gaction (toolkit,
-                      label, tooltip, icon, key.accel, handler, action, ...
+                      label, tooltip, icon, key.accel, handler, action, parent, ...
                       )
   obj <- new( 'gAction',widget=widget,toolkit=toolkit) 
   return(obj)
@@ -26,7 +36,7 @@ gaction <- function(
 setGeneric( '.gaction' ,
            function(toolkit,
                     label, tooltip = NULL, icon = NULL, key.accel=NULL,
-                    handler = NULL, action = NULL,
+                    handler = NULL, action = NULL, parent=NULL, 
                     ... )
            standardGeneric( '.gaction' ))
 

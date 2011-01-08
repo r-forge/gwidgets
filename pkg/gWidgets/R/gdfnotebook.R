@@ -6,9 +6,13 @@ setClass("gDfNotebook",
          prototype=prototype(new("guiComponent"))
          )
 
-##' 
+##' A notebook container for many \code{gdf} instances
 ##'
 ##' @exports
+##' @param items data frame for initial page
+##' @param container parent container
+##' @param ... passed to \code{add} method of parent container
+##' @param toolkit toolkit
 gdfnotebook <- function(
                         items = NULL, container = NULL, ... ,
                         toolkit=guiToolkit()){

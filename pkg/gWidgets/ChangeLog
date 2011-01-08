@@ -1,3 +1,13 @@
+2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (gedit): added new argument initial.msg to display a
+	grayed out message when no intial value is specified
+
+2010-12-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R (gaction): added parent argument (like gWidgetsWWW),
+	allows one to insert key accelerator into toplevel window of parent
+
 2010-10-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gcheckbox.R: added use.togglebutton argument to use toggle

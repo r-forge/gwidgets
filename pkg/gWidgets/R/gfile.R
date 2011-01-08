@@ -3,6 +3,17 @@
 ##' dialog for file and directory selection
 ##'
 ##' @exports
+##' @param text initial text
+##' @param type type of browser: to open a file, to save a file or to select a directory
+##' @param initialfilename Suggested file name
+##' @param filter A filter specifiation. This is toolkit specific
+##' @param multi Logical. Allow multiple files to be selected?
+##' @param handler called when a file or files have been selected
+##' @param action passed to handler
+##' @param ... ignored
+##' @param toolkit toolkit
+##' @return returns filename(s) or \code{NA} if no selection. 
+##' 
 gfile <- function(
                   text = "", type = c("open", "save", "selectdir"),
                   initialfilename = NULL,
@@ -17,7 +28,10 @@ gfile <- function(
 }
 
 
-## generic for toolkit dispatch
+##' generic for toolkit dispatch
+##'
+##' @export
+##' @rdname gfile
 setGeneric( '.gfile' ,
            function(toolkit,
                     text = "", type = c("open", "save", "selectdir"),
@@ -37,7 +51,16 @@ setClass("gFilebrowse",
 
 ##' constructor for file/directory selection widget
 ##'
+##' Basically a \code{gedit} instance with a button to initiate \code{gfile}.
 ##' @export
+##' @param text Instructional text
+##' @param type type of dialog (see \code{\link{gfile}})
+##' @param quote Do we quote value 
+##' @param container parent container
+##' @param ... passed to \code{add} method of parent
+##' @param toolkit toolkit
+##' @return Returns an object of class \code{gFilebrowse}. This should
+##' inherit the methods  of \code{gedit} instances.
 gfilebrowse <- function (
                          text = "Select a file...", type = "open", quote = TRUE, 
                          container = NULL, ..., toolkit = guiToolkit()) {

@@ -12,4 +12,7 @@ test.gedit <- function() {
   svalue(l) <- newText
   checkEquals(svalue(l), newText)
 
+  # [<-
+  l[] <- state.name
+  
 }

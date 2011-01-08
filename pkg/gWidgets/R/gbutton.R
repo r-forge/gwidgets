@@ -6,7 +6,26 @@ setClass("gButton",
          prototype=prototype(new("guiComponent"))
          )
 
-##' Button constructor
+##' Button widget constructor
+##' 
+##' @param text Button text. If text matches a stock icon, that icon is also displayed.
+##' @param border Logical. Is button drawn with a border
+##' @param handler handler to call when button is invoked
+##' @param action passed to handler when called. If a \code{gaction}
+##' instance, then the action will define the text and the handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of container
+##' @param toolkit toolkit
+##' @export
+##' @example ~/pmg/r-forge/gwidgets/pkg/gWidgets/inst/tests/ex-gbutton.R
+##' @return An object of class \code{gButton} for which the following methods are overridden:
+##'
+##' \enumerate{
+##' \item \code{svalue} gets button text
+##' 
+##' \item \code{svalue<-} sets button text
+##' }
+##' The "change" handler is called when the button is clicked.
 gbutton =function(
   text = "", border=TRUE, handler = NULL, action = NULL, container = NULL,      ...,
   toolkit=guiToolkit()){
@@ -18,6 +37,8 @@ gbutton =function(
 }
 
 ##' gbutton generic for toolkit dispatch
+##' @alias gbutton
+##' @export
 setGeneric( '.gbutton' , function(toolkit,
                                   text = "", border=TRUE, handler = NULL, action = NULL, container = NULL,...)
            standardGeneric( '.gbutton' ))

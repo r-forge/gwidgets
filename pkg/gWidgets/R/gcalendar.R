@@ -8,7 +8,21 @@ setClass("gCalendar",
 
 ##' A constructor for a date selection widget
 ##'
-##' @exports
+##' @param text initial text
+##' @param format Date format
+##' @param handler handler called when changed
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... passed to \code{add} method of parent
+##' @param toolkit toolkit
+##' @return Returns an object of class \code{gCalendar} for which the following methods are overridden:
+##' \enumerate{
+##' \item \code{svalue} get the date
+##' 
+##' \item \code{svalue<-} set the date
+##' }
+##' The change handler is inherited from \code{\link{gedit}}
+##' @export
 gcalendar <- function(
                       text = "", format = "%Y-%m-%d", 
                       handler = NULL, action=NULL, container = NULL,...,

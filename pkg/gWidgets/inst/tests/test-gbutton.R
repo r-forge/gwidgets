@@ -1,4 +1,4 @@
-  test.gbutton <- function() {
+test.gbutton <- function() {
   w <- gwindow()
   g <- ggroup(cont = w, horiz = FALSE)
   
@@ -9,7 +9,7 @@
   
   ## svalue
   checkEquals(svalue(l), text)
-
+  
   ## svalue<-
   svalue(l) <- newText
   checkEquals(svalue(l), newText)
@@ -22,5 +22,13 @@
   l <- gbutton(action = a, cont =g)
 
   checkEquals(svalue(a), text)
+
+
+  ## enabled
+  b <- gbutton("asdf", cont=g)
+  enabled(b) <- FALSE
+  checkEquals(enabled(b), FALSE)
+  
+
   
 }

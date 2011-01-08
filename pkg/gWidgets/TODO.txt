@@ -1,5 +1,9 @@
 * STARTED. Wish list: roxygen docs on methods; add classes
-* integrate in column size into gtable 
+* editable<- method? (Really want for gdf, but could use with
+  gcombobox, glabel, gtext, ...
+* gaction -- parent argument for key.accelerators. Fix on Control-x,
+  Alt-x, ... use tcltknotation
+* integrate in column size into gtable  size<- (list with columnWidths...)
 * gcommandline is not very good -- IT IS AWFUL. Do tcltk --- see
 * size argument in gcombobox as formal argument, we have it as ... now.
 * methods in docs -- work on API

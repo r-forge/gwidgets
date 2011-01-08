@@ -35,3 +35,11 @@ gwindow <- function(title="Window" , visible=TRUE, name=title,
 ##' define a toolkit constructor, dispatch on toolkit
 ##' @alias gwindow
 setGeneric(".gwindow",function(toolkit, title, visible, width, height, parent, handler, action,...) standardGeneric(".gwindow"))
+
+
+## methods
+## add
+## svalue: title property
+## size, size<-
+## visible, visible<-
+## update: recompute window size

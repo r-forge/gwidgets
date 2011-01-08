@@ -35,3 +35,11 @@ setGeneric( '.gtree' ,
                     multiple = FALSE,
                     handler = NULL, action = NULL, container = NULL, ... )
            standardGeneric( '.gtree' ))
+
+
+## methods
+
+##' svalue get selected values. index=TRUE: 1-based path; index=FALSE|NULL chararacter value
+##' svalue<- set path by index
+##' [ get text based path (by ids)
+##' update update tree at root

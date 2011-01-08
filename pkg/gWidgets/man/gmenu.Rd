@@ -2,7 +2,7 @@
 \alias{gaction}
 \alias{gmenu}
 \alias{gtoolbar}
-\title{ Constructors to make menubar or toolbars}
+\title{ Constructors to make menubars or toolbars}
 \description{
 	A menubar or toolbar are created using these
 	constructors. These are specified using a lists, and these may
@@ -17,7 +17,7 @@ gtoolbar (toolbarlist, style = c("both", "icons", "text",
     ..., toolkit = guiToolkit()) 
 
 gaction(label, tooltip = NULL, icon = NULL, key.accel = NULL, 
-        handler = NULL, action = NULL, ...,
+        handler = NULL, action = NULL, parent=NULL, ...,
         toolkit = guiToolkit())
 
 }
@@ -32,7 +32,8 @@ gaction(label, tooltip = NULL, icon = NULL, key.accel = NULL,
   \item{label}{Label for action item}
   \item{tooltip}{tooltip}
   \item{icon}{icon to decorate instance of action}
-  \item{key.accel}{keyboard accelerator}
+  \item{key.accel}{keyboard accelerator. If specified, a parent window must also be specified.}
+  \item{parent}{Needed if key.accel is specified}
   \item{handler}{Handler called when object attached to action is activated}
   \item{\dots}{Passed to the \code{add} method of the container}
   \item{toolkit}{Which GUI toolkit to use}
@@ -46,14 +47,19 @@ gaction(label, tooltip = NULL, icon = NULL, key.accel = NULL,
 	setting the label text and \code{enabled<-} which can changes
 	whether the widgets depending on the action are sensitive to
 	user input. An action object contains a label, an optional
-	icon, an optional keyboard accelerator, and a handler. The
-	handler does not have the widget from which it is called
-	passed in to the \code{obj} component of the first argument,
-	but one can parametrize the argument with the \code{action}
-	argument. The icon, tooltip, and keyboard accelerator are very
-	much toolkit and OS dependent, and so may not always be
-	available by the widget using the gaction object. The keyboard
-	accelerator is not yet implemented in any toolkit.
+	icon, an optional keyboard accelerator, a handler and a parent
+	window. The handler does not have the widget from which it is
+	called passed in to the \code{obj} component of the first
+	argument, but one can parametrize the argument with the
+	\code{action} argument. The icon, tooltip, and keyboard
+	accelerator are very much toolkit and OS dependent, and so may
+	not always be available by the widget using the gaction
+	object. The keyboard accelerator may use modifies
+	\code{Control}, \code{Alt} or \code{Shift} along with a
+	letter, such as \code{Control-c}. These are only now
+	implemented in tcltk. The keyboard accelerator requires a
+	parent container so that the corresponding window for which
+	the accelerator applies can be found.
 
 	The lists defining a menubar or toolbar are very similar.
 

@@ -3,6 +3,14 @@
 
 
 ##' Alert dialog to display transient messages
+##' 
+##' @param message main message. 
+##' @param title Title (may not be displayed)
+##' @param delay length of time (in seconds) to display
+##' @param parent parent object to show near
+##' @param ... ignored
+##' @param toolkit toolkit
+##' @rdname gWidgets-dialogs
 galert = function(
   message,
   title = "message",
@@ -23,6 +31,15 @@ setGeneric(".galert",
 ##' Constructor for modal message dialog
 ##' 
 ##' @export
+##' @param message Character. message to display. 
+##' @param title Character. Title
+##' @param icon What icon to show
+##' @param parent Hint as to where to display
+##' @param handler called if Ok button clicked
+##' @param action passed to handler
+##' @param ... ignored
+##' @param toolkit toolkit
+##' @rdname gWidgets-dialogs
 gmessage = function(
   message,
   title = "message",
@@ -48,6 +65,16 @@ setGeneric(".gmessage",
 ##' Constructor for modal dialog to collect a line of text
 ##'
 ##' @export
+##' @param message Character. Message to display.
+##' @param text Character. Initial text
+##' @param title Character. Title of window
+##' @param icon which icon to display
+##' @param parent gives hint as to where to place dialog
+##' @param handler called on \code{Ok}
+##' @param action passed to handler
+##' @param ... ignored
+##' @param toolkit toolkit
+##' @rdname gWidgets-dialog
 ginput <- function(
   message, text="",
   title = "Input",
@@ -62,6 +89,8 @@ ginput <- function(
 
 ##' generic for toolkit dispatch
 ##' @alias ginput
+##' @export
+##' @rdname gWidgets-dialog
 setGeneric(".ginput",
            function(toolkit,
                     message=message, text=text, title=title, icon=icon,
@@ -106,7 +135,22 @@ setClass("guiDialog",
 
 ##' Constructor for modal dialog that can contain an arbitrary widget
 ##'
+##' The basic dialog is basically a modal window. To use there is a 3
+##' step process: 1) Create a container by calling this constructor,
+##' say \code{dlg}; 2) use \code{dlg} as a container for your
+##' subsequent GUI; 3) set the dialog to be modal by calling
+##' \code{visible(dlg, set=TRUE)}. (One can't call \code{visible(dlg)
+##' <- TRUE}.)
+##' 
 ##' @export
+##' @param title title for window
+##' @param widget widget to add (Only if toolkit supports it)
+##' @param parent parent to display by
+##' @param handler handler called when \code{Ok} button invoked
+##' @param action passed to handler
+##' @param ... ignored
+##' @param toolkit toolkit
+##' @rdname gWidgets-dialogs
 gbasicdialog <- function(
   title = "Dialog", widget,
   parent = NULL,
@@ -125,6 +169,7 @@ gbasicdialog <- function(
 }
 
 ##' generic for toolkit dispatch
+##' 
 ##' @alias gbasicdialog
 setGeneric(".gbasicdialog",
            function(toolkit,
@@ -134,6 +179,7 @@ setGeneric(".gbasicdialog",
            standardGeneric(".gbasicdialog"))
 
 ##' generic for toolkit dispatch when there is no parent
+##' 
 ##' @alias gbasicdialog
 setGeneric(".gbasicdialognoparent",
            function(toolkit,

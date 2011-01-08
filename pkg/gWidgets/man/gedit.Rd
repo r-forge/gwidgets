@@ -5,7 +5,7 @@
 	The \code{gedit} widget is used to enter single lines of text. 
 	}
 \usage{
-gedit(text = "", width = 25, coerce.with = NULL, handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
+gedit(text = "", width = 25, coerce.with = NULL, initial.msg="", handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
 }
 \arguments{
   \item{text}{Initial text in widget}
@@ -14,6 +14,7 @@ gedit(text = "", width = 25, coerce.with = NULL, handler = NULL, action = NULL, 
   \item{coerce.with}{For gedit, when the value is retrieved this
     function is applied to the result. (The stored value is always a
     character, this can be used to make it numerc, to quote it, ...}
+    \item{initial.msg}{If \code{text} is empty, this initial message is displayed to give the user some indication of what to do}
   \item{handler}{Handler called when text is changed. For gedit, this
     means the enter key is pressed.}
   \item{action}{ Passed to handler}

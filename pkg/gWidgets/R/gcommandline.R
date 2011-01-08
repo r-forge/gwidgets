@@ -2,76 +2,6 @@
 
 ## A widget to provide a simple command line
 
-##################################################
-## Helpers
-## taken from Sweave
-## takes a chunk, interweaves command and output
-evalChunkReturnOutput = function(chunk, prompt = getOption("prompt")) {
-
-  output = ""
-  addToOutput = function(...) 
-    output <<- paste(output,..., sep=" ", collapse="\n")
-  
-  chunkexps <- try(parse(text=chunk), silent=TRUE)
-  if(inherits(chunkexps,"try-error")) {
-   addToOutput(chunkexps)
-   cat("Houston, we have a problem with:\n",chunkexps,"\n")
-   return(list(output=output, error=TRUE))
- }
-
-  if(length(chunkexps) == 0)
-    return(list(output=output, error=FALSE))
-
-  for(nce in 1:length(chunkexps)) {
-    ce <- chunkexps[[nce]]
-    dce <- deparse(ce, width.cutoff=0.75*getOption("width"))
-    command = paste(prompt,
-      paste(dce,collapse=paste("\n", getOption("continue"), sep="")),
-      sep="", collapse=""
-      )
-
-    addToOutput(command,"\n")
-
-    ## is there output?
-    tmpcon <- file()
-    sink(file=tmpcon)
-    err <- RweaveEvalWithOpt(ce, list(eval=TRUE,print=FALSE,term=TRUE,visible=FALSE))
-    cat("\n") # make sure final line is complete
-    sink()
-    theOutput <- readLines(tmpcon)
-    close(tmpcon)
-    ## delete empty output
-    if(length(theOutput)==1 & theOutput[1]=="") theOutput <- NULL
-    
-    if(inherits(err, "try-error")) {
-      addToOutput(err,"\n")
-    } else {
-      if(!is.null(theOutput)) {
-        addToOutput(paste(theOutput,sep="",collapse="\n"))
-      }
-    }
-  }
-
-  return(list(output = output, error=FALSE))
-}
-
-
-### working functions
-
-
-## parse command(s) and make assingment on last one.
-addAssignto = function(command,assignto) {
-  assignto = make.names(assignto)
-  tmp = unlist(strsplit(command, ";"))
-  if(length(tmp)>1) {
-    command = paste(tmp[-length(tmp)], Paste(assignto,"<-",tmp[length(tmp)]), collapse=";", sep=";")
-  } else {
-    command =  Paste(assignto,"<-", command)
-  }
-  return(command)
-}
-
-
 
 ##################################################
 
@@ -83,7 +13,27 @@ setClass("gCommandline",
 
 ##' constructor of widget for use as a command line
 ##'
+##' Basically a giant hack
 ##' @exports
+##' @param command Initial command to evaluation
+##' @param assignto Character or NULL. assign value to this name if non-NULL
+##' @param useGUI use the GUI
+##' @param useConsole use the console
+##' @param prompt what prompt to use
+##' @param width width in pixels
+##' @param height height in pixels
+##' @param container parent container
+##' @param ... passed to containers \code{add} method
+##' @param toolkit toolkit
+##' @return an object of class \code{gCommandline} with methods:
+##'
+##' \enumerate{
+##'
+##' \item{svalue<-} Character. An expression to evaluate. If it has a names attribute this is used for assignment
+##'
+##' \item{[} Lists history
+##'
+##' }
 gcommandline =function(
   command = "", assignto = NULL, useGUI = TRUE, useConsole = FALSE,
   prompt = getOption("prompt"), width = 500, height = 0.6 * width,
@@ -334,4 +284,76 @@ setMethod(".leftBracket",
             else
               commandHistory(i)
           })
+
+
+
+##################################################
+## Helpers
+## taken from Sweave
+## takes a chunk, interweaves command and output
+evalChunkReturnOutput = function(chunk, prompt = getOption("prompt")) {
+
+  output = ""
+  addToOutput = function(...) 
+    output <<- paste(output,..., sep=" ", collapse="\n")
+  
+  chunkexps <- try(parse(text=chunk), silent=TRUE)
+  if(inherits(chunkexps,"try-error")) {
+   addToOutput(chunkexps)
+   cat("Houston, we have a problem with:\n",chunkexps,"\n")
+   return(list(output=output, error=TRUE))
+ }
+
+  if(length(chunkexps) == 0)
+    return(list(output=output, error=FALSE))
+
+  for(nce in 1:length(chunkexps)) {
+    ce <- chunkexps[[nce]]
+    dce <- deparse(ce, width.cutoff=0.75*getOption("width"))
+    command = paste(prompt,
+      paste(dce,collapse=paste("\n", getOption("continue"), sep="")),
+      sep="", collapse=""
+      )
+
+    addToOutput(command,"\n")
+
+    ## is there output?
+    tmpcon <- file()
+    sink(file=tmpcon)
+    err <- RweaveEvalWithOpt(ce, list(eval=TRUE,print=FALSE,term=TRUE,visible=FALSE))
+    cat("\n") # make sure final line is complete
+    sink()
+    theOutput <- readLines(tmpcon)
+    close(tmpcon)
+    ## delete empty output
+    if(length(theOutput)==1 & theOutput[1]=="") theOutput <- NULL
+    
+    if(inherits(err, "try-error")) {
+      addToOutput(err,"\n")
+    } else {
+      if(!is.null(theOutput)) {
+        addToOutput(paste(theOutput,sep="",collapse="\n"))
+      }
+    }
+  }
+
+  return(list(output = output, error=FALSE))
+}
+
+
+### working functions
+
+
+## parse command(s) and make assingment on last one.
+addAssignto = function(command,assignto) {
+  assignto = make.names(assignto)
+  tmp = unlist(strsplit(command, ";"))
+  if(length(tmp)>1) {
+    command = paste(tmp[-length(tmp)], Paste(assignto,"<-",tmp[length(tmp)]), collapse=";", sep=";")
+  } else {
+    command =  Paste(assignto,"<-", command)
+  }
+  return(command)
+}
+
 
