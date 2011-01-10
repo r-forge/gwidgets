@@ -279,9 +279,6 @@ l = glabel("some widget in the dialog", cont=dlg)
 visible(dlg, set=TRUE)
 }
 
-\cr
-
-
 
 
 \bold{Handlers:}
