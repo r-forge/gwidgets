@@ -2,6 +2,10 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-70
+--------------------------
+
+
 Changes for version 0.0-69
 --------------------------
 * overload from= argument for gslider to specify arbitrary sortable vector
