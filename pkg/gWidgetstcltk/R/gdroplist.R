@@ -51,11 +51,13 @@ setMethod(".gdroplist",
             else
               state <- "readonly"
 
-            
+
             if(!is.null(theArgs$width))
               width <- theArgs$width
-            else
+            else if(length(items))
               width <- max(sapply(items,nchar))  + 5
+            else
+              width <- NULL
             
             tt <- getWidget(container)
             gp <- ttkframe(tt)
@@ -63,10 +65,11 @@ setMethod(".gdroplist",
             cb <- ttkcombobox(gp,
                               values = as.character(items),
                               textvariable = cbVar,
-                              width = width,
                               state = state)
+            if(!is.null(width))
+              tkconfigure(cb, width=width)
 
-            tkgrid(cb,row=0, column=0, sticky="news")
+            tkgrid(cb,row=0, column=0, sticky="we") # stretch horizontally. Use news for both
             tkgrid.columnconfigure(gp,0, weight=1)
             
             obj = new("gDroplisttcltk",block=gp,widget=cb,
