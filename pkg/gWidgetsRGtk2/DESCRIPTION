@@ -1,5 +1,5 @@
 Package: gWidgetsRGtk2
-Version: 0.0-70
+Version: 0.0-71
 Title: Toolkit implementation of gWidgets for RGtk2
 Author: Michael Lawrence, John Verzani
 Maintainer: John Verzani <gwidgetsrgtk@gmail.com>

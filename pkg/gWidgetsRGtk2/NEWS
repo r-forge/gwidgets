@@ -2,9 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-71
+--------------------------
+ 
+
 Changes for version 0.0-70
 --------------------------
-
+* fix to gcombobox's [<- method
 
 Changes for version 0.0-69
 --------------------------
