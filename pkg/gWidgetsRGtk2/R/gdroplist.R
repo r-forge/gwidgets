@@ -355,6 +355,9 @@ setReplaceMethod(".leftBracket",
             ## ncol=2 if doIcons, else 1
             olditems = tag(x,"items")
 
+            old_value <- svalue(x)
+
+            
             ## coerce value to a data frame, if not one
             if(!inherits(value,"data.frame"))
               value = as.data.frame(value, stringsAsFactors=FALSE)
@@ -390,6 +393,11 @@ setReplaceMethod(".leftBracket",
                 }
               }
             }
+
+            ## set value if we can
+            if(!is.null(old_value) &&
+               old_value %in% items[,1, drop=TRUE])
+              svalue(x) <- old_value
             
             return(x)
           })
