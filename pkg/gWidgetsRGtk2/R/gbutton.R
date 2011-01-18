@@ -92,6 +92,7 @@ setMethod(".gbutton",
             
             #gtkaction$connectProxy(button)
             button$setRelatedAction(gtkaction)
+            button['use-action-appearance'] <- TRUE
             ## icon
             icon <- gtkaction['stock-id']
             if(!is.null(icon)) {

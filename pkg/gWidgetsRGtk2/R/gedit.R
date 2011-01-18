@@ -113,12 +113,14 @@ setMethod("svalue", signature(obj="GtkEntry"),
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            val = obj@widget$getText()
+            val <- obj@widget$getText()
 
-            if(val == tag(obj, "init_msg")) val <- ""
+            init_msg <- tag(obj, "init_msg")
+            if(!is.null(init_msg) && val == init_msg)
+              val <- ""
             
             if(!is.null(tag(obj,"coerce.with")))
-              val = do.call(tag(obj,"coerce.with"), list(val))
+              val <- do.call(tag(obj,"coerce.with"), list(val))
 
             return(val)
           })

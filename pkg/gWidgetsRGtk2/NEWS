@@ -4,6 +4,8 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-71
 --------------------------
+
+* bug fix to get traitr vignette to work cleanly
  
 
 Changes for version 0.0-70
