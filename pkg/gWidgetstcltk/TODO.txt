@@ -1,5 +1,6 @@
 TODO:
 ---------
+* ggroup anchor/expand/fill (fill="both" default is wrong if anchor given)
 * FIx gtree??
 DONE * tcltk2 scrollbar -- does it work on mac??
 DONE * fix gexpandgroup

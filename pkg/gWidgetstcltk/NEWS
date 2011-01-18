@@ -4,6 +4,7 @@ NEWS for gWidgetstcltk
 
 Changes for 0.0-42
 -------------------
+* fix to add method of box containers and the expand, fill, anchor arguments
  
 Changes for 0.0-41
 -------------------

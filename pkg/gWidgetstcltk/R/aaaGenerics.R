@@ -815,23 +815,32 @@ setMethod(".add",
             try(.enabled(value,toolkit) <- .enabled(obj,toolkit),silent=TRUE)
             
             theArgs = list(...)
-
-
-            
+            ## passed to do.call. Populate this
             argList = list(getBlock(value))
-            argList$fill <- theArgs$fill
-            argList$expand <- theArgs$expand
-            
-            ## expand. use fill, expand didn't
-            if(!is.null(theArgs$expand) && theArgs$expand) {
-              argList$expand <- TRUE
-              if(is.null(argList$fill))
-                argList$fill = "both"
-            }
 
+            ## expand, fill, anchor
+            expand <- getWithDefault(theArgs$expand, FALSE)
+            fill <- getWithDefault(theArgs$fill, FALSE) # FALSE, x, y, both=TRUE
+            if(is.logical(fill)) {
+              if(fill)
+                fill <- "both"
+              else
+                fill <- NULL
+            }
             ## the default anchor. -1,1 or NW makes layouts nicer looking IMHO
             defaultAnchor <- getWithDefault(getOption("gw:tcltkDefaultAnchor"), c(-1, 1))
-            argList$anchor <- xyToAnchor(getWithDefault(theArgs$anchor, defaultAnchor))
+            anchor <- xyToAnchor(getWithDefault(theArgs$anchor, defaultAnchor))
+
+            ## expand: if TRUE then can either anchor or fill. If 
+            if(!expand) {
+              fill <- NULL
+            }
+
+
+            argList$expand <- expand
+            argList$fill <- fill
+            argList$anchor <- anchor
+
             
             if(obj@horizontal)
               argList$side = "left"

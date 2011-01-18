@@ -56,7 +56,7 @@ anchor argument. In a horizontal box, only the y component can be used
 to move a value up or down. In a vertical box, only the x component can
 be used to move a value left or right. The default is c(-1,1) so that
 horizontal layouts are towards the top, and vertical layouts towards the
-left.
+left. (This can be overridden: \code{options("gw:tcltkDefaultAnchor"=c(0,0))}, say.)
 
 The \code{use.scrollwindows} feature is now implemented. (but seems buggy)
 
