@@ -89,7 +89,7 @@ setRefClass("TcltkWidget",
                 ##' Make a function for the handler. Involves hackery to get signature correct
                 f <- function() {
                   h <- list()
-                  for(i in handler_args) h[[i]] <- get(i)
+                  for(i in handler_args) h[[i]] <- if(exists(i)) get(i) else NULL
                   h[['signal']] <- signal
                   run_handlers(h)
                 }
@@ -130,7 +130,7 @@ setRefClass("TcltkWidget",
                 "Remove a handler by its id"
                 l <- handlers[[id$signal]]
                 l[[id$id]] <- NULL
-                handlers <<- l
+                handlers[[id$signal]] <<- l
                 if(length(l) == 0)
                   tkbind(widget, id$signal, "")
               },
@@ -489,7 +489,7 @@ setRefClass("Entry",
               addBindings = function() {
                 add_handler("<KeyRelease>", function(W, K) {
                   ## set out virtual event, as otherwise we can;t have addHandlerKeystrike
-                  tcl("event","generate", .self$widget, "<<KeyRelease>>")#, "keysym"=K) ## can't send in keysymbol here
+                  tcl("event","generate", .self$widget, "<<KeyRelease>>", "data"=K) 
                   ## Main bindings
                   if(nchar(K) == 1 || K == "BackSpace") {
                     ## single letter, popup menu

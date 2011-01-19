@@ -90,24 +90,65 @@ setMethod(".addHandler",
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="tcltkObject"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
-
+            
             theArgs = list(...)
-            theobj = theArgs$actualobj
+            theobj = 
 
+            ## tcltk object
+            tcltk_obj <- obj
+            obj <- theArgs$actualobj
+
+            ## copied from above
+            l <- tag(obj, "..handlers")
+            if(is.null(l))
+              l <- list()
+
+            signalList <- l[[signal]]
+            if(is.null(signalList))
+              signalList <- list()
+
+
+            ## each component of signalList is a list with ID, blocked, handler, action=action
+            id <- digest(Sys.time())    # some unique key
+            hList <- list(ID=id,
+                          blocked=FALSE,
+                          handler=handler,
+                          action=action)
+            
+            signalList[[length(signalList) + 1]] <- hList # append
+            l[[signal]] <- signalList
+            tag(obj, "..handlers") <- l
+
+            id <- list(id=id, signal=signal) # need this to block/remove/unblock
+
+            ## add handler
             handler <- force(handler)
-            tkbind(obj, signal, function(...) {
-              ## check if enabled
-              if(isTtkWidget(obj))
-                enabled <- enabled_ttkwidget(obj)
-              else
-                enabled <- enabled_tkwidget(obj)
-
-              if(enabled) {
-                h = list(obj=theobj, action=action)
-                handler(h,...)
+            FUN <- theArgs$FUN
+            if(is.null(FUN)) {
+              FUN <- function(...) {
+                ## check if enabled
+                if(isTtkWidget(tcltk_obj))
+                  enabled <- enabled_ttkwidget(tcltk_obj)
+                else
+                  enabled <- enabled_tkwidget(tcltk_obj)
+                
+                if(enabled) {
+                  h = list(obj=obj, action=action)
+                  handler(h,...)
+                }
               }
-            })
-            invisible(list(type=NULL,handlerID=NULL))
+            }
+          
+
+            if(signal == "command")
+              tkconfigure(tcltk_obj, command=FUN)
+            else
+              tkbind(tcltk_obj, signal, FUN)
+
+              ## return
+            invisible(id)
+
+
           })
 
 ##' idle handler is different == have this hack to keep calling "after"
@@ -217,12 +258,29 @@ setMethod(".blockhandler",
             invisible()
           })
 
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            #widget <- tag(obj, "widget")
+            widget <- obj@R5widget            
+            widget$block_handler(ID)
+          })
+
 ##' call to unblock a handler by ID. If ID=NULL, all handlers are unblocked
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ID=NULL, ...) {
             .blockUnblock(obj, ID, block=FALSE)
             invisible()
+          })
+
+
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+#            widget <- tag(obj, "widget")
+            widget <- obj@R5widget            
+            widget$unblock_handler(ID)
           })
 
 ##' method to remove a handler
@@ -273,7 +331,12 @@ setMethod(".removehandler",
             }
           })
           
-
-
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            ##widget <- tag(obj, "widget")
+            widget <- obj@R5widget
+            widget$remove_handler(ID)
+          })
 
 

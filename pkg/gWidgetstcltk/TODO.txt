@@ -1,16 +1,16 @@
 TODO:
 ---------
-* ggroup anchor/expand/fill (fill="both" default is wrong if anchor given)
 * FIx gtree??
-DONE * tcltk2 scrollbar -- does it work on mac??
-DONE * fix gexpandgroup
-DONE * use satte/instate bit for ttk widget
 * fix use.scrollwindow in ggroup
 * gspinbox: like gslider, make spin over sortable vectors.
 * gtable: select rectangle
 * gtable: mess with _, , stuff and single column
 * gree: implement svalue( index=TRUE) (give index as "a:b:c") and
   svalue(obj) <- index
+DONE * tcltk2 scrollbar -- does it work on mac??
+DONE * fix gexpandgroup
+DONE * use satte/instate bit for ttk widget
+DONE?* ggroup anchor/expand/fill (fill="both" default is wrong if anchor given)
 ** Bug with gfile being opened from a button -- button stays depressed
    after gfile is closed -- THIS IS A TK BUG. Need to add handler...
 DONE * the addSpring method. (Requires group to be expanded!)

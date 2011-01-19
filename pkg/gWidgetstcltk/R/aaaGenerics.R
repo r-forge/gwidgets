@@ -77,6 +77,10 @@ setClass("gContainertcltk",
          contains="gWidgettcltk",
          )
 
+setClass("gComponentR5tcltk",
+         representation(R5widget="ANY"),
+         contains="gComponenttcltk",
+         )
 
 ## make tcltk S3 object S4 objects
 
