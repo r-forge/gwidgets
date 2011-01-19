@@ -46,7 +46,12 @@ to the minimum window size, not the preferred default size. It is best
 to set \code{visible=FALSE} for the constructor and then when the GUI
 is layed out call \code{visible<-}. This will get the proper size for
 the window. Otherwse, the \code{update} method can be called to resize
-the window to accomodate the child widgets.  \cr
+the window to accomodate the child widgets.  
+
+The methods \code{addHandlerDestroy} and \code{addHandlerUnrealize} can
+only add one handler, new ones overwrite the old. These handlers can
+also not be removed. 
+\cr
 
 \code{ggroup()}  has the \code{expand=} and \code{anchor=}
 arguments. If \code{expand=TRUE} the widget takes up as much space as

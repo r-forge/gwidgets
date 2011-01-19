@@ -1,5 +1,9 @@
 2011-01-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/gwindow.R (addHandlerDestroy): fixed issue with destroy
+	call (the default handler). Also cleaned up addHanderUnrealize
+	method. (Thanks again to Richie C.)
+
 	* R/gedit.R: fixed up handler code to call that in R5
 	classes. Also tidied up gradio, gcheckboxgroup. (Thanks to Richie
 	C. for pointing out the issue.)

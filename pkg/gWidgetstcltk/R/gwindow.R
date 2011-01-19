@@ -289,13 +289,19 @@ setMethod(".addhandlerunrealize",
                           function(...) {
                             val <- handler(h,...)
                             ## FALSE -- destroy, TRUE -- keep
-                            if(!as.logical(val)) tkdestroy(win) ## revers
+                            if(is.null(val)  || !is.logical(val) || !val)
+                              tkdestroy(win) ## revers
                           })
           })
 
-
+## no ID
 setMethod(".addhandlerdestroy",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWindowtcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            .addHandler(obj, toolkit, signal="<Destroy>", handler, action, ...)
+            ## need to tkbind explicitly here
+            f <- function() {
+              h <- list(obj=obj, action=action)
+              handler(h)
+            }
+            tkbind(getWidget(obj), "<Destroy>", f)
           })
