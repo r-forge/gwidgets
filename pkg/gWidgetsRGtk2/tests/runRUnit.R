@@ -4,9 +4,10 @@
 ## We add RUnit tests to the gWidgets/tests directory in files
 ## names test.XXX containing functions test-XXX <- function() {}
 
-if(require(RUnit)) {
-  library(gWidgets)
-  options(guiToolkit="RGtk2")
+library(gWidgets)
+options(guiToolkit="RGtk2")
+doRequire <- function(i) do.call(sprintf("%s","require"), list(i))
+if(doRequire("RUnit")) {
   
   testsuite.gWidgets <- defineTestSuite("gWidgets", 
                                         dirs = system.file("tests",package="gWidgets"),

@@ -202,7 +202,7 @@ replayAPlot = function(...) {
     gmessage("No recorded plots were found")
   } else {
     
-    win = gwindow("Replay plot", v=T)
+    win = gwindow("Replay plot", visible=TRUE)
     group = ggroup(horizontal=FALSE, container=win)
     glabel("Select variable name with recorded plot", container=group)
     dl = gdroplist(recordedPlots, container = group)
@@ -232,8 +232,8 @@ saveCurrentPage = function(obj) {
   win = gwindow("Save current plot", visible=TRUE)
   group = ggroup(horizontal=FALSE, container=win)
 
-  warningMessage = glabel("Saving a plot is currently kind of flaky", cont=group)
-  gseparator(cont=group)
+  warningMessage = glabel("Saving a plot is currently kind of flaky", container=group)
+  gseparator(container=group)
 
   tbl = glayout()
 

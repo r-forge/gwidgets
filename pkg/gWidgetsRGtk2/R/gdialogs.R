@@ -480,12 +480,12 @@ setMethod(".galert",
             force(toolkit)
 
             w <- gwindow(title, width=250, height=100, parent = parent)
-            g <- ggroup(cont = w)
-            l <- gbutton("  ", cont = g)
+            g <- ggroup(container =w)
+            l <- gbutton("  ", container =g)
             getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
-            label <- glabel(message, cont = g, expand=TRUE)
+            label <- glabel(message, container =g, expand=TRUE)
             font(label) <- c("weight"="bold")
-            gimage(file="close",dir="stock", cont = g, handler = function(h,...) dispose(w))
+            gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
             
             addHandlerIdle(w, handler = function(h,...) dispose(w),
                            interval = as.numeric(delay)*1000)

@@ -83,11 +83,11 @@ setMethod(".gcommandline",
               icl = h$action
               win = gwindow("Save buffer contents", toolkit=toolkit)
               group = ggroup(horizontal=FALSE, container=win)
-              saveFileName = gfilebrowse("",type="save", cont = group)
+              saveFileName = gfilebrowse("",type="save", container = group)
 
-              gp = ggroup(cont=group)
-              glabel("Save which values?", cont=gp)
-              saveType = gradio(c("commands","output"), index=FALSE, cont=gp)
+              gp = ggroup(container=group)
+              glabel("Save which values?", container=gp)
+              saveType = gradio(c("commands","output"), index=FALSE, container=gp)
               gseparator(container=group)
 
               buttonGroup = ggroup(container=group)

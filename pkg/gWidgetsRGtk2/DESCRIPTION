@@ -11,4 +11,3 @@ Description: Port of gWidgets API to RGtk2
 License: GPL (>= 2)
 URL: http://gwidgets.r-forge.r-project.org/
 LazyLoad: yes
-

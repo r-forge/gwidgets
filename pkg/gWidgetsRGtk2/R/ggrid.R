@@ -1224,10 +1224,11 @@ setMethod(".addhandlercolumndoubleclick",
   ## return the rGtk data frame stored in obj
 .getRGtkDataFrame = function(obj, ...) {
   view = tag(obj,"view")
-  if(tag(obj,"doSort"))
-    view$GetModel()
-  else
-    view$GetModel()$GetModel()            # filter
+  model <- view$getModel()
+  if(!is(model, "RGtkDataFrame"))
+    model <- model$getModel()
+
+  return(model)
 }
 
 
@@ -1674,7 +1675,7 @@ addNewColumnDialog = function(obj, i, j, ...) {
   visible(tbl) <- TRUE
   
   add(group, tbl, expand=TRUE)
-  buttonGroup = ggroup(cont=group)
+  buttonGroup = ggroup(container=group)
   addSpring(buttonGroup)
   gbutton("ok",container=buttonGroup, handler =function(h,...) {
     frame = obj[,,drop=FALSE]

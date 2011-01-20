@@ -159,7 +159,7 @@ setMethod(".gfilebrowse",
             else
               group = ggroup(horizontal=FALSE, container=container)
 
-            g <- ggroup(cont = group, horizontal=TRUE, expand=FALSE)   # stop growth of button
+            g <- ggroup(container =group, horizontal=TRUE, expand=FALSE)   # stop growth of button
             gedit.local <- function(...) gedit(..., expand=TRUE)
             entry = gedit.local(text=text, container=g, ...)
 

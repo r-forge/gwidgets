@@ -138,7 +138,7 @@ setClass("gVarbrowserRGtk",
 ##' is needed.
 ##' library(gWidgets)
 ##' options(guiToolkit="RGtk2")
-##' v <- gvarbrowser(cont=gwindow("Object broser"), handler=function(h,...) {
+##' v <- gvarbrowser(container =gwindow("Object broser"), handler=function(h,...) {
 ##' varname <- h$obj[]
 ##' if(length(varname) == 1) {
 ##' do.call("fix", list(varname))
@@ -228,12 +228,12 @@ setMethod(".gvarbrowser",
               container = group, expand=TRUE
               )
 
-            updateGroup <- ggroup(cont=group)
-            autoUpdate <- gcheckbox("Auto update", checked=TRUE, use.togglebutton=TRUE, cont=updateGroup,
+            updateGroup <- ggroup(container =group)
+            autoUpdate <- gcheckbox("Auto update", checked=TRUE, use.togglebutton=TRUE, container =updateGroup,
                                     handler=function(h,...) {
                                       enabled(refreshButton) <- !svalue(h$obj)
                                     })
-            refreshButton <- gimage("refresh", dir="stock", cont=updateGroup, handler=function(h,...) {
+            refreshButton <- gimage("refresh", dirname="stock", container =updateGroup, handler=function(h,...) {
               key <- svalue(filterPopup)
               offspring.data <- knownTypes[[key]]
               update(obj, offspring.data)
