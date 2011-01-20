@@ -282,8 +282,8 @@ setRefClass("Label",
                 widget <<- ttklabel(parent, textvariable=v)
               },
               set_value = function(value) {
-                value <- paste(value, collapse="\n")
-                callSuper(value)
+                .value <- paste(value, collapse="\n")
+                callSuper(.value)
               }
               )
             )
@@ -859,8 +859,8 @@ setRefClass("CheckButtonGroup",
               set_value=function(value) {
                 ##' @param value vector of values from items
                 if(is.logical(value)) {
-                  value <- rep(value, length.out=no_items())
-                  ind <- which(value)
+                  .value <- rep(value, length.out=no_items())
+                  ind <- which(.value)
                 } else {
                   ind <- which(get_items() %in% value)
                 }
