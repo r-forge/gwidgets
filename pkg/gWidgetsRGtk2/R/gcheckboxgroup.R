@@ -59,8 +59,8 @@ CbgWidget <- setRefClass("CbgWidget",
 
 
 setClass("gCheckboxgroupRGtk",
-         contains="gComponentWithRefClassRGtk",
-         prototype=prototype(new("gComponentWithRefClassRGtk"))
+         contains="gComponentWithRefClassWithItemsRGtk",
+         prototype=prototype(new("gComponentWithRefClassWithItemsRGtk"))
          )
 
 

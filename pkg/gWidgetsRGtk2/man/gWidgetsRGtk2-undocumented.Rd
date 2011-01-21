@@ -548,6 +548,7 @@
 %%
 \alias{.visible<--methods}
 \alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gComponentWithRefClassWithItemsRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
@@ -583,8 +584,9 @@
 %%
 \alias{.enabled<--methods}
 \alias{.enabled<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.enabled<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.enabled<-,gComponentWithRefClassWithItemsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.enabled<-,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+\alias{.enabled<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 %%
 %% --  size --
 %%

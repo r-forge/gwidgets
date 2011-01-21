@@ -69,8 +69,8 @@ RadioWidget <- setRefClass("RadioWidget",
 
 
 setClass("gRadioRGtk",
-         contains="gComponentWithRefClassRGtk",
-         prototype=prototype(new("gComponentWithRefClassRGtk"))
+         contains="gComponentWithRefClassWithItemsRGtk",
+         prototype=prototype(new("gComponentWithRefClassWithItemsRGtk"))
          )
 
 
@@ -200,28 +200,6 @@ setMethod(".length",
             length(x[])
           })
 
-
-## enabled must go on each button
-## enabled <-
-setReplaceMethod(".enabled",
-                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
-                 function(obj, toolkit, ..., value) {
-                   block <- obj@ref_widget$block
-                   block['sensitive'] <- as.logical(value)
-                   return(obj)
-                 })
-
-setReplaceMethod(".visible",
-                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
-                 function(obj, toolkit, ..., value) {
-                   block <- obj@ref_widget$block
-                   if(as.logical(value))
-                     block$show()
-                   else
-                     block$hide()
-                   
-                   return(obj)
-                 })
 
 ##################################################
 ## handlers
