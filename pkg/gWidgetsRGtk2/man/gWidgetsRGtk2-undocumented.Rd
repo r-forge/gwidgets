@@ -795,6 +795,7 @@
 %%
 \alias{.blockhandler-methods}
 \alias{.blockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.blockhandler,gComponentWithRefClassRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.blockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -815,6 +816,7 @@
 \alias{.unblockhandler-methods}
 \alias{.unblockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
+\alias{.unblockhandler,gComponentWithRefClassRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -835,6 +837,7 @@
 \alias{.removehandler-methods}
 \alias{.removehandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
+\alias{.removehandler,gComponentWithRefClassRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.removehandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.removehandler,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -929,6 +932,7 @@
 \alias{.addhandlerclicked,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerclicked,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}

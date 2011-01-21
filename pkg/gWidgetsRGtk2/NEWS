@@ -5,6 +5,8 @@ Dear Emacs, please make this -*-Text-*- mode!
 Changes for version 0.0-73
 --------------------------
  
+* Reworked gradio and gcheckboxgroup to use a backend reference
+  class. Cleans up the code considerably.
 
 Changes for version 0.0-72
 --------------------------

@@ -12,7 +12,7 @@ if(gWidgetsDir != "") {
   files <- files[grepl("^ex", basename(files))]
 
   ## XXX removed to get past CRAN
-##  for(unitTest in files) {
-##    source(unitTest)
-##  }
+  for(unitTest in files) {
+    source(unitTest)
+  }
 }
