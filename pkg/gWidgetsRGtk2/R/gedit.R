@@ -30,7 +30,7 @@ setMethod(".gedit",
             tag(obj, "init_msg") <-  initial.msg
             if(nchar(text) == 0 && nchar(initial.msg) > 0) {
               entry$modifyText(GtkStateType[1], "gray")
-              entry$setText(tag(obj, "init_msg"))
+              entry$setText(initial.msg)
               id <- gSignalConnect(entry, "focus-in-event", function(...) {
                 entry$setText("")
                 entry$modifyText(GtkStateType[1], "black")
@@ -136,8 +136,11 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   if(is.null(value)) return(obj)
+                   
+                   cat("Call svalue<- with value"); print(value)
                    widget <- getWidget(obj)
-                   widget$SetText(value)
+                   widget$setText(value)
                    widget$activate()
                    tag(obj, "value") <- value
                    return(obj)
@@ -146,7 +149,7 @@ setReplaceMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkEntry"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   obj$SetText(value)
+                   obj$setText(value)
                    obj$activate()
                    
                    return(obj)

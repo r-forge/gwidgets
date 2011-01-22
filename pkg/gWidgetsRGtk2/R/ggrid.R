@@ -1659,7 +1659,7 @@ addKeyMotionHandler = function(obj, ...) {
 }
 
 ## Dialog to add a new column
-addNewColumnDialog = function(obj, i, j, ...) {
+addNewColumnDialog <- function(obj, i, j, ...) {
   view = tag(obj,"view")
   ## need to popup a dialog to gather name and class, set view
   win = gwindow("Add column")

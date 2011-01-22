@@ -1,5 +1,8 @@
 2011-01-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/gedit.R (.setCompletion): check for NULL value to svalue<-
+	(threw RGtk2 warning) (Thanks Hana)
+
 	* R/gradio.R: Replaced this and gcheckboxgroup with a new design
 	using a backend Reference class. The code is much cleaner, but I
 	still get instability running under gctorture.
