@@ -4,13 +4,11 @@
 ##################################################
 ## Radio widget stuff
 
-RadioWidget <- setRefClass("RadioWidget",
-                     contains="Observable",
+RadioWidgetGtk <- setRefClass("RadioWidgetGtk",
+                     contains="GWidgetGtk",
                      fields=list(
-                       block="ANY",          # parent box container
                        inner_block="ANY",    # replaceble box container
                        items="ANY",          # store the items
-                       widget="ANY",         # radio group
                        horizontal="logical", # layout direction
                        obj = "ANY"           # gradio object for callbacks
                        ),
@@ -91,7 +89,7 @@ setMethod(".gradio",
 
             force(toolkit)
 
-            ref_widget <- RadioWidget$new(items, selected, horizontal)
+            ref_widget <- RadioWidgetGtk$new(items, selected, horizontal)
             obj <- new("gRadioRGtk",block=ref_widget$block, widget=ref_widget$block,
                        ref_widget=ref_widget,
                        toolkit=guiToolkit("RGtk2"))

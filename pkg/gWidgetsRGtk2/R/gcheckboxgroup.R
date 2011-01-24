@@ -1,12 +1,10 @@
 ## Use reference class, like gradio
 
-CbgWidget <- setRefClass("CbgWidget",
-                     contains="Observable",
+CbgWidgetGtk <- setRefClass("CbgWidgetGtk",
+                     contains="GWidgetGtk",
                      fields=list(
-                       block="ANY",          # parent box container
                        inner_block="ANY",    # replaceble box container
                        items="ANY",          # store the items
-                       widget="ANY",         # list of gtkCheckButton items
                        horizontal="logical", # layout direction
                        obj = "ANY"           # gradio object for callbacks
                        ),
@@ -91,7 +89,7 @@ setMethod(".gcheckboxgroup",
             
             checked = rep(checked, length(items))
 
-            ref_widget <- CbgWidget$new(items, checked, horizontal)
+            ref_widget <- CbgWidgetGtk$new(items, checked, horizontal)
 
             obj = new("gCheckboxgroupRGtk",
               block=ref_widget$block,
