@@ -94,7 +94,7 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
         }
       }
       ## what gets set here is passed to drop target
-      selection$SetText(str=value)
+      selection$SetText(strvalue)
     }
     return(TRUE)
             }
