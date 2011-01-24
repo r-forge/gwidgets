@@ -3,6 +3,8 @@ DONE * gtable, gdf -- size<- list(width, height, columnWidths)
 * fix height on gcombobox, buttons -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.
 * no tag<- methods for gaction?
+* gstatusbar on mac is not tall enough, even if given more height text
+is ugly.
 * svalue<- for gtable calls changed twice
 DONE * give space for size grip
 DONE * TOm points out but in gvarbrowser on 9/24 check this out.

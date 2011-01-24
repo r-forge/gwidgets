@@ -39,7 +39,8 @@ RadioWidget <- setRefClass("RadioWidget",
                          block$packStart(inner_block)
 
                          widget <<- gtkRadioButton(label=items[1])
-                         sapply(items[-1], gtkRadioButtonNewWithLabelFromWidget, group = widget)
+                         ## Keep rbs around until after sapply statement
+                         rbs <- sapply(items[-1], gtkRadioButtonNewWithLabelFromWidget, group = widget)
                          sapply(rev(widget$getGroup()), gtkBoxPackStart, object = inner_block)
 
                          ## add handlers

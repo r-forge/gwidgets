@@ -136,9 +136,9 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   if(is.null(value)) return(obj)
-                   
-                   cat("Call svalue<- with value"); print(value)
+                   if(is.null(value))
+                     return(obj)     ## o/w we get a crash
+
                    widget <- getWidget(obj)
                    widget$setText(value)
                    widget$activate()

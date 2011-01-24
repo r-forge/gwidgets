@@ -21,14 +21,16 @@ setMethod(".gbutton",
             }
 
             ## look for border request
-            if(border == FALSE) {
-              button$SetRelief(as.integer(2))
-            }
+            if(border == FALSE) 
+              button$SetRelief(2L)
 
-
+            
+            
             obj <- as.gWidgetsRGtk2(button)
-#            obj <- new("gButtonRGtk",
-#              block=button, widget=button, toolkit=toolkit)
+
+
+            ##            obj <- new("gButtonRGtk",
+            ##              block=button, widget=button, toolkit=toolkit)
 
             tag(obj, "default_fill") <- "x"
             ## add to container
@@ -42,7 +44,7 @@ setMethod(".gbutton",
             if (!is.null(handler)) {
               tag(obj,"handler.id") <-  addhandlerclicked(obj,handler,action)
             }
-            
+
             invisible(obj)
           })
 
@@ -53,6 +55,7 @@ as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
     parent <- gtkAlignmentNew(xscale=1, yscale=0)
     parent$add(widget)
   }
+
   obj <- new("gButtonRGtk",
     block=parent, widget=widget, toolkit=guiToolkit("RGtk2"))
   return(obj)
