@@ -4,7 +4,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-73
 --------------------------
- 
+
+* fix to gradio to avoid premature garbage collection leading to crash
+  under tctorture. There may still be an issue with gbutton. (If so,
+  pass in a parent container to the constructor.) 
+
 * Reworked gradio and gcheckboxgroup to use a backend reference
   class. Cleans up the code considerably.
 

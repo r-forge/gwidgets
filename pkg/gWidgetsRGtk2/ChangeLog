@@ -1,3 +1,8 @@
+2011-01-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gstatusbar.R: added our own label to work around size issues
+	with newer gtk
+
 2011-01-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R (.setCompletion): check for NULL value to svalue<-

@@ -1,4 +1,7 @@
-DONE * gtable, gdf -- size<- list(width, height, columnWidths)
+* check on gbutton and losing of reference to button during
+  dispatch. This can cause code like: w <- gwindow(); b <- gbutton();
+  add(w,b) to fail under gctorture
+* Issue with statusbar size -- hides fonts (new Gtk issue?)
 * selection by rectangle in gtable 
 * fix height on gcombobox, buttons -- sizes to fill in x axis (sizePolicy like Qt?)
 * defaultWidget for buttons.
@@ -6,6 +9,7 @@ DONE * gtable, gdf -- size<- list(width, height, columnWidths)
 * gstatusbar on mac is not tall enough, even if given more height text
 is ugly.
 * svalue<- for gtable calls changed twice
+DONE * gtable, gdf -- size<- list(width, height, columnWidths)
 DONE * give space for size grip
 DONE * TOm points out but in gvarbrowser on 9/24 check this out.
 DONE * Stephanie reports error with gvarbrowser -- likely in gtree. Fix it!
