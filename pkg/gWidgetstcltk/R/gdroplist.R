@@ -90,7 +90,12 @@ setMethod(".gdroplist",
               size(obj) <- c(theArgs$width,0)
             
 
-            svalue(obj, index=TRUE) <- as.numeric(selected)
+            ## can add numeric or for Richie, a value
+            if(is.numeric(selected)) { 
+              svalue(obj, index = TRUE) <- selected 
+            } else { 
+              svalue(obj) <- as.character(selected) 
+            } 
             
 
             
