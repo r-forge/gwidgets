@@ -50,7 +50,7 @@ setMethod(".gdf",
             if (!inherits(tclRequire("Tktable", warn = FALSE), "tclObj")) {
               return(glabel("Tktable must be installed in tcl (not R).\n tktable.sourceforge.net", cont = container))
             }
-            .Tcl(paste("option add *Table.font {courier", 12, "bold}"))
+            .Tcl(paste("option add *Table.font {courier", fontsize, "bold}"))
             old <- options(scipen = 7)
             on.exit(options(old))
 
