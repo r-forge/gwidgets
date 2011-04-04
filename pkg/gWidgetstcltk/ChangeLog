@@ -1,5 +1,8 @@
 2011-04-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/gtoolbar.R: Fix to this -- had double window being
+	created. Thanks Erich!
+
 	* R/gdf.R: Fix bug with fontsize (thanks Carlos!)
 
 2011-02-18  john verzani  <verzani@john-verzanis-macbook-pro.local>

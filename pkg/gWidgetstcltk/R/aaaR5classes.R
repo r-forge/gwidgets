@@ -152,7 +152,7 @@ setRefClass("TcltkWidget",
                 ##' @param id an id to identify which handler to unblock. If missing all handlers are unblocked
                 "Unblock handler by id, or all handlers"
                 if(missing(id)) {
-                  block_all_handers <<- FALSE
+                  block_all_handlers <<- FALSE
                   blocked_handlers <<- character(0)
                 } else {
                   blocked_handlers <<- setdiff(blocked_handlers, id$id)

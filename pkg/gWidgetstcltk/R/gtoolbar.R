@@ -21,7 +21,7 @@ setMethod(".gtoolbar",
             force(toolkit)
 
             if(is(container,"logical") && container)
-              container = gwindow()
+              container <- gwindow("Toolbar")
             if(!is(container,"guiWidget")) {
               warning("Container is not correct. No NULL containers possible\n" )
               return()
@@ -36,22 +36,20 @@ setMethod(".gtoolbar",
 
 
             ## container must be a gwindow
-            container <- getTopLevel(container)
+            toplevel <- getTopLevel(container)
             
-            if(!(is(container,"gWindowtcltk") || is(container@widget,"gWindowtcltk"))) {
+            if(!(is(toplevel,"gWindowtcltk") || is(toplevel@widget,"gWindowtcltk"))) {
               cat(gettext("gtoolbar: container must be gwindow instance\n"))
             }
 ##            tt <- getBlock(container)
-            tt <- tag(container, "tb")
+            tt <- tag(toplevel, "tb")
             gp <- ttkframe(tt)
             
             tb <- ttkframe(gp)
             tkpack(tb, side="left",anchor="w", expand=TRUE, fill="x")
 
             
-            toolbar = ggroup(horizontal=TRUE, cont=container, expand=TRUE)
-
-            obj = new("gToolbartcltk",block=gp, widget=tb,
+            obj <- new("gToolbartcltk",block=gp, widget=tb,
               toolkit=toolkit, ID=getNewID(),e = new.env(),
               style=style)
 
