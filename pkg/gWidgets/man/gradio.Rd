@@ -62,19 +62,21 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
 }
 \examples{
 \dontrun{
+
   flavors <- c("vanilla", "chocolate", "strawberry")
 
-  w <- gwindow("Radio example")
+  w <- gwindow("Radio example", visible=FALSE)
   gp <- ggroup(container=w)
   glabel("Favorite flavor:",cont=gp, anchor=c(0,1))
   rb <- gradio(flavors, cont=gp)
   addHandlerClicked(rb, handler=function(h,..) {
-   cat(sprintf("You picked %s\n", svalue(h$obj)))
+   cat(sprintf("You picked \%s\n", svalue(h$obj)))
   })
-
+  visible(w) <- TRUE
+  
   betterFlavors <- c("coffee", "mint chip")
-  rb[] <- betterFlavors ## tcltk won't be happy -- needs 3 flavors
-  rb[] <- c(betterFlavors, "chocolate") ## to make tcltk happy
+  rb[] <- betterFlavors 
+  rb[] <- c(betterFlavors, "chocolate") # some toolkits don't allow change of length
   
   rb[3] <- "mango sorbet" ## can change a label name
 

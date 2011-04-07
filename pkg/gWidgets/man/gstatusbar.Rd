@@ -18,8 +18,8 @@ gstatusbar(text = "", container = NULL, ..., toolkit = guiToolkit())
   \item{toolkit}{Which GUI toolkit to use}
 }
 \details{
- The statusbar keeps a message stack. The \code{svalue} method pops the
- last message from the stack. The \code{svalue<-} method pushes a new
+ The status bar simply shows a message in a label, typically at the bottom of a window.
+ The \code{svalue} and \code{svalue<-} methods can be used to query or set the text.
  message onto the stack.
 
  Statusbars should be added to the top-level gwindow instance.
