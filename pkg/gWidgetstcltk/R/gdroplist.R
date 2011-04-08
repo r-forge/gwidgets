@@ -204,20 +204,6 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
-## I want a editable<- method for gdf, gcombobox, glabel
-## setMethod(".editable",
-##           signature(x = "gDroplisttcltk"),
-##           function(x, toolkit) {
-##             as.character(tkcget(widget, "-state")) != "readonly"
-##           })
-
-## setReplaceMethod(".editable",
-##           signature(x = "gDroplisttcltk"),
-##           function(x, toolkit, ..., value) {
-##             widget <- getWidget(x)
-##             tkcget(widget, "state"=ifelse(value, "normal", "readonly"))
-##             return(x)
-##           })
 
 
 

@@ -352,6 +352,25 @@ setReplaceMethod(".enabled",
                    return(obj)
                  })
 
+## editable or readonly
+## I want a editable<- method for gdf, gcombobox, glabel
+setMethod(".editable",
+          signature(toolkit="guiWidgetsToolkittcltk", obj="gWidgettcltk"),
+          function(obj, toolkit) {
+            widget <- getWidget(obj)            
+            as.character(tkcget(widget, "-state")) != "readonly"
+          })
+
+setReplaceMethod(".editable",
+                 signature(toolkit="guiWidgetsToolkittcltk", obj="gWidgettcltk", value="logical"),
+                 function(obj, toolkit, ..., value) {
+                   widget <- getWidget(obj)
+                   tkconfigure(widget, "state"=ifelse(value, "normal", "readonly"))
+                   return(obj)
+                 })
+
+
+
 ## focus
 focus_ttkwidget <- function(x, ...) as.logical(tcl(x, "instate", "focus"))
 focus_tkwidget <- function(x, ...) {
