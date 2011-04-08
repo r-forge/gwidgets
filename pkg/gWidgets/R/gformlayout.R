@@ -57,7 +57,7 @@ setMethod(".gformlayout",
 
             ## see docs for description of the list
             e <- new.env()
-            mainGroup <- ggroup(cont=container, ...)
+            mainGroup <- ggroup(container = container, ...)
             .makeForm(lst, mainGroup, e)
             
             ## return the container now that it has all the stuff in in.
@@ -104,7 +104,7 @@ setMethod(".names",
 ## changes here should be copied into gWidgetsWWW
 ## helper functions
 .makeForm <- function(lst, parent, e, ...) {
-  g <- ggroup(cont = parent, expand=TRUE,...)
+  g <- ggroup(container = parent, expand=TRUE,...)
 
   ## make a local copy of lst and modify for do.call
   tmp <- lst;
@@ -165,11 +165,11 @@ setMethod(".names",
 
   ## outer container
   if(!is.null(lst$label)) 
-    g <- gframe(lst$label, cont = parent, ...)
+    g <- gframe(lst$label, container = parent, ...)
   else
-    g <- ggroup(cont = parent, ...)
+    g <- ggroup(container = parent, ...)
   ## main table
-  tbl <- glayout(cont = g)
+  tbl <- glayout(container = g)
   
   ## do we enable new object
   if(!is.null(lst$depends.on)) {
@@ -233,7 +233,7 @@ setMethod(".names",
     ## add to table
     col <- 1 + (i - 1) %% no.columns    #1, ..., no.columns
     row <- 1 + (i - 1) %/% no.columns   #1, ...
-    newLabel <- glabel(l$label, cont = tbl)
+    newLabel <- glabel(l$label, container = tbl)
     if(!is.null(lst$label.font))
       font(newLabel) <- lst$label.font
     if(is.null(lst$label.pos) || lst$label.pos == "left") {

@@ -1,3 +1,12 @@
+##' function to bypass call to require to keep things quiet
+##'
+##' @param package name
+##' @return result of call to require(pkg)
+.bypassRequire <- function(pkg) {
+  do.call(sprintf("%s", "require"), list(pkg))
+}
+
+
 ## needed to find methods
 .onLoad <- function(lib, pkg) {
   require(methods)

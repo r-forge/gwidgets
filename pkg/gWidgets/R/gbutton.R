@@ -30,9 +30,12 @@ gbutton =function(
   text = "", border=TRUE, handler = NULL, action = NULL, container = NULL,      ...,
   toolkit=guiToolkit()){
   force(toolkit)                        # load package
+
   widget =  .gbutton (toolkit,
-    text, border, handler, action, container,...)  
-  obj = new( 'gButton',widget=widget,toolkit=toolkit) 
+    text, border, handler, action, container,...)
+
+  obj <- new( 'gButton',widget=widget,toolkit=toolkit) 
+
   return(obj)
 }
 

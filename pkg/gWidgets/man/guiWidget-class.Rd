@@ -67,6 +67,8 @@ Objects can be created by calls of the form \code{new("guiWidget", ...)}.
     \item{dimnames}{\code{signature(x = "guiWidget")}: ... }
     \item{dimnames<-}{\code{signature(x = "guiWidget")}: ... }
     \item{dispose}{\code{signature(obj = "guiWidget")}: ... }
+    \item{editable}{\code{signature(obj = "guiWidget")}: ... }
+    \item{editable<-}{\code{signature(obj = "guiWidget")}: ... }
     \item{enabled}{\code{signature(obj = "guiWidget")}: ... }
     \item{enabled<-}{\code{signature(obj = "guiWidget")}: ... }
     \item{focus}{\code{signature(obj = "guiWidget")}: ... }

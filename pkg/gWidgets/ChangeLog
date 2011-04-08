@@ -1,3 +1,9 @@
+2011-04-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* man/gWidgets-methods.Rd: put in new methods editable[<-]. Can be
+	used to query or set whether a widget is editable. E.g, gedit text
+	may be locked.
+
 2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R (gedit): added new argument initial.msg to display a

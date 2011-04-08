@@ -191,6 +191,36 @@ setReplaceMethod("enabled",signature(obj="guiWidget"),
 setGeneric(".enabled<-",function(obj, toolkit,...,value)
            standardGeneric(".enabled<-"))
 
+############### editable ###################################
+##' Generic to check if widget can be edited
+setGeneric("editable",function(obj, ...) standardGeneric("editable"))
+
+##' Method to check if widget can be edited
+setMethod("editable",signature(obj="guiWidget"),
+          function(obj, ...) {
+            toolkit = obj@toolkit
+            .editable(obj@widget, toolkit,...)
+          })
+##' dispatch with toolkit
+##' @alias editable
+setGeneric(".editable",function(obj, toolkit,...) standardGeneric(".editable"))
+
+################ editable<- ##################################
+## Generic to set whether widget can be edited
+setGeneric("editable<-",function(obj, ..., value) standardGeneric("editable<-"))
+
+## method to adjust whether widget can be edited
+setReplaceMethod("editable",signature(obj="guiWidget"),
+          function(obj, ..., value) {
+            toolkit = obj@toolkit
+            .editable(obj@widget, toolkit,...) <- value
+            return(obj)
+          })
+##' dispatch with toolkit
+##' @alias editable<-
+setGeneric(".editable<-",function(obj, toolkit,...,value)
+           standardGeneric(".editable<-"))
+
 ############## size ####################################
 ##' Generic for size method
 setGeneric("size",function(obj, ...) standardGeneric("size"))

@@ -81,6 +81,8 @@
 \alias{dimnames,guiWidget-method}
 \alias{dimnames<-,guiWidget-method}
 \alias{dispose,guiWidget-method}
+\alias{editable,guiWidget-method}
+\alias{editable<-,guiWidget-method}
 \alias{enabled,guiWidget-method}
 \alias{enabled<-,guiWidget-method}
 \alias{focus,guiWidget-method}
@@ -140,6 +142,8 @@
 \alias{visible}
 \alias{visible<-}
 \alias{isExtant}
+\alias{editable}
+\alias{editable<-}
 \alias{enabled}
 \alias{enabled<-}
 \alias{focus}
@@ -261,6 +265,14 @@
       to user input and changes the color of it, usually by
       graying it out, to indicate it is disabled. This method is
       used to change the state.
+    }
+    
+    
+    \item{
+     \code{editable(obj,...)} or
+      \code{editable<-(obj,..., value)}
+    }{
+    For some widgets, e.g. \code{gedit} one may wish to query or change whether the area could be edited.
     }
     
     

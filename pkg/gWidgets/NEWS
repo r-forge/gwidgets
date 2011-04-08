@@ -2,6 +2,10 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
+Changes for 0.0-44
+------------------
+* add editable, editable<- methods. 
+
 Changes for 0.0-43
 ------------------
 * start to use roxygen for documentation

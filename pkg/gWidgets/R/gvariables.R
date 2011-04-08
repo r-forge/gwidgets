@@ -141,7 +141,7 @@ gunivariatetable = function(xlabel="x",container=NULL, ..., toolkit=guiToolkit()
   xentry = gedit(text="",width=30, container=frame)
   xarg = addArg(argument=xlabel, xentry, container=frame)
   glabel("Tabulate data?",container=frame)
-  doTable=gdroplist(c(TRUE,FALSE),container=frame)
+  doTable=gcombobox(c(TRUE,FALSE),container=frame)
   obj = new("gUnivariateTableANY",block=frame, widget=frame, toolkit=toolkit, widgets=list(x=xarg, doTable=doTable))
   return(obj)
 }
@@ -175,7 +175,7 @@ gfileurl = function(xlabel="file",container=NULL, ..., toolkit=guiToolkit()) {
   xentry = gfilebrowse(text="",width=40, container=frame)
   xarg = addArg(argument=xlabel, xentry, container=frame)
   glabel("A url?",container=frame)
-  doURL=gdroplist(c(FALSE,TRUE),container=frame)
+  doURL=gcombobox(c(FALSE,TRUE),container=frame)
   obj = new("gFileURLANY",block=frame, widget=frame, toolkit=toolkit, widgets=list(x=xarg, doURL=doURL))
   return(obj)
 }
@@ -303,13 +303,13 @@ gmodel = function(lattice=FALSE, container=NULL,...,toolkit=guiToolkit()) {
   
   
   tbl = glayout(container=frame, anchor=c(-1,1), width=500,height=100)
-  tbl[1,1] <- (responseEntry = gdroplist(variableNames,width=40,editable=TRUE, cont=tbl))
+  tbl[1,1] <- (responseEntry = gcombobox(variableNames,width=40,editable=TRUE, container =tbl))
   tbl[2,1] <- "response"
 
   ## add ~
   tbl[1,2] <- " ~ "
 
-  tbl[1,3] <- (predictorEntry = gdroplist(variableNames,width=50, editable=TRUE, cont=tbl))
+  tbl[1,3] <- (predictorEntry = gcombobox(variableNames,width=50, editable=TRUE, container =tbl))
   tbl[2,3] <- "predictor(s)"
 
   
@@ -322,7 +322,7 @@ gmodel = function(lattice=FALSE, container=NULL,...,toolkit=guiToolkit()) {
   ## define this even if not needed
   conditionEntry = NULL
   if(lattice) {
-    tbl[3,3] <- (conditionEntry = gdroplist(variableNames, editable=TRUE,
+    tbl[3,3] <- (conditionEntry = gcombobox(variableNames, editable=TRUE,
                    container=tbl))
     
     tbl[4,3] <- " conditioning variable(s) | "
@@ -348,7 +348,7 @@ gmodel = function(lattice=FALSE, container=NULL,...,toolkit=guiToolkit()) {
   
   ## subset has extra button for editing
   tbl[2,1, anchor=c(1,0)] = "subset="
-  tbl[2,2, anchor=c(-1,0)] = (subsetEntry <- gedit("", cont=tbl))
+  tbl[2,2, anchor=c(-1,0)] = (subsetEntry <- gedit("", container =tbl))
   
   tbl[2,3] = (subsetEdit <- gbutton("edit",container=tbl)
               )
@@ -436,9 +436,9 @@ glmer = function(container=NULL, ..., toolkit=guiToolkit()) {
   
   tbl = glayout(container=frame)
   tbl[1,1] = "formula"
-  tbl[1,2] = (formulaEntry <- gedit("", width=40, cont=tbl))
+  tbl[1,2] = (formulaEntry <- gedit("", width=40, container =tbl))
   tbl[2,1] = "data="
-  tbl[2,2] = (dataEntry <- gedit("", cont=tbl))
+  tbl[2,2] = (dataEntry <- gedit("", container =tbl))
   visible(tbl) <- TRUE
   
   obj = new("gLmerANY",block=frame,widget=frame,toolkit=toolkit,
@@ -546,31 +546,31 @@ editFormulaDialog = function(
   font(tmp) <- c(weight="bold")
   addSpace(datagroup, 10)
 
-  variables = gtable(varNames,multiple=TRUE, cont=datagroup, expand=TRUE)
+  variables = gtable(varNames,multiple=TRUE, container =datagroup, expand=TRUE)
 
-  gseparator(cont=group)
+  gseparator(container =group)
   ## buttons
 
   
   buttonGroup = ggroup(container=group)
   glabel("Actions:", container=buttonGroup)
-  tbl = glayout(cont=buttonGroup, expand=TRUE)
-  tbl[1,1,anchor=c(-1,0)] = (addresponse <- gbutton("Response",cont=tbl))
-  tbl[1,2,anchor=c(-1,0)] = (addterm <-  gbutton("+ (main effect)",cont=tbl))
-  tbl[2,1,anchor=c(-1,0)] = (addwithin <- gbutton(": (interaction)",cont=tbl))
-  tbl[2,2,anchor=c(-1,0)] = (addinteraction <- gbutton("* (main + interaction)",cont=tbl))
-  tbl[3,1,anchor=c(-1,0)] = (addsecondpowers <- gbutton("^2 (second-order)",cont=tbl))
-  tbl[3,2,anchor=c(-1,0)] = (subtractintercept <-  gbutton("remove intercept",cont=tbl))
+  tbl = glayout(container =buttonGroup, expand=TRUE)
+  tbl[1,1,anchor=c(-1,0)] = (addresponse <- gbutton("Response",container =tbl))
+  tbl[1,2,anchor=c(-1,0)] = (addterm <-  gbutton("+ (main effect)",container =tbl))
+  tbl[2,1,anchor=c(-1,0)] = (addwithin <- gbutton(": (interaction)",container =tbl))
+  tbl[2,2,anchor=c(-1,0)] = (addinteraction <- gbutton("* (main + interaction)",container =tbl))
+  tbl[3,1,anchor=c(-1,0)] = (addsecondpowers <- gbutton("^2 (second-order)",container =tbl))
+  tbl[3,2,anchor=c(-1,0)] = (subtractintercept <-  gbutton("remove intercept",container =tbl))
   visible(tbl) <- TRUE
 
-  gseparator(cont=group)
+  gseparator(container =group)
   tbl = glayout(container=group)
 
-  response = gedit(svalue(responsewidget),cont=tbl)
-  predictor = gedit(svalue(predictorwidget), cont=tbl)
+  response = gedit(svalue(responsewidget),container =tbl)
+  predictor = gedit(svalue(predictorwidget), container =tbl)
 
   tbl[1,1] <- response
-  tbl[1,2] <- glabel(" ~ ",cont=tbl)
+  tbl[1,2] <- glabel(" ~ ",container =tbl)
   tbl[1,3:6] <- predictor
   tbl[2,1] <- "response"
   tbl[2,3:6] <- "predictor formula"
@@ -581,10 +581,10 @@ editFormulaDialog = function(
 
   buttonbox = ggroup(container=group)
   addSpring(buttonbox)
-  okbutton = gbutton("ok", cont=buttonbox)
+  okbutton = gbutton("ok", container =buttonbox)
   addSpace(buttonbox,15)  
-  clearbutton = gbutton("clear", cont=buttonbox)
-  cancelbutton = gbutton("cancel", cont=buttonbox)
+  clearbutton = gbutton("clear", container =buttonbox)
+  cancelbutton = gbutton("cancel", container =buttonbox)
 
   ## Now add handlers
   addhandlerclicked(addresponse, handler=function(h,...) {
@@ -706,11 +706,11 @@ editSubsetDialog = function(
   glabel(Paste("Data set:", dataName,""), container=group)
 
   tbl = glayout(container=group)
-  tbl[1,1] <- (andOrPopup = gdroplist(c("","&","|"), cont=tbl))
-  tbl[1,2] <- (notPopup  = gdroplist(c("","!"), cont=tbl))
-  tbl[1,3] <- (var1 = gdroplist(varNames, editable=TRUE, cont=tbl))
-  tbl[1,4] <- (logicalPopup = gdroplist(c("","<","<=","==","!=",">=",">","%in%"), cont=tbl))
-  tbl[1,5] <- (var2 = gdroplist(varNames, editable = TRUE, cont=tbl))
+  tbl[1,1] <- (andOrPopup = gcombobox(c("","&","|"), container =tbl))
+  tbl[1,2] <- (notPopup  = gcombobox(c("","!"), container =tbl))
+  tbl[1,3] <- (var1 = gcombobox(varNames, editable=TRUE, container =tbl))
+  tbl[1,4] <- (logicalPopup = gcombobox(c("","<","<=","==","!=",">=",">","%in%"), container =tbl))
+  tbl[1,5] <- (var2 = gcombobox(varNames, editable = TRUE, container =tbl))
 
   tbl[2,1] <- "join with"
   tbl[2,2] <- "negate"
@@ -722,29 +722,29 @@ editSubsetDialog = function(
   buttonGroup = ggroup(container=group)
   addSpring(buttonGroup)
 
-  addButton = gbutton("add", cont=buttonGroup)
+  addButton = gbutton("add", container =buttonGroup)
   addSpace(buttonGroup,10)
-  clearButton =   gbutton("clear",cont=buttonGroup)
+  clearButton =   gbutton("clear",container =buttonGroup)
 
   outputGroup = ggroup(container=group)
   glabel("Subset by",container=outputGroup)
-  output = glabel("", cont=group)
+  output = glabel("", container =group)
   font(output) <- c(weight="bold")  # make bold
-  status = glabel("",cont=group)
+  status = glabel("",container =group)
   
   gseparator(container=group)
   spacingGroup = ggroup(container=group)
   glabel("Preview:", container=spacingGroup)
   addSpring(spacingGroup)
 
-  preview = gtable(data, cont=group, expand=TRUE)
+  preview = gtable(data, container =group, expand=TRUE)
   enabled(preview) <- FALSE
   
   buttonGroup = ggroup(container=group)
   addSpring(buttonGroup)
-  okButton = gbutton("ok", cont=buttonGroup)
+  okButton = gbutton("ok", container =buttonGroup)
   addSpace(buttonGroup,10)
-  cancelButton = gbutton("cancel", cont=buttonGroup)
+  cancelButton = gbutton("cancel", container =buttonGroup)
 
   ## now give some actions
   addHandlerAction = function(h,...) {
@@ -817,7 +817,7 @@ editSubsetDialog = function(
 
 
 ## add terms 
-editConditionDialog =function(data,widget) {
+editConditionDialog <- function(data,widget) {
 
   if(is.na(data) || is.null(data)) {
     warning("empty dataset")
@@ -859,7 +859,7 @@ editConditionDialog =function(data,widget) {
     }
     dispose(win)
   },
-    cont=group, expand=TRUE)
+    container =group, expand=TRUE)
 
   buttonGroup = ggroup(container=group)
   addSpring(buttonGroup)
@@ -917,7 +917,7 @@ editSelectDialog = function(data,widget) {
     container=group, expand=TRUE)
   font(frame) <- c(weight="bold")
 
-  varList = gtable(varNames, multiple=TRUE, cont=frame, expand=TRUE)
+  varList = gtable(varNames, multiple=TRUE, container =frame, expand=TRUE)
 
 
   buttonGroup = ggroup(container=group)
@@ -935,11 +935,11 @@ editSelectDialog = function(data,widget) {
   
   
   ## put values into a vector with paste
-  selectVectorEntriesDialog  = function(vals, widget) {
+  selectVectorEntriesDialog <- function(vals, widget) {
     
     
     
-    win=gwindow("Select values", v=T)
+    win=gwindow("Select values", visible=T)
     group = ggroup(horizontal = FALSE, container=win)
     varNamesList = gtable(vals, multiple = TRUE, group, expand=TRUE)
 
