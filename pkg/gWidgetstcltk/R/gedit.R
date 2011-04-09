@@ -55,11 +55,18 @@ setMethod(".gedit",
            if(nchar(text))
              svalue(obj) <- text
 
+
+           
            ## initial message
            if(nchar(initial.msg) > 0 && nchar(text) == 0) {
              e$set_init_msg(initial.msg)
              e$show_init_msg()
            }
+
+           ## width
+           if(!is.null(width))
+             tkconfigure(obj@widget,width=as.integer(width)) ## character count, not pixels
+           
            ## Drag and drop
            ## addDropSource(obj)
            ## addDropTarget(obj)
@@ -154,8 +161,8 @@ setReplaceMethod(".size",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gEdittcltk"),
                  function(obj, toolkit, ..., value) {
                    if(is.numeric(value))
-                     tkconfigure(obj@widget,width=floor(value[1]/5)) 
-                                        # convert pixels to chars
+                     tkconfigure(obj@widget,width=ceiling(value[1]/widthOfChar)) 
+                                        
                    else
                      cat(gettext("size needs a numeric vector c(width,...)\n"))
                    return(obj)

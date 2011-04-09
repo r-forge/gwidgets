@@ -1,3 +1,7 @@
+2011-04-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: didn't have width argument acted on. Thanks Erich!
+
 2011-04-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtoolbar.R: Fix to this -- had double window being

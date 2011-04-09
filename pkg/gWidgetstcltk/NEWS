@@ -7,6 +7,11 @@ Changes for 0.0-43
 * change to selected= argument of gcomobobx. Will allow item value in
 addition to index. 
 
+* Bug fixes, (Thanks Erich, Carlos)
+
+* new method editable<-. Used by gedit to allow selection but no
+changing of the text.
+
 Changes for 0.0-42
 -------------------
 * fix to add method of box containers and the expand, fill, anchor arguments
