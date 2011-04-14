@@ -1,3 +1,8 @@
+2011-04-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R (onCancel): added event handler for window delete
+	event with gbasicdialog -- should fix hang in windows (Thanks Erich)
+
 2011-04-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R: didn't have width argument acted on. Thanks Erich!

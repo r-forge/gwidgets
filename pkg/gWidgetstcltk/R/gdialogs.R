@@ -380,11 +380,19 @@ setMethod(".visible",
                      dlg <- obj@block
                      g <- obj@widget
 
+
+
+                     
                      ## we use tclwait.variable, rather than window
                      ## with window, we need to destroy widget before returning loop
                      ## and then widget is destroyed before we can use it.
                      flag <- tclVar("")
                      
+                     ## bind to destroy event
+                     tkwm.protocol(dlg@widget@block, "WM_DELETE_WINDOW", function() {
+                       tclvalue(flag) <- "destroy"
+                     })
+
                      buttonGroup = ggroup(cont=g, expand=TRUE, fill="x") ## just x XXX
                      addSpring(buttonGroup)
                      ans <- FALSE
