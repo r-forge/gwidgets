@@ -1,3 +1,13 @@
+2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtable.R: added size<- for columnWidths, rowHeights. Send in
+	as list components
+
+2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (updateCallback): use taskCallback in place of
+	timer to update.
+
 2010-11-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R: fix to ".add" to show child so that delete/add

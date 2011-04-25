@@ -106,7 +106,7 @@ setMethod(".svalue",
             
             selModel <- object$selectionModel()
             selectedItems <- selModel$selectedIndexes()
-            selection <- sapply(selectedItems, function(item) c(row=item$row() + 1, column=item$column()+1))
+            selection <- lapply(selectedItems, function(item) c(row=item$row() + 1, column=item$column()+1))
             if(length(selection) == 0) {
               ## no selection
               return(NULL)
@@ -246,7 +246,7 @@ setReplaceMethod("[",
 ##' add in columns for alignments, etc.
 .mungeDataFrame <- function(df) {
 
-  sapply(names(df), function(varname) {
+  lapply(names(df), function(varname) {
     var <- df[[varname]]
     
     if(is.numeric(var)) {

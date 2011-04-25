@@ -1,6 +1,7 @@
 library(gWidgets)
 options(guiToolkit="Qt")
-if(require(testthat)) {
+
+if(gWidgets:::.bypassRequire("testthat")) {
 
 
 offspring <- function(path, user.data=NULL) {

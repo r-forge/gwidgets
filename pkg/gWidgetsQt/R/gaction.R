@@ -29,14 +29,18 @@ setMethod(".gaction",
                    tooltip = NULL,
                    icon = NULL,
                    key.accel = NULL,
-                   handler = NULL, action = NULL, 
+                   handler = NULL, action = NULL,
+                   parent=NULL,
                    ...) {
             
             force(toolkit)
 
             ## QAcation needs a parent
             ## we use the same environment to store this
-            parent <- Qt$QWidget()
+            if(is.null(parent))
+              parent <- Qt$QWidget()
+            else
+              parent <- getBlock(parent)
             a <- Qt$QAction(label, parent)
 
             if(!is.null(tooltip))
@@ -49,7 +53,8 @@ setMethod(".gaction",
               a$setIcon(icon)
 
             if(!is.null(key.accel)) {
-              XXX("Implement shortcuts")
+              ks <- Qt$QKeySequence(key.accel)
+              a$setShortcut(ks)         # not working??
             }
             if(!is.null(handler))
               qconnect(a, "triggered", function(h,...) {

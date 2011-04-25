@@ -20,7 +20,7 @@ setClass("gHtmlQt",
          )
 
 ##' basic html display widget
-##' Simply passes off to gtext
+##' Simply passes off to gtext and sets readonlyggo
 setMethod(".ghtml",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -35,6 +35,10 @@ setMethod(".ghtml",
             }
 
             ## pass off to gtext
-            .gtext(toolkit=toolkit, text=x, handler=handler, action=action,
-                   container=container, ...)
+            obj <- .gtext(toolkit=toolkit, text=x, handler=handler, action=action,
+                          container=container, ...)
+            w <- getWidget(obj)
+            w$setReadOnly(TRUE)
+
+            invisible(obj)
           })

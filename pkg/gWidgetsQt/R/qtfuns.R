@@ -156,7 +156,7 @@ makeQTextCharFormat<- function(font.attr) {
 formatColumn <- function(x, j, tbl, pattern) UseMethod("formatColumn")
 formatColumn.default <- function(x, j, tbl, pattern) tbl
 formatColumn.integer <- function(x, j, tbl, pattern) {
-  sapply(1:length(x), function(i) {
+  lapply(1:length(x), function(i) {
     item <- tbl$item(i-1, j-1)
     item$setTextAlignment(Qt$Qt$AlignRight)
   })
@@ -166,7 +166,7 @@ formatColumn.integer <- function(x, j, tbl, pattern) {
 formatColumn.numeric <- function(x, j, tbl, pattern) {
   if(missing(pattern))
     pattern <- "%.5f"
-  sapply(1:length(x), function(i) {
+  lapply(1:length(x), function(i) {
     item <- tbl$item(i-1, j-1)
     item$setTextAlignment(Qt$Qt$AlignRight)            # right
     item$setText(sprintf(pattern, x[i]))
@@ -197,7 +197,7 @@ setTableWidgetCell <- function(tbl, x, i, j, flags = c("selectable", "editable",
 ## need to format
 setTableWidgetColumn <- function(tbl, x, j, flags=c("selectable", "editable", "enabled")) {
   M <- length(x)
-  sapply(1:M, function(i) {
+  lapply(1:M, function(i) {
     setTableWidgetCell(tbl, x[i], i, j, flags=flags)
   })
 }
@@ -218,12 +218,12 @@ setTableWidgetFromDataFrame <- function(tbl, df, flags=c("selectable", "editable
   tbl$setColumnCount(N)
 
   ## put in values
-  sapply(1:N, function(j) {
+  lapply(1:N, function(j) {
     setTableWidgetColumn(tbl, df[,j], j, flags)
   })
 
   ## format the columns
-  sapply(1:N, function(j) formatColumn(df[,j], j, tbl))
+  lapply(1:N, function(j) formatColumn(df[,j], j, tbl))
   
   ## set row and col names
   setTableWidgetNames(tbl, colnames(df))
@@ -238,7 +238,7 @@ setTableWidgetIcons <- function(tbl, icons) {
     ### "Wrong length for icons"
     return()
   }
-  sapply(1:tbl$rowCount, function(i) {
+  lapply(1:tbl$rowCount, function(i) {
     icon <- getStockIconFromName(icons[i])
     item <- tbl$item(i-1, 0)
     if(!is.null(icon))
@@ -311,7 +311,7 @@ getValueFromTableWidget <- function(tbl, colClasses=c("character")) {
   out <- matrix(character(M*N), nrow=M)
   colClasses <- rep(colClasses, length=N)        # recycle
   
-  sapply(1:N, function(j) {
+  lapply(1:N, function(j) {
     out[,j] <<- sapply(1:M, function(i) {
       item <- tbl$item(i-1, j-1)
       item$text()

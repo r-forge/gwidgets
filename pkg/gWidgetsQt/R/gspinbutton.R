@@ -28,6 +28,9 @@ setMethod(".gspinbutton",
 
             force(toolkit)
 
+
+
+            
             ## coerce to integer if meant to be
             if(isTRUE(all.equal(from, as.integer(from))))
               from <- as.integer(from)

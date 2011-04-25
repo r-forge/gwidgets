@@ -48,7 +48,8 @@ setMethod(".ggroup",
             obj <- new("gGroupQt",block=gw, widget=gp, toolkit=toolkit,            
                        e=new.env(), ID=getNewID()  
                        )
-            
+
+            tag(obj, "default_fill") <- ifelse(horizontal, "y", "x") # orthogonal to expansion
 
             
             ## implement scrollbars if asked. 

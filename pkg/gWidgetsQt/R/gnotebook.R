@@ -252,6 +252,7 @@ setReplaceMethod(".names",
                      nb$setTabText(i-1, as.character(value[i]))
                    })
 
+                   
                    return(x)
                  })
 

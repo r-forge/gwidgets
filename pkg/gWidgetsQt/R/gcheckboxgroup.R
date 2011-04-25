@@ -132,7 +132,7 @@ setReplaceMethod(".svalue",
                      values = rep(value, length.out=n) ## recycle
                    }
 
-                   sapply(1:n, function(i) svalue(lst[[i]]) <- values[i])
+                   lapply(1:n, function(i) svalue(lst[[i]]) <- values[i])
                    
                    return(obj)
                  })
@@ -176,7 +176,7 @@ setReplaceMethod(".leftBracket",
               i = which(i)
             items[i] = value
             
-            sapply(1:n, function(i) 
+            lapply(1:n, function(i) 
                    lst[[i]][] <- items[i]
                    )
             tag(x,"items") <- items
@@ -198,7 +198,7 @@ setReplaceMethod(".enabled",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gCheckboxgroupQt"),
                  function(obj, toolkit, ..., value) {
 
-                   sapply(tag(obj,"itemlist"), function(i)
+                   lapply(tag(obj,"itemlist"), function(i)
                           enabled(i,...) <- value)
                    return(obj)
                  })
@@ -228,7 +228,7 @@ setMethod(".removehandler",
           function(obj, toolkit, ID=NULL, ...) {
             tag(obj,"handlerList") <- NULL
             lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
+            lapply(1:length(lst), function(i)
                    removehandler(lst[[i]], ID[[i]])
                  )
           })
@@ -238,7 +238,7 @@ setMethod(".blockhandler",
           function(obj, toolkit, ID=NULL, ...) {
 
             lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
+            lapply(1:length(lst), function(i)
                    blockhandler(lst[[i]], ID[[i]])
                    )
           })
@@ -247,7 +247,7 @@ setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkitQt",obj="gCheckboxgroupQt"),
           function(obj, toolkit, ID=NULL, ...) {
             lst <- tag(obj,"itemlist")
-            sapply(1:length(lst), function(i)
+            lapply(1:length(lst), function(i)
               unblockhandler(lst[[i]], ID[[i]])
             )
           })
@@ -347,7 +347,7 @@ setReplaceMethod(".svalue",
                    ## recycle
                    value <- as.logical(rep(value, length=n))
                    state <- sapply(value, function(i) ifelse(i, Qt$Qt$Checked, Qt$Qt$Unchecked))
-                   sapply(1:n, function(i) {
+                   lapply(1:n, function(i) {
                      item <- tbl$item(i-1, 0)
                      item$setCheckState(state[i])
                    })
@@ -419,7 +419,7 @@ setReplaceMethod(".leftBracket",
             if(m == 0)
               return(x)
             
-            sapply(1:m, function(i) {
+            lapply(1:m, function(i) {
               item <- Qt$QTableWidgetItem(as.character(value[i,1]))
               flags <- Qt$Qt$ItemIsEditable | Qt$Qt$ItemIsUserCheckable | Qt$Qt$ItemIsEnabled
               item$setFlags(flags) 

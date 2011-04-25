@@ -131,7 +131,7 @@ creategwClass <- function(cname, constructor) {
 
     for(eventName in names(handlers)) {
       ind <- sapply(handlers[[eventName]], function(i) i$id == id)
-      if(length(ind))
+      if(length(unlist(ind)))
         handlers[[eventName]][[which(ind)]] <- NULL
     }
     tag(obj, ".eventHandlers") <- handlers
@@ -149,7 +149,7 @@ creategwClass <- function(cname, constructor) {
     
     if(missing(id)) {
       ## block all
-      blockedHandlers <- unlist(sapply(names(handlers), function(eventName) {
+      blockedHandlers <- unlist(lapply(names(handlers), function(eventName) {
         sapply(handlers[[eventName]], function(i) i$id)
       })
                                 )
@@ -287,7 +287,17 @@ creategwClass <- function(cname, constructor) {
     }
     super("closeEvent", e)
   })
-    
+
+  ##' Focus events
+  qsetMethod("focusInEvent", NewClassObject, function(e) {
+
+      obj <- this$getObject()
+      if(!is.null(obj)) {
+        gwRunQtEventHandler(obj, "focusInEvent", e)
+      }
+
+    super("focusInEvent", e)
+  })
 } 
 
 
@@ -310,6 +320,14 @@ setMethod(".addhandlerclicked",
             invisible(id)
           })
 
+setMethod(".addhandlerfocus",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gEventWidgetQt"),
+          function(obj, toolkit,  handler, action=NULL, ...) {
+            w <- getWidget(obj)
+            id <- w$setEventHandler("focusInEvent", handler, action)
+            invisible(id)
+          })
+
 ##' method can return logical. If FALSE, then close does not occure
 setMethod(".addhandlerunrealize",
           signature(toolkit="guiWidgetsToolkitQt",obj="gEventWidgetQt"),
@@ -318,6 +336,7 @@ setMethod(".addhandlerunrealize",
             id <- w$setEventHandler("closeEvent", handler, action)
             invisible(id)
           })
+
 
 
 setMethod(".removehandler",

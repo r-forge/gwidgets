@@ -93,7 +93,7 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gLabelQt"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    w <- getWidget(obj)
-                   w$text <- as.character(value)
+                   w$text <- paste(as.character(value), collapse="\n")
                    return(obj)
                  })
 

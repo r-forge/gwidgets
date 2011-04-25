@@ -51,6 +51,8 @@ setMethod(".gframe",
             obj <- new("gFrameQt",
               block=f, widget=lyt, toolkit=toolkit)
 
+            tag(obj, "default_fill") <- ifelse(horizontal, "y", "x") # orthogonal to expansion
+            
             ## label
             if(markup) {
               XXX("Markup is implicit")

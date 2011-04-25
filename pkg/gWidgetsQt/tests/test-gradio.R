@@ -1,6 +1,6 @@
 library(gWidgets)
 options(guiToolkit="Qt")
-if(require(testthat)) {
+if(gWidgets:::.bypassRequire("testthat")) {
 
 x <- letters[1:3]
 w <- gwindow()

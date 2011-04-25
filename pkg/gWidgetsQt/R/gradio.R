@@ -198,7 +198,7 @@ setReplaceMethod(".leftBracket",
               ## clear out layout, add from value -- use coerce.with still
               l <- tag(x, "items")
               lyt <- getWidget(x)
-              sapply(l, function(i) {
+              lapply(l, function(i) {
                 i$hide()
                 lyt$removeWidget(i)
               })
@@ -252,7 +252,7 @@ setReplaceMethod(".enabled",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gRadioQt"),
                  function(obj, toolkit, ..., value) {
                    l <- tag(obj, "items")
-                   sapply(l, function(i) i$setEnabled(as.logical(value)))
+                   lapply(l, function(i) i$setEnabled(as.logical(value)))
 
                    return(obj)
                  })
@@ -297,7 +297,7 @@ setMethod(".removehandler",
           function(obj, toolkit, ID=NULL, ...) {
             ## id is a lst of IDs to match that of 
             l <- tag(obj, "items")
-            sapply(l, function(i) {
+            lapply(l, function(i) {
               if(is.null(ID)) {
                 i$disconnect()
               } else {
@@ -312,7 +312,7 @@ setMethod(".blockhandler",
           function(obj, toolkit, ID=NULL, ...) {
             ## id is a lst of IDs to match that of 
             l <- tag(obj, "items")
-            sapply(l, function(i) {
+            lapply(l, function(i) {
               if(is.null(ID)) {
                 i$blockSignals(TRUE)
               } else {
@@ -329,7 +329,8 @@ setMethod(".unblockhandler",
           function(obj, toolkit, ID=NULL, ...) {
             ## id is a lst of IDs to match that of 
             l <- tag(obj, "items")
-            sapply(l, function(i) {
+            lapply(l, function(i) {
+
               if(is.null(ID)) {
                 i$blockSignals(FALSE)
               } else {

@@ -1,6 +1,7 @@
 library(gWidgets)
 options(guiToolkit="Qt")
-if(require(testthat)) {
+
+if(gWidgets:::.bypassRequire("testthat")) {
   is.nullna <- function(x) is.null(x) || is.na(x)
 
   w <- gwindow()

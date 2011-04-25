@@ -627,6 +627,7 @@
 \alias{.enabled<--methods}
 \alias{.enabled<-,gWidgetQt,guiWidgetsToolkit-method}
 \alias{.enabled<-,gWidgetQt,guiWidgetsToolkitQt-method}
+\alias{.enabled<-,gContainerQt,guiWidgetsToolkitQt-method}
 \alias{.enabled<-,RQtObject,guiWidgetsToolkitQt-method} 
 \alias{.enabled<-,gActionQt,guiWidgetsToolkitQt-method} 
 \alias{.enabled<-,gCheckboxgroupQt,guiWidgetsToolkitQt-method} 
@@ -669,6 +670,7 @@
 \alias{.size<-,gSeparatorQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.size<-,gSpinbuttonQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gTableQt,guiWidgetsToolkitQt-method}
+\alias{.size<-,gTableViewQt,guiWidgetsToolkitQt,ANY-method}
 \alias{.size<-,gTableWithFilterQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gTreeQt,guiWidgetsToolkitQt-method}
 \alias{.size<-,gVarbrowserQt,guiWidgetsToolkitQt-method}
@@ -1084,6 +1086,7 @@
 %%
 \alias{.addhandlerfocus-methods}
 \alias{.addhandlerfocus,gWidgetQt,guiWidgetsToolkitQt-method}
+\alias{.addhandlerfocus,gEventWidgetQt,guiWidgetsToolkitQt-method}
 %%
 %% --  addhandleridle --
 %%
@@ -1219,8 +1222,9 @@
 %%
 \alias{.update-methods}
 \alias{.update,gComponentQt,guiWidgetsToolkitQt-method}
-\alias{.update,gVarbrowserQt,guiWidgetsToolkitQt-method}
 \alias{.update,gTreeQt,guiWidgetsToolkitQt-method}
+\alias{.update,gVarbrowserQt,guiWidgetsToolkitQt-method}
+\alias{.update,gWindowQt,guiWidgetsToolkitQt-method}
 %%
 %% --  .length --
 %%
@@ -1250,6 +1254,7 @@
 \alias{.dim-methods}
 \alias{.dim,gBigTableQt,guiWidgetsToolkitQt-method}
 \alias{.dim,gGridQt,guiWidgetsToolkitQt-method}
+\alias{.dim,gLayoutQt,guiWidgetsToolkitQt-method}
 \alias{.dim,gTableQt,guiWidgetsToolkitQt-method}
 \alias{.dim,gTableViewQt,guiWidgetsToolkitQt-method}
 \alias{.dim,gTableWithFilterQt,guiWidgetsToolkitQt-method}

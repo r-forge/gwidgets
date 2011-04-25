@@ -230,6 +230,14 @@ setReplaceMethod(".font",
 
                  })
 
+## toggle readonly state
+## setReplaceMethod(".editable",
+##                  signature(toolkit="guiWidgetsToolkitQt",obj="gTextQt"),
+##                  function(obj, toolkit, ..., value) {
+##                    w <- getWidget(obj)
+##                    w$setReadOnly(as.logical(value))
+##                    return(obj)
+##                  })
 
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gTextQt"),

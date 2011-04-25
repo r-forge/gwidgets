@@ -166,7 +166,7 @@ setMethod(".gtree",
     icons <- rep(NULL, nrow(os))
   else
     icons <- icon.FUN(os)
-  icons <- sapply(icons, function(i) getWithDefault(i, ""))
+  icons <- sapply(icons, getWithDefault, default="")
 
   ## do we have to offspring
   hasOffspring <- tag(obj, "hasOffspring")
@@ -230,7 +230,7 @@ setMethod(".gtree",
 .gtree.clearChildItems <- function(obj, item) {
   tr <- getWidget(obj)
   noChildren <- item$childCount()
-  sapply(rev(1:noChildren), function (i) {
+  lapply(rev(1:noChildren), function (i) {
     child <- item$takeChild(i - 1)
     item$removeChild(child)
   })
@@ -310,7 +310,7 @@ setMethod(".update",
 
             ## delete objects from tree that aren't there any more
             if(length(noLongerNeeded))
-              sapply(noLongerNeeded, function(i) root$removeChild(i))
+              lapply(noLongerNeeded, function(i) root$removeChild(i))
 
             ## these children are already present
             if(length(alreadyThere)) {
@@ -432,7 +432,7 @@ setMethod(".names",
             headerItem <- tr$headerItem()
             n <- tr$columnCount
             if(n >= 1)
-              sapply(seq_along(n), function(i) headerItem$text(i-1))
+              lapply(seq_along(n), function(i) headerItem$text(i-1))
             else
               character(0)
           })

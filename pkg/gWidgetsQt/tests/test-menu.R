@@ -1,6 +1,8 @@
 library(gWidgets)
 options(guiToolkit="Qt")
-if(require(testthat)) {
+
+
+if(gWidgets:::.bypassRequire("testthat")) {
 
   makeActions <- function(nested=FALSE) {
     f <- function(...) print("hi")
@@ -31,7 +33,7 @@ if(require(testthat)) {
   b1 <- gbutton("popup.popup", cont=g)
   b2 <- gbutton("popup.3rd", cont=g)
 
-  mb <- gmenu(makeActions(), cont = b, popup=TRUE)
+##  mb <- gmenu(makeActions(), cont = b, popup=TRUE)
   ## giving errors
 ##  add3rdmousepopupmenu(b1, makeActions())
 ##  addpopupmenu(b2, makeActions())

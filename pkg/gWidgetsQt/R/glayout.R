@@ -178,3 +178,12 @@ setReplaceMethod(".leftBracket",
             return(x)
           })
 
+
+## dim
+## does this work for small layouts?
+setMethod(".dim",
+          signature(toolkit="guiWidgetsToolkitQt",x="gLayoutQt"),
+          function(x, toolkit) {
+            w <- getWidget(x)
+            c(nrow=w$rowCount(), ncol=w$columnCount())
+          })

@@ -112,6 +112,8 @@ setMethod(".gexpandgroup",
                        toolkit=toolkit, e=new.env(), ID=getNewID())
 
 
+            tag(obj, "default_fill") <- ifelse(horizontal, "y", "x") # orthogonal to expansion
+            
             names(obj) <- text
             visible(obj) <- FALSE       # default -- don't show
             

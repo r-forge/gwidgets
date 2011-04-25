@@ -63,7 +63,7 @@ setMethod(".gtoolbar",
 
 ## helpers
 
-.mapListToToolBar = function(tb, lst, style) {
+.mapListToToolBar <- function(tb, lst, style) {
   for(i in names(lst)) {
     tmp <- lst[[i]]
     label <- i

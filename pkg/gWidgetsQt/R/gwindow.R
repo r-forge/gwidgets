@@ -227,12 +227,18 @@ setReplaceMethod(".visible",
               w$hide()
             }
             if(is.list(tag(obj, "children")))
-              sapply(tag(obj, "children"), function(i) visible(i) <- value)
+              lapply(tag(obj, "children"), function(i) visible(i) <- value)
 
             return(obj)
             })
           
-
+##' Recompute size
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+          function(object, toolkit, ...) {
+            ## XXX implement me
+            invisible()
+          })
 ##################################################
 ## handlers
 

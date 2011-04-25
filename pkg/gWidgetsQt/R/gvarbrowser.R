@@ -110,7 +110,8 @@ qsetClass("WSBrowser", Qt$QWidget, function(parent=NULL) {
 
   ## auto update checkbox
   this$cb <- Qt$QCheckBox(gettext("Auto refresh"))
-
+  cb$setChecked(TRUE)
+  
   lyt <- Qt$QGridLayout()
   setLayout(lyt)
 
@@ -124,15 +125,34 @@ qsetClass("WSBrowser", Qt$QWidget, function(parent=NULL) {
   lyt$setRowStretch(1, 1)
 
   updateTopLevelItems()
-  
-  ## setup timer to update if checked
-  this$timer <- Qt$QTimer(this)
-  qconnect(timer, "timeout", function() {
-    if(cb$checkState() & Qt$Qt$Checked) {
-      updateTopLevelItems()
+
+  ## In place of a timer, we use a taskCallback
+  ## This is a little fragile, as remove taskCallback can remove
+  updateCallback <- function() {
+    function(expr, value, ...) {
+      ## how to check if widget is extant?
+      if(is.null(cb$parent())) return(FALSE)
+      
+      if(is.call(expr)) {
+        FUN <- deparse(expr[[1]])
+        if(FUN %in% c("=","<-", "assign", "rm"))
+          if(cb$checkState() & Qt$Qt$Checked) {
+            updateTopLevelItems()
+          }
+      }
+      return(TRUE)
     }
-  })
-  startTimer()
+  }
+  addTaskCallback(updateCallback())
+  
+  ## ## setup timer to update if checked
+  ## this$timer <- Qt$QTimer(this)
+  ## qconnect(timer, "timeout", function() {
+  ##   if(cb$checkState() & Qt$Qt$Checked) {
+  ##     updateTopLevelItems()
+  ##   }
+  ## })
+  ## startTimer()
 })
 
 ## get the tree widget

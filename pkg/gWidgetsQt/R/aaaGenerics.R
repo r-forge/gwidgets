@@ -70,10 +70,10 @@ setOldClass("RQtObject")
                "QToolBar",
                "QSvgWidget"
                )
-sapply(.oldClass, function(i) setOldClass(i))
-sapply(.oldClass, function(i) setIs(i, "RQtObject"))
-sapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
-sapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
+lapply(.oldClass, function(i) setOldClass(i))
+lapply(.oldClass, function(i) setIs(i, "RQtObject"))
+lapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
+lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
 
 .ourClasses <- c("R::gWidgetsQt::WSBrowser",
                  "R::gWidgetsQt::ExpandContainer",
@@ -81,7 +81,7 @@ sapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject
                  "R::gWidgetsQt::QtDevice"
                  )
 
-sapply(.ourClasses, function(i) {
+lapply(.ourClasses, function(i) {
        setOldClass(i)
        setIs(i, "RQtObject")
      })
@@ -389,6 +389,28 @@ setReplaceMethod(".enabled",
                  function(obj, toolkit, ..., value) {
                    w <- getWidget(obj)
                    w$setEnabled(as.logical(value))
+                   
+                   return(obj)
+                 })
+
+setReplaceMethod(".enabled",
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gContainerQt"),
+                 function(obj, toolkit, ..., value) {
+                   set_enabled <- function(a, value=TRUE) {
+                     for(i in seq_len(a$count()) - 1) {
+                       item <- a$itemAt(i)
+                       widget <- item$widget()
+                       if(is(widget, "QWidget"))
+                         widget$setEnabled(value)
+                       else if(is(widget, "QLayout"))
+                         set_enabled(widget, value)
+                     }
+                   }
+                   w <- getWidget(obj)
+                   set_enabled(w, value)
+
+                   ## enabled for layout is not what I want here. SO we recurse
+                   ## w$setEnabled(as.logical(value))
                    
                    return(obj)
                  })
@@ -725,7 +747,8 @@ setMethod(".add",
             ##   expand <- TRUE
 
             ## by setting default_fill attr to something besides x,y,both we bypass
-            default_fill <- getWithDefault(tag(value, "default_fill"), "both") # x, y
+            default_fill <- getWithDefault(tag(value, "default_fill"),
+                                           getWithDefault(tag(obj, "default_fill"),"both")) # x, y
             fill <- getWithDefault(theArgs$fill, default_fill) 
 
             if(is.null(anchor)) {

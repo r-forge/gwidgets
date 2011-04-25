@@ -281,7 +281,7 @@ setReplaceMethod(".leftBracket",
               ## now set data frame
               setTableWidgetFromDataFrame(tbl, value, flags=flags)
               ## visible. (Could use visible<- here
-              sapply(seq_along(visibleRows), function(i) {
+              lapply(seq_along(visibleRows), function(i) {
                 tbl$setRowHidden(i-1, !visibleRows[i])
               })
               ## icons
@@ -385,7 +385,7 @@ setReplaceMethod(".visible",
                    
                    ## now redraw
                    tbl <- getWidget(obj)
-                   sapply(seq_along(value), function(i) tbl$setRowHidden(i-1, !value[i]))
+                   lapply(seq_along(value), function(i) tbl$setRowHidden(i-1, !value[i]))
 
                    return(obj)
                  })
@@ -410,33 +410,30 @@ setReplaceMethod(".names",
                    return(x)
                  })
 
-## ## width setting is hacked in, if value has 1 or more than 2 values, we assume
-## ## they are column widths
-## setReplaceMethod(".size", 
-##                  signature(toolkit="guiWidgetsToolkitQt",obj="gTableQt"),
-##                  function(obj, toolkit, ..., value) {
+setReplaceMethod(".size", 
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gTableViewQt"),
+                 function(obj, toolkit, ..., value) {
 
-##                    ## width is tricky. Use current widths
-##                    d <- dim(obj); m <- d[1]; n <- d[2]
-##                    widths <- sapply(1:n, function(j) {
-##                      tclvalue(tcl(getWidget(obj), "column", j-1, "-width"))
-##                    })
-##                    widths <- as.numeric(widths)
-                   
-##                    curWidth <- sum(widths)
-##                    widths <- floor((1+widths) * value[1]/curWidth)
+                   w <- getWidget(obj)
 
-##                    ## set width
-##                    sapply(1:n, function(j) {
-##                      tcl(getWidget(obj), "column", j-1, width=widths[j])
-##                    })
-                   
-##                    ## set height
-##                    height=value[2]
-##                    tkconfigure(getWidget(obj), height = floor(height/16))
+                   if(is.list(value) && !is.null(value$columnWidths)) {
+                     colWidths <- value$columnWidths
+                     colWidths <- rep(colWidths, length.out=dim(obj)[2])
+                     lapply(seq_len(colWidths), function(i) {
+                       w$setColumnWidth(i-1, colWidths[i])
+                     })
+                   } else if(is.list(value) && !is.null(value$rowHeights)){
+                     rowHeights <- value$rowHeights
+                     rowHeights <- rep(rowHeights, length.out=dim(obj)[1])
+                     lapply(seq_len(rowHeights), function(i) {
+                       w$setRowHeight(i-1, rowHeights[i])
+                     })
+                   } else {
+                     callNextMethod
+                   }
 
-##                    return(obj)
-##                  })
+                  return(obj)
+                })
 
 
 ## handlers

@@ -48,7 +48,7 @@ setMethod(".ggraphicsnotebook",
 
             g <- ggroup(cont = container, horizontal=FALSE, ...)
             bg <- ggroup(cont=g)
-            sapply(acts, function(i) gbutton(action=i, cont=bg, expand=FALSE, anchor=c(-1,0)))
+            lapply(acts, function(i) gbutton(action=i, cont=bg, expand=FALSE, anchor=c(-1,0)))
             addSpring(bg)
             
             nb <- gnotebook(cont=g, expand=TRUE)

@@ -42,7 +42,8 @@ setMethod(".gedit",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
                    text="", width=25,
-                   coerce.with = NULL, 
+                   coerce.with = NULL,
+                   initial.msg = "", 
                    handler=NULL, action=NULL,
                    container=NULL,
                    ...
@@ -78,6 +79,20 @@ setMethod(".gedit",
            svalue(obj) <- text
            tag(obj, "coerce.with") <- coerce.with
            tag(obj, "default_fill") <- "x"
+           tag(obj, "initial.msg") <- initial.msg
+
+           if(nchar(text) == 0 && nchar(initial.msg) > 0) {
+             ## set value
+             entry$setStyleSheet(sprintf("* {color: %s}", "gray"))
+             entry$setText(initial.msg)
+             ## focus handler to remove id
+             id <- entry$setEventHandler("focusInEvent", function(...) {
+               if(entry$text == initial.msg)
+                 entry$setText("")
+               entry$setStyleSheet(sprintf("* {color: %s}", "black"))
+             }, action="")
+           }
+           
 
            ## XXX no width argument. Use size<- instead
            if(!is.null(width)) 
@@ -106,6 +121,7 @@ setMethod(".svalue",
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             w <- getWidget(obj)
             val <- w$text
+            if(val == tag(obj, "initial.msg")) val <- ""
             val <- do.coerce(val, tag(obj, "coerce.with"))
             return(val)
           })
@@ -115,6 +131,7 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gTextWidgetQt"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    w <- getWidget(obj)
+                   w$setStyleSheet(sprintf("* {color: %s}", "black"))                   
                    w$setText(paste(as.character(value), collapse="\n"))
                    return(obj)
           })
@@ -139,7 +156,7 @@ setMethod(".leftBracket",
             if(n == 0)
               return(character(0))
             else
-              sapply(1:n, function(i) {
+              lapply(1:n, function(i) {
                 item <- mod$item(i-1)
                 item$text()
               })
@@ -166,7 +183,7 @@ setReplaceMethod(".leftBracket",
             completer <- w$completer()
             mod <- completer$model()
             n <- length(vals)
-            sapply(seq_len(n), function(i) {
+            lapply(seq_len(n), function(i) {
               item <- Qt$QStandardItem(vals[i])
               mod$setItem(i - 1, item)
             })
