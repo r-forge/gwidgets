@@ -31,11 +31,11 @@ CbgWidgetGtk <- setRefClass("CbgWidgetGtk",
                          inner_block <<- if(horizontal) gtkHBox() else gtkVBox()
                          block$packStart(inner_block)
 
-                         widget <<- sapply(items, gtkCheckButton)
-                         sapply(widget, gtkBoxPackStart, object = inner_block)
+                         widget <<- lapply(items, gtkCheckButton)
+                         lapply(widget, gtkBoxPackStart, object = inner_block)
                          
                          ## add handlers
-                         sapply(widget, gSignalConnect, signal="toggled", f=function(self, w, ...) {
+                         lapply(widget, gSignalConnect, signal="toggled", f=function(self, w, ...) {
                            self$notify_observers(...)
                          }, data=.self, user.data.first=TRUE)
 

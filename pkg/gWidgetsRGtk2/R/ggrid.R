@@ -537,14 +537,23 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+
                    ## get indices, then select
                    if((!is.null(index) &&index == TRUE) ||
-                      (is.null(index) && is.integer(value))) {
-                     ind <-  as.character(as.integer(value) - 1L)
+                      (is.null(index) && is.numeric(value))) {
+                     ind <- as.integer(value) - 1L
+                     
                    } else {
                      ## set by value -- not by index
                      curVals <- obj[,tag(obj,"chosencol")]
-                     ind <- which(curVals %in% value) - 1L
+                     ind <- match(value, curVals)
+                     if(length(ind) == 1 && is.na(ind)) {
+                       ## exit if no match
+                       ind <- NULL
+                       selection$unselectAll()
+                       return(obj)
+                     }
+                     ind <- ind -1L
                    }
                    ind <- ind[ind >= 0] # only non-negative indices
 ##                    if((!is.null(index) && index == FALSE) || !is.integer(value)) {
@@ -557,6 +566,7 @@ setReplaceMethod(".svalue",
                    view <- tag(obj,"view")
                    selection <- view$GetSelection()
 
+                   
                    ## block handlers to quiet down change signal
                    if(length(ind)) {
                      blockhandler(selection)
@@ -566,11 +576,17 @@ setReplaceMethod(".svalue",
                      ## we want to call handler when 0 or negative index
                      selection$unselectAll()
                    }
-                   
-                   sapply(ind, function(i) {
+
+                   lapply(ind, function(i) {
                      path <- gtkTreePathNewFromString(i)
                      selection$SelectPath(path)
                    })
+
+                   ## move to cell
+                   i <- min(ind)
+                   path <- gtkTreePathNewFromString(i)
+                   view$scrollToCell(path)
+                   
                    return(obj)
                  })
 

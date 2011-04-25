@@ -374,7 +374,7 @@ setMethod(".leftBracket",
            
 
             if(length(i) > 1) {
-              lst = sapply(i,function(j)
+              lst = lapply(i,function(j)
                 getNotebookPageWidget(x,pageno = j-1)
                 )
               return(lst)

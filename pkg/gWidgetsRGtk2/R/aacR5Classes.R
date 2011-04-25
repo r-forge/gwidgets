@@ -26,8 +26,8 @@ Observable <- setRefClass("Observable",
                                 stop("Call with an observer id")
                               
                               signal <- id$signal
-                              ind <- sapply(..observers[[signal]], function(i) identical(i, id$o))
-                              if(any(ind)) 
+                              ind <- lapply(..observers[[signal]], function(i) identical(i, id$o))
+                              if(any(unlist(ind)) )
                                 ..observers[[signal]][[which(ind)]] <<- NULL
                               
                             },
@@ -37,7 +37,7 @@ Observable <- setRefClass("Observable",
                                 ..blocked <<- TRUE
                               } else {
                                 if(is.null(..blocked_observers[[id$signal]]))
-                                  ..blocked_observers[[id$signal]] <- list(id$o)
+                                  ..blocked_observers[[id$signal]] <<- list(id$o)
                                 else
                                   ..blocked_observers[[id$signal]] <<-
                                     c(..blocked_observers[[id$signal]], o)
@@ -49,8 +49,8 @@ Observable <- setRefClass("Observable",
                                 ..blocked <<- FALSE
                               } else {
                                 signal <- id$signal
-                                ind <- sapply(..blocked_observers[[signal]], function(i) identical(i, id$o))
-                                if(any(ind)) 
+                                ind <- lapply(..blocked_observers[[signal]], function(i) identical(i, id$o))
+                                if(any(unlist(ind))) 
                                   ..blocked_observers[[signal]][[which(ind)]] <<- NULL
                               }
                             },
@@ -58,9 +58,9 @@ Observable <- setRefClass("Observable",
                               "Call each non-blocked observer"
                               if(length(..blocked) && ..blocked)
                                 return()
-                              sapply(..observers[[signal]], function(o) {
-                                ind <- sapply(..blocked_observers[[signal]], function(i) identical(i, o))
-                                if(!any(ind)) 
+                              lapply(..observers[[signal]], function(o) {
+                                ind <- lapply(..blocked_observers[[signal]], function(i) identical(i, o))
+                                if(!any(unlist(ind))) 
                                   o$update(...)
                               })
                             }

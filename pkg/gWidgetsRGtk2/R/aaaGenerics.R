@@ -172,7 +172,7 @@ c(
 
 
 setOldClass("RGtkObject")
-sapply(oldClasses, function(i) {
+lapply(oldClasses, function(i) {
   setOldClass(i)
   setIs(i,"RGtkObject")
 })
@@ -1294,7 +1294,7 @@ setMethod(".blockhandler",
           function(obj, toolkit, ID=NULL, ...) {
             if(is.null(ID))
               ID <- tag(obj,"handler.id")
-            sapply(ID, function(i)
+            lapply(ID, function(i)
                      gSignalHandlerBlock(obj,i))
             return()
           })

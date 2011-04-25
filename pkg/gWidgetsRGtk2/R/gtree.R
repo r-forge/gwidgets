@@ -55,7 +55,7 @@ setMethod(".gtree",
             
             ## get GTK types -- force first to be character
             if(length(col.types) > 1) {
-              types = c("gchararray",sapply(col.types[ ,-1],RtoGObjectConversion))
+              types = c("gchararray", sapply(col.types[ ,-1],RtoGObjectConversion))
             } else {
               types <- "gchararray"
             }
@@ -411,7 +411,7 @@ setReplaceMethod(".svalue",
 
                    value <- lapply(value, function(i) i-1)
                    
-                   sapply(value, function(tmp) {
+                   lapply(value, function(tmp) {
                      for(j in 1:length(tmp)) {
                        tpath <- gtkTreePathNewFromString(paste(tmp[1:j], collapse=":"))
                        tr$expandRow(tpath, open.all=FALSE)

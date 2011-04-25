@@ -38,11 +38,11 @@ RadioWidgetGtk <- setRefClass("RadioWidgetGtk",
 
                          widget <<- gtkRadioButton(label=items[1])
                          ## Keep rbs around until after sapply statement
-                         rbs <- sapply(items[-1], gtkRadioButtonNewWithLabelFromWidget, group = widget)
+                         rbs <- lapply(items[-1], gtkRadioButtonNewWithLabelFromWidget, group = widget)
                          sapply(rev(widget$getGroup()), gtkBoxPackStart, object = inner_block)
 
                          ## add handlers
-                         sapply(widget$getGroup(), gSignalConnect, signal="toggled", f=function(self, w, ...) {
+                         lapply(widget$getGroup(), gSignalConnect, signal="toggled", f=function(self, w, ...) {
                            if(w$getActive())
                              self$notify_observers(...)
                          }, data=.self, user.data.first=TRUE)

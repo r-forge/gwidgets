@@ -85,9 +85,12 @@ setMethod(".ggraphics",
               
               da.w <- da$getAllocation()$width
               da.h <- da$getAllocation()$height
-              buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
-                                              dest.x=0, dest.y=0, width=da.w, height=da.h)
-              w$setData("buf", buf)
+
+              ## assign("da", da, envir=.GlobalEnv)
+              ## buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
+              ##                                 dest.x=0, dest.y=0, width=da.w, height=da.h)
+              
+              ## w$setData("buf", buf)
               env <- w$getData("env")
               env$x0 <- env$x <- e$x
               env$y0 <- env$y <- e$y
@@ -300,7 +303,7 @@ setMethod(".addhandlerclicked",
               h$x <- grconvertX(x, from="ndc", to="user")
               h$y <- grconvertY(y, from="ndc", to="user")
               
-              handler(h,...)
+              handler(h, w, e, ...)
               return(FALSE)
             }
             
@@ -382,9 +385,9 @@ daDrawRectangle <- function(da,  x0, x, y0, y) {
 daClearRectangle <- function(da) {
 
   last <- da$getData("lastRect")
-  if(!is.null(last))
+  if(!is.null(last)) 
     da$window$invalidateRect(last, FALSE)
-
+  
   gdkWindowProcessAllUpdates()
   while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
 }
