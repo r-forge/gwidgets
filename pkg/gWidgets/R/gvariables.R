@@ -231,7 +231,7 @@ setReplaceMethod(".svalue",
                  signature(toolkit="ANY",obj="gBivariateANY"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    value = rep(value,2)[1:2]
-                   .tmp = sapply(1:2, function(i) svalue(obj@widgets[[i]]) <- value[i])
+                   lapply(1:2, function(i) svalue(obj@widgets[[i]]) <- value[i])
                    return(obj)
                  })
 
@@ -411,8 +411,7 @@ setReplaceMethod(".svalue",
                  signature(toolkit="ANY",obj="gModelANY"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    if(is.list(value)) unlist(value)
-                   .tmp = sapply(1:4, function(i) svalue(obj@widjets[[i]]) <- value[i])
-                   
+                   lapply(1:4, function(i) svalue(obj@widjets[[i]]) <- value[i])
                    return(obj)
                  })
 

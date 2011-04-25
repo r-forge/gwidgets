@@ -1,3 +1,5 @@
+* argument to gbutton for icon_only (like compound in tcltk text, icon, both...)
+* editable<- method (used in gedit), where else?
 * STARTED. Wish list: roxygen docs on methods; add classes
 * editable<- method? (Really want for gdf, but could use with
   gcombobox, glabel, gtext, ...
