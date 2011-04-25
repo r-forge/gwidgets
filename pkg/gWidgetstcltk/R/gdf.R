@@ -349,7 +349,7 @@ setReplaceMethod(".dimnames",
                    names(x) <- cnames
 
                    ## set row names
-                   sapply(1:d[1], function(i) tA[[i,0]] <- as.tclObj(rnames[i], drop = TRUE))
+                   lapply(1:d[1], function(i) tA[[i,0]] <- as.tclObj(rnames[i], drop = TRUE))
                           
                    return(x)
                  })
@@ -370,7 +370,7 @@ setReplaceMethod(".names",
                    tA <- tag(x, "tA")
                    
                    ## set row names
-                   sapply(1:d[1], function(j) tA[[0, j]] <- as.tclObj(value[j], drop = TRUE))
+                   lapply(1:d[1], function(j) tA[[0, j]] <- as.tclObj(value[j], drop = TRUE))
 
                    return(x)
                  })
@@ -608,10 +608,10 @@ toCharacterMatrix <- function(x, rNames, cNames) {
 ## modifies ta in place -- passed through environment
 fillTclArrayFromCharMat <- function(ta, cm) {
   ## cm[,1] contains column names, while cm[1,] has rownames
-  sapply(2:ncol(cm), function(j)
+  lapply(2:ncol(cm), function(j)
          ta[[0, j - 1]] <- as.tclObj(cm[1, j], drop = TRUE))
   for(j in 1:ncol(cm)) 
-    sapply(2:nrow(cm), function(i) 
+    lapply(2:nrow(cm), function(i) 
       ta[[i - 1, j - 1]] <- as.tclObj(cm[i, j], drop = TRUE))
 }
 

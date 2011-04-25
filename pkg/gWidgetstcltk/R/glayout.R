@@ -130,8 +130,8 @@ setReplaceMethod(".leftBracket",
                    )
 
             weight <- ifelse(tag(x, "homogeneous"), 1, 0)
-            sapply( (min(i):max(i)), function(row) tkgrid.rowconfigure(getBlock(value), row-1, weight=weight))
-            sapply( (min(j):max(j)), function(col) tkgrid.columnconfigure(getBlock(value), col-1, weight=weight))
+            lapply( (min(i):max(i)), function(row) tkgrid.rowconfigure(getBlock(value), row-1, weight=weight))
+            lapply( (min(j):max(j)), function(col) tkgrid.columnconfigure(getBlock(value), col-1, weight=weight))
 
 
             

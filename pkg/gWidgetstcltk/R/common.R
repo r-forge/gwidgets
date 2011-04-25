@@ -465,7 +465,7 @@ loadGWidgetIcons <- function() {
   x <- list.files(dir, pattern="gif$", full.names=TRUE)
   nms <- basename(x)
   nms <- gsub("\\.gif$","",nms)
-  sapply(1:length(x), function(i) {
+  lapply(1:length(x), function(i) {
     iconName <- paste("::stockicon::",nms[i], sep="")
     out <- try(tcl("image","create","photo",
         iconName,

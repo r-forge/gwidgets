@@ -17,7 +17,7 @@ runHandlers <- function(obj, signal, h, ...) {
   if(enabled) {
     l <- tag(obj, "..handlers")
     signalList <- l[[signal]]
-    sapply(signalList, function(i) {
+    lapply(signalList, function(i) {
       if(!i$blocked) {
         i$handler(h, ...)
       }
@@ -212,7 +212,7 @@ setMethod(".addhandleridle",
 
   if(is.null(ID)) {
     ## do all IDS
-    sapply(names(l), function(signal) {
+    lapply(names(l), function(signal) {
       sigList <- l[[signal]]
       if(length(sigList)) {
         for(i in sigList)
@@ -222,7 +222,7 @@ setMethod(".addhandleridle",
     return()
   } else if(is.null(ID$id) && !is.null(ID[[1]]$obj)) {
     ## might be a list of IDs (gradio, gcheckboxgroup), we check here
-    sapply(ID, function(i) {
+    lapply(ID, function(i) {
       .blockUnblock(i$obj, i$id, block)
     })
     return()
@@ -291,7 +291,7 @@ setMethod(".removehandler",
             if(is.null(ID)) {
               ## remove all handlers. Get id, signal then call this recursively
               l <- tag(obj, "..handlers")
-              sapply(names(l), function(signal) {
+              lapply(names(l), function(signal) {
                 sigList <- l[[signal]]
                 if(length(sigList)) {
                   for(i in sigList)
@@ -300,7 +300,7 @@ setMethod(".removehandler",
               })
             } else if(is.null(ID$id) && !is.null(ID[[1]]$obj)) {
               ## might be a list of IDs (gradio, gcheckboxgroup), we check here
-              sapply(ID, function(i) {
+              lapply(ID, function(i) {
                 removehandler(i$obj, ID=i)
               })
               return()

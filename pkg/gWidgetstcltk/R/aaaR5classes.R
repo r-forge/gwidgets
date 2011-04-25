@@ -58,7 +58,7 @@ setRefClass("TcltkWidget",
                 if(block_all_handlers || !is_enabled())
                   return()
 
-                sapply(handlers[[h$signal]], function(i) {
+                lapply(handlers[[h$signal]], function(i) {
                   if(!i$id %in% blocked_handlers) {
                     FUN <- i$handler
                     e <- environment(FUN)
@@ -585,9 +585,9 @@ setRefClass("TcltkWidgetWithItems",
               remove_handler=function(id) {
                 ##' @return NULL
                 if(missing(id)) {
-                  sapply(button_items, function(i) i$remove_handler())
+                  lapply(button_items, function(i) i$remove_handler())
                 } else {
-                  sapply(id, function(i) {
+                  lapply(id, function(i) {
                     (i$widget)$remove_handler(i$id)
                   })
                 }
@@ -596,9 +596,9 @@ setRefClass("TcltkWidgetWithItems",
               block_handler=function(id) {
                 ##' @return NULL
                 if(missing(id)) {
-                  sapply(button_items, function(i) i$block_handler())
+                  lapply(button_items, function(i) i$block_handler())
                 } else {
-                  sapply(id, function(i) {
+                  lapply(id, function(i) {
                     (i$widget)$block_handler(i$id)
                   })
                 }
@@ -607,9 +607,9 @@ setRefClass("TcltkWidgetWithItems",
               unblock_handler=function(id) {
                 ##' @return NULL
                 if(missing(id)) {
-                  sapply(button_items, function(i) i$unblock_handler())
+                  lapply(button_items, function(i) i$unblock_handler())
                 } else {
-                  sapply(id, function(i) {
+                  lapply(id, function(i) {
                     (i$widget)$unblock_handler(i$id)
                   })
                 }
@@ -618,7 +618,7 @@ setRefClass("TcltkWidgetWithItems",
               transfer_handlers=function() {
                 ##' @return NULL
                 "Copy handlers onto child items"
-                sapply(button_items, function(i) {
+                lapply(button_items, function(i) {
                   i$handlers <- handlers
                   i$handler_args <- handler_args
                   for(signal in names(handlers)) # signal
@@ -660,7 +660,7 @@ setRefClass("TcltkWidgetWithItems",
                 }
                 ## clear any children
                 tclServiceMode(FALSE)
-                sapply(as.character(tkwinfo("children", widget)), function(window_id) {
+                lapply(as.character(tkwinfo("children", widget)), function(window_id) {
                   tkpack.forget(window_id)
                 })
 
@@ -677,7 +677,7 @@ setRefClass("TcltkWidgetWithItems",
               ##
               set_enabled=function(value) {
                 callSuper(value)
-                sapply(button_items, function(i) i$set_enabled(value))
+                lapply(button_items, function(i) i$set_enabled(value))
                 invisible()
               }
                      
@@ -871,7 +871,7 @@ setRefClass("CheckButtonGroup",
                 which(sapply(button_items, function(i) i$get_value()))
               },
               set_index=function(ind) {
-                sapply(seq_len(no_items()), function(i) {
+                lapply(seq_len(no_items()), function(i) {
                   if(i %in% ind)
                     ## invoke calls command **and** changes state so we set_value after
                     tcl(button_items[[i]]$get_widget(), "invoke")

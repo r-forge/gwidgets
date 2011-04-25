@@ -141,7 +141,7 @@ setMethod(".gtree",
               children <- unlist(strsplit(tclvalue(tcl(tr,"children",sel))," "))
               if(length(children) == 0)
                 return()
-              sapply(children, function(i) tcl(tr,"delete",i))
+              lapply(children, function(i) tcl(tr,"delete",i))
               ## add in children
               path <- .treeGetPath(tr)
 
@@ -198,7 +198,7 @@ setMethod(".gtree",
     ## column headings
     tcl(tr,"heading","#0", text="")
 
-    sapply(2:n, function(j) {
+    lapply(2:n, function(j) {
       width <- max(nchar(c(nms[j],os[,j,drop=TRUE]))) * 8 + 15
       tcl(tr,"column",j-2, "-width",width)
       tcl(tr,"heading",j - 2,text=nms[j])
@@ -209,7 +209,7 @@ setMethod(".gtree",
 #    tcl(tr,"column",0,"-width",0)
   }
   
-  sapply(1:m, function(i) {
+  lapply(1:m, function(i) {
     if(n > 1) {
       values <- os[i,2:n,drop=TRUE]
     } else {
@@ -346,7 +346,7 @@ setMethod(".update",
             ## delete what is there
             children <- unlist(strsplit(tclvalue(tcl(tr,"children",""))," "))
             if(length(children) > 0)
-              sapply(children, function(i) tcl(tr,"delete",i))
+              lapply(children, function(i) tcl(tr,"delete",i))
 
             ## add children
             .treeAddOffspring(tr, parent="", os, whichHaveOffspring,
@@ -419,8 +419,8 @@ setReplaceMethod(".svalue",
 
                    tr <- getWidget(obj)
                    selected <- as.character(tcl(tr, "selection"))
-                   sapply(selected, function(sel) tcl(tr, "selection", "toggle", sel))
-                   sapply(value, function(path) {
+                   lapply(selected, function(sel) tcl(tr, "selection", "toggle", sel))
+                   lapply(value, function(path) {
                      parent <- ""
                      for(i in path) {
                        parent <- as.character(tcl(tr, "children", parent))[i]

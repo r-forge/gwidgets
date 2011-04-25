@@ -9,7 +9,7 @@
   
   oldClasses =c("tkwin")
   setClass("tcltkObject")
-  sapply(oldClasses, function(i) {
+  lapply(oldClasses, function(i) {
     setOldClass(i)
     setIs(i,"tcltkObject")
   })

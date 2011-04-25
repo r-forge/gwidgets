@@ -22,7 +22,7 @@ setClass("guiWidgetsToolkittcltk",
 require(tcltk)
 oldClasses =c("tkwin", "tclVar", "tclObj")
 setClass("tcltkObject")
-sapply(oldClasses, function(i) {
+lapply(oldClasses, function(i) {
   setOldClass(i)
   setIs(i,"tcltkObject")
 })
@@ -347,7 +347,7 @@ setReplaceMethod(".enabled",
                    childComponents <- obj@e$childComponents
                    
                    if(!is.null(childComponents))
-                     sapply(childComponents,function(i) enabled(i) <- value)
+                     lapply(childComponents,function(i) enabled(i) <- value)
                             
                    return(obj)
                  })

@@ -101,12 +101,12 @@ makeCalendar <- function(widget, year, month) {
   makeMonth <- function(w, year, month) {
     ## add headers
     days <- c("S","M","T","W","Th","F","S")
-    sapply(1:7, function(i) {
+    lapply(1:7, function(i) {
       l <- ttklabel(w, text=days[i])           # color
       tkgrid(l, row=0, column=i-1, sticky="")
     })
     ## add days
-    sapply(1:days.in.month(year, month),  function(day) {
+    lapply(1:days.in.month(year, month),  function(day) {
       l <- ttklabel(w, text=day)
 
       ## bind to each day

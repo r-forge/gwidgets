@@ -110,7 +110,7 @@ setReplaceMethod(".enabled",
                  function(obj, toolkit, ..., value) {
 
                    ## change both widget and label
-                   sapply(list(tag(obj,"check"), tag(obj,"label")), function(i) {
+                   lapply(list(tag(obj,"check"), tag(obj,"label")), function(i) {
                    if(as.logical(value))
                      tcl(i,"state","!disabled")
                    else

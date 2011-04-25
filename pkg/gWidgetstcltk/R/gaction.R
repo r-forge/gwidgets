@@ -59,17 +59,17 @@ setReplaceMethod(".enabled",
                    e$state <- as.logical(value)
                    
                    if(length(e$buttons) > 0)
-                     sapply(e$buttons, function(i) enabled(i) <- as.logical(value))
+                     lapply(e$buttons, function(i) enabled(i) <- as.logical(value))
 
                    if(length(e$toolbaritems) > 0)
-                     sapply(e$toolbaritems, function(i) {
+                     lapply(e$toolbaritems, function(i) {
                      if(as.logical(value))
                        tkconfigure(i,state="normal")
                      else
                        tkconfigure(i, state = "disabled")
                    })
                    if(length(e$menuitems) > 0)
-                     sapply(e$menuitems, function(i) {
+                     lapply(e$menuitems, function(i) {
                        if(as.logical(value))
                          tcl(i,"entryconfigure",e$label,state="normal")
                        else
@@ -91,14 +91,14 @@ setReplaceMethod(".svalue",
                  function(obj, toolkit, index=NULL, ..., value) {
                    e <- obj@e
                    if(length(e$buttons) > 0)
-                     sapply(e$buttons, function(i) svalue(i) <- as.character(value))
+                     lapply(e$buttons, function(i) svalue(i) <- as.character(value))
 
                    if(length(e$toolbaritems) > 0)
-                     sapply(e$toolbaritems, function(i) {
+                     lapply(e$toolbaritems, function(i) {
                        tkconfigure(i, text=value)
                      })
                    if(length(e$menuitems) > 0)
-                     sapply(e$menuitems, function(i) {
+                     lapply(e$menuitems, function(i) {
                        tcl(i,"entryconfigure",e$label,label=value)
                      })
                    return(obj)

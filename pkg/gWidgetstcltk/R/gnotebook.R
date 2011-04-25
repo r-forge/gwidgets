@@ -287,7 +287,7 @@ setReplaceMethod(".names",
                    if(length(value) != n)
                      stop(gettext("New names for notebook must have proper length"))
                    
-                   sapply(1:n, function(i) {
+                   lapply(1:n, function(i) {
                      tcl(nb,"tab",i-1, text=value[i])
                    })
 

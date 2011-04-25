@@ -117,7 +117,7 @@ toCharacter <- getWithDefault(options("gw_toCharacter"), .toCharacter)
 
   if(m > 0) {
     ## add in values
-    sapply(1:m, function(i) {
+    lapply(1:m, function(i) {
       values <- as.character(unlist(items[i,]))
       if(n == 1)
         values <- paste("{",values,"}", sep="")  ## needed for single column. o/w splits on , and +
@@ -454,7 +454,7 @@ setReplaceMethod(".leftBracket",
               ## add one at a time, don't redo icon
               ## might be able to speed up (value=unlist(citems[ind])
               ## This doesn't redo icons!
-              sapply(1:length(j), function(k) {
+              lapply(1:length(j), function(k) {
                 vals <- citems[ind,j[k],drop=FALSE]
                 tcl(widget,"set",allChildren[ind], j[k], unlist(vals))
               })
@@ -517,7 +517,7 @@ setReplaceMethod(".names",
                      cat(gettext("names<- must match length\n"))
                      return(x)
                    }
-                   sapply(1:n,function(j) tcl(widget,"heading",j,"text"=value[j]))
+                   lapply(1:n,function(j) tcl(widget,"heading",j,"text"=value[j]))
                    return(x)
                  })
 
@@ -534,7 +534,7 @@ setReplaceMethod(".size",
                      ## do column widths
                      widths <- value$columnWidths
                      widths <- rep(widths, length.out=dim(obj)[2])
-                     sapply(seq_along(widths[-length(widths)]), function(j) {
+                     lapply(seq_along(widths[-length(widths)]), function(j) {
                        tcl(getWidget(obj), "column", j,  width=widths[j], stretch=TRUE) # -1?
                      })
                    }

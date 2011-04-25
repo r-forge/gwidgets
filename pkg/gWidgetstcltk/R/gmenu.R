@@ -234,7 +234,7 @@ makeSubMenu = function(lst, label, parentMenu) {
   subMenu = tkmenu(parentMenu, tearoff = FALSE)
   tkadd(parentMenu,"cascade",label=label, menu = subMenu)
 
-  sapply(names(lst),function(i) {
+  lapply(names(lst),function(i) {
     
     tmp <- lst[[i]]
     label <- i
@@ -293,11 +293,11 @@ mapListToMenuBar = function(menulist, topMenu) {
   ## determine if a top-level menu
 #  if(is.null(menulist[[1]]$handler)) {
     if(!.isLeaf(menulist[[1]])) {
-    sapply(names(menulist), function(i) 
+    lapply(names(menulist), function(i) 
            makeSubMenu(menulist[[i]],label=i,topMenu))
   } else {
     ## toplevel
-    sapply(names(menulist), function(i) {
+    lapply(names(menulist), function(i) {
       label <- if(!is.null(menulist$label)) menulist$label else i
       tkadd(topMenu,"command",label=label,
             command = function() {
