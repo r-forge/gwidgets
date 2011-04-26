@@ -1,0 +1,4 @@
+2011-04-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ext-base.R: implented block/unblock/remove of handlers
+

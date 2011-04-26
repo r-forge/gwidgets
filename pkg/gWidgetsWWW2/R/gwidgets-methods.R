@@ -1,0 +1,554 @@
+##      Copyright (C) 2011  John Verzani
+##  
+##      This program is free software: you can redistribute it and/or modify
+##      it under the terms of the GNU General Public License as published by
+##      the Free Software Foundation, either version 3 of the License, or
+##      (at your option) any later version.
+##  
+##      This program is distributed in the hope that it will be useful,
+##      but WITHOUT ANY WARRANTY; without even the implied warranty of
+##      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##      GNU General Public License for more details.
+##  
+##      You should have received a copy of the GNU General Public License
+##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## Methods for gWidgets objects
+
+##' @include ext-widget.R
+NA
+##' @include ext-container.R
+NA
+
+##################################################
+## Component Methods
+
+##' Is widget enabled, sensitive to user input
+##'
+##' @param x the widget
+##' @export
+"enabled" <- function(x) UseMethod("enabled")
+
+##' enabled method
+##' @param x the widget
+##' @method enabled ExtObject
+##' @S3method enabled ExtObject
+##' @nord
+enabled.ExtObject <- function(x) x$enabled()
+
+##' Set if widget is enabled
+##'
+##' @param x widget
+##' @param value logical
+##' @usage enabled(x) <- value
+##' @export "enabled<-"
+##' @rdname enabled_assign
+"enabled<-" <- function(x, value) UseMethod("enabled<-")
+
+##' assignment method for enabled
+##' @param x widget
+##' @param value logical
+##' @method "enabled<-" ExtObject
+##' @S3method "enabled<-" ExtObject
+##' @nord
+"enabled<-.ExtObject" <- function(x, value) {
+  x$set_enabled(value)
+  x
+}
+
+
+##' Set font properties, if implemented
+##'
+##' @param x widget
+##' @param value font specification, a named list, eg. list(size=10, color="red")
+##' @usage font(x) <- value
+##' @export "font<-"
+##' @rdname font_assign
+"font<-" <- function(x, value) UseMethod("font<-")
+
+##' assignment method for font
+##' @param x widget
+##' @param value font specification, a named list, eg. list(size=10, color="red")
+##' @method "font<-" ExtObject
+##' @S3method "font<-" ExtObject
+##' @nord
+"font<-.ExtObject" <- function(x, value) {
+  x$set_font(value)
+  x
+}
+
+
+##' Set size property, if implemented
+##'
+##' @param x widget
+##' @param ... passed on 
+##' @param value size specification, for most widgets a pair c(width, height), but can have exceptions
+##' @usage size(x, ...) <- value
+##' @export "size<-"
+##' @rdname size_assign
+"size<-" <- function(x, ..., value) UseMethod("size<-")
+
+##' assignment method for size
+##' @param x widget
+##' @param ... passed on 
+##' @param value size specification, for most widgets a pair c(width, height), but can have exceptions
+##' @method "size<-" ExtObject
+##' @S3method "size<-" ExtObject
+##' @nord
+"size<-.ExtObject" <- function(x, ..., value) {
+  x$set_size(value, ...)
+  x
+}
+
+
+##' Retreive a persistent attribute for an object
+##'
+##' @param x the object
+##' @param key key holding attribute
+##' @export
+tag <- function(x, key) UseMethod("tag")
+
+##' method for tag
+##' @param x the object
+##' @param key key holding attribute
+##' @method tag ExtObject
+##' @S3method tag ExtObject
+##' @nord
+tag.ExtObject <- function(x, key) x$get_attr(key)
+
+##' Set a persistent attirbute for an object
+##'
+##' @param x object
+##' @param key key to store the value
+##' @param value attribute value
+##' @usage tag(x, key) <- value
+##' @export "tag<-"
+##' @rdname tag_assign
+"tag<-" <- function(x, key, value) UseMethod("tag<-")
+
+##' assignment method for tag
+##' @param x object
+##' @param key key to store the value
+##' @param value attribute value
+##' @method "tag<-" ExtObject
+##' @S3method "tag<-" ExtObject
+##' @nord
+"tag<-.ExtObject" <- function(x, key, value) x$set_attr(key, value)
+
+
+##' Primarily used to set if widget is shown, but also has other meanings
+##'
+##' @param x object Calls objects \code{set_visible} method
+##' @param value logical
+##' @usage visible(x) <- value
+##' @export "visible<-"
+##' @rdname visible_assign
+"visible<-" <- function(x, value) UseMethod("visible<-")
+
+##' assignment method for visible
+##' @param x object Calls object's \code{set_visible} method
+##' @param value logical
+##' @method "visible<-" ExtObject
+##' @S3method "visible<-" ExtObject
+##' @nord
+"visible<-.ExtObject" <- function(x,  value) {
+  x$set_visible(value)
+  x
+}
+
+
+##' Return main value associated with a widget
+##'
+##' @param x the widget
+##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
+##' @export
+"svalue" <- function(x, ...) UseMethod("svalue")
+
+##' svalue method
+##' @param x the widget
+##' @param ... passed to \code{get_value} method. May include arguments \code{index} or \code{drop}
+##' @method svalue ExtObject
+##' @S3method svalue ExtObject
+##' @nord
+"svalue.ExtObject" <- function(x, ...) {
+  x$get_value(...)
+}
+
+##' Set main value associated with a widget
+##'
+##' @param x object
+##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
+##' @param value value to set
+##' @usage svalue(x, ...) <- value
+##' @export "svalue<-"
+##' @rdname svalue_assign
+"svalue<-" <- function(x, ..., value) UseMethod("svalue<-")
+
+##' assignment method for svalue
+##' @param x object
+##' @param ... passed to \code{set_value} method. May include arguments for \code{index}
+##' @param value value to set
+##' @method "svalue<-" ExtObject
+##' @S3method "svalue<-" ExtObject
+##' @nord
+"svalue<-.ExtObject" <- function(x, ..., value) {
+  x$set_value(value, ...)
+  x
+}
+
+
+##' Toggle editability of the object, if supported
+##'
+##' @param x object. Calls objects \code{set_editable} method
+##' @param ... passed to \code{set_editable} method
+##' @param value logical
+##' @export "editable<-"
+##' @usage editable(x, ...) <- value
+##' @rdname editable_assign
+"editable<-" <- function(x, ..., value) UseMethod("editable<-")
+
+##' assignment method for tag
+##' @param x object. Calls objects \code{set_editable} method
+##' @param ... passed to \code{set_editable} method
+##' @param value logical
+##' @method "editable<-" ExtObject
+##' @S3method "editable<-" ExtObject
+##' @nord
+"editable<-.ExtObject" <- function(x,  ..., value) {
+  x$set_editable(value, ...)
+  x
+}
+
+## S3 generics that see use
+
+##' Method for [
+##' @param x object
+##' @param i row index
+##' @param j column index
+##' @param ... passed to \code{get_items}
+##' @param drop passed to \code{get_items}
+##' @method "[" ExtObject
+##' @S3method "[" ExtObject
+##' @nord
+"[.ExtObject" <- function(x, i, j, ..., drop=TRUE) {
+  x$get_items(i, j, ...)
+}
+
+##' assignment method for "["
+##' @param x objecct
+##' @param i row
+##' @param j column
+##' @param ... passed to \code{set_items}
+##' @param value passed to \code{set_items}
+##' @method "[<-" ExtObject
+##' @S3method "[<-" ExtObject
+##' @nord
+"[<-.ExtObject" <- function(x, i, j, ..., value) {
+  if(missing(i) && missing(j))
+    x$set_items(value, ...)
+  else if(missing(j))
+    x$set_items(value, i, ,...)
+  else if(missing(i))
+    x$set_items(value, , j, ...)
+  else
+    x$set_items(value, i, j, ...)
+  x
+}
+
+##' method for names
+##' @param x object 
+##' @method "names" ExtObject
+##' @S3method "names" ExtObject
+##' @nord
+names.ExtObject <- function(x) x$get_names()
+
+##' assignment method for names
+##' @param x object
+##' @param value new names
+##' @method "names<-" ExtObject
+##' @S3method "names<-" ExtObject
+##' @aliases namesExtObject
+##' @nord
+"names<-.ExtObject" <- function(x, value) {
+  x$set_names(value)
+  x
+}
+
+##' length method for ExtObject's
+##'
+##' This definition has some sideeffects. Namely, if one uses \code{sapply} and
+##' returns such objects, then the call to \code{simplify2array} will cause an error.
+##' Use \code{lapply}, or \code{simplify=FALSE}.
+##' @param x object
+##' @param ... passed along to \code{len} method
+##' @usage length(x, ...)
+##' @aliases length.ExtObject
+##' @method length ExtObject
+##' @S3method length ExtObject
+length.ExtObject <- function(x, ...) x$len(...)
+
+##' method for update
+##' @param object object
+##' @param ... passed along
+##' @method update ExtObject
+##' @S3method update ExtObject
+update.ExtObject <- function(object, ...) object$update(...)
+
+
+##' Insert text into \code{gtext}
+##'
+##' Used to insert text into \code{gtext} insances
+##' @param obj object
+##' @param value text value
+##' @param where where to insert \code{c("end", "beginning", "at.cursor")}
+##' @param font.attr ignored. Font attribute for new text
+##' @param do.newline Do we add a new line?
+##' @param ... ignored
+##' @return no useful return value
+##' @export
+insert <- function (obj, value, where = "end", 
+                    font.attr = NULL, do.newline = TRUE, ...)  UseMethod("insert")
+
+##' method for insert
+##' @param obj object
+##' @param value value to insert
+##' @param where to insert
+##' @param font.attr ignored
+##' @param do.newline logical
+##' @param ... ignored 
+##' @method insert ExtObject
+##' @S3method insert ExtObject
+insert.ExtObject <- function (obj, value, where = "end", 
+                              font.attr = NULL, do.newline = TRUE, ...)  {
+  obj$insert(value, where=match.arg(where,c("end", "beginning", "at.cursor")), do.newline=do.newline)
+}
+
+##################################################
+## container methods
+
+##' Add child component to parent container
+##'
+##' Usually called internally by specifying \code{container=parent} to the constructor.
+##' @param x object
+##' @param child child object
+##' @param ... Not implemented. For values like \code{expand}, \code{fill} and \code{anchor}
+##' @return nothing
+##' @export
+add <- function(x, child, ...) UseMethod("add")
+
+##' method for add
+##' @param x object
+##' @param child child object
+##' @param ... Not implemented. For values like \code{expand}, \code{fill} and \code{anchor}
+##' S3 method for add and ExtObject
+##' @method add ExtObject
+##' @S3method add ExtObject
+add.ExtObject <- function(x, child, ...) x$add(child, ...)
+
+##' Delete child object
+##'
+##' @param x object
+##' @param child child objecct
+##' @param ... ignored
+##' @export
+delete <- function(x, child, ...) UseMethod("delete")
+
+##' delete method
+##' @param x object
+##' @param child object
+##' @param ... ignored
+##' @method delete ExtObject
+##' @S3method delete ExtObject
+delete.ExtObject <- function(x, child, ...) x$delete(child, ...)
+
+
+##' Dispose (delete) object
+##'
+##' @param x object
+##' @param ... ignored
+##' @export
+dispose <- function(x,...) UseMethod("dispose")
+
+##' Method for dispose
+##' @param x object
+##' @param ... ignored
+##' @method dispose ExtObject
+##' @S3method dispose ExtObject
+dispose.ExtObject <- function(x,...) x$dispose(...)
+
+
+##################################################
+## Handler calls
+
+##' Assign handler to default event
+##'
+##' The default event is specified in the definition of the
+##' object. Using this function allows one to have a "generic" name
+##' for adding a handler.
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerChanged <- function(x, ...) x$add_handler_changed(...)
+
+##' Assign handler to click event
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerClicked <- function(x, ...) x$add_handler_clicked(...)
+
+##' Assign handler to double click event
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerDoubleClick <- function(x, ...) x$add_handler_double_click(...)
+
+##' Assign handler to click event for column (gdf, gtable)
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerColumnClicked <- function(x, ...) x$add_handler_column_clicked(...)
+
+##' Assign handler to double click event for column (gdf, gtable)
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerColumnDoubleClick <- function(x, ...) x$add_handler_column_double_click(...)
+
+
+##' Assign handler to mouse motion event
+##'
+##' This handler gets passed back when the mouse moves. This can be really slow!
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerMouseMotion <- function(x, ...) x$add_handler_mouse_motion(...)
+
+
+##' Assign handler to keystroke event
+##'
+##' This handler gets passed back the key that was pressed in the
+##' \code{key} component.
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerKeystroke <- function(x, ...) x$add_handler_keystroke(...)
+
+##' Assign handler to focus in event
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerFocus <- function(x, ...) x$add_handler_focus(...)
+
+##'  Assign handler to blur (lose focus) event
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerBlur <- function(x, ...) x$add_handler_blur(...)
+
+##'  Assign handler to destroy event (such as page being unloaded)
+##'
+##' @param x the object
+##' @param ... Used to pass through \code{handler}, and \code{action}
+##' values. The handler is a function whose first argument is a list
+##' that contains components \code{obj} to return the object and
+##' \code{action}, holding the action value, and possibly others.
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerDestroy <- function(x, ...) x$add_handler_destroy(...)
+
+##' Assign handler to be called repeatedly after some interval
+##'
+##' @param x the object
+##' @param interval interval in ms
+##' @param handler handler to call
+##' @param action optinal value to pass to handler
+##' @return a callback id, used with \code{removeHandler}
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+addHandlerIdle <- function(x, interval=1000, handler, action=NULL)
+  x$add_handler_idle(interval, handler, action)
+
+
+
+##'  Remove handler
+##'
+##' @param x the object handler is called on.
+##' @param cbid the callback id returned by an addHandlerXXX call
+##' @return NULL
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+removeHandler <- function(x, cbid) x$remove_R_callback(cbid)
+
+
+##'  temporariliy block handler by id
+##'
+##' @param x the object handler is called on.
+##' @param cbid the callback id returned by an addHandlerXXX call
+##' @return NULL
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+blockHandler <- function(x, cbid) x$block_R_callback(cbid)
+
+
+
+##'  unblock handler by id
+##'
+##' @param x the object handler is called on.
+##' @param cbid the callback id returned by an addHandlerXXX call
+##' @return NULL
+##' @export
+##' @rdname gWidgetsWWW2-callbacks
+unblockHandler <- function(x, cbid) x$unblock_R_callback(cbid)
+

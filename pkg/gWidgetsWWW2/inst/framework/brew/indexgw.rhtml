@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+
+    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all.css' />
+    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'
+    />
+<!-- <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/examples/ux/css/ux-all.css' /> -->
+<!-- <link rel="shortcut icon" type="image/ico" href="/custom/gWidgetsWWW/images/favicon.ico" />  -->
+
+  <script type='text/javascript' src='/custom/gWidgetsWWW2/javascript/jquery-1.5.2.min.js'></script>
+  <script type='text/javascript'>
+var session_id = "script_global";
+var MyApp = "<%= app_name %>";
+var base_url = "/custom/" + MyApp + "/gwapp/";
+var handler_url = base_url + "runHandler";
+var transport_url = base_url + "runTransport";
+var proxy_url = base_url + "runProxy";
+var html_proxy_url = base_url + "runHtmlProxy";
+var file_url = base_url + "fileUploadProxy";
+var session_url = base_url + "newSessionId";
+
+callRhandler = function(id, value) {
+  data = {id: id, value: Ext.util.JSON.encode(value), session_id: session_id};
+  $.ajax(handler_url, {
+    dataType:'script',
+    data: data,
+    cache:false,
+    type:"GET"
+   })
+};
+
+transportFun = function(id, value) {
+   data = {id: id, param: value, session_id: session_id};
+   $.ajax(transport_url, {
+    dataType:'script',
+    data: data,
+    cache:false,
+    type:"GET"
+  })
+};
+
+$(document).ready(function() {
+
+$("#loading").hide();
+
+Ext.QuickTips.init();
+
+$.ajax(session_url, {
+  dataType: 'json',
+  cache: false,
+  success: function(data) {
+  session_id = data.id;
+  $.ajax(base_url,{
+    dataType:'script',
+    data: {session_id: session_id},
+    cache: false,
+    type: "GET"
+  })
+  }
+});
+
+})
+  </script>
+</head>
+<body>
+  <div id='loading'>
+    <div class='loading-indicator'>
+    <span id='loading-msg'>Loading ExtJS...</span>
+    </div>
+  </div>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext/ext-all.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext/examples/ux/ux-all.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/gw-gtable.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.canvas.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.example.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.imageBox.js"></script>
+  <script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.labelBox.js"></script>
+
+  <%= extra_html_code %>
+
+  <style type="text/css">
+    <%= paste(gWidgetsWWW2:::.make_stock_icons(), collapse="\n") %>
+  </style>
+
+  <%= if(file.exists(brew_template)) brew(brew_template) %>
+
+</body>
