@@ -80,14 +80,8 @@ GImage <- setRefClass("GImage",
                                            height=height
                                            )
                           add_args(arg_list)
-                          if(!missing(ext.args))
-                            add_args(ext.args)
 
-                          container$add_dots(.self, ...)                           
-
-
-                          write_constructor()
-                          container$add(.self, ...)
+                          setup(container, NULL, NULL, ext.args, ...)
 
                           if(!missing(filename))
                             set_value(filename)

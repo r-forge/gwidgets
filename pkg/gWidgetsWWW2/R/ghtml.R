@@ -70,16 +70,12 @@ GHtml <- setRefClass("GHtml",
                          arg_list = list(
                            autoLoad = update_url,
                            width=width,
-                           height=height
+                           height=height,
+                           border=FALSE
                            )
                          add_args(arg_list)
-                         if(!is.null(ext.args))
-                           add_args(ext.args)
-                         
-                         container$add_dots(.self, ...)                           
 
-                         write_constructor()
-                         container$add(.self, ...)
+                         setup(container, NULL, NULL, ext.args, ...)
                          
                        },
                        set_value = function(value, ...) {

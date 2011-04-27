@@ -26,14 +26,19 @@ ExtWidget <- setRefClass("ExtWidget",
                            init = function(...) {
                              "Initialize widget, including writing constructor"
                            },
-                           add_details = function(container, handler, action, ...) {
-                             "Add details about constructor. Call after write constructor"
-                             if(!missing(container))
-                               container$add(.self, ...)
+                           setup = function(container, handler, action=NULL, ext.args=NULL, ...) {
+                             "Set up widget"
+
+                             if(!is.null(ext.args))
+                               args$extend(ext.args)
+
+                             container$add_dots(.self, ...)
+                             write_constructor()
+                             container$add(.self, ...)
 
                              if(length(nchar(transport_signal))) # character(0) or not?
                                write_transport()
-
+                             
                              if(!missing(handler)  & !is.null(handler))
                                add_handler_changed(handler, action)
                            },

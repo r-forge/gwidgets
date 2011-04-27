@@ -135,13 +135,7 @@ GTree <- setRefClass("GTree",
                                           )
                          add_args(arg_list)
 
-                         if(!is.null(ext.args))
-                           add_args(ext.args)
-
-                           container$add_dots(.self, ...)                           
-
-                         write_constructor()
-                         add_details(container, handler, action)
+                         setup(container, handler, action, ext.args, ...)
 
                          ## nodeToPath
                          cmd <- paste("nodeToPath = function(n) {",

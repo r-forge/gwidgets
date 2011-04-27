@@ -73,6 +73,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  out <- toJSON(out)
                                } else if(grepl("runHtmlProxy$", req$path_info())) {
                                  ## run proxy that returns HTML code.
+                                 headers <- list('Content-Type'='text/html')                                 
                                  out <- run_proxy(req) # run_proxy returns HTML here, not JSON
                                } else if(grepl("newSessionId$", req$path_info())) {
                                  ## Create a new session and get the ID. Returns as JSON
@@ -186,7 +187,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
 
                              run_proxy = function(req) {
                                "Call proxy object to return JSON data"
-                               l <- req$POST()
+                               l <- req$GET()
                                if(length(l) == 0)
                                  stop("No info to run proxy")
                                
@@ -201,7 +202,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
 
                              run_upload = function(req) {
                                "Upload file"
-                               assign("tmp", req, .GlobalEnv)
                                l <- req$POST()
                                if(length(l) == 0)
                                  stop("No info to run file upload")

@@ -111,15 +111,9 @@ GFile <- setRefClass("GFile",
                                             ))
                                           )
                 
-
                          add_args(arg_list)
-                         if(!is.null(ext.args))
-                           add_args(ext.args)
 
-                         container$add_dots(.self, ...)                           
-
-                         write_constructor()
-                         container$add(.self, ...)
+                         setup(container, NULL, NULL, ext.args, ...)
 
                          set_value(NA)
                        },

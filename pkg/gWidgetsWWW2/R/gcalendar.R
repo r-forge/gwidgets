@@ -74,15 +74,12 @@ GCalendar <- setRefClass("GCalendar",
                                               )
                              add_args(arg_list)
 
-                             container$add_dots(.self, ...)
-                             write_constructor()
-                             add_details(container, handler, action)
+                             setup(container, handler, action, ext.args, ...)
 
                              if(nchar(text))
                                set_value(text)
-                             .self
-
                              
+                             .self
                            },
                            get_value = function(...) {
                              as.Date(value, date_format)

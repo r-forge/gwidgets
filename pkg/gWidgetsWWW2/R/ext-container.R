@@ -45,7 +45,7 @@ ExtContainer <- setRefClass("ExtContainer",
                               delete = function(child, ...) {
                                 "Remove child from container"
                                 children$remove_by_name(child$get_id())
-                                call_Ext("remove", child$get_id())
+                                call_Ext("remove", String(child$get_id()))
                               },
                               add_dots = function(child, ...) {
                                 "Process add arguments from ... expand, anchor, fill and spacing"

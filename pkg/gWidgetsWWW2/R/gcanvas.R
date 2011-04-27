@@ -143,17 +143,8 @@ GCanvas <- setRefClass("GCanvas",
                                             )
 
                            add_args(arg_list)
-                           
-                           if(!is.null(ext.args))
-                             args$extend(ext.args)
-                           
-                           container$add_dots(.self, ...)                           
 
-                           write_constructor()
-
-
-                           ## no handler, so we add here
-                           container$add(.self, ...)
+                           setup(container, NULL, NULL, ext.args, ...)
 
                            ## write JavaScript to define context
                            cmd <- sprintf("var %s = document.getElementById('%s').getContext('2d');",

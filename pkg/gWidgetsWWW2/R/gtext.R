@@ -80,15 +80,7 @@ GText <- setRefClass("GText",
                                           enableKeyEvents=TRUE)
 
                          add_args(arg_list)
-                         if(!is.null(ext.args))
-                           add_arg(ext.args)
-
-                         container$add_dots(.self, ...)                           
-
-                         write_constructor()
-                         add_details(container, handler, action, ...)
-                         
-                         .self
+                         setup(container, handler, action, ext.args, ...)
                        },
                        insert = function(value, where, do.newline=TRUE) {
                          "Insert new text at ..."

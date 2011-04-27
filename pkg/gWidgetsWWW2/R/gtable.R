@@ -290,14 +290,8 @@ GTable <- setRefClass("GTable",
                             arg_list[['bbar']] = String(cmd)
                           }
                           add_args(arg_list)
-                          
-                          if(!is.null(ext.args))
-                            add_args(ext.args)
-                          
-                           container$add_dots(.self, ...)                           
 
-                          write_constructor()
-                          add_details(container, handler, action)
+                          setup(container, handler, action, ext.args, ...)
 
 
                           ## set up paging

@@ -98,13 +98,7 @@ GSlider <- setRefClass("GSlider",
                            
                            add_args(arg_list)
 
-                           if(!is.null(ext.args))
-                             args$extend(ext.args)
-                           
-                           container$add_dots(.self, ...)                           
-
-                           write_constructor()
-                           add_details(container, handler, action)
+                           setup(container, handler, action, ext.args, ...)
                            
                            .self
 

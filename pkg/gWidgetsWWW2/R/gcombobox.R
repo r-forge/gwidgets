@@ -130,11 +130,8 @@ GCombobox <- setRefClass("GCombobox",
                                               )
                              ##callSuper(arg_list, toplevel=container$toplevel)
                              add_args(arg_list)
-                             
-                             container$add_dots(.self, ...)                           
 
-                             write_constructor()
-                             add_details(container, handler, action)
+                             setup(container, handler, action, ext.args, ...)
                              
                              ## load data
                              .self$store$load_data()

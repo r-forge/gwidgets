@@ -83,8 +83,13 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   call_transport = function(id, param) {
                                     "Run transport"
                                     obj <- objects$get_by_name(id)
-                                    if(!is.list(param))
-                                      param <- list(param)
+                                    if(!is.list(param)) {
+                                      l <- list()
+                                      for(i in names(param))
+                                        l[[i]] <- param[i]
+                                      param <- l
+                                    }
+
                                     do.call(obj$process_transport, param)
                                   },
                                   ## proxy call

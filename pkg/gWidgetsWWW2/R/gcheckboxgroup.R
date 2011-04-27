@@ -106,14 +106,8 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                                             columns=columns, vertical=!horizontal
                                             )
                            add_args(arg_list)
-                           
-                           if(!is.null(ext.args))
-                             args$extend(ext.args)
-                           
-                           container$add_dots(.self, ...)                           
 
-                           write_constructor()
-                           add_details(container, handler, action)
+                           setup(container, handler, action, ext.args, ...)
                            
                            set_value(as.logical(rep(checked, len=length(items))), index=FALSE)
                            .self
@@ -210,12 +204,8 @@ GCheckbox <- setRefClass("GCheckbox",
                                               height = height
                                               )
                              add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             write_constructor()
-                             add_details(container, handler, action)
+
+                             setup(container, handler, action, ext.args, ...)
                              
                              set_value(as.logical(rep(checked, len=length(items))), index=FALSE)
                              .self

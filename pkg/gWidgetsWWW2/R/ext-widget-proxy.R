@@ -212,7 +212,6 @@ ExtArrayProxy <- setRefClass("ExtArrayProxy",
                                },
                                get_json_data=function(...) {
                                  "Return JSON array [[],[],] ..."
-                                 
                                  df <- cbind("id"=seq_len(nrow(value)), value)
                                  ## do we have paging type request? We do if params$start is not null
                                  params <- list(...)
@@ -268,7 +267,6 @@ ExtArrayProxy <- setRefClass("ExtArrayProxy",
                                      items[,i] <- asIcon(sapply(items[,i], getStockIconByName))
                                      colNames[i] <- NA
                                    }
-                                   print(items)
                                    value <<- items # update                                   
                                  }
 

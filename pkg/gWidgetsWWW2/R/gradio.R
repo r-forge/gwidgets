@@ -86,13 +86,7 @@ GRadio <- setRefClass("GRadio",
                            
                            add_args(arg_list)
 
-                           if(!is.null(ext.args))
-                             args$extend(ext.args)
-                           
-                           container$add_dots(.self, ...)                           
-
-                           write_constructor()
-                           add_details(container, handler, action)
+                           setup(container, handler, action, ext.args, ...)
                            
                            set_value(selected, index=TRUE)
                            .self
@@ -107,7 +101,6 @@ GRadio <- setRefClass("GRadio",
                          },
                          set_value = function(value, index=FALSE, ...) {
                            "Set value. Default is by value, not index"
-                           cat("set_value:", index, value)
                            if(index)
                              value <<- value
                            else
