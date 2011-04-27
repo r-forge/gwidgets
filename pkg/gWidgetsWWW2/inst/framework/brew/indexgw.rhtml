@@ -82,7 +82,7 @@ $.ajax(session_url, {
   <%= extra_html_code %>
 
   <style type="text/css">
-    <%= paste(gWidgetsWWW2:::.make_stock_icons(), collapse="\n") %>
+    <%= paste(gWidgetsWWW2:::make_stock_icons(), collapse="\n") %>
   </style>
 
   <%= if(file.exists(brew_template)) brew(brew_template) %>

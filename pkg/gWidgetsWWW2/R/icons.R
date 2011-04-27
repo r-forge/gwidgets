@@ -36,6 +36,7 @@ isIcon <- function(x) is(x,"Icon")
 
 ##' basename without extension
 ##' @param x file to extract basename from
+##' @nord
 .our_basename <- function(x) {
   b <- basename(x)
   if(grepl("\\.", b)) {
@@ -49,6 +50,7 @@ isIcon <- function(x) is(x,"Icon")
 ##' @param f file
 ##' @param url of icon
 ##' @param prefix prefix of icon class name
+##' @nord
 .make_icon_class <- function(f, url=f, prefix="x-gw-icon") {
 ## f is filename, url is url of file
   b <- .our_basename(f)
@@ -59,13 +61,14 @@ isIcon <- function(x) is(x,"Icon")
 }
 
 ##' internal array of stock icons
+##' @nord
 .gWidgets_stock_icons <- Array$new()         # list of stock icons classes and urls
 
 ## populate stock icons array. Return icons for inclusion into style sheet
 ##' make stock icons
 ##'
 ##' @export
-.make_stock_icons <- function() {
+make_stock_icons <- function() {
   fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full=TRUE)
   bs <- basename(fs)
   bs_noexts <- sapply(fs, .our_basename)
@@ -90,7 +93,7 @@ isIcon <- function(x) is(x,"Icon")
 ##' @export
 getStockIcons <- function() {
   if(.gWidgets_stock_icons$len() == 0)
-    gWidgetsWWW2:::.make_stock_icons()
+    gWidgetsWWW2:::make_stock_icons()
   
   .gWidgets_stock_icons$core()
 }

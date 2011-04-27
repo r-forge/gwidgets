@@ -289,6 +289,7 @@ E.g. var param = {value: this.getText()}"
 ## a$toplevel$js_queue$core()
 
 ##' List containing callback argument for ExtJs Events
+##' @nord
 .ext_callback_arguments <- list(afteredit = "e",                 # for gdf cell editing
                                 beforechange="tb, params",       # for paging toolbar
                                 blur="w",                        # w = "this"

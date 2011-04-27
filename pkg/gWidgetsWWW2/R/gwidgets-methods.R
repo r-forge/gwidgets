@@ -281,8 +281,8 @@ names.ExtObject <- function(x) x$get_names()
 ##' Use \code{lapply}, or \code{simplify=FALSE}.
 ##' @param x object
 ##' @param ... passed along to \code{len} method
+##' @return length of object, loosely interpreted
 ##' @usage length(x, ...)
-##' @aliases length.ExtObject
 ##' @method length ExtObject
 ##' @S3method length ExtObject
 length.ExtObject <- function(x, ...) x$len(...)
