@@ -285,6 +285,7 @@ names.ExtObject <- function(x) x$get_names()
 ##' @usage length(x, ...)
 ##' @method length ExtObject
 ##' @S3method length ExtObject
+##' @nord
 length.ExtObject <- function(x, ...) x$len(...)
 
 ##' method for update
@@ -392,7 +393,6 @@ dispose.ExtObject <- function(x,...) x$dispose(...)
 ##' that contains components \code{obj} to return the object and
 ##' \code{action}, holding the action value, and possibly others.
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerChanged <- function(x, ...) x$add_handler_changed(...)
 
 ##' Assign handler to click event
@@ -404,7 +404,6 @@ addHandlerChanged <- function(x, ...) x$add_handler_changed(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerClicked <- function(x, ...) x$add_handler_clicked(...)
 
 ##' Assign handler to double click event
@@ -416,7 +415,6 @@ addHandlerClicked <- function(x, ...) x$add_handler_clicked(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerDoubleClick <- function(x, ...) x$add_handler_double_click(...)
 
 ##' Assign handler to click event for column (gdf, gtable)
@@ -428,7 +426,6 @@ addHandlerDoubleClick <- function(x, ...) x$add_handler_double_click(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerColumnClicked <- function(x, ...) x$add_handler_column_clicked(...)
 
 ##' Assign handler to double click event for column (gdf, gtable)
@@ -440,7 +437,6 @@ addHandlerColumnClicked <- function(x, ...) x$add_handler_column_clicked(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerColumnDoubleClick <- function(x, ...) x$add_handler_column_double_click(...)
 
 
@@ -454,7 +450,6 @@ addHandlerColumnDoubleClick <- function(x, ...) x$add_handler_column_double_clic
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerMouseMotion <- function(x, ...) x$add_handler_mouse_motion(...)
 
 
@@ -469,7 +464,6 @@ addHandlerMouseMotion <- function(x, ...) x$add_handler_mouse_motion(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerKeystroke <- function(x, ...) x$add_handler_keystroke(...)
 
 ##' Assign handler to focus in event
@@ -481,7 +475,6 @@ addHandlerKeystroke <- function(x, ...) x$add_handler_keystroke(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerFocus <- function(x, ...) x$add_handler_focus(...)
 
 ##'  Assign handler to blur (lose focus) event
@@ -493,7 +486,6 @@ addHandlerFocus <- function(x, ...) x$add_handler_focus(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerBlur <- function(x, ...) x$add_handler_blur(...)
 
 ##'  Assign handler to destroy event (such as page being unloaded)
@@ -505,7 +497,6 @@ addHandlerBlur <- function(x, ...) x$add_handler_blur(...)
 ##' \code{action}, holding the action value, and possibly others.
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerDestroy <- function(x, ...) x$add_handler_destroy(...)
 
 ##' Assign handler to be called repeatedly after some interval
@@ -516,7 +507,6 @@ addHandlerDestroy <- function(x, ...) x$add_handler_destroy(...)
 ##' @param action optinal value to pass to handler
 ##' @return a callback id, used with \code{removeHandler}
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 addHandlerIdle <- function(x, interval=1000, handler, action=NULL)
   x$add_handler_idle(interval, handler, action)
 
@@ -528,7 +518,6 @@ addHandlerIdle <- function(x, interval=1000, handler, action=NULL)
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 removeHandler <- function(x, cbid) x$remove_R_callback(cbid)
 
 
@@ -538,7 +527,6 @@ removeHandler <- function(x, cbid) x$remove_R_callback(cbid)
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 blockHandler <- function(x, cbid) x$block_R_callback(cbid)
 
 
@@ -549,6 +537,5 @@ blockHandler <- function(x, cbid) x$block_R_callback(cbid)
 ##' @param cbid the callback id returned by an addHandlerXXX call
 ##' @return NULL
 ##' @export
-##' @rdname gWidgetsWWW2-callbacks
 unblockHandler <- function(x, cbid) x$unblock_R_callback(cbid)
 

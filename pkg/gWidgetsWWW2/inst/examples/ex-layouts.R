@@ -18,7 +18,7 @@ b1 <- gbutton("button 2", cont=f)
 
 ## frame
 f1 <- gframe("gframe container with title",cont=g, horizontal=TRUE, width=width)
-l <- glabel("button 4", cont=f1)
+l <- gbutton("button 4", cont=f1)
 font(l) <- c("font-weight"="bold")
 b1 <- gbutton("button 4", cont=f1)
 

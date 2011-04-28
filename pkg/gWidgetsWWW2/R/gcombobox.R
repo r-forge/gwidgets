@@ -29,7 +29,9 @@ NA
 ##' should be: Or a data frame with 1 column (items), two columns
 ##' (items, icons), or three columns (items, icons, tooltip))
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
-##' @param editable logical. Does combobox allow editing
+##' @param editable logical. Does combobox allow editing. A bug (of
+##' package writer's limiations) in extjs do not allow one to set the
+##' value if it is a potential index. Go figure. Use 4.0, not 5 ...
 ##' @param coerce.with Function. If given, called on value before returning
 ##' @param handler handler
 ##' @param action action
@@ -82,6 +84,7 @@ GCombobox <- setRefClass("GCombobox",
                          contains="ExtWidget",
                          fields=list(
                            store="ExtArrayStore",
+                           editable="logical",
                            coerce.with="ANY"
                            ) ,
                          methods=list(
@@ -94,7 +97,8 @@ GCombobox <- setRefClass("GCombobox",
                                selected <- items[selected]
                              else
                                selected <- NA
-                             
+
+                             editable <<- editable
                              coerce.with <<- coerce.with
                              
                              if(is.null(tpl)) 
@@ -157,7 +161,7 @@ GCombobox <- setRefClass("GCombobox",
                            },
                            set_value = function(val, index=FALSE, ...) {
                              "Set stored value. We store value, not index"
-                             if(index) {
+                             if(index && !editable) {
                                value <<- get_items()[val]
                              } else {
                                value <<- val
