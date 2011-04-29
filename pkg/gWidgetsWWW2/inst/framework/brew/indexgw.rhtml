@@ -4,8 +4,8 @@
     <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
 
     <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/resources/css/ext-all.css' />
-    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'
-    />
+    <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/css/gWidgetsWWW2.css'    />
+    <link rel="stylesheet" type="text/css" href="/custom/gWidgetsWWW2/javascript/ext/resources/css/xtheme-blue.css"/>
 <!-- <link rel='stylesheet' type='text/css' href='/custom/gWidgetsWWW2/javascript/ext/examples/ux/css/ux-all.css' /> -->
 <!-- <link rel="shortcut icon" type="image/ico" href="/custom/gWidgetsWWW/images/favicon.ico" />  -->
 
@@ -82,7 +82,7 @@ $.ajax(session_url, {
   <%= extra_html_code %>
 
   <style type="text/css">
-    <%= paste(gWidgetsWWW2:::make_stock_icons(), collapse="\n") %>
+    <%= paste(make_stock_icons(), collapse="\n") %>
   </style>
 
   <%= if(file.exists(brew_template)) brew(brew_template) %>

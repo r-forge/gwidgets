@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-base.R
+##' @include array.R
 NA
 
 ## Need a toplevel gWidgetsApp to store session, ...
@@ -32,6 +32,7 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                 methods=list(
                                   initialize=function(...) {
                                     rHandlers <<- Array$new()
+                                    blockedHandlers <<- Array$new()
                                     objects <<- Array$new()
                                     js_queue <<- Array$new()
                                     callSuper(...)

@@ -8,6 +8,7 @@
 \details{Use slider to select from a sequence of values, specified as with
 \code{seq}. The sequence steps must be greater than 1}
 \value{an ExtWidget object}
+\note{not sure why, but the icons capping the end of the slider display are off.}
 \arguments{\item{from}{starting point. Unlike other implementations for
 gWidgets, this is not possibly a vector specifying a range of
 values to slide over.}

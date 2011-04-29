@@ -19,9 +19,6 @@ NA
 ##' Base class for Ext widgets
 ExtWidget <- setRefClass("ExtWidget",
                          contains="ExtComponent",
-                         fields = list(
-                           stub="ANY"
-                           ),
                          methods = list(
                            init = function(...) {
                              "Initialize widget, including writing constructor"

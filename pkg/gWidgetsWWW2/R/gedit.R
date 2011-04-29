@@ -80,6 +80,15 @@ GEdit <- setRefClass("GEdit",
                        },
                        transport_fun = function() {
                          "var param = {value: w.getValue()}"
+                       },
+                       get_value = function(...) {
+                         "Get value, possibly after coercion"
+                         if(is.null(coerce.with))
+                           return(value)
+                         ## get function, call on value
+                         if(is.character(coerce.with))
+                           coerce.with <<- get(coerce.with, inherits=TRUE)
+                         coerce.with(value)
                        }
                        ))
                      

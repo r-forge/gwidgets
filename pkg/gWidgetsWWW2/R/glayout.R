@@ -156,6 +156,10 @@ GLayout <- setRefClass("GLayout",
                            "How many rows?"
                            rows <- unlist(widgets$pluck("i"))
                            max(rows, na.rm=TRUE)
+                         },
+                         get_items = function(i,j, ..., drop=TRUE) {
+                           ## find all widgets matching i,j
+                           
                          }
         
 ))

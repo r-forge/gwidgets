@@ -36,6 +36,7 @@ NA
 ##' @param ext.args list. Can pass in other configuration arguments to Ext widget
 ##' @param tpl Template for tooltip. Should have "\code{{0}}" but can have more formatting
 ##' @return an ExtWidget object
+##' @note not sure why, but the icons capping the end of the slider display are off.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
