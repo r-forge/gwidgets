@@ -42,15 +42,13 @@ GWidgetsTopLevel <- setRefClass("GWidgetsTopLevel",
                                   },
                                   ## js_stuff
                                   js_queue_push = function(x) {
-                                    ## push command (string) to queue. No name needed here
+                                    "push command (string) to queue for JavaScript Commands"
                                     js_queue$push(x)
                                   },
-                                  ## return queue, clear
-                                  flush_queue = function() {
-                                    "Clear js_queue"
+                                  js_queue_flush = function() {
+                                    "Flush JavaScript queue"
                                     js_queue$flush()
                                   },
-
                                   ## R handler stuff
                                   add_R_handler = function(obj, handler, ...) {
                                     ## Add R handler, return ID

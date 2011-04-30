@@ -26,10 +26,11 @@ NA
 ##' widget has a toplevel and on the left to specify how the layout
 ##' will occur. Although one can specify i and j as a range of values,
 ##' or even empty one must be careful that no "holes" would be left
-##' over, as otherwise the layout will not work out correctly. The
-##' layout is only finalized after call the \code{visible<-} method
-##' with a value of \code{TRUE}. One adds all the desired children,
-##' then calls this method.
+##' over, as otherwise the layout will not work out correctly.
+##'
+##' The layout is only finalized after call the \code{visible<-}
+##' method with a value of \code{TRUE}. One adds all the desired
+##' children, then calls this method.
 ##' @param homogeneous equal sized columns/rows?
 ##' @param spacing between cell spacing
 ##' @param container parent container
@@ -47,7 +48,7 @@ NA
 ##' tbl[1,2] <- gedit("", cont=tbl) ## tbl needed on right side too
 ##' tbl[2,1, anchor=c(1,0)] <- "Rank"
 ##' tbl[2,2] <- gedit("", cont=tbl)
-##' visible(tbl) <- TRUE
+##' visible(tbl) <- TRUE ## This line is needed!
 glayout <- function(homogeneous = FALSE, spacing = 2, # 10 is too big here
                     container = NULL, ...,
                     width=NULL, height=NULL, ext.args=NULL
@@ -157,9 +158,40 @@ GLayout <- setRefClass("GLayout",
                            rows <- unlist(widgets$pluck("i"))
                            max(rows, na.rm=TRUE)
                          },
+                         .get_widget = function(i, j) {
+                           "Return widget (or NULL) occupying cell i,j"
+                           ## could cache this (memoize) but here we go...
+                           in.range <- function(x, r) x >= min(r) && x <= max(r)
+                           index <- widgets$each(function(ind, key, value) {
+                             if(is.na(value$i) || is.na(value$j))
+                               return(FALSE)
+                             in.range(i, value$i) & in.range(j, value$j)
+                           })
+                           if(any(index))
+                             return(widgets$get_item(which(index)))
+                           else
+                             return(NULL)
+                         },
                          get_items = function(i,j, ..., drop=TRUE) {
-                           ## find all widgets matching i,j
-                           
+                           "Return widgets in indices i,j in a list. If a single one and drop=TRUE, then return the object itself."
+                           ## find all widgets matching i,j return as list
+                           ## assume we have both i, j
+                           if(missing(i))
+                             i <- unlist(widgets$each(function(ind, key, value) value$i))
+                           if(missing(j))
+                             j <- unlist(widgets$each(function(ind, key, value) value$j))
+                           l <- list()
+                           for(row in i) {
+                             for(col in j) {
+                               w <- .get_widget(row, col)
+                               if(!is.null(w))
+                                 l[[length(l) + 1]] <- list(widget=w, row=row, column=col)
+                             }
+                           }
+                           if(drop && length(l) == 1)
+                             return(l[[1]]$widget)
+                           else
+                             return(l)
                          }
-        
+
 ))

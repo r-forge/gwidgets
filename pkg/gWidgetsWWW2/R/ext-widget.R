@@ -18,6 +18,9 @@ NA
 
 ##' Base class for Ext widgets
 ExtWidget <- setRefClass("ExtWidget",
+                         fields=list(
+                           coerce.with="ANY" # function for coercion, if present
+                           ),
                          contains="ExtComponent",
                          methods = list(
                            init = function(...) {
@@ -39,9 +42,18 @@ ExtWidget <- setRefClass("ExtWidget",
                              if(!missing(handler)  & !is.null(handler))
                                add_handler_changed(handler, action)
                            },
+                           coerce_to = function(val, ...) {
+                             "if coerce.with property present, call function on value"
+                             if(is(coerce.with, "uninitializedField") || is.null(coerce.with))
+                               return(val)
+                             ## get function, call on value
+                             if(is.character(coerce.with))
+                               coerce.with <<- get(coerce.with, inherits=TRUE)
+                             coerce.with(val)
+                           },
                            get_value = function(...) {
-                             "get main property for widget"
-                             value
+                             "get main property for widget, possibly after coercion"
+                             coerce_to(value)
                            },
                            set_value = function(value, ...) {
                              "Set main property for widget"

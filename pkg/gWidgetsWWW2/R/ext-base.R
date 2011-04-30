@@ -118,7 +118,7 @@ ExtObject <- setRefClass("ExtObject",
                            },
                            flush_js_queue = function() {
                              "Flush commands in JavaScript queue"
-                             toplevel$js_queue$flush()
+                             toplevel$js_queue_flush()
                            },
 
                            ## method to write out constructor

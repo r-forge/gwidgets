@@ -20,7 +20,7 @@ NA
 ExtWidgetText <- setRefClass("ExtWidgetText",
                              contains="ExtWidget",
                              fields=list(
-                               coerce.with="ANY"
+                               stub = "ANY"
                                ),
                              methods=list(
                                set_value = function(value, ...) {

@@ -1,3 +1,8 @@
+2011-04-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R (in.range): implemented [ method to return widgets
+	in layout
+
 2011-04-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gedit.R (gedit): implement coerce.with

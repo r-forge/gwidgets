@@ -63,8 +63,7 @@ ExtProxy <- setRefClass("ExtProxy",
                           set_value = function(value, ...) {
                             "Set data and call load function"
                             value <<- value
-                            cmd <- "XXX"
-##                            add_js_queue(cmd) ## how to notify observers of change?
+                            ## Call load function goes here ...
                           },
                           set_data=function(value, ...) {
                             "Set proxy data"

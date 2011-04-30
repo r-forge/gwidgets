@@ -141,7 +141,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                    x <- write_error(out)
                                  } else {
                                    cmd <- sprintf("var sessionID='%s';", session_id)
-                                   toplevel$js_queue_push(cmd)
+                                   toplevel$js_queue$push(cmd)
                                    ## returns javascript commands
                                    x <- toplevel$js_queue$flush()
                                  }

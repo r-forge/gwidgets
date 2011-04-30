@@ -54,7 +54,7 @@ gedit <- function (text = "", width = 25, coerce.with = NULL,
 GEdit <- setRefClass("GEdit",
                      contains="ExtWidgetText",
                      fields=list(
-                       coerce.with="ANY"
+                       stub="ANY"
                        ),
                      methods=list(
                        init=function(text = "", width = 25, coerce.with = NULL,
@@ -80,15 +80,6 @@ GEdit <- setRefClass("GEdit",
                        },
                        transport_fun = function() {
                          "var param = {value: w.getValue()}"
-                       },
-                       get_value = function(...) {
-                         "Get value, possibly after coercion"
-                         if(is.null(coerce.with))
-                           return(value)
-                         ## get function, call on value
-                         if(is.character(coerce.with))
-                           coerce.with <<- get(coerce.with, inherits=TRUE)
-                         coerce.with(value)
                        }
                        ))
                      

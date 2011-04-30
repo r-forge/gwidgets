@@ -52,7 +52,7 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
 GSpinbutton <- setRefClass("GSpinbutton", 
                        contains="GSlider",
                        fields=list(
-                         coerce.with="function"
+                         stub="ANY"
                          ),
                        methods=list(
                          init=function(from, to, by, value,  handler, action, container, ...,

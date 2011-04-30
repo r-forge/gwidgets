@@ -3,7 +3,7 @@
 
 w <- gwindow("Add widgets example")
 g <- ggroup(cont = w, horizontal=FALSE)
-ghtml(paste("A simple exmaple of adding a widget dynamically to a GUI.",
+ghtml(paste("A simple example of adding a widget dynamically to a GUI.",
             "When a non-blank value for the combobox is set, a new combobox is added.",
             sep=" "),
       cont=g)

@@ -63,7 +63,7 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
 GSlider <- setRefClass("GSlider", 
                        contains="ExtWidget",
                        fields=list(
-                         coerce.with="function"
+                         stub = "ANY"
                          ),
                        methods=list(
                          init=function(from, to, by, value, horizontal, handler, action, container, ...,
@@ -74,10 +74,7 @@ GSlider <- setRefClass("GSlider",
                            constructor <<- "Ext.Slider"
                            transport_signal <<- "change"
 
-                           if(is.character(coerce.with))
-                             coerce.with <<- get(coerce.with)
-                           else
-                             coerce.with <<- coerce.with
+                           coerce.with <<- coerce.with
 
                            ## template for slider
                            template <- paste("new Ext.slider.Tip({",
@@ -112,7 +109,7 @@ GSlider <- setRefClass("GSlider",
                            "param={value: newValue}"
                          },
                          process_transport = function(value) {
-                           value <<- as.numeric(value)
+                           value <<- value
                          },
                          ##
                          add_handler_changed = function(...) {

@@ -15,8 +15,8 @@ Extends: RSVGTipsDevice, SVGAnnotation
 URL: http://gwidgets.r-forge.r-project.org/
 Depends: R (>= 2.13.0), methods, Rook, brew, RJSONIO, canvas
 Suggests:
-Collate: 'gwidgets-package.R' 'array.R' 'gwidgets-session.R'
-    'gwidgets-toplevel.R' 'utils.R' 'gwidgets-app.R' 'ext-base.R'
+Collate: 'gwidgets-package.R' 'array.R' 'gwidgets-toplevel.R'
+    'gwidgets-session.R' 'utils.R' 'gwidgets-app.R' 'ext-base.R'
     'ext-component.R' 'ext-container.R' 'ext-widget.R'
     'ext-widget-proxy.R' 'ext-widget-text.R' 'gaction.R' 'gbutton.R'
     'gcalendar.R' 'gcanvas.R' 'gcheckboxgroup.R' 'icons.R'

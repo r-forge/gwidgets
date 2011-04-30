@@ -84,8 +84,7 @@ GCombobox <- setRefClass("GCombobox",
                          contains="ExtWidget",
                          fields=list(
                            store="ExtArrayStore",
-                           editable="logical",
-                           coerce.with="ANY"
+                           editable="logical"
                            ) ,
                          methods=list(
                            init=function(items, selected=1, editable=FALSE, coerce.with=NULL,
