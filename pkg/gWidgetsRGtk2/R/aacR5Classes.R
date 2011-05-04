@@ -33,7 +33,7 @@ Observable <- setRefClass("Observable",
                             },
                             block_observer=function(id) {
                               "Block observers. If o missing, block all"
-                              if(missing(id)) {
+                              if(missing(id) || is.null(id)) {
                                 ..blocked <<- TRUE
                               } else {
                                 if(is.null(..blocked_observers[[id$signal]]))
@@ -45,7 +45,7 @@ Observable <- setRefClass("Observable",
                             },
                             unblock_observer=function(id) {
                               "Unblock observer. If id missing, unblock global block"
-                              if(missing(id)) {
+                              if(missing(id) || is.null(id)) {
                                 ..blocked <<- FALSE
                               } else {
                                 signal <- id$signal

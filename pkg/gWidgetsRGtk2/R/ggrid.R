@@ -538,6 +538,9 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
 
+                   view <- tag(obj,"view")
+                   selection <- view$GetSelection()
+
                    ## get indices, then select
                    if((!is.null(index) &&index == TRUE) ||
                       (is.null(index) && is.numeric(value))) {
@@ -563,8 +566,6 @@ setReplaceMethod(".svalue",
 ##                    } else {
 ##                      ind <-  as.character(as.integer(value) - 1L)
 ##                    }
-                   view <- tag(obj,"view")
-                   selection <- view$GetSelection()
 
                    
                    ## block handlers to quiet down change signal
@@ -582,7 +583,10 @@ setReplaceMethod(".svalue",
                      selection$SelectPath(path)
                    })
 
-                   ## move to cell
+                   ## move to cell unless none selected
+                   if(is.null(ind) || length(ind) == 0 || (length(ind) ==1 && is.na(ind))) 
+                     return(obj)
+                   
                    i <- min(ind)
                    path <- gtkTreePathNewFromString(i)
                    view$scrollToCell(path)

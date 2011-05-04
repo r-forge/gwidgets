@@ -1,3 +1,9 @@
+2011-05-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fixed bug with svalue<- method
+
+	* R/aacR5Classes.R: argument checked added to block_ovserver for R5 widgets
+
 2011-04-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aacR5Classes.R: removed sapply with lapply calls. Changes in
