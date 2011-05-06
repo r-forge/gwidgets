@@ -19,7 +19,13 @@ setMethod(".ggraphics",
 
             force(toolkit)
 
-            msg <- "No embeddable\ngraphics device\navailable"
+            msg <- paste("There is no embeddable graphics device available for",
+                         "gWidgetstcltk. However, the device created by the tkrplot",
+                         "package may be embedded into gWidgets by creating a group container",
+                         "with ggroup, and using the result of getToolkitWidget(group_container)",
+                         "as the parent for tkrplot.",
+                         sep="\n")
+
             ## take@widget to get glabel instance after going through gWidgets
             out <- glabel(msg, container=container)@widget
             return(out)

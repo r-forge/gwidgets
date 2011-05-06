@@ -150,7 +150,12 @@ message for the event there is no text in the box.  \cr
 
 \code{ggraphics()} Not implemented. The \pkg{tkrplot} package could be
 used in some way, but this does not provide a fully embeddable
-graphics device.  \cr
+graphics device. The \pkg{tkrplot} package provides a means to create
+interactive graphics with \pkg{tcltk}. This is not a device, so ins't
+directly supported. However, a \code{ggroup} object can be used as a
+parent container. Just call \code{getToolkitWidget} on the object
+first.
+ \cr
 
 \code{ghelp()} Works as advertised. Uses a popup menu instead of a
 notebook, as gWidgetsRGtk2. Best to just use \pkg{helpr} though.  \cr
