@@ -70,7 +70,7 @@ Observable <- setRefClass("Observable",
 ##' Observer class is used to observe an observable
 Observer <- setRefClass("Observer",
                         fields=list(
-                          o = "function",
+                          o = "ANY",    # want "function", but doesn't work with proto objects
                           obj="ANY",
                           action="ANY"
                           ),

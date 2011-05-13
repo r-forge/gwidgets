@@ -1,3 +1,8 @@
+2011-05-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aacR5Classes.R: changed class of function to ANY, not function
+	so that proto objects will work. (Thanks Yvonnick and Gabor)
+
 2011-05-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R: fixed bug with svalue<- method
