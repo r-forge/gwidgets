@@ -1,3 +1,8 @@
+2011-06-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fix to widget when single item with
+	spaces. (Thanks Richie!)
+
 2011-04-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R (onCancel): added event handler for window delete

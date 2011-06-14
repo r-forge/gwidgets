@@ -62,8 +62,12 @@ setMethod(".gdroplist",
             tt <- getWidget(container)
             gp <- ttkframe(tt)
             cbVar <- tclVar()
+            if(length(items) == 1)
+              values <- as.tclObj(as.character(items))
+            else
+              values <- as.character(items)
             cb <- ttkcombobox(gp,
-                              values = as.character(items),
+                              values = values,
                               textvariable = cbVar,
                               state = state)
             if(!is.null(width))
@@ -263,7 +267,10 @@ setReplaceMethod(".leftBracket",
             ind <- svalue(x, index=TRUE)
             
             if(missing(i)) {
-              tcl(widget,"configure",values=value)
+              if(length(value) == 1)
+                 tcl(widget,"configure",values=as.tclObj(value))
+              else
+                tcl(widget,"configure",values=value)
               tag(x,"items") <- value
               if(ind > 0)
                 svalue(x, index=TRUE) <- ind
