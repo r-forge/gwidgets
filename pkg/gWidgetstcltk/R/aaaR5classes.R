@@ -709,7 +709,8 @@ setRefClass("RadioButton",
               set_index = function(i) {
                 "Set selected value by index"
                 i <- as.integer(i)
-                if(i < 1 || i > length(tmp <- get_items()))
+                tmp <- get_items()
+                if(i < 1 || i > length(tmp))
                   i <- 1                # default
                 set_value(tmp[i])
               },
