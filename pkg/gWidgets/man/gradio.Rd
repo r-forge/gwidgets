@@ -16,10 +16,8 @@ gradio(items, selected = 1, horizontal = FALSE, handler
 
 \arguments{
   \item{items}{ Vector of values to select from }
-  \item{selected}{ For gradio the initial selected value (as an index)
-  		   For a drop list, the first selected value. Use 0 to
-		     leave blank}
-  \item{horizontal}{A logical specifying the  layout for gradio and gcheckboxgroup}
+  \item{selected}{ The initial selected value (as an index). Radio groups must have a selection}
+  \item{horizontal}{A logical specifying the  layout for gradio}
   \item{handler}{Called when selection is changed}
   \item{action}{Passed to handler when called.}
   \item{container}{Optional container to attach widget to}
@@ -39,7 +37,7 @@ gradio(items, selected = 1, horizontal = FALSE, handler
 	The \code{"["} method refers to the vector defining the items.
 
 	The \code{"[<-"} method can be used to change the vector
-	defining the items. For \pkg{gWidgetstcltk} the length can't change. 
+	defining the items. 
 
 	The \code{"length"} method returns the number of items.
 	

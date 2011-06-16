@@ -1,5 +1,5 @@
 Package: gWidgets
-Version: 0.0-44
+Version: 0.0-45
 Title: gWidgets API for building toolkit-independent, interactive GUIs
 Author:  John Verzani. Based on  the iwidgets code of Simon Urbanek and suggestions by Simon Urbanek, Philippe Grosjean and Michael Lawrence
 Maintainer: John Verzani <jverzani@gmail.com>
