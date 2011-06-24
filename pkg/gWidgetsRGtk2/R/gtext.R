@@ -124,6 +124,7 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
 ## add tags to buffer
 ## return tags
 .addTags <- function(buffer) {
+  return("tags") ## XX
   ## weights
   fontWeights = names(PangoWeight)
   fontWeights = fontWeights[fontWeights != "normal"] # also in Styles

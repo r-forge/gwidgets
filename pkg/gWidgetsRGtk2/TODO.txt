@@ -1,4 +1,5 @@
-* check on gbutton and losing of reference to button during
+* move tag creation code out of gtext constructor -- too slow! (Thanks Graham)
+* DONE check on gbutton and losing of reference to button during
   dispatch. This can cause code like: w <- gwindow(); b <- gbutton();
   add(w,b) to fail under gctorture
 * Issue with statusbar size -- hides fonts (new Gtk issue?)
