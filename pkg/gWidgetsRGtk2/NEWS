@@ -6,6 +6,8 @@ Changes for version 0.0-75
 --------------------------
 * bug fix for Observer class to allow proto methods
 
+* reworked fonts for gtext so that tags are not preloaded. That was
+  much too slow.
 
 Changes for version 0.0-74
 --------------------------

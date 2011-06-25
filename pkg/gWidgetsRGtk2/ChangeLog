@@ -1,3 +1,8 @@
+2011-06-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): reworked fonts. Graham W pointed out
+	slowness and this makes much more sense.
+
 2011-05-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aacR5Classes.R: changed class of function to ANY, not function

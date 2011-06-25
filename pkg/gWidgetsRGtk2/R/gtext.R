@@ -289,7 +289,7 @@ setMethod(".add",
               while (gtkEventsPending())
                 gtkMainIterationDo(blocking=FALSE)
 
-              end <- buffer$getEndIter()$iter
+             end <- buffer$getEndIter()$iter
               view$scrollToIter(end, within.margin = 0,
                                 use.align=TRUE)
             }
@@ -330,43 +330,94 @@ setMethod(".add",
 setReplaceMethod(".font",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk"),
                  function(obj, toolkit, ..., value) {
-                   ## get start, end iters
-                   buffer <- getWidget(obj)$GetBuffer()
+
+                   textview <- getWidget(obj)
+                   buffer <- textview$buffer
+                   tagtbl <- buffer$getTagTable()
+
+                   ## get bounds.
                    bounds <- buffer$GetSelectionBounds()
                    if(bounds$retval == FALSE) {
                      ## if no text selected, we set for entire buffer
                      ## change entire buffer -- new as of 0.64
-                     textview <- getWidget(obj)
-                     buffer <- textview$getBuffer()
-                     start = buffer$GetStartIter()$iter
-                     end = buffer$GetEndIter()$iter
+                     start <- buffer$GetStartIter()$iter
+                     end <- buffer$GetEndIter()$iter
                      buffer$removeAllTags(start, end)
-                     ## now set font
-                     .font(textview, toolkit) <- value
-#                     setBufferFonts(textview, value)
-                     
-                     ##                     cat(gettext("No text selected for changing a font\n"))
-                     return(obj)
+                     ## now set font by calling again
                    } else {
+                     start <- bounds$start
+                     end <- bounds$end
+                   }
+
+                   tags <- sapply(value, function(i) i, simplify=FALSE) # to list
+
+                   
+                   ## we have family, style, weight, size, color
+                   weights <- RGtk2:::PangoWeight
+                   if(!is.null(wt <- tags$weight) && wt %in% names(weights)) {
+                     if(is.null(tagtbl$lookup(wt)))
+                       buffer$createTag(wt, weight=weights[wt])
+                     buffer$ApplyTagByName(wt, start, end)
+                   }
+
+                   
+                   ## style
+                   styles <- RGtk2:::PangoStyle
+                   if(!is.null(style <- tags$style) && style %in% names(styles)) {
+                     if(is.null(tagtbl$lookup(style)))
+                       buffer$createTag(style, style=sytles[style])
+                     buffer$ApplyTagByName(style, start, end)
+                   }
+                   
+                   ## family
+                   families <- c("normal","sans", "serif", "monospace")
+                   if(!is.null(family <- tags$family) && family %in% families) {
+                     if(is.null(tagtbl$lookup(family)))
+                       buffer$createTag(family, family=family)
+                     buffer$ApplyTagByName(family, start, end)
+                   }
+                   
+                   ## color
+                   if(!is.null(color <- tags$color) && color %in% colors()) {
+                     if(is.null(tagtbl$lookup(color)))
+                       buffer$createTag(color, foreground=color)
+                     ## do we need to remove colors?
+                     sapply(colors(), function(i) {
+                       if(!is.null(tagtbl$lookup(i)))
+                         buffer$RemoveTagByName(i, start, end)
+                     })
+                     buffer$ApplyTagByName(color, start, end)
+                   }
+                   
+                   ## how to modify background color?
+                     ## bg <- sprintf("%s.background", color)
+                     ## if(is.null(tagtbl$lookup(bg)))
+                     ##   buffer$createTag(bg, background=bg)
+
+                       
+                       
+
+
+
+                     
                      ## get tags that are known
-                     tags = value
-                     tags = tags[tags %in% unlist(tag(obj,"tags"))]
-                     if(length(tags) == 0) {
-                       cat(gettext("Invalid font specification\n"))
-                       return(obj)
-                     }
+                     ## tags = value
+                     ## tags = tags[tags %in% unlist(tag(obj,"tags"))]
+                     ## if(length(tags) == 0) {
+                     ##   cat(gettext("Invalid font specification\n"))
+                     ##   return(obj)
+                     ## }
                    
 
-                     for(i in tags) {
-                       ## color is special
-                       if(length(names(i)) && names(i)[1] == "color") {
-                         sapply(colors(), function(j)
-                                buffer$RemoveTagByName(j, bounds$start, bounds$end))
-                       }
+                     ## for(i in tags) {
+                     ##   ## color is special
+                     ##   if(length(names(i)) && names(i)[1] == "color") {
+                     ##     sapply(colors(), function(j)
+                     ##            buffer$RemoveTagByName(j, bounds$start, bounds$end))
+                     ##   }
                        
-                     buffer$ApplyTagByName(i, bounds$start, bounds$end)
-                     }
-                   }
+                     ## buffer$ApplyTagByName(i, bounds$start, bounds$end)
+                     ## }
                    
                    return(obj)
                  })
