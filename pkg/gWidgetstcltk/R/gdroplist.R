@@ -173,7 +173,7 @@ setReplaceMethod(".svalue",
                    widget <- getWidget(obj)
                    
                    n <- length(obj)
-                   if(n <= 1) return(obj)
+                   if(n < 1) return(obj)
                    
                    if(is.null(index))
                      index <- FALSE
@@ -203,7 +203,7 @@ setReplaceMethod(".svalue",
                      }
                    }
                    
-                   tkevent.generate(getWidget(obj),"<<ValueChanged>>")
+                   tkevent.generate(getWidget(obj), "<<ValueChanged>>")
                    
                    return(obj)
                  })

@@ -1,3 +1,7 @@
+2011-07-03  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: issue with select and n=1, changed condition
+
 2011-06-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaR5classes.R: fix to savlue and gradio. Thanks Richie!
