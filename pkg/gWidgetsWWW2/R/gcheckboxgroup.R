@@ -159,7 +159,10 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                            "Return items as array"
                            makeCheck <- function(label, i,  name) {
                              ## inputValue is 1-based index
-                             sprintf("new Ext.form.Checkbox({boxLabel:'%s', inputValue: %s, name:'%s'})", label, i, name)
+                             ## escape ' in label
+
+                             sprintf("new Ext.form.Checkbox({boxLabel:'%s', inputValue: %s, name:'%s'})",
+                                     escapeSingleQuote(label), i, escapeSingleQuote(name))
                            }
                            buttons <- mapply(makeCheck, items, seq_along(items), rep(.self$get_id(), len=length(items)))
 

@@ -32,7 +32,7 @@ NA
 ##' @param columns Can be used to override horizontal TRUE or FALSE
 ##' @return an ExtWidget object
 ##' @export
-##' @note the \code{[<-} method (to change the labels) is not implemented
+##' @note the \code{[<-} method (to change the labels) is not implemented.
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
@@ -42,10 +42,11 @@ NA
 ##' })
 ##' svalue(rb, index=TRUE) <- 1 # by index
 ##' svalue(rb) <- state.name[2] # by value
+##' ## rb[] <- state.name[1:6] ## doesn't work!
 gradio <- function(items,
                    selected = 1, horizontal=FALSE,
                    handler = NULL, action = NULL, container = NULL, ...,
-                   width=NULL, height=NULL, ext.args=NULL, columns=ifelse(horizontal,1,length(items))) {
+                   width=NULL, height=NULL, ext.args=NULL, columns=ifelse(horizontal,length(items), 1)) {
 
   rb <- GRadio$new(container$toplevel)
   rb$init(items,
@@ -66,18 +67,13 @@ GRadio <- setRefClass("GRadio",
                          init = function(items,
                            selected = 1, horizontal=FALSE,
                            handler = NULL, action = NULL, container = NULL, ...,
-                           width=NULL, height=NULL, ext.args=NULL, columns=ifelse(horizontal,1,length(items))) {
+                           width=NULL, height=NULL, ext.args=NULL, columns=NULL) {
                            
-                           value <<- selected # value is index
                            items <<- items
-                           
+
                            constructor <<- "Ext.form.RadioGroup"
                            transport_signal <<- "change"
                            
-                           ##callSuper(list(), toplevel = container$toplevel)
-
-                           ## this is a bit different, as we
-                           ## need to define .self (via callSuper) before args here to get the id
                            arg_list <- list(items=String(items_as_array()),
                                             width = width,
                                             height = height,

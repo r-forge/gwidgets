@@ -86,7 +86,7 @@ GGroup <- setRefClass("GGroup",
                            constructor <<- "Ext.Panel"
                            spacing <<- spacing
                            
-                           arg_list <- list(border = TRUE,
+                           arg_list <- list(border = FALSE,
                                             ## padding=spacing, # just, margin see add_dots now
                                             hideBorders = FALSE,
                                             autoScroll = as.logical(use.scrollwindow),

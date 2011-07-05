@@ -16,9 +16,9 @@
 ##' @include ext-widget.R
 NA
 
-##' load session manager
+##' load session manager when package is attached
 ##' @nord
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   ## load session
   session_manager <<- SessionManager$new()
 }

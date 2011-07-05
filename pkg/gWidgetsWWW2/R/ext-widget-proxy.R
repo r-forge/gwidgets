@@ -325,7 +325,7 @@ ExtTreeProxy <- setRefClass("ExtTreeProxy",
                              
                                 if(!is.null(node)) {
                                   ## check if JSON data
-                                  ochildren <- children <- offspring(strsplit(node,":")[[1]][-1], offspring_data)
+                                  ochildren <- children <- offspring(strsplit(node,":")[[1]][-1], offspring.data)
                                   m <- nrow(children)
                                   out <- "[]" # m == 0
                                   if(m > 0) {

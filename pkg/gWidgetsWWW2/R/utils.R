@@ -290,6 +290,16 @@ ourQuote <- function(x) {
 }
 
 
+##' escape single quote
+##'
+##' Useful as we often single quote arguments to the Ext functions
+##' @param x string to escape
+##' @return string with "'" replaced by "\'"
+escapeSingleQuote <- function(x) {
+  ## gsub("'", '"', x)  ## could replace, but escaping seems safer
+  gsub("\\'", "\\\\'", x)
+}
+
 
 ##' get value from ... arguments
 ##' @param key key to lookip

@@ -79,7 +79,7 @@ GSlider <- setRefClass("GSlider",
                            ## template for slider
                            template <- paste("new Ext.slider.Tip({",
                                              "  getText: function(thumb){",
-                                             sprintf("return String.format('%s', thumb.value)", tpl),
+                                             sprintf("return String.format('%s', thumb.value)", escapeSingleQuote(tpl)),
                                              "}})",
                                              sep="")
                            
