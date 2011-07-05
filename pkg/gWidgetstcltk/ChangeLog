@@ -1,5 +1,12 @@
 2011-07-05  verzani  <verzani@gauss>
 
+	* R/gdroplist.R: fix to svalue<- so that event handlers are
+	called. (Thanks Yves).
+
+	fix to [ method-- return character(0), not NA when no selection
+
+	* R/gcheckbox.R: fix to enabled<- and gcheckbox (Thanks Yves)
+
 	* R/gfile.R: forgot call of tclvalue. Thanks Richie!
 
 2011-07-03  John Verzani  <jverzani@gmail.com>

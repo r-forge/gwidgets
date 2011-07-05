@@ -109,15 +109,23 @@ setReplaceMethod(".enabled",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gCheckboxtcltk"),
                  function(obj, toolkit, ..., value) {
 
-                   ## change both widget and label
-                   lapply(list(tag(obj,"check"), tag(obj,"label")), function(i) {
+                   ## Odd this isn't needed anymore
+                   widget <- getWidget(obj)
                    if(as.logical(value))
-                     tcl(i,"state","!disabled")
+                     tcl(widget,"state","!disabled")
                    else
-                     tcl(i,"state","disabled")
-                 })
-                   
+                     tcl(widget,"state","disabled")
                    return(obj)
+                   
+                 ##   ## change both widget and label
+                 ##   lapply(list(tag(obj,"check"), tag(obj,"label")), function(i) {
+                 ##   if(as.logical(value))
+                 ##     tcl(i,"state","!disabled")
+                 ##   else
+                 ##     tcl(i,"state","disabled")
+                 ## })
+                   
+                 ##   return(obj)
                  })
 
 ### no method to change the value of text???

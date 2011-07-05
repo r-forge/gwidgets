@@ -4,7 +4,9 @@ NEWS for gWidgetstcltk
 
 Changes for 0.0-44
 -------------------
+* bug fixes for gfile (Thanks Richie, Yves)
 
+* bug fixes for gcomobobox (Thanks Erich, Yves)
 
 
 Changes for 0.0-43
