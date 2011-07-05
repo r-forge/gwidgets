@@ -102,7 +102,7 @@ import(gWidgets)
 
 exportMethods(
 "[", 
-".glabel", ".gbutton", ".gcheckbox", ".gradio", ".gdroplist",
+".glabel, ".gbutton", ".gcheckbox", ".gradio", ".gdroplist",
 ".gcheckboxgroup", ".gspinbutton", ".gslider", ".gedit", ".gtext",
 ".gaction", ".gmenu", ".gtoolbar", ".gtable", ".gdf", ".gdfnotebook", ".gtree",
 ".gfile", ".gfilebrowse", ".gcalendar", ".ggraphics",
