@@ -27,7 +27,7 @@ setMethod(".gtree",
             theArgs <- list(...)
             
             if(is.null(offspring)) {
-              cat(gettext("Need to have specified an offspring function\n"))
+              message(gettext("Need to have specified an offspring function\n"))
               return(NA)
             }
             

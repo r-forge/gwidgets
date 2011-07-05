@@ -431,13 +431,13 @@ setReplaceMethod(".leftBracket",
             ## error check
             if(missing(i)) {
               if(max(j) > dim(x)[2]) {
-                cat(gettext("Can't add columns. Use [,]<-\n"))
+                message(gettext("Can't add columns. Use [,]<-\n"))
                 return(x)
               }
               i <- 1:d[1]
             } else if(missing(j)) {
               if(max(i) > dim(x)[1]) {
-                cat(gettext("Can't add rows. Use [,]<-\n"))
+                message(gettext("Can't add rows. Use [,]<-\n"))
                 return(x)
               }
               j <- 1:d[2]
@@ -514,7 +514,7 @@ setReplaceMethod(".names",
                    widget <- getWidget(x)
                    d <- dim(x); n <- d[2]
                    if(length(value) != n) {
-                     cat(gettext("names<- must match length\n"))
+                     message(gettext("names<- must match length\n"))
                      return(x)
                    }
                    lapply(1:n,function(j) tcl(widget,"heading",j,"text"=value[j]))

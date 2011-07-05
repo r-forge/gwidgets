@@ -310,7 +310,7 @@ setMethod(".gbasicdialog",
                    action = NULL,
                    ...
                    ) {
-            cat(gettext("gbasiddialog isn't implemented in tcltk"),"\n")
+            message(gettext("gbasiddialog isn't implemented in tcltk"),"\n")
             return()
           })
 

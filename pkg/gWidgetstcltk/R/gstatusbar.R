@@ -22,7 +22,7 @@ setMethod(".gstatusbar",
               tt <- getBlock(container)
             } else {
               if(!(is(container,"gWindowtcltk") || is(container@widget,"gWindowtcltk"))) {
-                cat(gettext("gstatusbar: container must be gwindow instance\n"))
+                message(gettext("gstatusbar: container must be gwindow instance\n"))
               }
               tt <- tag(container,"sb")
             }

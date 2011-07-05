@@ -164,7 +164,7 @@ setReplaceMethod(".size",
                      tkconfigure(obj@widget,width=ceiling(value[1]/widthOfChar)) 
                                         
                    else
-                     cat(gettext("size needs a numeric vector c(width,...)\n"))
+                     message(gettext("size needs a numeric vector c(width,...)\n"))
                    return(obj)
                  })
 

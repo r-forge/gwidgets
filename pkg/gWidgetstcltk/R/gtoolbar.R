@@ -39,7 +39,7 @@ setMethod(".gtoolbar",
             toplevel <- getTopLevel(container)
             
             if(!(is(toplevel,"gWindowtcltk") || is(toplevel@widget,"gWindowtcltk"))) {
-              cat(gettext("gtoolbar: container must be gwindow instance\n"))
+              message(gettext("gtoolbar: container must be gwindow instance\n"))
             }
 ##            tt <- getBlock(container)
             tt <- tag(toplevel, "tb")

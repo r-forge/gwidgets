@@ -22,7 +22,7 @@ setMethod(".gcalendar",
             theArgs <- list(...)
 
             if(format != "%Y-%m-%d") {
-              cat(gettext("The format argument is not employed. Pass in coercion function through the coerce.with argument if year-month-day is not desired."), "\n")
+              message(gettext("The format argument is not employed. Pass in coercion function through the coerce.with argument if year-month-day is not desired."), "\n")
               format <- "%Y-%m-%d"
             }
             

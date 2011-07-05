@@ -4,7 +4,7 @@
 
   ## version check
   if(as.numeric(.Tcl("info tclversion")) < 8.5) {
-    cat("\n\n *** gWidgetstcltk needs tcl/tk version 8.5 or newer ***\n\n")
+    stop("\n\n *** gWidgetstcltk needs tcl/tk version 8.5 or newer ***\n\n")
   }
   
   oldClasses =c("tkwin")

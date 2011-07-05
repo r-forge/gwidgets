@@ -274,7 +274,7 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gTexttcltk",value="gWidgettcltk"),
           function(obj, toolkit, value,  ...) {
 
-            cat("gtext: implement adding a widget to text area\n")
+            message("gtext: implement adding a widget to text area\n")
             return()
             })
 

@@ -328,7 +328,7 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gNotebooktcltk"),
           function(x, toolkit, i, j, ..., value) {
             ##
-            cat(gettext("Can't add widget via [<-\n"))
+            message(gettext("Can't add widget via [<-\n"))
             return()
 
             nb <- getWidget(x)

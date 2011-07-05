@@ -14,7 +14,7 @@ setMethod(".gpanedgroup",
             
             
             if(is.null(container)) {
-              cat(gettext("No NULL containers in tcltk. Creating a new window\n"))
+              message(gettext("No NULL containers in tcltk. Creating a new window\n"))
               container=gwindow()
             } else if(is.logical(container) && container) {
               container = gwindow()

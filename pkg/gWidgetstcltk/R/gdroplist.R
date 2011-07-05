@@ -198,7 +198,7 @@ setReplaceMethod(".svalue",
                        if(value %in% vals) {
                          tclvalue(tcl(widget,"set",as.character(value)))
                        } else {
-                         cat(sprintf("%s is not a valid item",value),"\n")
+                         message(sprintf("%s is not a valid item",value),"\n")
                        }
                      }
                    }

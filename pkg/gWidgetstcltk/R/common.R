@@ -19,7 +19,7 @@ isMac <- function() {
 }
 DEBUG = function(...) {
   if(0)
-    cat(paste(...,sep=" ",collapse=" "),"\n")
+    message(paste(...,sep=" ",collapse=" "),"\n")
 }
 
 ## paste() helpers

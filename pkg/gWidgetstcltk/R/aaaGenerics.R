@@ -1,7 +1,7 @@
-MSG = function(...) cat("DEBUG",...,"\n")
+MSG = function(...) message("DEBUG: ",...,"\n")
 missingMsg = function(x) {
   if(missing(x)) x = "XXX"
-  cat("This method",x,"needs to be written\n")
+  message("This method ",x," needs to be written\n")
 }
 
 
@@ -278,7 +278,7 @@ setReplaceMethod("visible",signature(obj="gWidgettcltk"),
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
                  function(obj, toolkit, ..., value) {
-                   cat("visible<- not implemented\n")
+                   message("visible<- not implemented\n")
                    return(obj)
                  })
 setReplaceMethod(".visible",
