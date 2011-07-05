@@ -4,7 +4,7 @@
 
 gwCat <- function(...) {
   doCat <- getOption("gWidgetsDebug")
-  if(!is.null(doCat)) cat(...)
+  if(!is.null(doCat)) message(...)
 }
 
 Paste = function(..., sep="", collapse="") {
