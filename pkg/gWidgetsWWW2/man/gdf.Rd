@@ -7,8 +7,16 @@
 \description{A widget for editing a data frame}
 \details{A widget for editing a data frame. There is no means to change the
 size of the frame being edited or the type of data in each
-column. As such, one must plan ahead.}
-\value{an ExtWidget}
+column. As such, one must plan ahead.\code{gdf}: A widget for editing a data frame. There is no means to change the
+size of the frame being edited or the type of data in each
+column. As such, one must plan ahead.
+
+
+}
+\value{an ExtWidget\code{gdf}: an ExtWidget
+
+
+}
 \author{john verzani}
 \arguments{\item{items}{data frame to be edited}
 \item{name}{name of data frame appearing in titke}
@@ -19,4 +27,6 @@ column. As such, one must plan ahead.}
 \item{height}{height of widget in pixels}
 \item{ext.args}{extra arguments to pass to constructor}
 }
+
+\alias{gdf}
 

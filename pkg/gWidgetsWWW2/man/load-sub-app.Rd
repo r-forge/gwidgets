@@ -22,5 +22,18 @@ load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "Google
 ## open an app embedded in another page
 gw_script <- system.file("examples/multiple.R", package="gWidgetsWWW2")
 brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
-load_app(gw_script, "MultipleApp",  brew_template)}
+load_app(gw_script, "MultipleApp",  brew_template)\code{load_app}: ## open an app that takes the entire page
+gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
+load_app(gw_script, "HelloApp",  use.google=FALSE)
+## open an app using googlemaps
+load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
+## open an app embedded in another page
+gw_script <- system.file("examples/multiple.R", package="gWidgetsWWW2")
+brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
+load_app(gw_script, "MultipleApp",  brew_template)
+
+
+}
+
+\alias{load_app}
 

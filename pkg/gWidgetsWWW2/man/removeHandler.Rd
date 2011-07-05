@@ -4,8 +4,13 @@
 \usage{removeHandler(x, cbid)
 }
 \description{Remove handler}
-\value{NULL}
+\value{NULL\code{removeHandler}: NULL
+
+
+}
 \arguments{\item{x}{the object handler is called on.}
 \item{cbid}{the callback id returned by an addHandlerXXX call}
 }
+
+\alias{removeHandler}
 

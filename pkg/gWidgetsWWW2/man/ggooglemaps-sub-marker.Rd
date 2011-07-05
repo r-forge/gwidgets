@@ -4,10 +4,15 @@
 \usage{ggooglemaps_marker(position, title, icon, map)
 }
 \description{Add a marker to the map}
-\value{a GGoogleMapsObject}
+\value{a GGoogleMapsObject\code{ggooglemaps_marker}: a GGoogleMapsObject
+
+
+}
 \arguments{\item{position}{lat/lng pair for position of mark}
 \item{title}{optional tooltip text}
 \item{icon}{option icon, stock name or url}
 \item{map}{ggooglemaps instance}
 }
+
+\alias{ggooglemaps_marker}
 

@@ -3,3 +3,5 @@
 \title{base class for gsvg...}
 \description{base class for gsvg}
 
+\alias{gsvg-class}
+

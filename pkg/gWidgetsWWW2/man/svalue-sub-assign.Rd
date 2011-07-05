@@ -8,3 +8,5 @@
 \item{value}{value to set}
 }
 
+\alias{svalue<-}
+

@@ -6,8 +6,15 @@
 }
 \description{calendar widget}
 \details{Basic text box with button to open calendar picker dialog. The
-svalue method refers to the date, which depends on the value of format.xf}
-\value{a \code{ExtWidget} instance}
+svalue method refers to the date, which depends on the value of format.xf\code{gcalendar}: Basic text box with button to open calendar picker dialog. The
+svalue method refers to the date, which depends on the value of format.xf
+
+
+}
+\value{a \code{ExtWidget} instance\code{gcalendar}: a \code{ExtWidget} instance
+
+
+}
 \arguments{\item{text}{optional inital date as text.}
 \item{format}{format of date. Default of Y-m-d.}
 \item{handler}{handler called when date changed}
@@ -20,5 +27,12 @@ svalue method refers to the date, which depends on the value of format.xf}
 }
 \examples{w <- gwindow("Calendar")
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-a <- gcalendar(cont=w)}
+a <- gcalendar(cont=w)\code{gcalendar}: w <- gwindow("Calendar")
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+a <- gcalendar(cont=w)
+
+
+}
+
+\alias{gcalendar}
 

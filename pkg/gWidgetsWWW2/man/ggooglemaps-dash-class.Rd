@@ -3,3 +3,5 @@
 \title{base class for ggooglemaps...}
 \description{base class for ggooglemaps}
 
+\alias{ggooglemaps-class}
+

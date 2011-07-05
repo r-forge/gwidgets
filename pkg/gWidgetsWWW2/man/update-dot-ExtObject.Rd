@@ -8,3 +8,5 @@
 \item{...}{passed along}
 }
 
+\alias{update.ExtObject}
+

@@ -3,3 +3,5 @@
 \title{base class for gnotebook...}
 \description{base class for gnotebook}
 
+\alias{gnotebook-class}
+

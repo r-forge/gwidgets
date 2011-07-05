@@ -7,8 +7,17 @@
 \details{Calls handler when Yes button is clicked. Unlike other gWidgets
 implementations, this one does block the R process before
 returning a logical indicating the selection. One must use a
-handler to have interactivity.}
-\value{return value ignored, use handler for response}
+handler to have interactivity.\code{gconfirm}: Calls handler when Yes button is clicked. Unlike other gWidgets
+implementations, this one does block the R process before
+returning a logical indicating the selection. One must use a
+handler to have interactivity.
+
+
+}
+\value{return value ignored, use handler for response\code{gconfirm}: return value ignored, use handler for response
+
+
+}
 \arguments{\item{message}{message}
 \item{title}{title for dialog's window}
 \item{icon}{icon}
@@ -22,5 +31,15 @@ gbutton("click me for a message", cont=w, handler=function(h,...) {
 gconfirm("Do you like R", parent=w, handler=function(h,...) {
 galert("Glad you do", parent=w)
 })
-})}
+})\code{gconfirm}: w <- gwindow()
+gbutton("click me for a message", cont=w, handler=function(h,...) {
+gconfirm("Do you like R", parent=w, handler=function(h,...) {
+galert("Glad you do", parent=w)
+})
+})
+
+
+}
+
+\alias{gconfirm}
 

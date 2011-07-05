@@ -3,3 +3,5 @@
 \title{base class for gslider...}
 \description{base class for gslider}
 
+\alias{gslider-class}
+

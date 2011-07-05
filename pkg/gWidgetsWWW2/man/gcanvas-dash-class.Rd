@@ -3,3 +3,5 @@
 \title{class for gcanvas...}
 \description{class for gcanvas}
 
+\alias{gcanvas-class}
+

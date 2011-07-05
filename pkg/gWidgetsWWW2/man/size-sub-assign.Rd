@@ -8,3 +8,5 @@
 \item{value}{size specification, for most widgets a pair c(width, height), but can have exceptions}
 }
 
+\alias{size<-}
+

@@ -4,7 +4,10 @@
 \usage{gnotebook(tab.pos=3, close.buttons=FALSE, container, ..., width, height, ext.args)
 }
 \description{Notebook container}
-\value{an ExtContainer object}
+\value{an ExtContainer object\code{gnotebook}: an ExtContainer object
+
+
+}
 \arguments{\item{tab.pos}{where to place tabs. A value of 1 is the bottom, else the top.}
 \item{close.buttons}{Logical. Are there close buttons on the tabs}
 \item{container}{parent container}
@@ -15,5 +18,12 @@
 }
 \examples{w <- gwindow()
 nb <- gnotebook(cont=w)
-gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \code{add}}
+gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \code{add}\code{gnotebook}: w <- gwindow()
+nb <- gnotebook(cont=w)
+gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \code{add}
+
+
+}
+
+\alias{gnotebook}
 

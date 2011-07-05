@@ -3,3 +3,5 @@
 \title{class for gbutton...}
 \description{class for gbutton}
 
+\alias{gbutton-class}
+

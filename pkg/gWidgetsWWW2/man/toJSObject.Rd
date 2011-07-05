@@ -4,7 +4,10 @@
 \usage{toJSObject(x)
 }
 \description{map an R list object into a string containing javascript code representation of an object}
-\value{a string with the list formatted as code to produce a JavaScript object}
+\value{a string with the list formatted as code to produce a JavaScript object\code{toJSObject}: a string with the list formatted as code to produce a JavaScript object
+
+
+}
 \arguments{\item{x}{a list that will map to an object literal. E.g., list(a=1, b="a") goes to {a:1, b:'a'}}
 }
 \examples{arg_list <- list(
@@ -13,5 +16,16 @@ width = 200,
 height = "auto",
 id = String("noquote")
 )
-toJSObject(arg_list)}
+toJSObject(arg_list)\code{toJSObject}: arg_list <- list(
+tooltip = "some tooltip",
+width = 200,
+height = "auto",
+id = String("noquote")
+)
+toJSObject(arg_list)
+
+
+}
+
+\alias{toJSObject}
 

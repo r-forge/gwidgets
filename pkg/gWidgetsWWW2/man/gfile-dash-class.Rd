@@ -3,3 +3,5 @@
 \title{base class for gfile...}
 \description{base class for gfile}
 
+\alias{gfile-class}
+

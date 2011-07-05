@@ -6,9 +6,15 @@
     length(items)))
 }
 \description{Radio button group}
-\details{A basic radio button group. Specify the labels through items. The main value is the label or index}
-\value{an ExtWidget object}
-\note{the \code{[<-} method (to change the labels) is not implemented}
+\details{A basic radio button group. Specify the labels through items. The main value is the label or index\code{gradio}: A basic radio button group. Specify the labels through items. The main value is the label or index
+
+
+}
+\value{an ExtWidget object\code{gradio}: an ExtWidget object
+
+
+}
+\note{the \code{[<-} method (to change the labels) is not implementedthe \code{[<-} method (to change the labels) is not implemented.}
 \arguments{\item{items}{Items to choose from}
 \item{selected}{index of initially selected item}
 \item{horizontal}{logical. Horizontal or vertical layout. (See also columns)}
@@ -28,5 +34,18 @@ addHandlerChanged(rb, handler=function(h,...) {
 galert(paste("You clicked", svalue(h$obj)), parent=w)
 })
 svalue(rb, index=TRUE) <- 1 # by index
-svalue(rb) <- state.name[2] # by value}
+svalue(rb) <- state.name[2] # by value\code{gradio}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+rb <- gradio(state.name[1:4], cont=w)
+addHandlerChanged(rb, handler=function(h,...) {
+galert(paste("You clicked", svalue(h$obj)), parent=w)
+})
+svalue(rb, index=TRUE) <- 1 # by index
+svalue(rb) <- state.name[2] # by value
+## rb[] <- state.name[1:6] ## doesn't work!
+
+
+}
+
+\alias{gradio}
 

@@ -5,7 +5,7 @@
     container, ..., width, height, ext.args)
 }
 \description{checkbox widget}
-\note{No method to set label}
+\note{No method to set labelNo method to set label}
 \arguments{\item{text}{character. text label for checkbox.}
 \item{checked}{logical. initial state (Set later with \code{svalue<-})}
 \item{use.togglebutton}{logical. XXX not implemented If TRUE, represent with a togglebutton, else use check box}
@@ -19,5 +19,12 @@
 }
 \examples{w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) if(svalue(h$obj)) galert("checked", parent=w))}
+cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) if(svalue(h$obj)) galert("checked", parent=w))\code{gcheckbox}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) if(svalue(h$obj)) galert("checked", parent=w))
+
+
+}
+
+\alias{gcheckbox}
 

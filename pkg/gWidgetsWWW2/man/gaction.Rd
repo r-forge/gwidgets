@@ -9,8 +9,19 @@
 with an action. Use \code{enabled<-} to adjust sensitivity to
 mouse events. The \code{visible<-} method can adjust if objects
 proxying the action are visible. The \code{set_icon} reference
-class method can be used to set the icon (no S3 method)}
-\value{an \code{ExtWidget} object}
+class method can be used to set the icon (no S3 method)\code{gaction}: actions are reusable encapsulations of actions. The
+\code{svalue<-} method can be used to update the text associated
+with an action. Use \code{enabled<-} to adjust sensitivity to
+mouse events. The \code{visible<-} method can adjust if objects
+proxying the action are visible. The \code{set_icon} reference
+class method can be used to set the icon (no S3 method)
+
+
+}
+\value{an \code{ExtWidget} object\code{gaction}: an \code{ExtWidget} object
+
+
+}
 \arguments{\item{label}{Text for action}
 \item{tooltip}{tooltip. Ignored}
 \item{icon}{action icon class}
@@ -24,5 +35,15 @@ a <- gaction("some action", handler=function(h,...) galert("asdf", parent=w), pa
 b <- gbutton(action=a, cont=w)
 enabled(a) <- FALSE
 svalue(a) <- "new text"
-#}
+#\code{gaction}: w <- gwindow()
+a <- gaction("some action", handler=function(h,...) galert("asdf", parent=w), parent=w)
+b <- gbutton(action=a, cont=w)
+enabled(a) <- FALSE
+svalue(a) <- "new text"
+#
+
+
+}
+
+\alias{gaction}
 

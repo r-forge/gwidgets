@@ -6,8 +6,12 @@
 }
 \description{gexpandgroup is a group with trigger icon and label}
 \details{Use \code{svalue<-} to adjust the title. The \code{visible<-}
-method is used to programatically change display}
-\seealso{\code{\link{ggroup}}, \code{\link{gframe}}}
+method is used to programatically change display\code{gexpandgroup}: Use \code{svalue<-} to adjust the title. The \code{visible<-}
+method is used to programatically change display
+
+
+}
+\seealso{\code{\link{ggroup}}, \code{\link{gframe}}\code{\link{ggroup}}, \code{\link{gframe}}}
 \arguments{\item{text}{label text}
 \item{horizontal}{logical. Indicates direction children are added}
 \item{spacing}{between component spacing}
@@ -23,5 +27,14 @@ method is used to programatically change display}
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 g <- gexpandgroup("click to close", cont=w)
 gbutton("some button", cont=g)
-visible(g) <- FALSE ## to close}
+visible(g) <- FALSE ## to close\code{gexpandgroup}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+g <- gexpandgroup("click to close", cont=w)
+gbutton("some button", cont=g)
+visible(g) <- FALSE ## to close
+
+
+}
+
+\alias{gexpandgroup}
 

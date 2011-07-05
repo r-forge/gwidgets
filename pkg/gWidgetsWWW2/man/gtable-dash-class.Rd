@@ -3,3 +3,5 @@
 \title{base class for gtable...}
 \description{base class for gtable}
 
+\alias{gtable-class}
+

@@ -6,8 +6,16 @@
 \description{input dialog.}
 \details{Used for getting a text string to pass to a handler. Unlike other
 gWidgets implementations, this call does not block the R process,
-so any response to the user must be done through the handler.}
-\value{return value ignored, use handler for response}
+so any response to the user must be done through the handler.\code{ginput}: Used for getting a text string to pass to a handler. Unlike other
+gWidgets implementations, this call does not block the R process,
+so any response to the user must be done through the handler.
+
+
+}
+\value{return value ignored, use handler for response\code{ginput}: return value ignored, use handler for response
+
+
+}
 \arguments{\item{message}{message}
 \item{text}{initial text for the widget}
 \item{title}{title for dialog's window}
@@ -23,5 +31,15 @@ gbutton("click me for a message", cont=w, handler=function(h,...) {
 ginput("What is your name?", parent=w, handler=function(h,...) {
 galert(paste("Hello", h$input), parent=w)
 })
-})}
+})\code{ginput}: w <- gwindow()
+gbutton("click me for a message", cont=w, handler=function(h,...) {
+ginput("What is your name?", parent=w, handler=function(h,...) {
+galert(paste("Hello", h$input), parent=w)
+})
+})
+
+
+}
+
+\alias{ginput}
 

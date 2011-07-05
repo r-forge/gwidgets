@@ -3,3 +3,5 @@
 \title{base class for gedit...}
 \description{base class for gedit}
 
+\alias{gedit-class}
+

@@ -7,6 +7,15 @@
 \code{gcombobox}: The name gdroplist is an alternative (not encouraged) for gcomobbox
 
 
+\code{gcombobox}: The name gdroplist is an alternative (not encouraged) for gcomobbox
+
+
+\code{gcombobox}: The name gdroplist is an alternative (not encouraged) for gcomobbox
+
+
 }
+\alias{gcombobox}
+
+\alias{gcombobox}
 \alias{gcombobox}
 

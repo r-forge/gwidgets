@@ -7,8 +7,16 @@
 \description{A paned group container}
 \details{This container has two children and a vertical/horizontal sash to
 allocate space between them. Simply use as a parent container
-twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.}
-\value{an ExtContainer object}
+twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.\code{gpanedgroup}: This container has two children and a vertical/horizontal sash to
+allocate space between them. Simply use as a parent container
+twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.
+
+
+}
+\value{an ExtContainer object\code{gpanedgroup}: an ExtContainer object
+
+
+}
 \arguments{\item{horizontal}{logical. Side by side (or top/bottom) layout}
 \item{container}{parent container}
 \item{...}{passed to parent container's add method}
@@ -23,5 +31,13 @@ if those are NULL. There is no \code{svalue<-} method to adjust the size}
 \examples{w <- gwindow()
 pg <- gpanedgroup(cont=w, horizontal=TRUE)
 gbutton("left", cont=pg)
-gbutton("right", cont=pg)}
+gbutton("right", cont=pg)\code{gpanedgroup}: w <- gwindow()
+pg <- gpanedgroup(cont=w, horizontal=TRUE)
+gbutton("left", cont=pg)
+gbutton("right", cont=pg)
+
+
+}
+
+\alias{gpanedgroup}
 

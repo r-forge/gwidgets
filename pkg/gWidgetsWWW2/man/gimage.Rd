@@ -8,9 +8,19 @@
 \details{The image shows a url. This url can be external. For local urls,
 the file must be accessible by the server. The convenience method
 \code{obj$get_tempfile()} or the function \code{get_tempfile} can
-be used to create a file that is accessible. See the example.}
-\value{an ExtWidget object}
+be used to create a file that is accessible. See the example.\code{gimage}: The image shows a url. This url can be external. For local urls,
+the file must be accessible by the server. The convenience method
+\code{obj$get_tempfile()} or the function \code{get_tempfile} can
+be used to create a file that is accessible. See the example.
+
+
+}
+\value{an ExtWidget object\code{gimage}: an ExtWidget object
+
+
+}
 \note{requires tempdir to be mapped to a specific url, as this is
+assumed by \code{get_tempfile} and \code{get_tempfile_url}requires tempdir to be mapped to a specific url, as this is
 assumed by \code{get_tempfile} and \code{get_tempfile_url}}
 \arguments{\item{filename}{A url or file in static temp file}
 \item{dirname}{prepended to filename if non empty}
@@ -39,5 +49,26 @@ png(f)
 hist(rnorm(100))
 dev.off()
 svalue(i) <- f
-})}
+})\code{gimage}: w <- gwindow("hello", renderTo="replaceme")
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+g <- ggroup(cont=w, horizontal=FALSE)
+
+f <- get_tempfile(ext=".png")
+png(f)
+hist(rnorm(100))
+dev.off()
+
+i <- gimage(f, container=g)
+b <- gbutton("click", cont=g, handler=function(h,...) {
+f <- i$get_tempfile(ext=".png")   ## a method call, for variety
+png(f)
+hist(rnorm(100))
+dev.off()
+svalue(i) <- f
+})
+
+
+}
+
+\alias{gimage}
 

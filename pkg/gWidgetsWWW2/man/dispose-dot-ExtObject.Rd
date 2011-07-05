@@ -8,3 +8,5 @@
 \item{...}{ignored}
 }
 
+\alias{dispose.ExtObject}
+

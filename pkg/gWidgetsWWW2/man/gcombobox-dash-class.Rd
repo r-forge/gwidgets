@@ -3,3 +3,5 @@
 \title{Base class for gcombobox...}
 \description{Base class for gcombobox}
 
+\alias{gcombobox-class}
+

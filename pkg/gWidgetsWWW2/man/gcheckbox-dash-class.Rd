@@ -3,3 +3,5 @@
 \title{Base class for gcheckbox...}
 \description{Base class for gcheckbox}
 
+\alias{gcheckbox-class}
+

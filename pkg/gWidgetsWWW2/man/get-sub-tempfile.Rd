@@ -5,9 +5,19 @@
 }
 \description{Get a temporary file matching the given extension, if given.}
 \details{This tempfile is stored in a directory that can be served as a static file through
-gWidgetsWWW2.}
+gWidgetsWWW2.\code{get_tempfile}: This tempfile is stored in a directory that can be served as a static file through
+gWidgetsWWW2.
+
+
+}
 \arguments{\item{ext}{file extension}
 }
 \examples{f <- get_tempfile(ext=".svg")
-get_tempfile_url(f)}
+get_tempfile_url(f)\code{get_tempfile}: f <- get_tempfile(ext=".svg")
+get_tempfile_url(f)
+
+
+}
+
+\alias{get_tempfile}
 

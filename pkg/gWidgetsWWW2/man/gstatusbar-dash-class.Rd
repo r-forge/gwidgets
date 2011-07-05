@@ -3,3 +3,5 @@
 \title{base class for gstatusbar...}
 \description{base class for gstatusbar}
 
+\alias{gstatusbar-class}
+

@@ -3,3 +3,5 @@
 \title{base class for gtext...}
 \description{base class for gtext}
 
+\alias{gtext-class}
+

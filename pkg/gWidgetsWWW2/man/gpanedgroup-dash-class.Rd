@@ -3,3 +3,5 @@
 \title{base class for gpanedgroup...}
 \description{base class for gpanedgroup}
 
+\alias{gpanedgroup-class}
+

@@ -3,3 +3,5 @@
 \title{base class for gframe...}
 \description{base class for gframe}
 
+\alias{gframe-class}
+

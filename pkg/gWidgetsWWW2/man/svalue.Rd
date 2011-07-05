@@ -8,3 +8,5 @@
 \item{...}{passed to \code{get_value} method. May include arguments \code{index} or \code{drop}}
 }
 
+\alias{svalue}
+

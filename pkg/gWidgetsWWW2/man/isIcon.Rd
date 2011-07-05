@@ -4,7 +4,12 @@
 \usage{isIcon(x)
 }
 \description{Is this an icon? (has class Icon)}
-\value{logical}
+\value{logical\code{isIcon}: logical
+
+
+}
 \arguments{\item{x}{object}
 }
+
+\alias{isIcon}
 

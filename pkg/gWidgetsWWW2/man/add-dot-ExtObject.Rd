@@ -10,3 +10,5 @@
 S3 method for add and ExtObject}
 }
 
+\alias{add.ExtObject}
+

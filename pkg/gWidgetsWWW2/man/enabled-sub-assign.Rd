@@ -7,3 +7,5 @@
 \item{value}{logical}
 }
 
+\alias{enabled<-}
+

@@ -12,3 +12,5 @@
 \item{...}{ignored}
 }
 
+\alias{insert.ExtObject}
+

@@ -7,3 +7,5 @@
 \arguments{\item{x}{object to get column class from}
 }
 
+\alias{column_renderer.default}
+

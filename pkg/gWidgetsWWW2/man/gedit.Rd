@@ -5,8 +5,14 @@
     ext.args)
 }
 \description{gedit widget}
-\details{No [<- method. This can be done with a combobox though.}
-\value{an ExtWidget object}
+\details{No [<- method. This can be done with a combobox though.\code{gedit}: No [<- method. This can be done with a combobox though.
+
+
+}
+\value{an ExtWidget object\code{gedit}: an ExtWidget object
+
+
+}
 \arguments{\item{text}{initial text}
 \item{width}{width in characters. Converted to pixels by multiplying by 8.}
 \item{coerce.with}{Function to call for coercion from text. If no
@@ -22,5 +28,15 @@ sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 e <- gedit("initial text", cont=w)
 addHandlerChanged(e, handler=function(h,...) {
 galert(paste("You entered", svalue(h$obj)), parent=w)
-})}
+})\code{gedit}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+e <- gedit("initial text", cont=w)
+addHandlerChanged(e, handler=function(h,...) {
+galert(paste("You entered", svalue(h$obj)), parent=w)
+})
+
+
+}
+
+\alias{gedit}
 

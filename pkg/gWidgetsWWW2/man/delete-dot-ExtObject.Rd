@@ -9,3 +9,5 @@
 \item{...}{ignored}
 }
 
+\alias{delete.ExtObject}
+

@@ -4,7 +4,10 @@
 \usage{gmessage(message, title="message", icon, parent, handler, action, ...)
 }
 \description{A simple message dialog.}
-\value{return value ignored}
+\value{return value ignored\code{gmessage}: return value ignored
+
+
+}
 \arguments{\item{message}{main message.}
 \item{title}{Title for dialog's window}
 \item{icon}{icon to decorate dialog}
@@ -16,5 +19,13 @@
 \examples{w <- gwindow()
 gbutton("click me for a message", cont=w, handler=function(h,...) {
 gmessage("Hello there", parent=w)
-})}
+})\code{gmessage}: w <- gwindow()
+gbutton("click me for a message", cont=w, handler=function(h,...) {
+gmessage("Hello there", parent=w)
+})
+
+
+}
+
+\alias{gmessage}
 

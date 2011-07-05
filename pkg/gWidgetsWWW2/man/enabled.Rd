@@ -7,3 +7,5 @@
 \arguments{\item{x}{the widget}
 }
 
+\alias{enabled}
+

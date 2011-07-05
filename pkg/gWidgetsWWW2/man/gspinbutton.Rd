@@ -5,8 +5,11 @@
     width, height, ext.args)
 }
 \description{Basic spinbutton}
-\value{an ExtWidget instance}
-\note{Buggy! For some reason both trigger icons don't show! Just the down arrow!}
+\value{an ExtWidget instance\code{gspinbutton}: an ExtWidget instance
+
+
+}
+\note{Buggy! For some reason both trigger icons don't show! Just the down arrow!Buggy! For some reason both trigger icons don't show! Just the down arrow!}
 \arguments{\item{from}{from value}
 \item{to}{to}
 \item{by}{by. From to by are same as seq() usage}
@@ -21,5 +24,12 @@
 }
 \examples{w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-sp <- gspinbutton(cont=w)}
+sp <- gspinbutton(cont=w)\code{gspinbutton}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+sp <- gspinbutton(cont=w)
+
+
+}
+
+\alias{gspinbutton}
 

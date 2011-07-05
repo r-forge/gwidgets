@@ -5,9 +5,15 @@
     height, ext.args)
 }
 \description{gframe is a title-decorated ggroup box container}
-\details{Use \code{svalue<-} to adjust the title}
-\value{an ExtContainer object}
-\seealso{\code{\link{ggroup}}}
+\details{Use \code{svalue<-} to adjust the title\code{gframe}: Use \code{svalue<-} to adjust the title
+
+
+}
+\value{an ExtContainer object\code{gframe}: an ExtContainer object
+
+
+}
+\seealso{\code{\link{ggroup}}\code{\link{ggroup}}}
 \arguments{\item{text}{label text}
 \item{pos}{position of label. Ignored?}
 \item{horizontal}{logical. A hbox or vbox?}
@@ -21,5 +27,13 @@
 \examples{w <- gwindow()
 g <- gframe("Label", cont=w)
 b <- gbutton("insider frame", cont=g)
-svalue(g) <- "new label"}
+svalue(g) <- "new label"\code{gframe}: w <- gwindow()
+g <- gframe("Label", cont=w)
+b <- gbutton("insider frame", cont=g)
+svalue(g) <- "new label"
+
+
+}
+
+\alias{gframe}
 

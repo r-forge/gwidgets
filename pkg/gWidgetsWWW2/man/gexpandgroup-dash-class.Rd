@@ -3,3 +3,5 @@
 \title{base class for gexpandgroup...}
 \description{base class for gexpandgroup}
 
+\alias{gexpandgroup-class}
+

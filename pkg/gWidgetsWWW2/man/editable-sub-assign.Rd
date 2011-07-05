@@ -8,3 +8,5 @@
 \item{value}{logical}
 }
 
+\alias{editable<-}
+

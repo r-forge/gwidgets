@@ -3,3 +3,5 @@
 \title{base class for gimage...}
 \description{base class for gimage}
 
+\alias{gimage-class}
+

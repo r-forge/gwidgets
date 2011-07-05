@@ -3,3 +3,5 @@
 \title{base class for glayout...}
 \description{base class for glayout}
 
+\alias{glayout-class}
+

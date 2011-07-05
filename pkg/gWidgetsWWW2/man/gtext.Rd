@@ -5,7 +5,10 @@
     container, ..., ext.args, resizable=FALSE)
 }
 \description{A text area widget}
-\value{an ExtWidget instance}
+\value{an ExtWidget instance\code{gtext}: an ExtWidget instance
+
+
+}
 \arguments{\item{text}{initial text}
 \item{width}{width in pixels}
 \item{height}{height in pixels}
@@ -27,5 +30,19 @@ galert(svalue(b), parent=w)
 })
 b <- gbutton("change", cont=g, handler=function(h,...) {
 svalue(t) <= "some new text"
-})}
+})\code{gtext}: w <- gwindow("gtext example")
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+g <- ggroup(cont=w, horizontal=FALSE)
+t <- gtext("Some text with \n new lines", cont=g)
+b <- gbutton("click", cont=g, handler=function(h,...) {
+galert(svalue(b), parent=w)
+})
+b <- gbutton("change", cont=g, handler=function(h,...) {
+svalue(t) <= "some new text"
+})
+
+
+}
+
+\alias{gtext}
 

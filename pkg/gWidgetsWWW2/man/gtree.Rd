@@ -8,8 +8,14 @@
 \details{Widget to display heirarchical data. The data is described by a
 function which returns the offspring for agiven node in a specific
 format. This implementation can only show one column's worth of
-data and an icon.}
-\note{TODO: implement multiple slection, grids,}
+data and an icon.\code{gtree}: Widget to display heirarchical data. The data is described by a
+function which returns the offspring for agiven node in a specific
+format. This implementation can only show one column's worth of
+data and an icon.
+
+
+}
+\note{TODO: implement multiple slection, grids,TODO: implement multiple slection, grids,}
 \arguments{\item{offspring}{Function with signature (path, data). Returns a
 data frame with columns: id (which create the path), hasOffspring
 (logical indicating if it has children), optionally an icon (a
@@ -43,5 +49,25 @@ gseparator(cont=g)
 tr <- gtree(offspring=offspring, icon.FUN=TRUE, cont=g)
 size(tr) <- c(300,300)
 b <- gbutton("Try again", cont=g, handler=function(h,...) tr$update())
-visible(w) <- TRUE}
+visible(w) <- TRUE\code{gtree}: # galton watson
+offspring <- function(path, ...) {
+x <- rbinom(2, 1, p=1/2)
+icons <- c("dismiss","ok")[2-x]
+nms <- c("branch","leaf")[x+1]
+ttip <- paste("This is a ", nms)
+data.frame(id=letters[1:2], hasoffspring=as.logical(x), icons=icons, value=nms, qtip=ttip, stringsAsFactors=FALSE)
+}
+w <- gwindow("Galton Watson tree")
+g <- ggroup(cont=w, horizontal=FALSE)
+ghtml("A node in a Galton-Watson tree has 0 or 2 offspring.<br /> In this case each has equal chance.", cont=g)
+gseparator(cont=g)
+tr <- gtree(offspring=offspring, icon.FUN=TRUE, cont=g)
+size(tr) <- c(300,300)
+b <- gbutton("Try again", cont=g, handler=function(h,...) tr$update())
+visible(w) <- TRUE
+
+
+}
+
+\alias{gtree}
 

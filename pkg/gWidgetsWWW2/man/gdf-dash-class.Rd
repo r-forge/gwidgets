@@ -3,3 +3,5 @@
 \title{base class for gdatarframe...}
 \description{base class for gdatarframe}
 
+\alias{gdf-class}
+

@@ -5,7 +5,10 @@
     action, container, ..., width, height, ext.args)
 }
 \description{A group of checkboxes}
-\value{An ExtWidget instance}
+\value{An ExtWidget instance\code{gcheckboxgroup}: An ExtWidget instance
+
+
+}
 \arguments{\item{items}{vector of items to select from}
 \item{checked}{initial value of checked state. Recycled}
 \item{horizontal}{Layout horizontally?}
@@ -22,5 +25,12 @@ frame.}
 }
 \examples{w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-cbg <- gcheckboxgroup(state.name[1:4], cont=w)}
+cbg <- gcheckboxgroup(state.name[1:4], cont=w)\code{gcheckboxgroup}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+cbg <- gcheckboxgroup(state.name[1:4], cont=w)
+
+
+}
+
+\alias{gcheckboxgroup}
 

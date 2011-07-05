@@ -3,3 +3,5 @@
 \title{base class for menu instances.}
 \description{base class for menu instances.}
 
+\alias{gmenu-class}
+

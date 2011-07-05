@@ -3,3 +3,5 @@
 \title{base class for ggroup...}
 \description{base class for ggroup}
 
+\alias{ggroup-class}
+

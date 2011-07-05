@@ -8,3 +8,5 @@
 \item{value}{to set into x}
 }
 
+\alias{coerceValue.logical}
+

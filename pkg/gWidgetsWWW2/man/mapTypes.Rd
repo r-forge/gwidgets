@@ -7,3 +7,5 @@
 \arguments{\item{x}{object}
 }
 
+\alias{mapTypes}
+

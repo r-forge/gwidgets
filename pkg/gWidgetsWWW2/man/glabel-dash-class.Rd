@@ -3,3 +3,5 @@
 \title{base class for glabel...}
 \description{base class for glabel}
 
+\alias{glabel-class}
+

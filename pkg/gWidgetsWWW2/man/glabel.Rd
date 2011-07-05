@@ -5,7 +5,10 @@
     width, height, ext.args)
 }
 \description{A label widget}
-\value{an ExtWidget object}
+\value{an ExtWidget object\code{glabel}: an ExtWidget object
+
+
+}
 \arguments{\item{text}{text for label. Main property. Use \code{svalue<-} to change.}
 \item{markup}{logical. Ignored, but see example for \code{ext.args} usage}
 \item{editable}{logical. Ignored}
@@ -20,5 +23,13 @@
 \examples{w <- gwindow()
 sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
 glabel("A label widget", cont=w)
-glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))}
+glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))\code{glabel}: w <- gwindow()
+sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
+glabel("A label widget", cont=w)
+glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))
+
+
+}
+
+\alias{glabel}
 

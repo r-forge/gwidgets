@@ -7,3 +7,5 @@
 \item{value}{font specification, a named list, eg. list(size=10, color="red")}
 }
 
+\alias{font<-}
+

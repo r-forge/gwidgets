@@ -3,3 +3,5 @@
 \title{make stock icons...}
 \description{make stock icons}
 
+\alias{make_stock_icons}
+
