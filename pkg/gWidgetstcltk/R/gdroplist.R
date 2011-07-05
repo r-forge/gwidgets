@@ -202,8 +202,9 @@ setReplaceMethod(".svalue",
                        }
                      }
                    }
-                   ## notify event handlers
-                   tkevent.generate(getWidget(obj), "<<ComboboxSelected>>")
+                   ## notify event handlers unless set to 0
+                   if(!(index && value < 0))
+                     tkevent.generate(getWidget(obj), "<<ComboboxSelected>>")
                    
                    return(obj)
                  })
