@@ -167,6 +167,11 @@
 \alias{.gimage-methods}
 \alias{.gimage,guiWidgetsToolkitRGtk2-method} 
 %%
+%% --  .ghtml --
+%%
+\alias{.ghtml-methods}
+\alias{.ghtml,guiWidgetsToolkitRGtk2-method} 
+%%
 %% --  .gstatusbar --
 %%
 \alias{.gstatusbar-methods}
