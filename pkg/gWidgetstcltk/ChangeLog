@@ -1,6 +1,11 @@
+2011-07-05  verzani  <verzani@gauss>
+
+	* R/gfile.R: forgot call of tclvalue. Thanks Richie!
+
 2011-07-03  John Verzani  <jverzani@gmail.com>
 
-	* R/gdroplist.R: issue with select and n=1, changed condition
+	* R/gdroplist.R: issue with select and n=1, changed
+	condition. Thanks Erich
 
 2011-06-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 

@@ -83,18 +83,22 @@ setMethod(".gfile",
 
             } else if(type == "save") {
 
-              val = tkgetSaveFile(initialfile=initialfilename, title=text)
+              l <- list(title=text)
+              l$initialfile <- initialfilename
+              val <- do.call(tkgetSaveFile, l)
+              val <- tclvalue(val)
               
             } else if(type == "selectdir") {
 
-              val = tkchooseDirectory()
+              val <- tkchooseDirectory()
+              val <- tclvalue(val)
               
             }
 
 
             
             if (length(val) > 1 || nchar(val) > 0) {
-              h = list(ref = NULL, action=action, file=val)
+              h = list(obj = NULL, action=action, file=val)
               if(!is.null(handler)) 
                 handler(h)
               
