@@ -165,6 +165,12 @@
 \alias{.gstatusbar-methods}
 \alias{.gstatusbar,guiWidgetsToolkittcltk-method} 
 %%
+%% --  .ghtml --
+%%
+\alias{.ghtml-methods}
+\alias{.ghtml,guiWidgetsToolkittcltk-method} 
+%%
+%%
 %% --  .gseparator --
 %%
 \alias{.gseparator-methods}

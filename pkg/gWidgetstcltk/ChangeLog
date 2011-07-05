@@ -1,5 +1,7 @@
 2011-07-05  verzani  <verzani@gauss>
 
+	* R/ghtml.R: added ghtml stub
+
 	* R/gdroplist.R: fix to svalue<- so that event handlers are
 	called. (Thanks Yves).
 
