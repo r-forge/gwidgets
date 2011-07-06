@@ -649,6 +649,7 @@
 %%
 \alias{.focus-methods}
 \alias{.focus,gWidgettcltk,guiWidgetsToolkittcltk-method} 
+\alias{.focus,gWindowtcltk,guiWidgetsToolkittcltk-method} 
 %%
 %% --  focus<- --
 %%
@@ -661,7 +662,7 @@
 %%
 \alias{.focus<--methods}
 \alias{.focus<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
-\alias{.focus<-,GtkWindow,guiWidgetsToolkittcltk-method}
+\alias{.focus<-,gWindowtcltk,guiWidgetsToolkittcltk-method}
 \alias{.focus<-,tcltkObject,guiWidgetsToolkittcltk-method} 
 %%
 %% --  defaultWidget --

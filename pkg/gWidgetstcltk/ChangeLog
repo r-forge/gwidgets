@@ -1,5 +1,8 @@
 2011-07-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/gwindow.R: add focus method for windows. Focusing a window
+	raises window, focusing control gives that control the focus.
+
 	* R/gimage.R: added digest call to file name to eliminate spaces
 	(Thanks Erich)
 

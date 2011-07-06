@@ -276,6 +276,31 @@ setMethod(".update",
             tkwm.geometry(w, "")
             invisible()
           })
+
+
+##' focus will raise window
+##'
+##' @param object gwindow object
+##' @param toolkit name of toolkit
+##' @param ... ignored
+##' @return NULL called for side effect of raising window
+setMethod(".focus",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gWindowtcltk"),
+          function(obj, toolkit, ...) {
+            w <- getBlock(obj)
+            tkraise(w)
+          })
+
+setReplaceMethod(".focus",
+                 signature(toolkit="guiWidgetsToolkittcltk",obj="gWindowtcltk"),
+                 function(obj, toolkit, ..., value) {
+                   if(as.logical(value)) {
+                     w <- getBlock(obj)
+                     tkraise(w)
+                   }
+                   return(obj)
+                 })
+                
 ##################################################
 ## handlers
 
