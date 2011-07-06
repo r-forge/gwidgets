@@ -205,13 +205,41 @@ setReplaceMethod(".size",
                  function(obj, toolkit, ..., value) {
                    ## width in characters, height in lines
                    ## convert Pixels to each
-                   width <- ceiling(value[1]/widthOfChar)
-                   if(length(value) > 1)
-                     height <- ceiling(value[2]/heightOfChar)
-                   else
-                     height <- 0
 
-                   if(height > 0)
+                   ## XXX TODO: Hack in iterative process to fix size. This doesn't match
+                   ## size(obj) <- width; size(obj)[1] - width == 0 (or even close)
+
+                   ## simple way is
+                   width <- value[1]
+                   height <- NULL
+                   if(length(value) > 1)
+                     height <- value[2]
+                   
+                   ## ## set width
+                   ## f <- function(lamda) {
+                   ##   tkconfigure(getWidget(obj), width=ceiling(width*lamda/widthOfChar))
+                   ##   act_width <- as.numeric(tkwinfo("width", getWidget(obj)))
+                   ##   abs(act_width - width)
+                   ## }
+                   ## nlm(f, 1)#, stepmax=.05, steptol=.01)
+
+                   ## if(!is.null(height)) {
+                   ##   f <- function(char_height) {
+                   ##     tkconfigure(getWidget(obj), height=ceiling(width/char_height))
+                   ##     act_width <- as.numeric(tkwinfo("height", getWidget(obj)))
+                   ##     abs(act_width - width)
+                   ##   }
+                   ##   nlm(f, heightOfChar, steptol=1)
+
+                   ## }
+
+
+
+                   width <- ceiling(width/widthOfChar)
+                   if(!is.null(height))
+                     height <- ceiling(height/heightOfChar)
+
+                   if(!is.null(height))
                      tkconfigure(getWidget(obj), width=width, height=height)
                    else
                      tkconfigure(getWidget(obj), width=width)

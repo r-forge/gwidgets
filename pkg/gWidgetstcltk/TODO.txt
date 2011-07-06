@@ -1,5 +1,8 @@
 TODO:
 ---------
+* fix radiobuttons with no selection(Richie: remove variable check,
+..)
+* optimize size<- with components
 * FIx gtree??
 * fix use.scrollwindow in ggroup
 * gspinbox: like gslider, make spin over sortable vectors.

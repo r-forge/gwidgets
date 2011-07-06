@@ -43,8 +43,8 @@ setMethod(".gexpandgroup",
 
             labelGroup = ggroup(horizontal=TRUE, cont=cg)
 
-            rightArrow = system.file("images/1rightarrow.gif",package="gWidgets")
-            downArrow = system.file("images/1downarrow.gif",package="gWidgets")
+            rightArrow = system.file("images","1rightarrow.gif",package="gWidgets")
+            downArrow = system.file("images","1downarrow.gif",package="gWidgets")
 
             icon = gimage(downArrow,cont=labelGroup)
             label = glabel(text, cont=labelGroup)

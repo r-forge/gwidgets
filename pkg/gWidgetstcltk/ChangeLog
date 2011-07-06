@@ -1,3 +1,8 @@
+2011-07-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gimage.R: added digest call to file name to eliminate spaces
+	(Thanks Erich)
+
 2011-07-05  verzani  <verzani@gauss>
 
 	* R/ghtml.R: added ghtml stub

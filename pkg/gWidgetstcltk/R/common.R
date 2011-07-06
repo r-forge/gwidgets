@@ -2,7 +2,7 @@
 #Paste = function(x,...) paste(x,...,sep="",collapse="")
 
 ## CONSTANTS
-widthOfChar <- ceiling(as.numeric(tclvalue(tcl("font","measure","TkTextFont","0123456789")))/10)
+widthOfChar <- ceiling(as.numeric(tclvalue(tcl("font","measure","TkTextFont","0"))))
 heightOfChar <-  as.numeric(as.character(tcl("font","metrics","TkTextFont"))[6])
 xyToAnchor = function(anchor) {
   m = rbind(
