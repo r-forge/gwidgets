@@ -29,7 +29,7 @@ setMethod("add",signature(obj="guiComponent"),
 setGeneric("focus",function(obj, ...) standardGeneric("focus"))
 
 ##' method to check is a component has the focus 
-setMethod("focus",signature(obj="guiComponent"),
+setMethod("focus",signature(obj="guiWidget"),
           function(obj, ...) {
             toolkit = obj@toolkit
             .focus(obj@widget, toolkit,...)
@@ -45,7 +45,7 @@ setGeneric(".focus",function(obj, toolkit,...) standardGeneric(".focus"))
 setGeneric("focus<-",function(obj, ..., value) standardGeneric("focus<-"))
 
 ##' method for setting focus on a component
-setMethod("focus<-",signature(obj="guiComponent"),
+setMethod("focus<-",signature(obj="guiWidget"),
           function(obj, ..., value) {
             toolkit <- obj@toolkit
             .focus(obj@widget, toolkit,...) <- value
