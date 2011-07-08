@@ -239,6 +239,34 @@ setMethod(".update",
             ## XXX implement me
             invisible()
           })
+
+
+
+##' focus will raise window
+##'
+##' @param object gwindow object
+##' @param toolkit name of toolkit
+##' @param ... ignored
+##' @return NULL called for side effect of raising window
+setMethod(".focus",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+          function(obj, toolkit, ...) {
+            w <- getBlock(obj)
+            w$raise()                 # top of stack
+            w$activateWindow()        # keyfocus
+          })
+
+setReplaceMethod(".focus",
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt"),
+                 function(obj, toolkit, ..., value) {
+                   if(as.logical(value)) {
+                     w <- getBlock(obj)
+                     w$raise()                 # top of stack
+                     w$activateWindow()        # keyfocus
+                   }
+                   return(obj)
+                 })
+               
 ##################################################
 ## handlers
 

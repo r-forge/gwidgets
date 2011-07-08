@@ -37,7 +37,7 @@
 ##' @param container container object
 ##' @param ... passed to containers add method
 ##' @TODO implement multiple
-##' @example
+##' @examples
 ##' \dontrun{
 ##' # galton watson
 ##' p <- .5 

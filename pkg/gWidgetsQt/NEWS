@@ -4,6 +4,8 @@ NEWS for gWidgetsQt
 
 Changes for 0.0-2
 -------------------
+* new editable method
+* focus method for gwindow to raise window
 * added arbitrary sortable vector to gslider. (no longer just integer).
 * use device code from qtutils to make ggraphics
 * added code for drag and drop with widgets: gvarbrowser, glabel, ...

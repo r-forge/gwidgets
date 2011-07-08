@@ -66,7 +66,7 @@ gcanvas <- function(f, width=480, height=400,
       out <- String()
       if(!is.null(value)) {
         ## clear out
-        out <- out + "ctx.clear = true;" + '\n' +
+        out <- out + sprintf("ctx.clearRect(0,0,%s,%s);", .$..width, .$..height) +
           paste(readLines(value, warn=FALSE)[-1], collapse="\n") +
             '\n'
       }

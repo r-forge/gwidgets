@@ -49,10 +49,10 @@ detailOn.factor <- function(x, varname, cont, width, height, ...) {
   names(l) <- varname
   gbigtable(l, cont=cont, width=width, height=height)
 }
-detailOn.matrix <- function(x, varname, cont, ...) {
+detailOn.matrix <- function(x, varname, cont, width, height, ...) {
   g <- ggroup(cont=cont, horizontal=FALSE)
   glabel(sprintf("Detail on %s", varname), cont=cont)
-  gtable(as.data.frame(x), cont=g, width=width, height=height)
+  gbigtable(as.data.frame(x), cont=g, width=width, height=height)
 }
 detailOn.data.frame <- function(x, varname, cont, ...) {
   detailOn.matrix(x, varname, cont, ...)

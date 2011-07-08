@@ -289,7 +289,7 @@ gwindow <- function(title="title", visible=TRUE,
                 processFailure +
                   "\n" +
                     paste("function evalJSONResponse(response, options) {",
-                          "  eval(response.responseText);",
+                          "  eval(response.responseText);", 
                           ifelse(.$has_local_slot("..statusBar"),
                                  sprintf("sbwidget=Ext.getCmp('%sstatusBar');sbwidget.clearBusy();", .$ID),
                                  ""),

@@ -4,14 +4,20 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-75
 --------------------------
+
 * bug fix for Observer class to allow proto methods
 
 * reworked fonts for gtext so that tags are not preloaded. That was
   much too slow.
 
+* new editable generic, but no methods yet
+
+* focus method for gwindow to raise window
+
 Changes for version 0.0-74
 --------------------------
- * bug fixes svalue<-gtable and block_handlers
+
+* bug fixes svalue<-gtable and block_handlers
 
 Changes for version 0.0-73
 --------------------------

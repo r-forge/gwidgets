@@ -5,7 +5,7 @@
 ## probabilityCalculator -- get Type of calculation spelled correctly
 ## * speed up the drawing
 ## constructionOFNormal -- add handler to no. of variables., ... m and n
-histogramAndDensity = function(container=gwindow("Window 1: idea of a density")) {
+histogramAndDensity = function(container=gwindow("Window 1: idea of a density", visible=FALSE)) {
   library(gWidgets)
 
   availDists = c(Uniform = "unif", Normal = "norm", Gamma = "gamma")
@@ -89,8 +89,8 @@ histogramAndDensity = function(container=gwindow("Window 1: idea of a density"))
 
 
   sampleSize = gradio(c(500, 5000, 50000),handler=updatePlot)
-displayWhat = gradio(c("Counts","Frequencies","Density of frequencies"),handler=updatePlot)
-displayFunc = gcheckbox("Theoretical density",handler=addDensity)
+  displayWhat = gradio(c("Counts","Frequencies","Density of frequencies"),handler=updatePlot)
+  displayFunc = gcheckbox("Theoretical density",handler=addDensity)
 
   param1label = glabel(theParams[[availDists[1]]][1])
   param2label = glabel(theParams[[availDists[1]]][2])
@@ -100,42 +100,44 @@ displayFunc = gcheckbox("Theoretical density",handler=addDensity)
   cutpoints = gedit("",coerce.with=rpel)
 
 
-BigGroup = ggroup(cont = container)
-group = ggroup(horizontal = FALSE, container = BigGroup)
-
-
-tmp = gframe("Distribution", container = group)
-distribGroup = glayout(container=tmp)
-distribGroup[1,1]=glabel("Law")
-distribGroup[1,2]=distribution
-distribGroup[2,1]=param1label
-distribGroup[2,2]=param1
-distribGroup[3,1]=param2label
-distribGroup[3,2]=param2
-visible(distribGroup)=TRUE
-
-tmp = gframe("Sample size", container = group)
-add(tmp, sampleSize)
-
-tmp = gframe("Display", container = group)
-add(tmp,displayWhat)
-#add(tmp,displayFunc)
-
-tmp = gframe("Cutpoints", container = group)
-add(tmp,cutpoints,expand=TRUE)
-
-addSpring(group)
-
-buttonGroup=ggroup(container=group)
-
+  BigGroup = ggroup(cont = container)
+  group = ggroup(horizontal = FALSE, container = BigGroup)
+  
+  
+  tmp = gframe("Distribution", container = group)
+  distribGroup = glayout(container=tmp)
+  distribGroup[1,1]=glabel("Law")
+  distribGroup[1,2]=distribution
+  distribGroup[2,1]=param1label
+  distribGroup[2,2]=param1
+  distribGroup[3,1]=param2label
+  distribGroup[3,2]=param2
+  visible(distribGroup)=TRUE
+  
+  tmp = gframe("Sample size", container = group)
+  add(tmp, sampleSize)
+  
+  tmp = gframe("Display", container = group)
+  add(tmp,displayWhat)
+                                        #add(tmp,displayFunc)
+  
+  tmp = gframe("Cutpoints", container = group)
+  add(tmp,cutpoints,expand=TRUE)
+  
+  addSpring(group)
+  
+  buttonGroup=ggroup(container=group)
+  
   if(missing(container))
     gbutton("cancel", container=buttonGroup, handler = function(h,...) dispose(container))
-
+  
   addSpring(buttonGroup)
-gbutton("display",container=buttonGroup, handler=updatePlot)
+  gbutton("display",container=buttonGroup, handler=updatePlot)
+  
+  add(BigGroup, ggraphics())
 
-add(BigGroup, ggraphics())
-
+  visible(container) <- TRUE
+  
   invisible(BigGroup)
   
 }
@@ -380,7 +382,7 @@ add(BigGroup, ggraphics())
   invisible(BigGroup)
 }
 
-constructionOfNormal = function(container = gwindow("Construction of normal from X1 + X2 + ... + Xn")) {
+constructionOfNormal = function(container = gwindow("Construction of normal from X1 + X2 + ... + Xn", visible=FALSE)) {
   
   library(gWidgets)
   
@@ -482,5 +484,7 @@ addSpring(buttonGroup)
 gbutton("update",container=buttonGroup, handler=updatePlot)
 
 add(BigGroup, ggraphics())
+
+  visible(container) <- TRUE
   invisible(BigGroup)
 }

@@ -415,6 +415,34 @@ setReplaceMethod(".enabled",
                    return(obj)
                  })
 
+## editable -- can the widget be edited
+setMethod("editable",signature(obj="gWidgetQt"),
+          function(obj, ...) {
+            return()
+            .editable(obj, obj@toolkit,...)
+          })
+
+setMethod(".editable",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWidgetQt"),
+          function(obj, toolkit, ...) {
+            message("no default editable method")
+          })
+
+## editable<-
+setReplaceMethod("editable",signature(obj="gWidgetQt"),
+                 function(obj, ..., value) {
+                   .editable(obj, obj@toolkit,...) <- value
+                   return(obj)
+                 })
+
+setReplaceMethod(".editable", 
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gWidgetQt"),
+                 function(obj, toolkit, ..., value) {
+                   message("no default editable<- method")
+                   return(obj)
+                 })
+
+
 ## focus
 setMethod("focus",signature(obj="gWidgetQt"),
           function(obj, ...) {

@@ -87,6 +87,7 @@
 \alias{enabled<-,guiWidget-method}
 \alias{focus,guiWidget-method}
 \alias{focus,guiComponent-method}
+\alias{focus<-,guiWidget-method}
 \alias{focus<-,guiComponent-method}
 \alias{font,guiWidget-method}
 \alias{font<-,guiWidget-method}

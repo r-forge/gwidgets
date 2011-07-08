@@ -658,6 +658,10 @@ makegWidgetsWWWPageHeader <- function(.) {
 #               '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
 #               "<html xmlns='http://www.w3.org/1999/xhtml' xmlns:v='urn:schemas-microsoft-com:vml'>",
 #               "<html xmlns:v=urn:schemas-microsoft-com:vml>",
+               ##
+               '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"',
+               '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+               ##
                "<html>",
                "<head>",
                "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />",
@@ -687,9 +691,16 @@ makegWidgetsWWWPageHeader <- function(.) {
 
                "<script type='text/javascript' src='/custom/gw/ext/examples/ux/ux-all.js'></script>",
                "<script type='text/javascript'>document.getElementById('loading-msg').innerHTML = 'Loading gWidgetsWWW...';</script>",
-               
                ## conditional includes -- values set in constructor on toplevel
                "<script type='text/javascript' src='/custom/gw/gWidgetsWWW.js'></script>",
+
+               ## includes for ace
+               "<script type='text/javascript' src='/custom/gw/ace-uncompressed.js'></script>",
+               "<script type='text/javascript' src='/custom/gw/ace-theme-cobalt.js'></script>",               
+               ## Google stuff -- no api key needed now
+##               '<script type="text/javascript" src="http://www.google.com/jsapi"></script>',
+
+               
                ## ## google stuff -- move out
                ## if(exists("ggooglemaps_key", .) && exists("do_googlemaps", .)) {
                ##   paste(

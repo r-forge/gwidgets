@@ -25,6 +25,9 @@ setGeneric("removeHandler",function(obj, ID=NULL, ...)
 
 ##' base method to remove a handler
 ##'
+##' @param obj object with event handler set for it
+##' @param ID ID of handler returned when handler is set. If NULL, all handlers are removed
+##' @return NULL, called for side effect
 ##' @export
 setMethod("removeHandler", signature("guiWidget"),
           function(obj, ID=NULL, ...) {
@@ -46,8 +49,13 @@ setMethod("blockhandler", signature("guiWidget"),
 ##' @alias blockHandler
 setGeneric(".blockhandler",function(obj, toolkit, ID=NULL, ...)
            standardGeneric(".blockhandler"))
-##'
+
 ##' Generic to define method to block a handler from being called
+##' 
+##' @param obj object with event handler set for it
+##' @param ID ID of handler returned when handler is set. If NULL, all handlers are blocked
+##' @return NULL, called for side effect
+##' @export
 setGeneric("blockHandler",function(obj, ID=NULL, ...)
            standardGeneric("blockHandler"))
 
@@ -72,7 +80,14 @@ setMethod("unblockhandler", signature("guiWidget"),
 ##' @alias unblockHandler
 setGeneric(".unblockhandler",function(obj, toolkit, ID=NULL, ...)
            standardGeneric(".unblockhandler"))
-## caps
+
+##' Generic for unblocking a blocked handler
+##'
+##' @param obj object with event handler
+##' @param ID id of handler set through addHandlerXXX call
+##' @param ... ignored
+##' @return NULL, called for side effect
+##' @export
 setGeneric("unblockHandler",function(obj, ID=NULL, ...)
            standardGeneric("unblockHandler"))
 setMethod("unblockHandler", signature("guiWidget"),
@@ -91,8 +106,20 @@ setMethod("addhandler",signature(obj="guiWidget"),
           })
 ## dispatch with toolkit
 setGeneric(".addhandler",function(obj,  toolkit, signal, handler, action=NULL,...) standardGeneric(".addhandler"))
-## caps
+
+##' Add a handler using toolkit-specific signal
+##'
+##' This is not portable across toolkits, as the signal passed in a toolkit specific.
+##' @param obj gWidgets object to get event handler
+##' @param signal toolkit signal defining event
+##' @param handler function to call when event occurs. Uses standard signature (h,...)
+##' @param action used to parameterize handler call, passed in as \code{h$action}
+##' @param ... ignored
+##' @return an ID of the handler for blocking or removal
+##' @export
 setGeneric("addHandler",function(obj, signal, handler, action=NULL, ...) standardGeneric("addHandler"))
+
+##
 setMethod("addHandler",signature(obj="guiWidget"),
           function(obj, signal, handler, action=NULL, ...) {
             toolkit = obj@toolkit
@@ -110,7 +137,14 @@ setMethod("addhandlerchanged",signature(obj="guiWidget"),
           })
 ## dispatch with toolkit
 setGeneric(".addhandlerchanged",function(obj, toolkit,...) standardGeneric(".addhandlerchanged"))
-## caps
+
+
+##' Set handler for most typical event
+##'
+##' The "Changed" handler is set to be called for the most typical
+##' event (arbitrarily defined of course). This event varies from
+##' widget to widget. It is the same event that the widget
+##' constructor's \code{handler} argument is called for.
 setGeneric("addHandlerChanged",function(obj, handler=NULL, action=NULL, ...) standardGeneric("addHandlerChanged"))
 setMethod("addHandlerChanged",signature(obj="guiWidget"),
           function(obj, handler=NULL, action=NULL, ...) {
@@ -351,6 +385,23 @@ setMethod("addHandlerExpose",signature(obj="guiWidget"),
           })
 
 # addhandlerunrealize
+##' handler when window is unrealized
+##'
+##' For gwindow objects this handler is called before the window is closed. If this handler
+##' returns \code{TRUE} the window will be close, if \code{FALSE} the window will not be closed.
+##' @param obj gWidget object
+##' @param handler function with signature (h,...) to call when event occurs
+##' @param action value passed to handler function in component \code{h$action}
+##' @param ... ignored
+##' @return ID of handler, used for blocking or removing
+##' @export
+##' @examples
+##' \dontrun{
+##' w <- gwindow("Really close?")
+##' addHandlerUnrealize(w, handler=function(h,...) {
+##' gconfirm("Really close?", parent=w)
+##' })
+##' }
 setGeneric("addhandlerunrealize",function(obj, handler=NULL, action=NULL, ...) standardGeneric("addhandlerunrealize"))
 setMethod("addhandlerunrealize",signature(obj="guiWidget"),
           function(obj, handler=NULL, action=NULL, ...) {
@@ -367,7 +418,19 @@ setMethod("addHandlerUnrealize",signature(obj="guiWidget"),
             .addhandlerunrealize(obj@widget,toolkit,handler, action, ...)
           })
 
+
+
+
 ## mousemotion
+##' Handler to respond to mouse motion
+##'
+##' Movement of mouse over widget triggers this handler
+##' @param obj gWidget object
+##' @param handler function with signature (h,...) to call when event occurs
+##' @param action value passed to handler function in component \code{h$action}
+##' @param ... ignored
+##' @return ID of handler, used for blocking or removing
+##' @export
 setGeneric("addhandlermousemotion",function(obj, handler=NULL, action=NULL, ...) standardGeneric("addhandlermousemotion"))
 setMethod("addhandlermousemotion",signature(obj="guiWidget"),
           function(obj, handler=NULL, action=NULL, ...) {

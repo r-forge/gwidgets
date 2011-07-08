@@ -634,6 +634,31 @@
 \alias{.enabled<-,gCheckboxQt,guiWidgetsToolkitQt-method} 
 \alias{.enabled<-,gRadioQt,guiWidgetsToolkitQt-method} 
 \alias{.enabled<-,gSpinbuttonQt,guiWidgetsToolkitQt-method} 
+
+%%
+%% --  editable --
+%%
+\alias{editable-methods}
+\alias{editable,guiWidget-method}
+\alias{editable,gWidgetQt-method} 
+%%
+%% --  .editable --
+%%
+\alias{.editable-methods}
+\alias{.editable,gWidgetQt,guiWidgetsToolkitQt-method} 
+%%
+%% --  editable<- --
+%%
+\alias{editable<--methods}
+\alias{editable<-,guiWidget-method}
+\alias{editable<-,gWidgetQt-method} 
+%%
+%% --  .editable<- --
+%%
+\alias{.editable<--methods}
+\alias{.editable<-,gWidgetQt,guiWidgetsToolkit-method}
+\alias{.editable<-,gWidgetQt,guiWidgetsToolkitQt-method}
+
 %%
 %% --  size --
 %%
@@ -687,6 +712,7 @@
 %%
 \alias{.focus-methods}
 \alias{.focus,gWidgetQt,guiWidgetsToolkitQt-method} 
+\alias{.focus,gWindowQt,guiWidgetsToolkitQt-method} 
 %%
 %% --  focus<- --
 %%
@@ -698,7 +724,8 @@
 %%
 \alias{.focus<--methods}
 \alias{.focus<-,gWidgetQt,guiWidgetsToolkitQt-method}
-\alias{.focus<-,RQtObject,guiWidgetsToolkitQt-method} 
+\alias{.focus<-,RQtObject,guiWidgetsToolkitQt-method}
+\alias{.focus<-,gWindowQt,guiWidgetsToolkitQt-method} 
 %%
 %% --  defaultWidget --
 %%
