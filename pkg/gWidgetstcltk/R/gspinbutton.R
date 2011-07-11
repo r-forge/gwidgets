@@ -1,7 +1,13 @@
 ## Could make spinbutton slider, subclass as methods are identical
+## setClass("gSpinbuttontcltk",
+##          contains="gComponenttcltk",
+##          prototype=prototype(new("gComponenttcltk"))
+##          )
+
 setClass("gSpinbuttontcltk",
-         contains="gComponenttcltk",
-         prototype=prototype(new("gComponenttcltk"))
+         representation = representation("gComponentR5tcltk"),
+         contains="gComponentR5tcltk",
+         prototype=prototype(new("gComponentR5tcltk"))
          )
 
 setMethod(".gspinbutton",
@@ -13,9 +19,6 @@ setMethod(".gspinbutton",
 
             force(toolkit)
 
-            ## no spinbutton in the tcltk
-            vals =  as.character(seq(from,to,by=by))
-            
             
             if(is(container,"logical") && container)
               container = gwindow()
@@ -23,41 +26,67 @@ setMethod(".gspinbutton",
               warning("Container is not correct. No NULL containers possible\n" )
               return()
             }
-            
 
             tt = getWidget(container)
-            gp = ttkframe(tt)
-            
-            sb = tkwidget(gp, "spinbox", from=from, to=to, increment=by)
-            tcl(sb,"set",value)
-            tkpack(sb, expand=TRUE, fill="both")
-            
-            obj = new("gSpinbuttontcltk",block=gp, widget=sb,
+            sp_widget <-  getRefClass("SpinButton")$new(parent=tt, from=from, to=to, by=by)
+
+            obj = new("gSpinbuttontcltk",block=sp_widget$get_widget(), widget=sp_widget$get_widget(),
+              R5widget=sp_widget,
               toolkit=toolkit, ID=getNewID(), e = new.env())
+
+            ## add to container
+            add(container,  obj,...)
             
-            add(container, obj,...)
-            
-            if (!is.null(handler))  {
-              id = addhandlerchanged(obj, handler, action)
-            }
-            
+            ## add handler
+            if(!is.null(handler))
+              addhandlerchanged(obj, handler, action)
+
             invisible(obj)
+            
+            ## ## no spinbutton in the tcltk
+            ## vals =  as.character(seq(from,to,by=by))
+            
+
+            ## tt = getWidget(container)
+            ## gp = ttkframe(tt)
+            
+            ## sb = tkwidget(gp, "spinbox", from=from, to=to, increment=by)
+            ## tcl(sb,"set",value)
+            ## tkpack(sb, expand=TRUE, fill="both")
+            
+            ## obj = new("gSpinbuttontcltk",block=gp, widget=sb,
+            ##   toolkit=toolkit, ID=getNewID(), e = new.env())
+            
+            ## add(container, obj,...)
+            
+            ## if (!is.null(handler))  {
+            ##   id = addhandlerchanged(obj, handler, action)
+            ## }
+            
+            ## invisible(obj)
           })
 
 ### methods
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            sb = getWidget(obj)
-            val = as.numeric(tcl(sb,"get"))
-            return(val)
+            sp_widget <- obj@R5widget
+            sp_widget$get_value()
+
+            ## sb = getWidget(obj)
+            ## val = as.numeric(tcl(sb,"get"))
+            ## return(val)
           })
 
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   sb = getWidget(obj)
-                   tcl(sb,"set",value)
+                   sp_widget <- obj@R5widget
+
+                   sp_widget$set_value(value)
+                   
+                   ## sb = getWidget(obj)
+                   ## tcl(sb,"set",value)
                    return(obj)
                  })
 
@@ -88,24 +117,28 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkittcltk",x="gSpinbuttontcltk"),
           function(x, toolkit, i, j, ..., value) {
             obj <- x
-            widget <- getWidget(obj)
+            sp_widget <- obj@R5widget
+            sp_widget$set_items(value)
 
-            ## check that value is a regular sequence
-            if(length(value) <=1) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            if(length(value) > 2 &&
-               !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
-              warning("Can only assign a vector with equal steps, as produced by seq")
-              return(obj)
-            }
-            ## get current value, increment
-            curValue <- svalue(obj)
-            inc <- head(diff(value), n=1)
 
-            tkconfigure(widget, from=min(value), to =max(value), increment=inc)
-            tcl(widget, "set", curValue)
+            ## widget <- getWidget(obj)
+
+            ## ## check that value is a regular sequence
+            ## if(length(value) <=1) {
+            ##   warning("Can only assign a vector with equal steps, as produced by seq")
+            ##   return(obj)
+            ## }
+            ## if(length(value) > 2 &&
+            ##    !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
+            ##   warning("Can only assign a vector with equal steps, as produced by seq")
+            ##   return(obj)
+            ## }
+            ## ## get current value, increment
+            ## curValue <- svalue(obj)
+            ## inc <- head(diff(value), n=1)
+
+            ## tkconfigure(widget, from=min(value), to =max(value), increment=inc)
+            ## tcl(widget, "set", curValue)
 
             ## all done
             return(obj)
@@ -126,25 +159,39 @@ setReplaceMethod(".size",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            #.addhandlerclicked(obj, toolkit, handler, action,...)
 
-            changeHandler <- handler
+            sp_widget <- obj@R5widget            
+            user.data=list(obj=obj, handler=handler, action=action)
+            ##            id <- rb_widget$add_handler("<ButtonRelease-1>",
+            id <- sp_widget$add_handler("command",
+                                        handler=function(user.data) {
+                                          h <- user.data[c("obj", "action")]
+                                          user.data$handler(h)
+                                        },
+                                        user.data=user.data)
+            invisible(id)
 
-            ## need a pause
-            addhandler(obj,toolkit, signal="<Button-1>",
-                       action=action, 
-                       handler = function(h,...) {
-                           tcl("after",150,function(...) {
-                             changeHandler(h,...) ## need to pause
-                           })
-                         })
 
-            addhandler(obj,toolkit, signal="<Return>",
-                       action=action, 
-                       handler = function(h,...) {
-                         tcl("after",150,function(...) {
-                           changeHandler(h,...) ## need to pause
-                         })
-                       })
+
+            ##                             #.addhandlerclicked(obj, toolkit, handler, action,...)
+
+            ## changeHandler <- handler
+
+            ## ## need a pause
+            ## addhandler(obj,toolkit, signal="<Button-1>",
+            ##            action=action, 
+            ##            handler = function(h,...) {
+            ##                tcl("after",150,function(...) {
+            ##                  changeHandler(h,...) ## need to pause
+            ##                })
+            ##              })
+
+            ## addhandler(obj,toolkit, signal="<Return>",
+            ##            action=action, 
+            ##            handler = function(h,...) {
+            ##              tcl("after",150,function(...) {
+            ##                changeHandler(h,...) ## need to pause
+            ##              })
+            ##            })
 
           })

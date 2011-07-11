@@ -1,3 +1,24 @@
+2011-07-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gspinbutton.R: Big change. Went to R5 widget to  use "command"
+	for the handler, rather than hacking. This is an issue though --
+	doesn't work well with the Mac, exposing a bug that can be
+	triggered by the following tcltk code:
+
+	w <- tktoplevel()
+	s <- tkwidget(w, "spinbox", from=0, to=10, increment=1)
+	tkpack(s)
+	tkconfigure(s, "command"=function(...) print("hi"))
+	tcl(s, "set", 5L)
+	## clicking on spinbutton can cause continuous invoking of widget
+	## until focus is on spinbutton
+
+	This might be fixed by 8.5.9 -- which has a ttk::spinbox, but
+	8.5.8 is the current version of tk for windows
+
+	* R/gfile.R: added addhandlerchanged method. Didn't do yet
+	((un)blockhandler or removehandler). Use tag(obj, "entry") for that
+
 2011-07-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R: changed default for fill for ggroup, gframe,

@@ -169,8 +169,7 @@ setMethod(".gfilebrowse",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gFilebrowsetcltk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            
-            entry = tag(obj,"entry")
+            entry <- tag(obj,"entry")
             svalue(entry,index,drop,...)
           })
 
@@ -179,8 +178,15 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkittcltk",
                            obj="gFilebrowsetcltk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   entry = tag(obj,"entry")
-                   svalue(entry, index,...) <- value
+                   entry <- tag(obj,"entry")
+                   svalue(entry, index, ...) <- value
                    return(obj)
           })
 
+## Pass down to entry -- id must good for entry though XXX could be fixed
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gFilebrowsetcltk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            entry <- tag(obj, "entry")
+            addHandlerChanged(entry, handler, action, ...)
+          })

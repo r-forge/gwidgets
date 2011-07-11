@@ -870,6 +870,7 @@
 \alias{.addhandlerchanged,gCalendartcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gDroplisttcltk,guiWidgetsToolkittcltk-method}
+\alias{.addhandlerchanged,gFilebrowsetcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gImagetcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gTabletcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gTableWithFiltertcltk,guiWidgetsToolkittcltk-method}

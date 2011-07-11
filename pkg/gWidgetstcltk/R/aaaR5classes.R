@@ -884,6 +884,59 @@ setRefClass("CheckButtonGroup",
             )
 
 
+##' spinbutton class. Spinbutton is not a themed widget!
+setRefClass("SpinButton",
+            contains=c("TcltkWidget"),
+            methods= list(
+              ## subclass overrides
+              init_widget = function(parent, from=0, to=100, by=1, ...) {
+                ## ttk spinbox new as of 8.5.9 
+                out <- try(tkwidget(parent, "ttk::spinbox", from=from, to=to, increment=by))
+                if(inherits(out, "try-error"))
+                  out <- tkwidget(parent, "spinbox", from=from, to=to, increment=by)
+                widget <<- out
+              },
+              get_value = function() {
+                "Return specified value"
+                as.numeric(tcl(widget,"get"))
+              },
+              set_value = function(value, notify=FALSE) {
+                "set spinner values"
+                tcl(widget,"set", as.numeric(value))
+                if(notify) {
+                  message("notify handler")
+                }
+              },
+              set_items = function(items) {
+                "Set items to select from. A regular sequence"
+                ## check that value is a regular sequence
+                if(length(items) <=1) {
+                  warning("Can only assign a vector with equal steps, as produced by seq")
+                  return(obj)
+                }
+                if(length(items) > 2 &&
+                   !all.equal(diff(diff(items)), rep(0, length(items) - 2))) {
+                  warning("Can only assign a vector with equal steps, as produced by seq")
+                  return(obj)
+                }
+                
+                ## get current value, increment
+                curValue <- get_value()
+                inc <- head(diff(items), n=1)
+
+                tkconfigure(widget, from=min(items), to=max(items), increment=inc)
+                tcl(widget, "set", curValue)
+
+              },
+              ## override the default for this, spinbox is old widget
+              is_enabled = function() {
+                as.character(tkcget(widget, "-state")) == "normal"
+              }
+              
+              )
+            )
+
+
 ## ##################################################
 ## w <- tktoplevel()
 ## b <- getRefClass("Button")$new(parent=w, text="boom chica boom")
