@@ -870,14 +870,20 @@ setMethod(".add",
             argList = list(getBlock(value))
 
             ## expand, fill, anchor
-            expand <- getWithDefault(theArgs$expand, FALSE)
-            fill <- getWithDefault(theArgs$fill, FALSE) # FALSE, x, y, both=TRUE
+            ## XXX make expand option default to TRUE
+            expand <- getWithDefault(theArgs$expand,
+                                     getWithDefault(getOption("gw:tcltkDefaultExpand", FALSE)))
+
+            ## fill
+            horizontal <- obj@horizontal
+            fill <- getWithDefault(theArgs$fill, ifelse(horizontal, "y", "x")) # FALSE, x, y, both=TRUE
             if(is.logical(fill)) {
               if(fill)
                 fill <- "both"
               else
                 fill <- NULL
             }
+
             ## the default anchor. -1,1 or NW makes layouts nicer looking IMHO
             defaultAnchor <- getWithDefault(getOption("gw:tcltkDefaultAnchor"), c(-1, 1))
             anchor <- xyToAnchor(getWithDefault(theArgs$anchor, defaultAnchor))

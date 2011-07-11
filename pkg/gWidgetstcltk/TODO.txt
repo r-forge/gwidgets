@@ -1,7 +1,9 @@
 TODO:
 ---------
-* fix radiobuttons with no selection(Richie: remove variable check,
-..)
+* when adding to box container make fill orthogonal to pakcing
+dirction the default (HBox fill="y", VBox fill="x")
+* fix radiobuttons with no selection(Richie: remove variable check, 
+..) -- not so easy
 * optimize size<- with components
 * FIx gtree??
 * fix use.scrollwindow in ggroup

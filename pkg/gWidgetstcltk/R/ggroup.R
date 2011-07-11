@@ -137,8 +137,10 @@ setMethod(".ggroup",
             tkconfigure(gp, padding=spacing)
             
 
-            if(!is.null(theArgs$debug))
+            if(!is.null(theArgs$debug)) {
+              theArgs$debug <- NULL
               tkconfigure(gp,borderwidth=4, relief="solid")
+            }
             
             obj = new("gGrouptcltk",block=block, widget=gp, horizontal=horizontal,
               e = new.env())
@@ -154,7 +156,9 @@ setMethod(".ggroup",
 
             ## attach to container if there
             if(!is.null(container)) {
-              add(container, obj,...)
+              theArgs$obj <- container
+              theArgs$value <- obj
+              do.call("add", theArgs)
             }
 
             ## raise if we drag across

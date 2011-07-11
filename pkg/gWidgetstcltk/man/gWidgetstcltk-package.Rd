@@ -53,15 +53,21 @@ only add one handler, new ones overwrite the old. These handlers can
 also not be removed. 
 \cr
 
-\code{ggroup()}  has the \code{expand=} and \code{anchor=}
+\code{ggroup()} has the \code{expand=} \code{fill=} and \code{anchor=}
 arguments. If \code{expand=TRUE} the widget takes up as much space as
-possible. The \code{anchor=} argument adjusts a widget left or right, up
+possible. (The default is \code{expand=TRUE}, unless the option
+\code{"gw:tcltkDefaultExpand"} overrides this.) When a widget has
+expand, then the widget may stretch to fill the expanding space (in
+tcltk, all widgets that have expand=TRUE are allocated evenly any
+additional space). The fill may be TRUE (or both), FALSE, or "x" and
+"y".  The \code{anchor=} argument adjusts a widget left or right, up
 or down, within its space. Only one component works at a time for the
 anchor argument. In a horizontal box, only the y component can be used
-to move a value up or down. In a vertical box, only the x component can
-be used to move a value left or right. The default is c(-1,1) so that
-horizontal layouts are towards the top, and vertical layouts towards the
-left. (This can be overridden: \code{options("gw:tcltkDefaultAnchor"=c(0,0))}, say.)
+to move a value up or down. In a vertical box, only the x component
+can be used to move a value left or right. The default is c(-1,1) so
+that horizontal layouts are towards the top, and vertical layouts
+towards the left. (This can be overridden:
+\code{options("gw:tcltkDefaultAnchor"=c(0,0))}, say.)
 
 The \code{use.scrollwindows} feature is now implemented. (but seems buggy)
 
