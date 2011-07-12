@@ -891,7 +891,7 @@ setRefClass("SpinButton",
               ## subclass overrides
               init_widget = function(parent, from=0, to=100, by=1, ...) {
                 ## ttk spinbox new as of 8.5.9 
-                out <- try(tkwidget(parent, "ttk::spinbox", from=from, to=to, increment=by))
+                out <- try(tkwidget(parent, "ttk::spinbox", from=from, to=to, increment=by), silent=TRUE)
                 if(inherits(out, "try-error"))
                   out <- tkwidget(parent, "spinbox", from=from, to=to, increment=by)
                 widget <<- out

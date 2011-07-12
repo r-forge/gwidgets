@@ -884,8 +884,8 @@ setMethod(".add",
                 fill <- NULL
             }
 
-            ## the default anchor. -1,1 or NW makes layouts nicer looking IMHO
-            defaultAnchor <- getWithDefault(getOption("gw:tcltkDefaultAnchor"), c(-1, 1))
+            ## the default anchor. -1,0 or W makes layouts nicer looking IMHO
+            defaultAnchor <- getWithDefault(getOption("gw:tcltkDefaultAnchor"), c(-1, 0))
             anchor <- xyToAnchor(getWithDefault(theArgs$anchor, defaultAnchor))
 
             ## expand: if TRUE then can either anchor or fill. If 
