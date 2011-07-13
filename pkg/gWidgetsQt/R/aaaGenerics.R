@@ -68,7 +68,9 @@ setOldClass("RQtObject")
                "QAbstractItemView", "QAbstractScrollArea",
                "QMenu", "QMenuBar", "QMenuPopupQt", 
                "QToolBar",
-               "QSvgWidget"
+               "QSvgWidget",
+               "Qanviz::PlotView",
+               "QGraphicsView"          # cranvas
                )
 lapply(.oldClass, function(i) setOldClass(i))
 lapply(.oldClass, function(i) setIs(i, "RQtObject"))

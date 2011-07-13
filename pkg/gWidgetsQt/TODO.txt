@@ -1,19 +1,20 @@
 TODO:
 ---------
+* gtable is broken! indexin isn't right
+* gcheckboxgroup: [<- method working?
+* DND: use QtEvent framework
 * gtable, gdf -- size<- list(width, height, columnWidths)
 * select by rectange in gtable
-* fix gmenu: both main menubar and popups (doesn't show up; no submenus)
 * need to have gbigtable standard for gtable. Michael has changes to incorporate
-* settingn child gwindow transient to parent fails as destroyed event
-not given
 * gexpandgroup: fix resize issues when collapsed
 * dnd with gcombobox?
-* DND: use QtEvent framework
 * gdf: can improve significantly
 * gdf -- column clicks -- can do context menu, but how to get column?
 * gdfnotebook: How to deal with scratch df, names, column selection, ...
+* fix gmenu: both main menubar and popups (doesn't show up; no submenus)
 * gmenu under OS X, is odd.
 
+DONE * gwindow -- how to make child transient for parent: http://stackoverflow.com/questions/4456252/qt-multiple-windows-in-a-parent-child-chain-parent-does-not-close-children
 DONE (qtutils) * ggraphics: Is this from qtpaint or qtdevice, seems like the latter
 DONE * ggraphics notebook needs writing 
 DONE * put in mouse handlers into ggraphics. (click, rubber band?)

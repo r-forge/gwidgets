@@ -61,7 +61,9 @@ setMethod(".gwindow",
                 w$move(pos[1], pos[2])
                 
                 ## make transient ## isn't working as w does not get destroyed event
-                qconnect(parentw, "destroyed", function(...) w$close())
+                ## http://stackoverflow.com/questions/4456252/qt-multiple-windows-in-a-parent-child-chain-parent-does-not-close-children ????
+                addHandlerDestroy(parent, handler=function(h,...) h$action$close(), action=w)
+#                qconnect(parentw, "closeEvent", function(...) w$close())
               }
             } else {
 #              w <- Qt$QMainWindow()
