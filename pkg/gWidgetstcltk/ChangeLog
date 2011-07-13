@@ -1,5 +1,7 @@
 2011-07-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
+	* R/aaaR5classes.R: fix to gradio if items is logical
+
 	* R/aaaGenerics.R: added ".add" method for tkwin objects. This
 	allows tk widgets to be embedded. Eg.,:
 	g = ggroup(cont=gwindow())

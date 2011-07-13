@@ -42,6 +42,8 @@ setMethod(".gradio",
             if(is.character(coerce.with))
               coerce.with = get(coerce.with)
 
+            items <- as.character(items)
+
 
             rb_widget <- getRefClass("RadioButton")$new(parent=tt, items=items, horizontal=horizontal)
             

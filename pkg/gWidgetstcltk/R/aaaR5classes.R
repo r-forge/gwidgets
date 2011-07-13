@@ -696,8 +696,9 @@ setRefClass("RadioButton",
               init_widget = function(parent, items, selected=1, horizontal=TRUE, compound="none") {
                 ##' @param items a vector of items or a data frame with columns items and images (names)
                 ##' @param compound if images specified, how to configure
+                
                 widget <<- ttkframe(parent)
-                selected <- max(1, min(selected, length(items)))
+                selected <- max(1, min(as.integer(selected), length(items)))
                 orientation <<- ifelse(horizontal, "left", "top") # pack arguments for side
                 state_variable <<- tclVar(ifelse(is.null(dim(items)), items[selected], items[selected,1]))
                 set_items(items, compound)
