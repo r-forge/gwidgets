@@ -1,3 +1,12 @@
+2011-07-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added ".add" method for tkwin objects. This
+	allows tk widgets to be embedded. Eg.,:
+	g = ggroup(cont=gwindow())
+	library(tkrplot)
+	l = tkrplot(getToolkitWidget(g), function() hist(rnorm(100)))
+	add(g, l)
+
 2011-07-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gspinbutton.R: Big change. Went to R5 widget to  use "command"
@@ -14,7 +23,8 @@
 	## until focus is on spinbutton
 
 	This might be fixed by 8.5.9 -- which has a ttk::spinbox, but
-	8.5.8 is the current version of tk for windows
+	8.5.8 is the current version of tk for windows, ubuntu 11.04 and
+	on my mac ;), so untested
 
 	* R/gfile.R: added addhandlerchanged method. Didn't do yet
 	((un)blockhandler or removehandler). Use tag(obj, "entry") for that

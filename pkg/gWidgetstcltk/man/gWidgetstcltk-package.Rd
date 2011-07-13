@@ -54,8 +54,8 @@ also not be removed.
 \cr
 
 \code{ggroup()} has the \code{expand=} \code{fill=} and \code{anchor=}
-arguments. If \code{expand=TRUE} the widget takes up as much space as
-possible. (The default is \code{expand=TRUE}, unless the option
+arguments. If \code{expand=TRUE} the widget is allocated as much space as
+possible. (The default is \code{expand=FALSE}, unless the option
 \code{"gw:tcltkDefaultExpand"} overrides this.) When a widget has
 expand, then the widget may stretch to fill the expanding space (in
 tcltk, all widgets that have expand=TRUE are allocated evenly any
@@ -64,8 +64,8 @@ additional space). The fill may be TRUE (or both), FALSE, or "x" and
 or down, within its space. Only one component works at a time for the
 anchor argument. In a horizontal box, only the y component can be used
 to move a value up or down. In a vertical box, only the x component
-can be used to move a value left or right. The default is c(-1,1) so
-that horizontal layouts are towards the top, and vertical layouts
+can be used to move a value left or right. The default is c(-1,0) so
+that horizontal layouts are towards the middle, and vertical layouts
 towards the left. (This can be overridden:
 \code{options("gw:tcltkDefaultAnchor"=c(0,0))}, say.)
 
@@ -160,8 +160,13 @@ graphics device. The \pkg{tkrplot} package provides a means to create
 interactive graphics with \pkg{tcltk}. This is not a device, so ins't
 directly supported. However, a \code{ggroup} object can be used as a
 parent container. Just call \code{getToolkitWidget} on the object
-first.
- \cr
+first: \cr
+\preformatted{
+g <- ggroup(cont=gwindow())
+l <- tkrplot(getToolkitWidget(g), function() hist(rnorm(100)))
+add(g, l)
+}
+
 
 \code{ghelp()} Works as advertised. Uses a popup menu instead of a
 notebook, as gWidgetsRGtk2. Best to just use \pkg{helpr} though.  \cr
@@ -199,11 +204,13 @@ the number of items to select from.  \cr
 \code{gslider()} now works with non-integer steps. If first argument
 \code{from} is a vector it will slide over those values after
 sorting. This uses a themed widget which might be buggy under some
-styles.  \cr
+styles.  
+\cr
 
 \code{gspinbutton()} Works as expected. The change handler responds to
-clicks of the arrows or to the return key in the text area.  This is a
-non-themed widget and can look a bit odd.\cr
+clicks of the arrows or to the return key in the text area. Unless one
+has a new Tk version, this is a non-themed widget and can look a bit
+odd.\cr
 
 \code{gstatusbar()} A hack. Just a \code{ggroup()} instance in
 disguise. By default it must have a gwindow instance for a parent
@@ -234,7 +241,7 @@ optional components \code{width}, \code{height}, \code{columnWidths}
 (to specify height by number of rows, not pixels).  \cr
 
 \code{gtext()} The \code{size<-} method can be used to resize the
-widget. The initial default size is quit large. This method guesses at
+widget. The initial default size is quite large. This method guesses at
 the converstion from pixels to characters (width) and lines of text
 (height) used by the underlying widget. The \code{svalue()} method
 returns all the text unless some text is selected by the mouse and :
@@ -276,6 +283,8 @@ when Filter by: value is changed.  \cr
 
 \code{gfile()} works as advertised.  \cr
 
+\code{galert()} works.\cr
+
 \code{gmessage()} works.
 \cr
 
@@ -303,7 +312,9 @@ visible(dlg, set=TRUE)
 
 Handlers were rewritten so that one can have more than one handler per
 signal. The \code{blockHandler}, \code{unblockHandler} and
-\code{removeHandler} methods are now working.  \cr
+\code{removeHandler} methods are now working.  Handler code different
+for those widgets which use an R5 backend and those which don't, but
+the end user shouldn't notice. (Well, if you do let me know!)\cr
 
 The \code{addHandlerBlur} method should be called when a widget loses
 focuses, but here is called whenever a widget loses focus \emph{and}

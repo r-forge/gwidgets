@@ -917,11 +917,18 @@ setMethod(".add",
             }
           })
 
-## setMethod(".add",
-##           signature(toolkit="guiWidgetsToolkittcltk",obj="gContainertcltk", value="gWidgettcltk"),
-##           function(obj, toolkit, value, ...) {
-##             .add(obj, toolkit, value@block, ...)
-##           })
+##' Add method to incorporate tk widget into gui:
+##'
+##' @example
+##' g = ggroup(cont=gwindow())
+##' library(tkrplot)
+##' l = tkrplot(getToolkitWidget(g), function() hist(rnorm(100)))
+##' add(g, l)
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gContainertcltk", value="tkwin"),
+          function(obj, toolkit, value, ...) {
+            tkpack(value, expand=TRUE, fill="both")
+          })
 
 
 

@@ -429,6 +429,7 @@
 \alias{.add,gBasicDialogNoParenttcltk,guiWidgetsToolkittcltk,gWidgettcltk-method}
 \alias{.add,gContainertcltk,guiWidgetsToolkittcltk,guiWidget-method}
 \alias{.add,gContainertcltk,guiWidgetsToolkittcltk,gWidgettcltk-method}
+\alias{.add,gContainertcltk,guiWidgetsToolkittcltk,tkwin-method}
 \alias{.add,gContainertcltk,guiWidgetsToolkittcltk,gGraphicstcltk-method}
 \alias{.add,gContainertcltk,guiWidgetsToolkittcltk,gMenutcltk-method}
 \alias{.add,gDfNotebooktcltk,guiWidgetsToolkittcltk,ANY-method}

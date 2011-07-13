@@ -410,8 +410,9 @@ setMethod(".visible",
                          tclvalue(flag) <- "destroy"
                        })
 
-                     ## make window visible
+                     ## make window visible and on top of stack
                      visible(dlg) <- TRUE
+                     focus(dlg) <- TRUE
                      ## make modal
                      tkwait.variable(flag)
 
