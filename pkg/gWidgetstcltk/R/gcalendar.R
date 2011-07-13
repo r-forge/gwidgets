@@ -1,12 +1,12 @@
 ## add calendar widget: shoule I have gcalendar, gcalendarbrowser?
 ## no handler function, can add to entry object with addhandler
 
-## setClass("gCalendartcltk",
-##          representation = representation("gComponenttcltk",
-##            format="character"),
-##          contains="gEdittcltk",
-##          prototype=prototype(new("gEdittcltk"))
-##          )
+setClass("gCalendartcltk",
+         representation = representation("gComponenttcltk",
+            format="character"),
+         contains="gComponenttcltk",
+         prototype=prototype(new("gComponenttcltk"))
+         )
 
 
 setMethod(".gcalendar",
@@ -25,15 +25,24 @@ setMethod(".gcalendar",
               message(gettext("The format argument is not employed. Pass in coercion function through the coerce.with argument if year-month-day is not desired."), "\n")
               format <- "%Y-%m-%d"
             }
-            
-            if(text == "" && format != "")
-              text <- format(Sys.Date(), format)
+
+            ## No initial date
+            ##            if(text == "" && format != "")
+            ##              text <- format(Sys.Date(), format)
 
 
             g <- ggroup(cont=container, ...)
-            obj <- gedit(text, cont=g, expand=TRUE)
+            e <- gedit(text, cont=g, width=11, expand=TRUE)
             b <- gbutton("date", cont=g)
 
+
+            obj <- new("gCalendartcltk",
+                       block= getBlock(g),
+                       widget = getWidget(e),
+                       format=format,
+                       toolkit=toolkit, ID=getNewID(), e = new.env())
+            
+            
             addHandlerClicked(b, action=obj, handler=function(h,...) {
               text <- svalue(obj)
               year <- as.numeric(format(as.Date(text, tag(obj, "format")), format="%Y"))
@@ -41,22 +50,34 @@ setMethod(".gcalendar",
               makeCalendar(obj, year, month)
             })
 
-            
             if(!is.null(theArgs$coerce.with))
               coerce.with <- theArgs$coerce.with
             else
               coerce.with <- function(x, ...) {
                 as.Date(x, format=format)
               }
-            
             theArgs <- list(...)
+            tag(obj, "..entry") <- e
             tag(obj,"format") <- format
             tag(obj,"coerce.with") <- coerce.with
-            
-            return(obj@widget)          # drop down to tcltk widget
+
+            return(obj)          # drop down to tcltk widget
           })
 
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gCalendartcltk"),
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            svalue(tag(obj, "..entry"))
+          })
 
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkittcltk",obj="gCalendartcltk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   widget <-tag(obj, "..entry")
+                   svalue(widget) <- value
+                 })
+
+## helper
 makeCalendar <- function(widget, year, month) {
 
   toplevel <- tktoplevel()

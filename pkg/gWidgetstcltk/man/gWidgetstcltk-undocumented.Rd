@@ -272,6 +272,7 @@
 \alias{.svalue,gActiontcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gActiontcltk,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gButtontcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
+\alias{.svalue,gCalendartcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gCheckboxtcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gCheckboxgrouptcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gCommandlinetcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
@@ -347,6 +348,7 @@
 \alias{.svalue<-,gActiontcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gButtontcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxtcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
+\alias{.svalue<-,gCalendartcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxgrouptcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gCommandlinetcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gDroplisttcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
