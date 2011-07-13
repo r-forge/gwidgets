@@ -49,3 +49,5 @@ gcheckbox =function(
 setGeneric( '.gcheckbox' , function(toolkit,
                                     text, checked = FALSE, use.togglebutton=FALSE, handler = NULL, action = NULL,
                                     container = NULL, ... ) standardGeneric( '.gcheckbox' ))
+
+

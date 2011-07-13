@@ -1,5 +1,5 @@
 Package: gWidgetstcltk
-Version: 0.0-44
+Version: 0.0-45
 Title: Toolkit implementation of gWidgets for tcltk package
 Author: John Verzani
 Maintainer: John Verzani <gwidgetsrgtk@gmail.com>

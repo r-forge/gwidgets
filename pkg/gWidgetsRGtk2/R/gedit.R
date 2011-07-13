@@ -27,6 +27,7 @@ setMethod(".gedit",
             tag(obj,"completion") <- NULL    # a completion object if set via [<-
 
             ## process initial message if applicable
+            tag(obj, "init_msg_flag") <- FALSE            
             tag(obj, "init_msg") <-  initial.msg
             if(nchar(text) == 0 && nchar(initial.msg) > 0) {
               entry$modifyText(GtkStateType[1], "gray")
@@ -35,7 +36,10 @@ setMethod(".gedit",
                 entry$setText("")
                 entry$modifyText(GtkStateType[1], "black")
                 gSignalHandlerDisconnect(entry,id)
+                tag(obj, "init_msg_flag") <- FALSE
               })
+              tag(obj, "init_msg_flag") <- TRUE
+              tag(obj, "init_msg_id") <- id
             }
               
 
@@ -140,6 +144,15 @@ setReplaceMethod(".svalue",
                      return(obj)     ## o/w we get a crash
 
                    widget <- getWidget(obj)
+
+                   ## initial message, clear
+                   flag <- tag(obj, "init_msg_flag")
+                   if(!is.null(flag) && flag) {
+                     widget$modifyText(GtkStateType[1], "black")
+                     gSignalHandlerDisconnect(widget, tag(obj, "init_msg_id"))
+                     tag(obj, "init_msg_flag") <- FALSE
+                   }
+
                    widget$setText(value)
                    widget$activate()
                    tag(obj, "value") <- value
@@ -209,12 +222,14 @@ setReplaceMethod("[",
                  })
 
 ##' visible<- if FALSE, for password usage
-setReplaceMethod("visible",signature(obj="gEditRGtk"),
-          function(obj, ..., value) {
-            widget <- getWidget(obj)
-            widget$setVisibility(as.logical(value))
-            return(obj)
-          })
+setReplaceMethod(".visible",
+                 signature(toolkit="guiWidgetsToolkitRGtk2", obj="gEditRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   widget <- getWidget(obj)
+                   widget$setInvisibleChar(42L) # asterisk
+                   widget$setVisibility(as.logical(value))
+                   return(obj)
+                 })
 
 
 ##################################################

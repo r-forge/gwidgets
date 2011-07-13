@@ -118,6 +118,13 @@ setReplaceMethod(".names",
                    return(x)
                  })
 
+## Is widget expanded?
+setMethod(".visible",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
+                 function(obj, toolkit, ...) {
+                   obj@block$getExpanded()
+                 })
+
 ## control expand/close with logical
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),

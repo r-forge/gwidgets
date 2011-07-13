@@ -115,7 +115,8 @@ setMethod(".gexpandgroup",
             tag(obj, "default_fill") <- ifelse(horizontal, "y", "x") # orthogonal to expansion
             
             names(obj) <- text
-            visible(obj) <- FALSE       # default -- don't show
+            widget$setHidden(TRUE)    # don't expand initially
+
             
             if(!is.null(handler)) {
               addHandlerChanged(obj, handler=handler, action=action)
@@ -154,7 +155,7 @@ setMethod(".visible",
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitQt",obj="gExpandgroupQt"),
                  function(obj, toolkit, ..., value) {
-                   getBlock(obj)$setVisible(as.logical(value))
+                   getBlock(obj)$setHidden(!as.logical(value))
                    return(obj)
                  })
 

@@ -74,7 +74,7 @@ w <- gwindow("Hello world example")             # top level window
 g <- ggroup(cont=w, horizontal=FALSE)           # a box container, added to w
 b <- gbutton("Click me for a message", cont=g)  # add button to container g
 addHandlerClicked(b, handler=function(h,...) {  # add interactivity through a handler
-  galert("Hello world")
+      galert("Hello world", parent=h$obj)
 })
 </pre>
 

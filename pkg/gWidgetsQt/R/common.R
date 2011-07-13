@@ -15,8 +15,8 @@
 
 ## Common functions. Many of these just not used -- clean up.
 
-## easy to find cat
-XXX <- function(...) cat(..., "\n")
+## easy to find message
+XXX <- function(...) message(..., "\n")
 
 ## merge two lists
 merge.list <- function(x,y, overwrite=TRUE) {

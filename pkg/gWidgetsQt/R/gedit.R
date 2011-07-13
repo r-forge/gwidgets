@@ -28,8 +28,10 @@ setClass("gTextWidgetQt",
 ##          )
 
 setClass("gEditQt",
-         ## representation = representation("gComponentQt",
-         ##   coercewith="NULLorFunction"),
+#         representation = representation("gComponentQt",
+#           coercewith="NULLorFunction",
+#           intial.msg = "character"
+#           ),
          contains="gTextWidgetQt",
          prototype=prototype(new("gTextWidgetQt"))
          )
@@ -71,8 +73,8 @@ setMethod(".gedit",
            completer$setModel(mod)
 
            obj <- new("gEditQt",block=entry, widget=entry,
-                      toolkit=toolkit, e=new.env(), ID=getNewID())
-#           ,coercewith=coerce.with)
+                      toolkit=toolkit, e=new.env(), ID=getNewID()
+                      )
            entry$setObject(obj)
            
            
@@ -121,8 +123,10 @@ setMethod(".svalue",
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             w <- getWidget(obj)
             val <- w$text
-            if(val == tag(obj, "initial.msg")) val <- ""
-            val <- do.coerce(val, tag(obj, "coerce.with"))
+            if(!is.null( tag(obj, "initial.msg")))
+              if(val == tag(obj, "initial.msg")) val <- ""
+            if(!is.null(tag(obj, "coerce.with")))
+              val <- do.coerce(val, tag(obj, "coerce.with"))
             return(val)
           })
 

@@ -540,6 +540,7 @@
 \alias{.visible-methods}
 \alias{.visible,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible,gBasicDialogNoParentRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  visible<- --
@@ -547,13 +548,14 @@
 \alias{visible<--methods}
 \alias{visible<-,guiWidget-method}
 \alias{visible<-,gWidgetRGtk-method} 
-\alias{visible<-,gEditRGtk-method} 
 %%
 %% --  .visible<- --
 %%
 \alias{.visible<--methods}
 \alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gComponentWithRefClassWithItemsRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.visible<-,gEditRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gEditRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}

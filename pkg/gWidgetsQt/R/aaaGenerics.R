@@ -33,7 +33,7 @@ setClass("guiWidgetsToolkitQt",
 ##################################################
 ## put S3 classes from Qt into S4 classes
 ## got these from apropos("New") -> try(class(do.call(i,list())))
-
+## This is *tedious* at best
 require(qtbase)
 setOldClass("RQtObject")
 .oldClass <- c("QWidget", "QObject", "QPaintDevice",
@@ -781,9 +781,19 @@ setMethod(".add",
                                            getWithDefault(tag(obj, "default_fill"),"both")) # x, y
             fill <- getWithDefault(theArgs$fill, default_fill) 
 
+            ## Here we process expand and fill options. The   basic goal (not met) is :
+            ## expand=FALSE
+            ##     fill -- no effect, but perhaps fill orthogonally, as RGtk2
+            ##     anchor -- put on left right or top bottom
+            ## expand=TRUE
+            ##     fill: "x" space shared evenly amon all that have expand set, fill child in x direction only
+            ##     fill: "y" space shared evenly amon all that have expand set, fill child in y direction only
+            ##     fill: "both", TRUE space shared evenly amon all that have expand set, fill child in both directions
+            ##     fill: "none" no fill, only anchor
+            ##     anchor: anchor object in space provided. If fill given, my only be possible to anchor 1 or other
             if(is.null(anchor)) {
               if(expand && fill == "y")
-                child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
+                child$setSizePolicy(Qt$QSizePolicy$Fixed, # Fixed?, Preferred? MinimumExpanding?
                                     Qt$QSizePolicy$Expanding)
               else if(expand && fill == "x")
                 child$setSizePolicy(Qt$QSizePolicy$Expanding,

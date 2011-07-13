@@ -1,3 +1,12 @@
+2011-07-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* DESCRIPTION (Version): version bump 
+
+2011-07-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (.setCompletion): fixed visible<- method for password
+	use, fixed intial.msg and svalue issue
+
 2011-06-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (.addTags): reworked fonts. Graham W pointed out

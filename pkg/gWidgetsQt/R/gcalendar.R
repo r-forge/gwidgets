@@ -19,7 +19,9 @@
 
 setClass("gCalendarQt",
          representation = representation("gComponentQt",
-           format="character"),
+           format="character",
+           cal="QCalendarWidget"
+           ),
          contains="gEditQt",
          prototype=prototype(new("gEditQt"))
          )
@@ -39,10 +41,23 @@ setMethod(".gcalendar",
               text = format(Sys.Date(), format)
             text = as.character(text)
 
+            block <- Qt$QWidget()
+            edit <- Qt$QLineEdit()
+            edit$setSizePolicy(Qt$QSizePolicy$Expanding, Qt$QSizePolicy$Fixed)
+            btn <- Qt$QPushButton("select...")
+
+            cal <- Qt$QCalendarWidget()
+            
+
+            lyt <- Qt$QHBoxLayout()
+            lyt$addWidget(edit)
+            lyt$addWidget(btn)
+            block$setLayout(lyt)
+
+
 
             
-            cal <- Qt$QCalendarWidget()
-
+            ## set date uf possible
             day <- try(as.Date(text), silent=TRUE)
             if(!inherits(day, "try-error")) {
               yr <- as.integer(format(day,"%Y"))
@@ -52,12 +67,29 @@ setMethod(".gcalendar",
             }
             
 
-            obj <- new("gCalendarQt", block=cal, widget=cal, toolkit=toolkit,            
-            e=new.env(), ID=getNewID()  
+            obj <- new("gCalendarQt", block=block, widget=edit,
+                       format=format, cal=cal,
+                       toolkit=toolkit,            
+                       e=new.env(), ID=getNewID()  
             )
+            
+            ## add handler to btn
+            qconnect(btn, "clicked", function() {
+              cal$show()
+            })
+            qconnect(cal, "activated", function(date) {
+              yr <- date$year()
+              mo <- date$month()
+              dy <- date$day()
 
-            tag(obj, "format") <- format
+              svalue(obj) <- format(paste(c(yr, mo, dy), collapse="-"), format=format)
+                     
+              cal$hide()
+            })
 
+            
+
+            
             if(!is.null(container))
               add(container, obj, ...)
             
@@ -65,23 +97,24 @@ setMethod(".gcalendar",
           })
 
 
-setMethod(".svalue",
-          signature(toolkit="guiWidgetsToolkitQt",obj="gCalendarQt"),
-          function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            w <- getWidget(obj)
-            date <- w$selectedDate
-            day <- c(date$year(),
-                     date$month(),
-                     date$day())
-            val <- format(paste(day, collapse="-"), format=tag(obj, "format"))
-            return(val)
-          })
+## svalue<-
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkitQt",obj="gCalendarQt"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   w <- getWidget(obj)
+                   txt <- format(value, format=obj@format)
+                   w$setText(txt)
 
-
-## change handler if date selected changes
-setMethod(".addhandlerchanged",
-          signature(toolkit="guiWidgetsToolkitQt",obj="gCalendarQt"),
-          function(obj, toolkit, handler, action=NULL, ...) {
-            .addHandler(obj, toolkit, signal="selectionChanged", handler, action)
+                   day <- try(as.Date(txt), silent=TRUE)
+                   if(!inherits(day, "try-error")) {
+                     yr <- as.integer(format(day,"%Y"))
+                     mo <- as.integer(format(day,"%m"))
+                     dy <- as.integer(format(day,"%d"))
+                     cal <- obj@cal
+                     cal$setSelectedDate(Qt$QDate(yr, mo, dy))
+                   }
+                   
+                   
+                   return(obj)
           })
 
