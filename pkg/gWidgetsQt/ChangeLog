@@ -1,3 +1,11 @@
+2011-07-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R: added delete method for main window. (Thanks Ben)
+
+2011-07-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbigtable.R (gbigtable): error with sapply not being used (why not?)
+
 2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtable.R: added size<- for columnWidths, rowHeights. Send in

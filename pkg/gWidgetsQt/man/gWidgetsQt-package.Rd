@@ -6,9 +6,11 @@
 Toolkit implementation of gWidgets for Qt
 }
 \description{
+
 Port of gWidgets API to Qt. The gWidgets API is an abstract,
-lightweight means to interact with GUI toolkits. In this case, the Qt
+lightweight means to interact with GUI toolkits, in this case, the Qt
 toolkit. 
+
 }
 \details{
 
@@ -16,15 +18,18 @@ Containers:
 -----------
 
 gwindow: 
+
 Unrealize handler is working. Overrides dispose method though.
 If you use a \code{gwindow} instance as a container and pass in the argument \code{do.dockwidget=TRUE} then a the child will be added within a dock widget on the right side of the parent window. Dock widgets can be "undocked".
 
 ggroup:
+
 Need to implement scrollbars, Qt$QScrollArea isn't right (it needs to be populated with children prior to parenting)
 Need to implement drag motion raise
 
 
 gframe:
+
 pos isn't quite right
 needs to be drawn better -- style issue?
 
@@ -33,9 +38,11 @@ glayout:
 gnotebook:
 
 gexpandgroup:
+
 Rolled my own. using a button to check, should have  trigger icon. Resizing is awful.
 
 gsplitter:
+
 Must size window before using svalue<-
 
 WIDGETS
@@ -59,29 +66,34 @@ keystroke only covers last letter (not enter, ctrl, ...), Give
 character. Need to bind to events, not signals.
 
 gslider;
+
 needs to be integer
 
 gstatusbar:
+
 can add a widget. Pass in index=int to specify where. Default is 1. 0 is
 the permanent widget:
+
 sb <- gstatusbar()
 gbutton("in statusbar", index=1, cont=sb)
 
 gimage:
+
 Handler reports x and y positions in frame
 
 gtext:
+
 keystroke handler same as for gedit -- just last character
 
 gmenu:
+
 popup menus only for buttons (need to bind to mouse events)
 
 gtable:
 
-gbigtable: uses dataframe.R class to make big tables speedy. Is just for
-selection, but has handlers: addHandlerChanged (change in selectino), in
-addition to clicked and doublclick. Svalue returns selectino, but
-svalue<- not implemented.
+gbigtable: uses a different model class (\code{qdataFrame}) to make big tables speedy. Is just for
+selection, but has handlers: addHandlerChanged (change in selection), in
+addition to clicked and doublclick. The \code{svalue} method returns selection, which we force to be rectangular. The selection can be set through \code{svalue} using a row number or data frame with i,j values.
 
 gtree:
 no multiple selection(?)
@@ -103,12 +115,13 @@ gsvg("file.svg",cont=gwindow())
 
 METHODS:
 ---------------
-removeHandler, blockHandler, unblockHandler: workin for base widgets. 
+removeHandler, blockHandler, unblockHandler: working for base widgets. 
 
 addHandlerKeystroke: needs event
+
 addHandlerRightClick: not there
 
-some widgets have events, most use signal. Eventually to get drag and
+Some widgets have events, most use a signal. Eventually to get drag and
 drop, I need to use the event approach for most of them
 
 

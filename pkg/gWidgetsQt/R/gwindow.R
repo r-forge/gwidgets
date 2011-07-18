@@ -22,6 +22,8 @@
 setClass("gWindowQt",
 #         contains="gContainerQt",
 #         prototype=prototype(new("gContainerQt"))
+         representation = representation("gEventWidgetQt",
+           centralWidget="QWidget"),
          contains="gEventWidgetQt",
          prototype=prototype(new("gEventWidgetQt"))
          )
@@ -81,6 +83,7 @@ setMethod(".gwindow",
 
             
             obj <- new("gWindowQt", block=w, widget=lyt,
+                       centralWidget=w1,
                        toolkit=toolkit,e=new.env(), ID=getNewID()
                        )
             w$setObject(obj)
@@ -268,7 +271,27 @@ setReplaceMethod(".focus",
                    }
                    return(obj)
                  })
-               
+
+
+
+## delete
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt",widget="guiWidget"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj, toolkit, widget@widget, ...)
+          })
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWindowQt", widget="gComponentQt"),
+          function(obj, toolkit, widget, ...) {
+            ## remove from central widget
+            parent <- obj@centralWidget$layout()
+            child <- getBlock(widget)
+            ## we don't have removeParent, removeChild as we don't do accounting here
+            child$hide()              # hide first
+            parent$removeWidget(child)
+          })
+
+
 ##################################################
 ## handlers
 

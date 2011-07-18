@@ -18,10 +18,14 @@
 ##'
 ##" gbigtable is for large tables. It uses the qdataFrameModel widget for dataframes that is
 ##' much faster, but does not do things like icons,...
-##' 
-##' XXX This isn't working perfectly --
-##' * setting selection isn't working
-##' *  addHandlerChanged will crash if done enough times
+##' @param items data frame to be displayed
+##' @param handler change handler (when selection changes)
+##' @param action passed to handler
+##' @param container parent container
+##' @param ... ignored for now
+##' @param toolkit toolkit specification, if desired
+##' @return an instance of \code{gBigTableQt} with basic methods defined. These include the data store methods \code{[}, \code{
+##' @note  addHandlerChanged will crash if done enough times. Removed munge/unmunge bit -- wasn't working and added complexity. This is now simply built for speed.
 
 gbigtable <- function(
                       items = NULL,
@@ -106,7 +110,7 @@ setMethod(".svalue",
             
             selModel <- object$selectionModel()
             selectedItems <- selModel$selectedIndexes()
-            selection <- lapply(selectedItems, function(item) c(row=item$row() + 1, column=item$column()+1))
+            selection <- sapply(selectedItems, function(item) c(row=item$row() + 1, column=item$column()+1))
             if(length(selection) == 0) {
               ## no selection
               return(NULL)
@@ -167,6 +171,7 @@ setReplaceMethod(".svalue",
                   selModel$select(selection, Qt$QItemSelectionModel$Select)
                   return(obj)
                 })
+
 ##' Lists the visible rows as a logical vector
 setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitQt",obj="gBigTableQt"),
@@ -238,6 +243,7 @@ setReplaceMethod("[",
 ##' function to unmunge the data frame
 ##' returns all variables without inital . in name
 .unmungeDataFrame <- function(df) {
+  return(df)
   df[, !grepl("\\.", names(df))]
 }
 
@@ -245,7 +251,7 @@ setReplaceMethod("[",
 ##' function to munge a data frame --
 ##' add in columns for alignments, etc.
 .mungeDataFrame <- function(df) {
-
+  return(df)
   lapply(names(df), function(varname) {
     var <- df[[varname]]
     
@@ -276,6 +282,7 @@ setReplaceMethod(".leftBracket",
                    object <- getWidget(x)
                    model <- object$model()
 
+                   
                    if(is.null(model) || (missing(i) && missing(j))) {
                      df <- .mungeDataFrame(value)
                    } else {

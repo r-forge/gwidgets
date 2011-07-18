@@ -102,7 +102,7 @@ setMethod(".gtable",
               toolkit=toolkit,ID=getNewID(), e = new.env())
             
             tag(obj, "chosencol") <- chosencol
-            tag(obj,"icon.FUN") <- icon.FUN
+            tag(obj, "icon.FUN") <- icon.FUN
 
             
             ## populate, set names, ...

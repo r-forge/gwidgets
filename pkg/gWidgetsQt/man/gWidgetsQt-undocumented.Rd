@@ -29,8 +29,7 @@
 \alias{[,gTreeQt-method}
 \alias{[,gVarbrowserQt-method}
 
-\alias{.delete,gNotebookQt,guiWidgetsToolkitQt,ANY-method}
-\alias{.delete,gToolbarQt,guiWidgetsToolkitQt,ANY-method}
+
 \alias{.svalue<-,gBigTableQt,guiWidgetsToolkitQt,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxgroupTableQt,guiWidgetsToolkitQt,ANY,ANY-method}
 \alias{.svalue<-,gDfQt,guiWidgetsToolkitQt,ANY,ANY-method}
@@ -541,6 +540,12 @@
 \alias{.delete,gNotebookQt,guiWidgetsToolkitQt-method}
 \alias{.delete,gPanedgroupQt,guiWidgetsToolkitQt,gWidgetQt-method}
 \alias{.delete,gToolbarQt,guiWidgetsToolkitQt-method} 
+\alias{.delete,gNotebookQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.delete,gToolbarQt,guiWidgetsToolkitQt,ANY-method}
+\alias{.delete,gWindowQt,guiWidgetsToolkitQt,guiWidget-method}
+\alias{.delete,gWindowQt,guiWidgetsToolkitQt,gComponentQt-method}
+
+
 %%
 %% --  dispose --
 %%

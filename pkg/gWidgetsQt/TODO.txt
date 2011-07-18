@@ -1,5 +1,7 @@
 TODO:
 ---------
+* delete(gwindow, object)
+* gbigtable use qdataFrame backend. DOesn't do editing though, it could
 * gtable is broken! indexin isn't right
 * gcheckboxgroup: [<- method working?
 * DND: use QtEvent framework
