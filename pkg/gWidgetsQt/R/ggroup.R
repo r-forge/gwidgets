@@ -54,14 +54,14 @@ setMethod(".ggroup",
             
             ## implement scrollbars if asked. 
             if(use.scrollwindow == TRUE) {
-              width <- getWithDefault(theArgs$width, 400L)
-              height <- getWithDefault(theArgs$height, 400L)
+              ## the size of the object to be scrolled must be pre-allocated and QWidget
+              ## has no default size. (The image example with Qt does!). Here we put in some large sizes, but
+              ## the user can adjust via width, height hidden arguments
+              width <- getWithDefault(theArgs$width, 500L)
+              height <- getWithDefault(theArgs$height, 2500L)
               gw$minimumWidth <- width
               gw$minimumHeight <- height
 
-              ## JV: This doesn't work. It seems that I need to populate gw prior to placing
-              ## it insde the scroll area so that the size is correct.
-              
               sb <- Qt$QScrollArea()
               sb$setWidget(gw)
 

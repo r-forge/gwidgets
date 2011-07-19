@@ -1,3 +1,9 @@
+2011-07-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R: fix to use.scrollwindow. Put in large default
+	minimum size for the widget, but this can be overridden via width,
+	height arguments.
+
 2011-07-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gwindow.R: added delete method for main window. (Thanks Ben)
