@@ -24,8 +24,11 @@ If you use a \code{gwindow} instance as a container and pass in the argument \co
 
 ggroup:
 
-Need to implement scrollbars, Qt$QScrollArea isn't right (it needs to be populated with children prior to parenting)
-Need to implement drag motion raise
+Need to implement drag motion raise.  The \code{use.scrollwindow}
+option works, but it is not perfect. A height and width need to be
+prespecified when constructed. The defaults are 400 by 400, but these
+can be overridden with similarly named arguments. If the height is too
+small, the whole thing fails ungracefully.
 
 
 gframe:

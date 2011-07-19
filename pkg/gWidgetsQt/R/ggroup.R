@@ -54,9 +54,10 @@ setMethod(".ggroup",
             
             ## implement scrollbars if asked. 
             if(use.scrollwindow == TRUE) {
-              ## width <- getWithDefault(theArgs$width, 400L)
-              ## height <- getWithDefault(theArgs$height, 400L)
-              ## gw$setMinimumSize(width, height)
+              width <- getWithDefault(theArgs$width, 400L)
+              height <- getWithDefault(theArgs$height, 400L)
+              gw$minimumWidth <- width
+              gw$minimumHeight <- height
 
               ## JV: This doesn't work. It seems that I need to populate gw prior to placing
               ## it insde the scroll area so that the size is correct.
