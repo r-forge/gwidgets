@@ -13,18 +13,18 @@
 ##  A copy of the GNU General Public License is available at
 ##  http://www.r-project.org/Licenses/
 
-## setClass("gButtonQt",
-##          contains="gComponentQt",
-##          prototype=prototype(new("gComponentQt"))
-##          )
-
 setClass("gButtonQt",
-         contains="gEventWidgetQt",
-         prototype=prototype(new("gEventWidgetQt"))
+         contains="gComponentQt",
+         prototype=prototype(new("gComponentQt"))
          )
 
+##setClass("gButtonQt",
+##         contains="gEventWidgetQt",
+##         prototype=prototype(new("gEventWidgetQt"))
+##         )
+
 ## qtConstructor
-creategwClass("QPushButton")
+##creategwClass("QPushButton")
 
 ##' Can do keyboard shortcuts: just put & in button name, as in "&File".
 ##' The Alt-F will call clicked handler.
@@ -44,13 +44,13 @@ setMethod(".gbutton",
             }
 
 
-##            button <- Qt$QPushButton()
-            button <- gwQPushButton()
+            button <- Qt$QPushButton()
+##            button <- gwQPushButton()
             
             ## properties
             obj <- new("gButtonQt",
               block=button, widget=button, toolkit=toolkit,  e=new.env(), ID=getNewID())
-            button$setObject(obj)
+#            button$setObject(obj)
 
             tag(obj, "default_fill") <- "y" # don't like expansion in x direction
             
@@ -141,6 +141,13 @@ setMethod(".defaultWidget",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitQt",obj="gButtonQt"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandlerclicked(obj, handler, action)
+            .addhandlerclicked(obj, toolkit, handler, action)
           })
 
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gButtonQt"),
+          function(obj, toolkit,  handler, action=NULL, ...) {
+            id <- .addHandler(obj,toolkit, signal="clicked",
+                        handler=handler, action=action, ...)
+            invisible(id)
+          })

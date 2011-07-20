@@ -1,3 +1,7 @@
+2011-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: put back to QPushButton so defaultWidget works
+
 2011-07-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggroup.R: fix to use.scrollwindow. Put in large default
