@@ -15,7 +15,7 @@
 
 ## handle icons
 
-.qtIcons <- list()
+.qtIcons <- new.env()
 
 ## make icons from stock icons
 
@@ -23,8 +23,9 @@
 setMethod(".addStockIcons",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit, iconNames, iconFiles, ...) {
+            iconNames <- tolower(iconNames) # normalize
             for(i in seq_along(iconNames)) {
-              .qtIcons[[iconNames[i]]] <<- Qt$QIcon(iconFiles[[i]])
+              .qtIcons[[iconNames[i]]] <- Qt$QIcon(iconFiles[[i]])
             }
           })
 
@@ -32,13 +33,14 @@ setMethod(".addStockIcons",
 setMethod(".getStockIcons",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit) {
-            return(.qtIcons)
+            ## return list from env
+            sapply(ls(.qtIcons), function(i) .qtIcons[[i]])
           })
 
 ## convenience functions
 getStockIconFromName <- function(name) {
   if(!missing(name) && is.character(name))
-    .qtIcons[[name[1]]]
+    .qtIcons[[tolower(name[1])]]
   else
     NULL
 }
@@ -50,7 +52,7 @@ addgWidgetsIcons <- function() {
   iconNames <- gsub("\\.gif", "", iconNames)
 
   for(i in seq_along(iconNames)) {
-    .qtIcons[[iconNames[i]]] <<- Qt$QIcon(iconFiles[[i]])
+    .qtIcons[[iconNames[i]]] <- Qt$QIcon(iconFiles[[i]])
   }
 }
   
