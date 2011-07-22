@@ -121,7 +121,7 @@ DIALOGS:
 
 gbasicdialog: 
 
-Added hidden argument do.buttons to visible() call. If FALSE, no buttons appear. To
+Added hidden argument do.buttons to constructor. If FALSE, no buttons appear. To
 close dialog, call its dispose method within a handler.
 
 

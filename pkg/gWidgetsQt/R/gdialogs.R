@@ -170,6 +170,7 @@ setClass("gBasicDialogNoParentQt",
          prototype=prototype(new("gContainerQt"))
          )
 
+## pass in do.buttons=FALSE via ... to suppress buttons
 setMethod(".gbasicdialognoparent",
           signature(toolkit="guiWidgetsToolkitQt"),
           function(toolkit,
@@ -200,6 +201,8 @@ setMethod(".gbasicdialognoparent",
 
             tag(obj,"handler") <- handler
             tag(obj,"action") <- action
+            args <- list(...)
+            tag(obj, "do.buttons") <- getWithDefault(args$do.buttons, TRUE)
             
             return(obj) 
           })
@@ -247,10 +250,11 @@ setMethod(".visible",
                    handler <- tag(obj,"handler")
                    action <- tag(obj,"action")
                    widget <- tag(obj,"widget")
+                   do.buttons <- tag(obj, "do.buttons")
                    
                    args <- list(...)
                    ## means to bypass buttons. Need dispose(dlg) in some handler
-                   if(getWithDefault(args$do.buttons, TRUE)) {
+                   if(do.buttons) {
                      buttonGroup = ggroup(cont=obj, expand=FALSE)
                      addSpring(buttonGroup)
                      ans <<- FALSE
@@ -267,6 +271,10 @@ setMethod(".visible",
                        })
                      defaultWidget(OKbutton)
                    }
+                   ## Raise window
+                   dlg$raise()                 # top of stack
+                   dlg$activateWindow()        # keyfocus
+
                    ## make modal
                    dlg$exec()
 
