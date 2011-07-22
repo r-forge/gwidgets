@@ -756,6 +756,7 @@
 \alias{.defaultWidget<--methods}
 \alias{.defaultWidget<-,gWidgetQt,guiWidgetsToolkitQt-method}
 \alias{.defaultWidget<-,RQtObject,guiWidgetsToolkitQt-method} 
+\alias{.defaultWidget<-,gButtonQt,guiWidgetsToolkitQt-method} 
 
 
 

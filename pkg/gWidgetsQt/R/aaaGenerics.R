@@ -500,6 +500,14 @@ setReplaceMethod("defaultWidget",signature(obj="RQtObject"),
             return(obj)
           })
 
+setReplaceMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gWidgetQt"),
+          function(obj, toolkit, ..., value) {
+            if(as.logical(value))
+              .defaultWidget(obj, toolkit)
+            return(obj)
+          })
+
 
 ## isExtant: True if widget exists
 setMethod("isExtant",signature(obj="gWidgetQt"),

@@ -1,3 +1,7 @@
+2011-07-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R (defaultWidget<-): added for consistency (thanks Ben)
+
 2011-07-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gbutton.R: put back to QPushButton so defaultWidget works

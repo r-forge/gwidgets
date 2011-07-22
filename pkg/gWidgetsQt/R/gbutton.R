@@ -128,13 +128,26 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
-
+## Qt Docs 4.7: The default button behavior is provided only in
+## dialogs. Buttons can always be clicked from the keyboard by
+## pressing Spacebar when the button has focus.
+## XXX Not sure this is exactly what we want here
 setMethod(".defaultWidget",
           signature(toolkit="guiWidgetsToolkitQt",obj="gButtonQt"),
           function(obj, toolkit, ...) {
             w <- getWidget(obj)
             w$setDefault(TRUE)
             focus(obj) <- TRUE
+          })
+
+setReplaceMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitQt",obj="gButtonQt"),
+          function(obj, toolkit, ..., value) {
+            if(is.logical(value) && value) {
+              w <- getWidget(obj)
+              w$setDefault(TRUE)
+              focus(obj) <- TRUE
+            }
           })
 
 ## button activated by mouse click, space bar (not return), or keyboard shortcut
