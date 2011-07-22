@@ -116,6 +116,15 @@ hist(rnorm(100));
 dev.off();
 gsvg("file.svg",cont=gwindow())
 
+DIALOGS:
+--------
+
+gbasicdialog: 
+
+Added hidden argument do.buttons to visible() call. If FALSE, no buttons appear. To
+close dialog, call its dispose method within a handler.
+
+
 METHODS:
 ---------------
 removeHandler, blockHandler, unblockHandler: working for base widgets. 

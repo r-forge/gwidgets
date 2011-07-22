@@ -1,3 +1,9 @@
+2011-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: added hidden argument to gbasicdialog of
+	do.buttons. Set to FALSE to avoid buttons. (Then call dispose
+	method on dialog to close within a handler) (Thanks Seb)
+
 2011-07-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaGenerics.R (defaultWidget<-): added for consistency (thanks Ben)

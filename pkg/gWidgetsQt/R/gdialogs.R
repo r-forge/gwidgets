@@ -220,12 +220,23 @@ setMethod(".add",
             callNextMethod()
           })
 
+## Dispose method to delete dialog
+setMethod(".dispose",
+          signature=c(toolkit="guiWidgetsToolkitQt",
+            obj="gBasicDialogNoParentQt"),
+          function(obj, toolkit,...) {
+             dlg <- getBlock(obj)
+             dlg$done(Qt$QMessageBox$Ok)
+          })
+
 ## visible(dlg, TRUE), not visible(dlg) <- TRUE
 setMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitQt",
                            obj="gBasicDialogNoParentQt"),
-                 function(obj, toolkit, set=NULL, ...) {
-
+                 function(obj, toolkit, set=NULL,  ...) {
+                   ## Pass in do.buttons=FALSE to hide buttons
+                   
+                   
                    if(is.null(set) || !is.logical(set) || !set)
                      return(NULL)       # no call
 
@@ -237,23 +248,25 @@ setMethod(".visible",
                    action <- tag(obj,"action")
                    widget <- tag(obj,"widget")
                    
-                   
-                   buttonGroup = ggroup(cont=obj, expand=FALSE)
-                   addSpring(buttonGroup)
-                   ans <<- FALSE
-                   Cancelbutton = gbutton("Cancel",cont=buttonGroup,
-                     handler=function(h,...) {
-                       ans <<- FALSE
-                       dlg$done(Qt$QMessageBox$Ok)
+                   args <- list(...)
+                   ## means to bypass buttons. Need dispose(dlg) in some handler
+                   if(getWithDefault(args$do.buttons, TRUE)) {
+                     buttonGroup = ggroup(cont=obj, expand=FALSE)
+                     addSpring(buttonGroup)
+                     ans <<- FALSE
+                     Cancelbutton = gbutton("Cancel",cont=buttonGroup,
+                       handler=function(h,...) {
+                         ans <<- FALSE
+                         dlg$done(Qt$QMessageBox$Cancel)
                        })
-                   addSpace(buttonGroup, 12)
-                   OKbutton = gbutton("OK",cont=buttonGroup,
-                     handler=function(h,...) {
-                       ans <<- TRUE
-                       dlg$done(Qt$QMessageBox$Cancel)
-                     })
-                   defaultWidget(OKbutton)
-                   
+                     addSpace(buttonGroup, 12)
+                     OKbutton = gbutton("OK",cont=buttonGroup,
+                       handler=function(h,...) {
+                         ans <<- TRUE
+                         dlg$done(Qt$QMessageBox$Ok)
+                       })
+                     defaultWidget(OKbutton)
+                   }
                    ## make modal
                    dlg$exec()
 
