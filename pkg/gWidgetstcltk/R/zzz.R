@@ -28,8 +28,9 @@
   loadGWidgetIcons()
 
   ## use.table options
-  tkimage.create("photo", "::image::off", file=system.file("images", "symbol_cross.gif", package="gWidgets"))
-  tkimage.create("photo", "::image::on",  file=system.file("images", "symbol_plus.gif",  package="gWidgets"))
+  ## images from http://ryanfait.com/resources/custom-checkboxes-and-radio-buttons/. Thanks
+  tkimage.create("photo", "::image::off", file=system.file("images", "checkbutton-off.gif", package="gWidgetstcltk"))
+  tkimage.create("photo", "::image::on",  file=system.file("images", "checkbutton-on.gif",  package="gWidgetstcltk"))
 
 }
          

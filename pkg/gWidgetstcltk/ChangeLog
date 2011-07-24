@@ -1,3 +1,8 @@
+2011-07-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/zzz.R (.onLoad): changed icons for gcheckboxtable. Thanks to
+	http://ryanfait.com/resources/custom-checkboxes-and-radio-buttons/
+
 2011-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R (gbasicdialog): Added do.buttons option to
@@ -8,7 +13,7 @@
 
 	* R/gcheckboxgrouptable.R: added (hacked) gcheckboxgroup with
 	use.table option. Needs better images, along with button enter,
-	but is working
+	but is working. 
 
 	* R/aaaR5classes.R: added base gComponentR5tcltk methods, factored
 	out similar ones in child classes

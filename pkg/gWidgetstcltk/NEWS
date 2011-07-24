@@ -5,6 +5,12 @@ NEWS for gWidgetstcltk
 Changes for 0.0-45
 -------------------
 
+* added use.table option to gcheckboxgroup
+
+* added do.buttons options for gbasicdialog
+
+* improved [ method for glayout (Returns widget, list of widgets (if
+  1-d slice) or matrix of widgets.
 
 Changes for 0.0-44
 -------------------
