@@ -82,7 +82,7 @@ setMethod(".gtext",
             }
             
             if(!is.null(text)) {
-              add(obj, text)
+              add(obj, text, do.newline=FALSE)
             }
             
   
@@ -195,7 +195,8 @@ setMethod(".svalue",
               start = bounds$start
               end = bounds$end
             }
-            return(buffer$GetText(start,end))
+            val <- buffer$GetText(start,end)
+            return(val)
             })
           
 ##  svalue<-() replaces text

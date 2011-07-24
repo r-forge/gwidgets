@@ -141,9 +141,9 @@ setReplaceMethod(".leftBracket",
 
             ## fix up number of columns
             d <- dim(x)
-            nr <- max(j); nc <- max(i)
+            nr <- max(i); nc <- max(j)
             if( nr > d[1] || nc > d[2])
-              tbl$Resize(max(max(j), nr), max(max(i), nc))
+              tbl$Resize(max(max(i), nr), max(max(j), nc))
             
             if(expand)
               opts <- c("fill","expand","shrink")
