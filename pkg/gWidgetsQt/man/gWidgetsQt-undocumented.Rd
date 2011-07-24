@@ -31,6 +31,7 @@
 
 
 \alias{.svalue<-,gBigTableQt,guiWidgetsToolkitQt,ANY,ANY-method}
+\alias{.svalue<-,gCalendarQt,guiWidgetsToolkitQt,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxgroupTableQt,guiWidgetsToolkitQt,ANY,ANY-method}
 \alias{.svalue<-,gDfQt,guiWidgetsToolkitQt,ANY,ANY-method}
 \alias{.svalue<-,gExpandgroupQt,guiWidgetsToolkitQt,ANY,ANY-method}
@@ -558,9 +559,10 @@
 %%
 \alias{.dispose-methods}
 \alias{.dispose,gWidgetQt,guiWidgetsToolkitQt-method}
+\alias{.dispose,gBasicDialogNoParentQt,guiWidgetsToolkitQt-method}
+\alias{.dispose,gHelpQt,guiWidgetsToolkitQt-method}
 \alias{.dispose,gNotebookQt,guiWidgetsToolkitQt-method}
 \alias{.dispose,gTextQt,guiWidgetsToolkitQt-method}
-\alias{.dispose,gHelpQt,guiWidgetsToolkitQt-method}
 \alias{.dispose,gWindowQt,guiWidgetsToolkitQt-method}
 
 %% --  .insert --

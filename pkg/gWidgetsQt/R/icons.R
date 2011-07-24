@@ -39,7 +39,7 @@ setMethod(".getStockIcons",
 
 ## convenience functions
 getStockIconFromName <- function(name) {
-  if(!missing(name) && is.character(name))
+  if(!missing(name) && is.character(name) && nchar(name) > 0)
     .qtIcons[[tolower(name[1])]]
   else
     NULL
