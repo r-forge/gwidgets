@@ -19,95 +19,102 @@ setClass("gTabletcltk",
   unlist(strsplit(tclvalue(tcl(getWidget(obj),"children",""))," "))
 }
 
-## covert a dta frame into a character based on
-.toCharacter <- function(x,width=NULL,...) UseMethod(".toCharacter")
-.toCharacter.default <- function(x,width=NULL,...) as.character(x)
-.toCharacter.integer <- function(x,width=NULL,...) {
- if(missing(width)) width <- max(nchar(as.character(x))) + 2  
-  format(x, justify="right", digits=width)
-}
-.toCharacter.numeric <- function(x,width=NULL,...) {
-  if(missing(width)) width <- max(nchar(as.character(x))) + 2
-  format(x,trim=FALSE, digits=width, justify="right")
-}
-.toCharacter.factor <- function(x,width=NULL,...) {
-  if(missing(width)) width <- max(nchar(as.character(x))) + 2
-  .toCharacter(as.character(x),width,...)
-}
-.toCharacter.logical <- function(x,width=NULL,...) {
-  if(is.null(width))
-    width <- 7
-  width <- max(7, width)
-  format(as.character(x), justify="centre", width=width)
-}
-.toCharacter.data.frame <- function(x,width=NULL,...) {
-  nms <- names(x)
-  df <- as.data.frame(lapply(x,function(i) .toCharacter(i, width)),
-                      stringsAsFactors=FALSE)
-  names(df) <- nms
-  return(df)
-}
-.toCharacter.matrix <- function(x, width=NULL, ...) {
-  .toCharacter(as.data.frame(x), width, ...)
-}
+  ## covert a dta frame into a character based on
+  .toCharacter <- function(x,width=NULL,...) UseMethod(".toCharacter")
+  .toCharacter.default <- function(x,width=NULL,...) as.character(x)
+  .toCharacter.integer <- function(x,width=NULL,...) {
+    if(missing(width)) width <- max(nchar(as.character(x))) + 2  
+    format(x, justify="right", digits=width)
+  }
+  .toCharacter.numeric <- function(x,width=NULL,...) {
+    if(missing(width)) width <- max(nchar(as.character(x))) + 2
+    format(x,trim=FALSE, digits=width, justify="right")
+  }
+  .toCharacter.factor <- function(x,width=NULL,...) {
+    if(missing(width)) width <- max(nchar(as.character(x))) + 2
+    .toCharacter(as.character(x),width,...)
+  }
+  .toCharacter.logical <- function(x,width=NULL,...) {
+    if(is.null(width))
+      width <- 7
+    width <- max(7, width)
+    format(as.character(x), justify="centre", width=width)
+  }
+  .toCharacter.data.frame <- function(x,width=NULL,...) {
+    ##sapply(x, .toCharacter, width=width, ...)
+    nms <- names(x)
+    df <- as.data.frame(lapply(x,function(i) .toCharacter(i, width)),
+                        stringsAsFactors=FALSE)
+    names(df) <- nms
+    return(as.matrix(df))
+  }
+  .toCharacter.matrix <- function(x, width=NULL, ...) {
+    .toCharacter(as.data.frame(x), width, ...)
+  }
+  
+  ## pass in argument
+  ## function(x, width, ...)
+  toCharacter <- getWithDefault(options("gw_toCharacter"), .toCharacter)
+  
 
-## pass in argument
-## function(x, width, ...)
-toCharacter <- getWithDefault(options("gw_toCharacter"), .toCharacter)
+##'
+##' ##' load table from data frame
+##'
+##' @param tr treeview widget
+##' @param items data frame
+##' @param visible which rows are visible, recyled
+##' @param icons do we have icons?
+##' @param fresh no clue
+##' @return NULL
+.populateTable <- function(tr, items, visible=TRUE, icons=NULL, fresh=TRUE) {
 
+  
 
+  
 
-.populateTable <- function(tr, items, visible, icons=NULL, nms=names(items),
-                           fresh=TRUE, doWidths=TRUE, getSizeFrom) {
-
+  
+  
   ## we load things row by row -- not by column like others
   ## we leave text value empty, saving spot for icon.
   ## How to adjust width?
-  d <- dim(items); m <- d[1]; n <- d[2]
+  
+  
+  
+  ## a matrix
+#  items <- sapply(items, as.character)
+  items <- .toCharacter(items)
+  m <- nrow(items); n <- ncol(items)
+  
 
+  ## Compute widths for each column based on size
+  widths <- widthOfChar * .computeWidths(items)
+  for(j in seq_len(n))
+    tcl(tr,"column", j , width=widths[j], stretch=FALSE)
 
-  ## Compute widths
-  if(doWidths) {
-    ## supposed to set widths based on widget, but isn't working?
-    width <- getSizeFrom #as.integer(tclvalue(tkwinfo("width",getSizeFrom)))
-    
-    widths <- widthOfChar * .computeWidths(items)
-    
-    ## if(width > 10)
-    ##   widths <- as.integer( widths/sum(widths) * width)
-    
-    
-    ## first column
-    ##XX  tcl(tr,"column","#0",width=widths[1], stretch=TRUE)
-    ##  if(fresh)
-    ##    tcl(tr,"configure",column=0)
+  ## set up headers
+  nms <- colnames(items)
+  for(j in seq_len(n))
+    tcl(tr,"heading", j, text=nms[j])
+  tcl(tr, "column", n, stretch=TRUE)
+  
+  
+  ## icon column
+  tcl(tr,"column","#0",width=ifelse(is.null(icons), 0L, 32L), stretch=FALSE)
 
-    ## column #- is for icons
-
-    ## icon column
-    if(!is.null(icons)) 
-      tcl(tr,"column","#0",width=32, stretch=FALSE)
-    else
-      tcl(tr,"column","#0",width=0, stretch=FALSE)
-#    tcl(tr, "heading","#0",text="")
-    
-    if(fresh)
-      tcl(tr,"column",0,width=1, stretch=FALSE) # override below if needed
-
-    ## set widths/names of other columns if present
-    for(j in 1:n) {
-      tcl(tr,"column", j , width=widths[j], stretch=TRUE)
-      tcl(tr,"heading", j, text=nms[j])
-    }
-  }
+#  if(fresh)
+#    tcl(tr,"column",0,width=1, stretch=FALSE) # override below if needed
+  
   ## add values
+
   ## deal with visible
   visible <- rep(visible, length=m)
   items <- items[visible,,drop=FALSE]
 
-  d <- dim(items)
-  m <- d[1]; n <- d[2]
+  ## add values row by row. If only one column, we need to esscape
+  if(n == 1)
+    items[,1] <- paste("{", items[,1], "}", sep="")
 
+  
   ## if icons, we create
   if(!is.null(icons)) {
     icons <- sapply(icons,findIcon)
@@ -115,24 +122,17 @@ toCharacter <- getWithDefault(options("gw_toCharacter"), .toCharacter)
       icons <- c(icons, rep("", m - length(icons)))
   }
 
-  if(m > 0) {
-    ## add in values
-    lapply(1:m, function(i) {
-      values <- as.character(unlist(items[i,]))
-      if(n == 1)
-        values <- paste("{",values,"}", sep="")  ## needed for single column. o/w splits on , and +
-      if(!is.null(icons)) {
-        tcl(tr,"insert","","end",
-            values = values,
-            image=icons[i] #, 
-#            tags = .Tcl.args(list(background="red"))
-            )
-      } else {
-        tcl(tr,"insert","","end",
-            values = values)
-      }
-    })
-  }
+  ## add in values row by row
+  lapply(seq_len(m), function(i) {
+    values <- items[i,]
+    if(is.null(icons))
+      tcl(tr,"insert","","end",
+          values = values)
+    else
+      tcl(tr,"insert","","end",
+          values = values,
+          image=icons[i])
+  })
 }
 
 ## set anchor of columns for justification
@@ -228,9 +228,13 @@ setMethod(".gtable",
 
             ##########
             ## setup widget
+            ## Big hack here to get this working with scrollbars inside a glayout container
+            ## we have double nesting. Later we turn off propogation, as otherwise the treeview size
+            ## is used, not the encolosing frame and scrollbars are always shown
             tt <- getWidget(container)
-            gp <- ttkframe(tt)
-            
+            gp1 <- ttkframe(tt)
+            gp <- ttkframe(gp1)
+            tkpack(gp, expand=TRUE, fill="both")
             
             xscr <- ttkscrollbar(gp, orient="horizontal",
                                  command=function(...) tkxview(tr,...))
@@ -263,9 +267,9 @@ setMethod(".gtable",
             ##
             ######################
             
-            obj = new("gTabletcltk",block=gp,widget=tr,
+            obj = new("gTabletcltk",block=gp1,widget=tr,
               toolkit=toolkit,ID=getNewID(), e = new.env())
-            
+
             tag(obj,"icon.FUN") <- icon.FUN
             tag(obj,"chosencol") <- chosencol
             tag(obj,"color") = if(!is.null(theArgs$color))
@@ -301,8 +305,7 @@ setMethod(".gtable",
             height <- getWithDefault(theArgs$height, 300)
 
             
-            .populateTable(tr, .toCharacter(items, tag(obj, "round")), TRUE, icons, names(items),
-                           getSizeFrom=width)
+            .populateTable(tr, items, visible=TRUE, icons)
 
             .setAnchors(tr, items)
 
@@ -311,6 +314,9 @@ setMethod(".gtable",
             ## add to container -- do after populating so widths are set
             add(container, obj,...)
             
+            tcl("pack","propagate", gp1, FALSE)
+            tkconfigure(gp1, width=width)
+            tkconfigure(gp1, height=height)
 
             return(obj)
             
@@ -421,9 +427,7 @@ setReplaceMethod(".leftBracket",
               items <- as.data.frame(value, stringsAsFactors=FALSE)
               tag(x,"items") <- items
 
-              .populateTable(widget, .toCharacter(items, tag(x, "round")), visible(x),
-                             icon.FUN(items), names(items),fresh=FALSE, doWidths=FALSE,
-                             getSizeFrom=size(x)[1])
+              .populateTable(widget, items, visible(x), icon.FUN(items))
               return(x)
             }
 
@@ -552,13 +556,19 @@ setReplaceMethod(".size",
                      width <- value[1]
                      height <- ifelse(length(value) > 1, value[2], NULL)
                    }
-                   
+
+                   ## try to avoid size issue.
+
                    ## set width -- value in pixels
-                   if(!is.null(width))
-                     tkconfigure(getBlock(obj), width=width)
-                   if(!is.null(height)) 
-                     tkconfigure(getBlock(obj), height=height)
-                   
+                   block <- getBlock(obj)
+                   if(!is.null(width) || !is.null(height)) {
+                     ## stop propogation after changing size
+                     tcl("grid","propagate",block, FALSE)
+                     if(!is.null(width))
+                       tkconfigure(block, width=width)
+                     if(!is.null(height)) 
+                       tkconfigure(block, height=height)
+                   }
                    
                    return(obj)
                  })

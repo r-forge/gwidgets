@@ -166,7 +166,7 @@ setRefClass("TcltkWidget",
                 "Return value of widget"
                 value
               },
-              set_value = function(value) {
+              set_value = function(value, index=TRUE) {
                 ##' set the main value for the widget
                 ##' @param value value to be set
                 ##' @note subclass should update the widget, this just updates value field
@@ -715,12 +715,15 @@ setRefClass("RadioButton",
                   i <- 1                # default
                 set_value(tmp[i])
               },
-              get_value = function() {
+              get_value = function(index=FALSE) {
                 "Get selected value"
+                if(index) return(get_index())
                 as.character(tclvalue(state_variable))
               },
-              set_value = function(value) {
+              set_value = function(value, index=FALSE) {
                 "Set selected value by label"
+                if(index) return(set_index(value))
+                
                 if(value %in% get_items()) {
                   state_variable_local <- state_variable
                   tclvalue(state_variable_local) <- value
@@ -855,11 +858,17 @@ setRefClass("CheckButtonGroup",
                                                                    compound)
                 new_item
               },
-              get_value=function() {
-                get_items()[get_index()]
+              get_value=function(index=FALSE) {
+                ind <- get_index()
+                if(index)
+                  return(ind)
+                get_items()[ind]
               },
-              set_value=function(value) {
+              set_value=function(value, index=FALSE) {
                 ##' @param value vector of values from items
+                if(index) return(set_index(value))
+                
+                
                 if(is.logical(value)) {
                   .value <- rep(value, length.out=no_items())
                   ind <- which(.value)
@@ -901,7 +910,7 @@ setRefClass("SpinButton",
                 "Return specified value"
                 as.numeric(tcl(widget,"get"))
               },
-              set_value = function(value, notify=FALSE) {
+              set_value = function(value, index=FALSE, notify=FALSE) {
                 "set spinner values"
                 tcl(widget,"set", as.numeric(value))
                 if(notify) {
@@ -936,6 +945,97 @@ setRefClass("SpinButton",
               
               )
             )
+
+## This gets folded into the gComponentR5tcltk class, so we cna define generic methods for these:
+
+
+### methods for gComponentR5tcltk. Most are shared, but we have them hard coded.
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            
+            r5_widget <- obj@R5widget
+            index <- getWithDefault(index, FALSE)
+            if(index) {
+              return(r5_widget$get_value(index=TRUE))
+            } else {
+              val <- r5_widget$get_value()
+              if(.hasSlot(obj, "coercewith") && !is.null(obj@coercewith))
+                return(obj@coercewith(val))
+              else
+                return(val)
+            }
+          })
+          
+
+## toggles state to be T or F
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+
+                   r5_widget <- obj@R5widget
+                   index <- getWithDefault(index, FALSE)
+
+                   r5_widget$set_value(value, index=index)
+                   return(obj)
+                 })
+
+setMethod("[",
+          signature(x="gComponentR5tcltk"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop)
+          })
+
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gComponentR5tcltk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            r5_widget <- x@R5widget
+            items <- r5_widget$get_items()
+            if(missing(i))
+              items
+            else
+              items[i]
+          })
+
+setReplaceMethod("[",
+                 signature(x="gComponentR5tcltk"),
+                 function(x, i, j,..., value) {
+                   .leftBracket(x, x@toolkit, i, j, ...) <- value
+                   return(x)
+                 })
+setReplaceMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gComponentR5tcltk"),
+          function(x, toolkit, i, j, ..., value) {
+
+            r5_widget <- x@R5widget
+            if(!missing(i)) {
+              items <- r5_widget$get_items()
+              items[i] <- value
+              value <- items
+            }
+            r5_widget$set_items(value)
+
+             return(x)
+          })
+
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkittcltk",x="gComponentR5tcltk"),
+          function(x,toolkit) {
+            r5_widget <- x@R5widget
+            r5_widget$no_items()
+          })
+
+
+## inherited enabled isn't workgin                
+setReplaceMethod(".enabled",
+                 signature(toolkit="guiWidgetsToolkittcltk",obj="gComponentR5tcltk"),
+                 function(obj, toolkit, ..., value) {
+
+                   r5_widget <- obj@R5widget                   
+                   r5_widget$set_enabled(value)
+                   return(obj)
+                  
+                 })
 
 
 ## ##################################################

@@ -66,29 +66,29 @@ setMethod(".gspinbutton",
             ## invisible(obj)
           })
 
-### methods
-setMethod(".svalue",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
-          function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            sp_widget <- obj@R5widget
-            sp_widget$get_value()
+## ### methods
+## setMethod(".svalue",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
+##           function(obj, toolkit, index=NULL, drop=NULL, ...) {
+##             sp_widget <- obj@R5widget
+##             sp_widget$get_value()
 
-            ## sb = getWidget(obj)
-            ## val = as.numeric(tcl(sb,"get"))
-            ## return(val)
-          })
+##             ## sb = getWidget(obj)
+##             ## val = as.numeric(tcl(sb,"get"))
+##             ## return(val)
+##           })
 
-setReplaceMethod(".svalue",
-                 signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
-                 function(obj, toolkit, index=NULL, ..., value) {
-                   sp_widget <- obj@R5widget
+## setReplaceMethod(".svalue",
+##                  signature(toolkit="guiWidgetsToolkittcltk",obj="gSpinbuttontcltk"),
+##                  function(obj, toolkit, index=NULL, ..., value) {
+##                    sp_widget <- obj@R5widget
 
-                   sp_widget$set_value(value)
+##                    sp_widget$set_value(value)
                    
-                   ## sb = getWidget(obj)
-                   ## tcl(sb,"set",value)
-                   return(obj)
-                 })
+##                    ## sb = getWidget(obj)
+##                    ## tcl(sb,"set",value)
+##                    return(obj)
+##                  })
 
 ## enabled -- use tkconfigure, not tcl
 setReplaceMethod(".enabled",
@@ -105,44 +105,44 @@ setReplaceMethod(".enabled",
 
 
 
-## Method to replace values of spin button
-setReplaceMethod("[",
-                 signature(x="gSpinbuttontcltk"),
-                 function(x, i, j,..., value) {
-                   .leftBracket(x, x@toolkit, i, j, ...) <- value
-                   return(x)
-                 })
+## ## Method to replace values of spin button
+## setReplaceMethod("[",
+##                  signature(x="gSpinbuttontcltk"),
+##                  function(x, i, j,..., value) {
+##                    .leftBracket(x, x@toolkit, i, j, ...) <- value
+##                    return(x)
+##                  })
 
-setReplaceMethod(".leftBracket",
-          signature(toolkit="guiWidgetsToolkittcltk",x="gSpinbuttontcltk"),
-          function(x, toolkit, i, j, ..., value) {
-            obj <- x
-            sp_widget <- obj@R5widget
-            sp_widget$set_items(value)
+## setReplaceMethod(".leftBracket",
+##           signature(toolkit="guiWidgetsToolkittcltk",x="gSpinbuttontcltk"),
+##           function(x, toolkit, i, j, ..., value) {
+##             obj <- x
+##             sp_widget <- obj@R5widget
+##             sp_widget$set_items(value)
 
 
-            ## widget <- getWidget(obj)
+##             ## widget <- getWidget(obj)
 
-            ## ## check that value is a regular sequence
-            ## if(length(value) <=1) {
-            ##   warning("Can only assign a vector with equal steps, as produced by seq")
-            ##   return(obj)
-            ## }
-            ## if(length(value) > 2 &&
-            ##    !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
-            ##   warning("Can only assign a vector with equal steps, as produced by seq")
-            ##   return(obj)
-            ## }
-            ## ## get current value, increment
-            ## curValue <- svalue(obj)
-            ## inc <- head(diff(value), n=1)
+##             ## ## check that value is a regular sequence
+##             ## if(length(value) <=1) {
+##             ##   warning("Can only assign a vector with equal steps, as produced by seq")
+##             ##   return(obj)
+##             ## }
+##             ## if(length(value) > 2 &&
+##             ##    !all.equal(diff(diff(value)), rep(0, length(value) - 2))) {
+##             ##   warning("Can only assign a vector with equal steps, as produced by seq")
+##             ##   return(obj)
+##             ## }
+##             ## ## get current value, increment
+##             ## curValue <- svalue(obj)
+##             ## inc <- head(diff(value), n=1)
 
-            ## tkconfigure(widget, from=min(value), to =max(value), increment=inc)
-            ## tcl(widget, "set", curValue)
+##             ## tkconfigure(widget, from=min(value), to =max(value), increment=inc)
+##             ## tcl(widget, "set", curValue)
 
-            ## all done
-            return(obj)
-          })
+##             ## all done
+##             return(obj)
+##           })
 
 
 

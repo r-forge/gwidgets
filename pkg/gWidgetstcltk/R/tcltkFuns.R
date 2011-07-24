@@ -146,4 +146,39 @@ addScrollbarsToWidget <- function(widget, parent) {
   tkgrid.rowconfigure(parent, 0, weight=1)
 }
 
+##' helper to make a treeview and populate from m
+##'
+##' @param parent parent container. Must use pack manager.
+##' @param m character matrix. May have 1 or more columns
+##' @return list with components \code{frame} (the enclosing frame for
+##' size management, managed by pack); \code{tr}, a treeview widget.
+populate_rectangular_treeview <- function(parent, m) {
+  enc_frame <- ttkframe(parent)
+  frame <- ttkframe(enc_frame)
+  tkpack(frame, expand=TRUE, fill="both")
+  tr <- ttktreeview(frame,
+                    columns=seq_len(ncol(m)),
+                    show="headings",
+                    selectmode="browse"
+                    )
+  addScrollbarsToWidget(tr, frame)
+  tkpack.propagate(enc_frame, FALSE)
 
+
+  ## headings,widths
+  charWidth <- as.integer(tclvalue(tcl("font","measure","TkTextFont","0")))
+  sapply(seq_len(ncol(m)), function(i) {
+    tcl(tr, "heading", i, text=colnames(m)[i])
+    tcl(tr, "column", i, width=10 + charWidth*max(apply(m, 2, nchar)))
+  })
+  tcl(tr, "column", ncol(m), stretch=TRUE) # stretch last
+  tcl(tr, "column", "#0", stretch=FALSE)   # no strecth on icons
+  ## values
+  apply(m, 1, function(vals) {
+    if(length(vals) == 1) vals <- paste("{", vals, "}", sep="")
+    tcl(tr, "insert", "", "end", values=vals)
+  })
+  return(list(tr=tr, frame=enc_frame))
+}
+
+   

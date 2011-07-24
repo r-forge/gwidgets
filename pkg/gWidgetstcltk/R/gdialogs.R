@@ -333,7 +333,7 @@ setMethod(".gbasicdialognoparent",
             dlg <- gwindow(title, parent=parent, visible=FALSE)
             tt <- dlg@widget@widget
             
-            g = ggroup(cont = dlg, horizontal=FALSE, expand=TRUE)
+            g <- ggroup(cont = dlg, horizontal=FALSE, expand=TRUE)
             
             obj <- new("gBasicDialogNoParenttcltk",
                        block=dlg, widget=g, toolkit=guiToolkit("tcltk"))
@@ -341,6 +341,9 @@ setMethod(".gbasicdialognoparent",
             tag(obj,"action") <- action
             tag(obj,"tt") <- tt
 
+            args <- list(...)
+            tag(obj, "do.buttons") <- getWithDefault(args$do.buttons, TRUE)
+            
             tkbind(tt, "<Destroy>", function() {
               tkgrab.release(tt)
             })
@@ -365,6 +368,15 @@ setMethod(".add",
              tag(obj,"widget") <- value
           })
 
+##' close window
+setMethod(".dispose",
+                 signature(toolkit="guiWidgetsToolkittcltk",
+                           obj="gBasicDialogNoParenttcltk"),
+                 function(obj, toolkit, ...) {
+                   flag <- tag(obj, "flag")
+                   tclvalue(flag) <- "destroy"
+                 })
+
 setMethod(".visible",
                  signature(toolkit="guiWidgetsToolkittcltk",
                            obj="gBasicDialogNoParenttcltk"),
@@ -387,35 +399,40 @@ setMethod(".visible",
                      ## with window, we need to destroy widget before returning loop
                      ## and then widget is destroyed before we can use it.
                      flag <- tclVar("")
+                     tag(obj, "flag") <- flag
                      
                      ## bind to destroy event
                      tkwm.protocol(dlg@widget@block, "WM_DELETE_WINDOW", function() {
                        tclvalue(flag) <- "destroy"
                      })
 
-                     buttonGroup = ggroup(cont=g, expand=TRUE, fill="x") ## just x XXX
-                     addSpring(buttonGroup)
+                     
                      ans <- FALSE
-                     OKbutton = gbutton("OK",cont=buttonGroup,action = tt,
-                       handler=function(h,...) {
-                         ans <<- TRUE
-                         tkgrab.release(h$action)
-                         tclvalue(flag) <- "destroy"
-                       })
-                     addSpace(buttonGroup, 10)
-                     Cancelbutton = gbutton("Cancel",cont=buttonGroup, action=tt,
-                       handler=function(h,...) {
-                         ans <<- FALSE
-                         tkgrab.release(h$action)
-                         tclvalue(flag) <- "destroy"
-                       })
+
+                     if(tag(obj, "do.buttons")) {
+                       buttonGroup = ggroup(cont=g, expand=TRUE, fill="x") ## just x XXX
+                       addSpring(buttonGroup)
+                       OKbutton = gbutton("OK",cont=buttonGroup,action = tt,
+                         handler=function(h,...) {
+                           ans <<- TRUE
+                           tkgrab.release(h$action)
+                           tclvalue(flag) <- "destroy"
+                         })
+                       addSpace(buttonGroup, 10)
+                       Cancelbutton = gbutton("Cancel",cont=buttonGroup, action=tt,
+                         handler=function(h,...) {
+                           ans <<- FALSE
+                           tkgrab.release(h$action)
+                           tclvalue(flag) <- "destroy"
+                         })
+                     }
 
                      ## make window visible and on top of stack
                      visible(dlg) <- TRUE
                      focus(dlg) <- TRUE
                      ## make modal
                      tkwait.variable(flag)
-
+                       
                      ## process response
                      if(ans) {
                        ## yes

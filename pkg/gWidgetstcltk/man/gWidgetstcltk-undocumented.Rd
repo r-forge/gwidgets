@@ -27,6 +27,8 @@
 
 \alias{.delete,gNotebooktcltk,guiWidgetsToolkittcltk,ANY-method}
 \alias{.delete,gToolbartcltk,guiWidgetsToolkittcltk,ANY-method}
+
+\alias{.svalue<-,gComponentR5tcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gExpandgrouptcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
 \alias{.svalue<-,gExpandgrouptcltk,guiWidgetsToolkittcltk,ANY,numeric-method}
 \alias{.svalue<-,gNotebooktcltk,guiWidgetsToolkittcltk,ANY,ANY-method}
@@ -310,6 +312,7 @@
 \alias{.svalue,gFilebrowsetcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gPanedgrouptcltk,ANY,ANY,guiWidgetsToolkittcltk-method}
 \alias{.svalue,character,guiWidgetsToolkittcltk-method}
+\alias{.svalue,gComponentR5tcltk,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gButtontcltk,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.svalue,gCheckboxtcltk,guiWidgetsToolkittcltk-method}
@@ -379,6 +382,7 @@
 %% --  .leftBracket --
 %%
 \alias{.leftBracket-methods}
+\alias{.leftBracket,gComponentR5tcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gCheckboxtcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket,gCommandlinetcltk,guiWidgetsToolkittcltk-method}
@@ -401,6 +405,7 @@
 %%
 \alias{.leftBracket<--methods}
 \alias{.leftBracket<-,gCheckboxtcltk,guiWidgetsToolkittcltk-method}
+\alias{.leftBracket<-,gComponentR5tcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket<-,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket<-,gDroplisttcltk,guiWidgetsToolkittcltk-method}
 \alias{.leftBracket<-,gEdittcltk,guiWidgetsToolkittcltk-method}
@@ -518,9 +523,10 @@
 %%
 \alias{.dispose-methods}
 \alias{.dispose,gWidgettcltk,guiWidgetsToolkittcltk-method}
+\alias{.dispose,gBasicDialogNoParenttcltk,guiWidgetsToolkittcltk-method}
+\alias{.dispose,gHelptcltk,guiWidgetsToolkittcltk-method}
 \alias{.dispose,gNotebooktcltk,guiWidgetsToolkittcltk-method}
 \alias{.dispose,gTexttcltk,guiWidgetsToolkittcltk-method}
-\alias{.dispose,gHelptcltk,guiWidgetsToolkittcltk-method}
 \alias{.dispose,gWindowtcltk,guiWidgetsToolkittcltk-method}
 
 %% --  .insert --
@@ -590,6 +596,7 @@
 \alias{.enabled<-,gWidgettcltk,guiWidgetsToolkit-method}
 \alias{.enabled<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.enabled<-,tcltkObject,guiWidgetsToolkittcltk-method} 
+\alias{.enabled<-,gComponentR5tcltk,guiWidgetsToolkittcltk-method} 
 \alias{.enabled<-,gActiontcltk,guiWidgetsToolkittcltk-method} 
 \alias{.enabled<-,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method} 
 \alias{.enabled<-,gCheckboxtcltk,guiWidgetsToolkittcltk-method} 
@@ -859,6 +866,7 @@
 \alias{.addhandlerchanged-methods}
 \alias{.addhandlerchanged,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gCheckboxtcltk,guiWidgetsToolkittcltk-method}
+\alias{.addhandlerchanged,gCheckboxgroupTabletcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gEdittcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gExpandgrouptcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerchanged,gGridtcltk,guiWidgetsToolkittcltk-method}
@@ -908,6 +916,7 @@
 \alias{.addhandlerclicked,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerclicked,gButtontcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerclicked,gCheckboxgrouptcltk,guiWidgetsToolkittcltk-method}
+\alias{.addhandlerclicked,gCheckboxgroupTabletcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerclicked,gDroplisttcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerclicked,gGraphicstcltk,guiWidgetsToolkittcltk-method}
 \alias{.addhandlerclicked,gGridtcltk,guiWidgetsToolkittcltk-method}
@@ -1155,6 +1164,7 @@
 %%
 \alias{.length-methods}
 \alias{.length,gWidgettcltk,guiWidgetsToolkittcltk-method}
+\alias{.length,gComponentR5tcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gDroplisttcltk,guiWidgetsToolkittcltk-method} 
 \alias{.length,gGridtcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gHelptcltk,guiWidgetsToolkittcltk-method}
@@ -1232,8 +1242,12 @@
 \alias{.getToolkitWidget,gActiontcltk,guiWidgetsToolkittcltk-method}
 \alias{.getToolkitWidget,gWindowtcltk,guiWidgetsToolkittcltk-method}
 %%
+%% -- [
+\alias{[,gComponentR5tcltk-method}
+%%
 %% -- [<-
 \alias{[<-,gWidgettcltk-method}
+\alias{[<-,gComponentR5tcltk-method}
 \alias{[<-,gCheckboxtcltk-method}
 \alias{[<-,gCheckboxgrouptcltk-method}
 \alias{[<-,gDroplisttcltk-method}

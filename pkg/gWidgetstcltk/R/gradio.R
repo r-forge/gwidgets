@@ -67,24 +67,24 @@ setMethod(".gradio",
           })
 
 ## methods
-setMethod(".svalue",
-          signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
-          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+## setMethod(".svalue",
+##           signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
+##           function(obj, toolkit, index=NULL, drop=NULL, ...) {
 
-            rb_widget <- obj@R5widget
-            index <- getWithDefault(index, FALSE)
-            if(index) {
-              return(rb_widget$get_index())
-            } else {
-              val <- rb_widget$get_value()
-              if(!is.null(obj@coercewith))
-                return(obj@coercewith(val))
-              else
-                return(val)
-            }
+##             rb_widget <- obj@R5widget
+##             index <- getWithDefault(index, FALSE)
+##             if(index) {
+##               return(rb_widget$get_index())
+##             } else {
+##               val <- rb_widget$get_value()
+##               if(!is.null(obj@coercewith))
+##                 return(obj@coercewith(val))
+##               else
+##                 return(val)
+##             }
           
               
-          })
+##           })
 
 ## svalue<-
 setReplaceMethod(".svalue",
@@ -108,69 +108,69 @@ setReplaceMethod(".svalue",
                  })
 
 
-setMethod(".leftBracket",
-          signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
-          function(x, toolkit, i, j, ..., drop=TRUE) {
-            ## return(items)
-            rb_widget <- x@R5widget
-            items <- rb_widget$get_items()
-            if(missing(i))
-              items
-            else
-              items[i]
+## setMethod(".leftBracket",
+##           signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
+##           function(x, toolkit, i, j, ..., drop=TRUE) {
+##             ## return(items)
+##             rb_widget <- x@R5widget
+##             items <- rb_widget$get_items()
+##             if(missing(i))
+##               items
+##             else
+##               items[i]
             
          
-          })
+##           })
             
-setMethod("[",
-          signature(x="gRadiotcltk"),
-          function(x, i, j, ..., drop=TRUE) {
-            .leftBracket(x, x@toolkit, i, j, ..., drop=drop)
-          })
+## setMethod("[",
+##           signature(x="gRadiotcltk"),
+##           function(x, i, j, ..., drop=TRUE) {
+##             .leftBracket(x, x@toolkit, i, j, ..., drop=drop)
+##           })
 
 
-## This sets the labels for the buttons
-## add in markup here.
-setReplaceMethod(".leftBracket",
-          signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
-          function(x, toolkit, i, j, ..., value) {
+## ## This sets the labels for the buttons
+## ## add in markup here.
+## setReplaceMethod(".leftBracket",
+##           signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
+##           function(x, toolkit, i, j, ..., value) {
 
-            rb_widget <- x@R5widget
+##             rb_widget <- x@R5widget
             
-            if(!missing(i)) {
-              items <- rb_widget$get_items()
-              items[i] <- value
-              value <- items
-            }
-            rb_widget$set_items(value)
-            return(x)
+##             if(!missing(i)) {
+##               items <- rb_widget$get_items()
+##               items[i] <- value
+##               value <- items
+##             }
+##             rb_widget$set_items(value)
+##             return(x)
             
-          })
+##           })
 
-setReplaceMethod("[",
-                 signature(x="gRadiotcltk"),
-                 function(x, i, j,..., value) {
-                   .leftBracket(x, x@toolkit, i, j, ...) <- value
-                   return(x)
-                 })
+## setReplaceMethod("[",
+##                  signature(x="gRadiotcltk"),
+##                  function(x, i, j,..., value) {
+##                    .leftBracket(x, x@toolkit, i, j, ...) <- value
+##                    return(x)
+##                  })
 
-setMethod(".length",
-          signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
-          function(x,toolkit) {
-            rb_widget <- x@R5widget
-            rb_widget$no_items()
-            ##length(tag(x,"items"))
-          })
+## setMethod(".length",
+##           signature(toolkit="guiWidgetsToolkittcltk",x="gRadiotcltk"),
+##           function(x,toolkit) {
+##             rb_widget <- x@R5widget
+##             rb_widget$no_items()
+##             ##length(tag(x,"items"))
+##           })
 
-## inherited enabled isn't workgin                
-setReplaceMethod(".enabled",
-                 signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
-                 function(obj, toolkit, ..., value) {
-                   rb_widget <- obj@R5widget
-                   rb_widget$set_enabled(value)
-                   return(obj)
+## ## inherited enabled isn't workgin                
+## setReplaceMethod(".enabled",
+##                  signature(toolkit="guiWidgetsToolkittcltk",obj="gRadiotcltk"),
+##                  function(obj, toolkit, ..., value) {
+##                    rb_widget <- obj@R5widget
+##                    rb_widget$set_enabled(value)
+##                    return(obj)
                   
-                 })
+##                  })
 
 
 ##################################################

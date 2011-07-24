@@ -1,6 +1,8 @@
 TODO:
 ---------
-* add method for adding tkwin objects (tkrplot)
+* Erich request: gbasicdialog with buttons options
+* fix size issues with gtable -- annoying!!!
+DONE * add method for adding tkwin objects (tkrplot)
 * fix radiobuttons with no selection(Richie: remove variable check, 
 ..) -- not so easy
 * optimize size<- with components

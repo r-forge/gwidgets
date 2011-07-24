@@ -105,7 +105,7 @@ setReplaceMethod(".leftBracket",
             spacing <- tag(x,"spacing")
             
             ## need means to adjust via sticky
-            sticky = "n"
+            sticky = "w"                # like others
             theArgs = list(...)
             if(!is.null(theArgs$anchor)) {
               anchor = theArgs$anchor

@@ -135,35 +135,35 @@ setMethod(".gtree",
             ## now add a handler to row-exapnd
             ## Tree view open handler. No need to delete on close, as we
             ## delete children on open.
-            tkbind(tr, "<<TreeviewOpen>>",function(x,y) {
-              sel <- unlist(strsplit(tclvalue(tcl(tr,"selection"))," "))[1]
-              ## check if  children, if not return
-              children <- unlist(strsplit(tclvalue(tcl(tr,"children",sel))," "))
-              if(length(children) == 0)
-                return()
-              lapply(children, function(i) tcl(tr,"delete",i))
-              ## add in children
-              path <- .treeGetPath(tr)
+            tkbind(tr, "<<TreeviewOpen>>",function(W, x,y) {
+                 sel <- unlist(strsplit(tclvalue(tcl(W,"selection"))," "))[1]
+                 ## check if  children, if not return
+                 children <- unlist(strsplit(tclvalue(tcl(W,"children",sel))," "))
+                 if(length(children) == 0)
+                   return()
+                 lapply(children, function(i) tcl(W,"delete",i))
+                 ## add in children
+                 path <- .treeGetPath(W)
+                 
+                 os <- offspring(path)
 
-              os <- offspring(path)
-
-              ## icons
-              icons <- rep("", nrow(os))
-              if(!is.null(icon.FUN)) 
-                icons <- icon.FUN(os)
-              ## fix icons - allow for stock or file or "" or null or NA
-              ## are icons "", NA, filename or stockname?
-              icons <- sapply(icons,function(i) {
-                findTkIcon(i)
-              })
+                 ## icons
+                 icons <- rep("", nrow(os))
+                 if(!is.null(icon.FUN)) 
+                   icons <- icon.FUN(os)
+                 ## fix icons - allow for stock or file or "" or null or NA
+                 ## are icons "", NA, filename or stockname?
+                 icons <- sapply(icons,function(i) {
+                   findTkIcon(i)
+                 })
               
-              l <- .treeGetOffspring(os, hasOffspring)
-              os <- l$children
-              whichHaveOffspring <- l$offspring
-
-              .treeAddOffspring(tr, parent=sel, os, whichHaveOffspring,
-                                icons=icons)
-            })
+                l <- .treeGetOffspring(os, hasOffspring)
+                 os <- l$children
+                 whichHaveOffspring <- l$offspring
+                 
+                 .treeAddOffspring(W, parent=sel, os, whichHaveOffspring,
+                                   icons=icons)
+               })
             
             
             if(!is.null(handler)) {

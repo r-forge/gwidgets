@@ -17,6 +17,7 @@
   ## some configuration
   .Tcl("option add *tearOff 0")         # disable tearoff menus
 
+  
   ## load in tcl packages
   ## from tcltk2 we have this
   tclRequire("autoscroll")
@@ -25,6 +26,11 @@
 
   ## genearte stock icons
   loadGWidgetIcons()
+
+  ## use.table options
+  tkimage.create("photo", "::image::off", file=system.file("images", "symbol_cross.gif", package="gWidgets"))
+  tkimage.create("photo", "::image::on",  file=system.file("images", "symbol_plus.gif",  package="gWidgets"))
+
 }
          
 
