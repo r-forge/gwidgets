@@ -27,3 +27,24 @@ setGeneric( '.glayout' ,
                     ... )
            standardGeneric( '.glayout' ))
 
+##' pass back item, list or matrix of items depending on dimension
+setMethod("[",
+          signature(x="gLayout"),
+          function(x,i,j,...,drop=TRUE) {
+            if(missing(drop)) drop <- TRUE
+            if(missing(i))
+              i <- seq_len(dim(x)[1])
+            if(missing(j))
+              j <- seq_len(dim(x)[2])
+
+            if(length(i) == 1 && length(j) == 1)
+              return(.leftBracket(x@widget, x@toolkit,i,j,...,drop=drop))
+
+            ## a matrix or list
+            out <- sapply(j, function(col) lapply(i, function(row) x[row, col]))
+            if(is.matrix(out))
+              return(out[,,drop=drop])
+            else
+              return(out)
+             
+          })

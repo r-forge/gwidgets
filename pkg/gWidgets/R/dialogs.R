@@ -146,23 +146,26 @@ setClass("guiDialog",
 ##' @param title title for window
 ##' @param widget widget to add (Only if toolkit supports it)
 ##' @param parent parent to display by
+##' @param do.buttons FALSE to suppress buttons when no parent
 ##' @param handler handler called when \code{Ok} button invoked
 ##' @param action passed to handler
 ##' @param ... ignored
 ##' @param toolkit toolkit
 ##' @rdname gWidgets-dialogs
 gbasicdialog <- function(
-  title = "Dialog", widget,
-  parent = NULL,
-  handler = NULL, action = NULL,
-  ..., toolkit=guiToolkit()) {
+                         title = "Dialog", widget,
+                         parent = NULL,
+                         do.buttons=TRUE,
+                         handler = NULL, action = NULL,
+                         ..., toolkit=guiToolkit()) {
+  
   if(missing(widget)) {
-    obj <- .gbasicdialognoparent(toolkit, title, parent, handler, action,...)
+    obj <- .gbasicdialognoparent(toolkit, title, parent, handler, action,  ..., do.buttons=do.buttons)
     obj <- new( 'guiDialog',widget=obj,toolkit=toolkit) 
   } else {
     obj <- .gbasicdialog(toolkit,
                   title=title, widget=widget,parent=parent,
-                  handler=handler, action=action,
+                  handler=handler, action=action, 
                          ...)
   }
   return(obj)
@@ -174,7 +177,7 @@ gbasicdialog <- function(
 setGeneric(".gbasicdialog",
            function(toolkit,
                     title = "Dialog", widget, parent,
-                    handler = NULL, action = NULL,
+                    handler = NULL, action = NULL, 
                     ...)
            standardGeneric(".gbasicdialog"))
 
@@ -184,7 +187,7 @@ setGeneric(".gbasicdialog",
 setGeneric(".gbasicdialognoparent",
            function(toolkit,
                     title = "Dialog",  parent,
-                    handler = NULL, action = NULL,
+                    handler = NULL, action = NULL, 
                     ...)
            standardGeneric(".gbasicdialognoparent"))
 

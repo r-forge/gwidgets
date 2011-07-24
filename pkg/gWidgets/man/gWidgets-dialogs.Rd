@@ -28,7 +28,7 @@ gconfirm(message, title="Confirm", icon = c("info", "warning", "error",
  "question"), parent=NULL,
  handler = NULL, action = NULL, ..., toolkit=guiToolkit())
 
-gbasicdialog(title = "Dialog", widget, parent=NULL, handler = NULL, action=NULL, ..., toolkit=guiToolkit())
+gbasicdialog(title = "Dialog", widget, parent=NULL, do.buttons=TRUE, handler = NULL, action=NULL,  ..., toolkit=guiToolkit())
 
 galert(message, title = "message", delay=3, parent=NULL, ..., toolkit=guiToolkit())
 }
@@ -41,6 +41,10 @@ galert(message, title = "message", delay=3, parent=NULL, ..., toolkit=guiToolkit
   \item{widget}{Widget to place in basic dialog. If missing, dialog returns a container.}
   \item{parent}{A gwindow() instance. If specified, dialog will be
     located in relation to this}
+  \item{do.buttons}{For \code{gbasicdialog} -- when no \code{widget}
+    argument is passed in -- this can be used to suppress the addition of
+    Ok and Cancel buttons. If suppressed, the dialog can be closed by the
+    window manager or programattically through the \code{dispose} method.}
   \item{handler}{Handler called on OK selection.}
   \item{action}{Value passed to handler}
   \item{delay}{For galert, how long the transient message will appear}
@@ -65,21 +69,24 @@ galert(message, title = "message", delay=3, parent=NULL, ..., toolkit=guiToolkit
   argument of the handler. This dialog returns the value of the string
   if OK is clicked, otherwise \code{NA}.
 
-  For toolkits which support constructors without parent containers,
-  the \code{gbasicdialog} dialog wraps a widget around an OK and
-  dismiss button. The handler is called when the OK button is
-  clicked. This dialog returns the \code{TRUE} when OK is clicked,
-  otherwise \code{FALSE}.
+  The \code{gbasicdialog} widget wraps a dialog (with buttons) around
+   a widget. For \pkg{gWidgetsRGtk2} and \pkg{gWidgetsQt} the widget may be specified throuh the
+   \code{widget} argument of the constructor. The constructor produces
+   a modal dialog, hence no methods are defined. The return value is a
+   logical indicating which button was clicked.
 
-  If the toolkit does not support parentless constructors, then the
-  use is different. The \code{widget} argument is missing and the
-  return value is a container. This is basically a top-level window
-  with OK and cancel buttons. The container is shown when the
-  \code{visible} method is called with a value of
-  \code{set=TRUE}. This creates a modal dialog. The handler specified
-  to the constructor is called when OK is clicked and \code{TRUE} is
-  returned. The value of \code{FALSE} is returned on cancel, and
-  \code{NA} otherwise.
+  More portably (hence encouraged), if the \code{widget} argument is NULL, then the
+  constructor produces a container. This container becomes modal after a
+  call to \code{visible(..., set=TRUE)} (not the assignment version
+  though). Again the return value is a logical.  This too creates a
+  modal dialog. The handler specified to the constructor is called when
+  OK is clicked and \code{TRUE} is returned. The value of \code{FALSE}
+  is returned on cancel, and \code{NA} otherwise.
+
+  The buttons may be suppressed by setting the argument
+  \code{do.buttons=FALSE}. The
+  dialog then may be closed by calling the \code{dispose} method
+  within a callback.
 
 
   These dialogs are modal. This means that the R session freezes until

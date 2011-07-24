@@ -15,6 +15,7 @@
 \alias{.tag,guiWidget,guiWidgetsToolkitRGtk2-method}
 \alias{.tag<-,guiWidget,guiWidgetsToolkitRGtk2-method}
 \alias{[,guiWidget-method}
+\alias{[,gLayout-method}
 \alias{[<-,guiWidget-method}
 \alias{add3rdmousepopupmenu,guiWidget-method}
 \alias{add,guiWidget-method}

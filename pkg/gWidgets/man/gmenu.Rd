@@ -54,12 +54,15 @@ gaction(label, tooltip = NULL, icon = NULL, key.accel = NULL,
 	\code{action} argument. The icon, tooltip, and keyboard
 	accelerator are very much toolkit and OS dependent, and so may
 	not always be available by the widget using the gaction
-	object. The keyboard accelerator may use modifies
+	object. The keyboard accelerator may use modifiers
 	\code{Control}, \code{Alt} or \code{Shift} along with a
-	letter, such as \code{Control-c}. These are only now
-	implemented in tcltk. The keyboard accelerator requires a
-	parent container so that the corresponding window for which
-	the accelerator applies can be found.
+	letter, such as \code{Control-c}.  For \pkg{gWidgetstcltk} the
+	value is passed to \code{tkbind}.  For \pkg{gWidgetsQt} the
+	value is passed to \code{Qt$QKeySequence}.  For
+	\pkg{gWidgetsRGtk2} the value is parsed and manipulated.  The
+	keyboard accelerator requires a parent container so that the
+	corresponding window for which the accelerator applies can be
+	found.
 
 	The lists defining a menubar or toolbar are very similar.
 

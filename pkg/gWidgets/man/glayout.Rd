@@ -46,7 +46,10 @@ glayout(homogeneous = FALSE, spacing = 10, container = NULL, ..., toolkit = guiT
   
   Like  \code{ggroup}, the extra argument \code{fill} can by used when \code{expand} is given, but not \code{anchor}, to have the widget expand in the \code{x} direction, the \code{y} direction, or \code{both} (the default). (Toolkit specific). 
 
-  The method \code{[} can be used to extract one widget. Pass in values of both \code{i} and \code{j}.
+  The method \code{[} can be used to subset. In the simplest usage, it
+  returns the item at index i,j. (The item at i,j may be in other
+  cells too. The return value is a gwidget if 1x1, a list if 1xn or
+  mx1 (n>1), or a mxn matrix of items.
 
 
 }

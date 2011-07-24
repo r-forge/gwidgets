@@ -2,9 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
+Changes for 0.0-46
+------------------
+
+* added do.buttons argument to gbasicdialog
+* modify [ method for glayout. Returns object, list of objects or
+  matrix of objects
+
 Changes for 0.0-45
 ------------------
- 
+* focus generic for gwindow
 
 Changes for 0.0-44
 ------------------

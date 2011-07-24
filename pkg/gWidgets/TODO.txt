@@ -1,3 +1,4 @@
+* promote do.buttons in gbasidialog to method of .gbasicdialog
 * Add length.out argument to gslider, gspinbutton
 * argument to gbutton for icon_only (like compound in tcltk text, icon, both...)
 * editable<- method (used in gedit), where else?
