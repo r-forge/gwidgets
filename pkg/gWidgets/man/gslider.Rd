@@ -13,16 +13,20 @@
 	Some toolkits only allow integer values for these.
 }
 \usage{
-gslider(from = 0, to = 100, by = 1, value = from, horizontal = TRUE, handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
+gslider(from = 0, to = 100, by = 1, length.out=NULL, along.with=NULL, value = from, horizontal = TRUE, handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
 
-gspinbutton (from = 0, to = 10, by = 1, value = from, digits = 0, 
+gspinbutton (from = 0, to = 10, by = 1, length.out=NULL, along.with=NULL, value = from, digits = 0, 
     handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit()) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{from}{Starting point in range. May be a vector of values that can be sorted from \code{sort(unique(...))}. In tis case, \code{to}, \code{by} are ignored.}
+  \item{from}{Starting point in range. For \code{glider}, this may be a vector of values that
+    can be sorted from \code{sort(unique(...))}. In this case, \code{to},
+    \code{by}, etc. are ignored.}
   \item{to}{Ending point in range}
   \item{by}{Step size between values in the sequence}
+  \item{length.out}{In place of by, take number of steps from this}
+  \item{along.with}{In place of length.out, take length from this vector}
   \item{value}{ The initial value }
   \item{digits}{The number of digits shown}
   \item{horizontal}{Specifies orientation of gslider widget}
@@ -34,6 +38,18 @@ gspinbutton (from = 0, to = 10, by = 1, value = from, digits = 0,
 
 }
 \details{
+  
+	Widgets to select from a vector of values. This vector is
+	usually a sequence, as is returned by \code{seq}, hence the
+	similar arguments, although the implementation is a bit less
+	general, as \code{length.out} and \code{along.with} are used to
+	compute \code{by} when given.
+	
+
+	For \code{gslider} any ordered vector may be used if specified
+	to \code{from}.  Some toolkits only allow integer sequences, see
+	the respective \pkg{gWidgetsXXX} packages for details.
+
 
 	The \code{svalue} method returns the selected value. If all
 	values are specified to \code{from}, then \code{index}
@@ -43,15 +59,13 @@ gspinbutton (from = 0, to = 10, by = 1, value = from, digits = 0,
 	If all values are specified to \code{from}, then \code{index}
 	argument is respected.
 
-    The \code{[<-} method can be used to change the sequence that the
-    value is selected from. It expects a regular sequence, or if all
-    values were originally specified to \code{from} a sortable
-    sequence.
+	The \code{[<-} method can be used to change the sequence that the
+	value is selected from. It expects a regular sequence, or if all
+	values were originally specified to \code{from} a sortable
+	sequence.
 
 	The \code{addhandlerchanged} handler is called when the
-	widgets' value is changed. (For \pkg{gWidgetstcltk} the
-	binding is only when the mouse drag is released, so is not
-	called via \code{svalue<-}.)
+	widgets' value is changed. 
 
 }
 % \value{}
@@ -79,7 +93,7 @@ gspinbutton (from = 0, to = 10, by = 1, value = from, digits = 0,
     cont = tbl, handler = plotHist))
 
 ## update slider using [<-
-  sl[] <- seq(2,50, by=2)\
+  sl[] <- seq(2,50, by=2)
 
 
   ## other sequence:

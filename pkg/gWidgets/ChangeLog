@@ -1,3 +1,9 @@
+2011-07-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R (gslider): added length.out, along.with arguments
+
+	* R/gspinbutton.R: added length.out, along.with arguments
+
 2011-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* man/gWidgets-dialogs.Rd (icon): doc changes to gbasicdialog
