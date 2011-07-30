@@ -506,16 +506,43 @@ setMethod(".galert",
                    ) {
             force(toolkit)
 
-            w <- gwindow(title, width=250, height=100, parent = parent)
-            g <- ggroup(container =w)
-            l <- gbutton("  ", container =g)
-            getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
-            label <- glabel(message, container =g, expand=TRUE)
-            font(label) <- c("weight"="bold")
-            gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
-            
-            addHandlerIdle(w, handler = function(h,...) dispose(w),
-                           interval = as.numeric(delay)*1000)
+            ## insert an info bar here?
+            if(is(parent, "gWindow")) {
+              ib <- gtkInfoBar(show=FALSE)
+              ib$setNoShowAll(TRUE)
+              ib$setMessageType("warning")
+              ca <- ib$getContentArea()
+              ca$packStart(gtkLabel(message))
+              b <- gtkButton(stock.id="cancel")
+              ca$packEnd(b, FALSE)
+
+              ## add to ibg
+              ibg <- tag(parent, "infobargroup")
+              ourgroup <- ggroup(cont=ibg, expand=TRUE, horizontal=FALSE)
+              add(ourgroup, ib, expand=TRUE)
+              visible(ibg) <- TRUE
+              ib$show()
+
+              closeBar <- function(...) {
+                ib$hide()
+                visible(ibg) <- FALSE
+                delete(ibg, ourgroup)
+                FALSE
+              }
+              gSignalConnect(b, "clicked", closeBar)
+              gTimeoutAdd(delay*1000, closeBar)
+            } else {
+              w <- gwindow(title, width=250, height=100, parent = parent)
+              g <- ggroup(container =w)
+              l <- gbutton("  ", container =g)
+              getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
+              label <- glabel(message, container =g, expand=TRUE)
+              font(label) <- c("weight"="bold")
+              gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
+              
+              addHandlerIdle(w, handler = function(h,...) dispose(w),
+                             interval = as.numeric(delay)*1000)
+            }
 
             invisible(w)
           })

@@ -642,13 +642,14 @@ setMethod(".leftBracket",
             showVisible = ifelse(is.null(theArgs$visible),FALSE,theArgs$visible)
             
             ## can't increase size of data frame *or* change the class
-            store = .getRGtkDataFrame(x)
-            n = (dim(store)[2] - 2)/3 -1
+            store <- .getRGtkDataFrame(x)
+            n <- (dim(store)[2] - 2)/3 -1
             
-            frame = store[ , 3*((1:n)+1), drop=FALSE]
+            frame <- store[ , 3*((1:n)+1), drop=FALSE]
+            
             rownames(frame) <- make.row.names(store[,3])
             names(frame) <- names(x)
-            
+
             ## handle missing values
             if(missing(i) && missing(j)) {
               i = if(showVisible) which(visible(x)) else seq_len(nrow(x))
@@ -1564,7 +1565,7 @@ addPopupMenuToViewCol = function(view.col) {
     col.no = tag(view.col,"column.number") ## - 1 # rownames offset
     newOrder = order(obj[,col.no], decreasing = TRUE)
     obj[,] = obj[newOrder,]
-    rownames(obj) = rownames(obj)[newOrder]
+#    rownames(obj) = rownames(obj)[newOrder]
     ## signal?
     ##      cr = view.col$GetCellRenderers()[[1]] 
     ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
@@ -1573,7 +1574,7 @@ addPopupMenuToViewCol = function(view.col) {
     col.no = tag(view.col,"column.number") ## - 1 # rownames offset
     newOrder = order(obj[,col.no], decreasing = FALSE)
     obj[,] = obj[newOrder,]
-    rownames(obj) = rownames(obj)[newOrder]
+#    rownames(obj) = rownames(obj)[newOrder]
     ## signal? -- is killing R
     ##      cr = view.col$GetCellRenderers()[[1]] 
     ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify

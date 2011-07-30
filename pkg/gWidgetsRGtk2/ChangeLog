@@ -1,3 +1,13 @@
+2011-07-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addTreeViewColumnNoEdit): took out needless call to
+	rownames (was giving error). Thanks Stephanie
+
+2011-07-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R (galert): When parent is a gwindow instance, this
+	dialog now uses a GtkInfoBar instance. Requires gWidgets 0.0-46 or later.
+
 2011-07-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R (gbasicdialgo): Added do.buttons argument when run

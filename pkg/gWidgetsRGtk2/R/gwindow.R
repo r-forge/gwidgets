@@ -83,11 +83,13 @@ as.gWidgetsRGtk2.GtkWindow <- function(widget,...) {
   
   (mbg <- ggroup(spacing=0)); svalue(mbg) <- 0
   (tbg <- ggroup(spacing=0)); svalue(tbg) <- 0
+  (ibg <- ggroup(spacing=0, horizontal=FALSE)); svalue(ibg) <- 0
   (cpg <- ggroup(spacing=0)); svalue(cpg) <- 0
   (sbg <- ggroup(spacing=0)); svalue(sbg) <- 0
   
   tag(obj,"menubargroup") <- mbg
   tag(obj,"toolbargroup") <- tbg
+  tag(obj, "infobargroup") <- ibg
   tag(obj,"contentPane") <- cpg
   tag(obj,"statusbargroup") <- sbg
   
@@ -98,11 +100,12 @@ as.gWidgetsRGtk2.GtkWindow <- function(widget,...) {
   
   tbl$Attach(getBlock(mbg), 0,1,0,1, yoptions = c("fill"))
   tbl$Attach(getBlock(tbg), 0,1,1,2, yoptions = c("fill"))
-  tbl$AttachDefaults(getBlock(cpg), 0,1,2,3)
+  tbl$Attach(getBlock(ibg), 0,1,2,3, xoptions=c("shrink", "fill"), yoptions = c("shrink"))
+  tbl$AttachDefaults(getBlock(cpg), 0,1,3,4)
   ## size grip issue if no statusbar
   tmp <- getBlock(cpg);  tmp['border-width'] = 13
 
-  tbl$Attach(getBlock(sbg), 0,1,3,4, yoptions = c("fill"))
+  tbl$Attach(getBlock(sbg), 0,1,5,6, yoptions = c("fill"))
   
   window$Add(tbl)
 

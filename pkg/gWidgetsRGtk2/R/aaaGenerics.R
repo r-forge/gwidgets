@@ -88,6 +88,7 @@ c(
   "GtkIconView",
   "GtkImage",
   "GtkImageMenuItem",
+  "GtkInfoBar",
   "GtkInputDialog",
   "GtkInvisible",
   "GtkItem",
