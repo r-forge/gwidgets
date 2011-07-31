@@ -504,6 +504,9 @@ setGeneric(".names<-",function(x, toolkit, value) {
 })
 
 ##################################################
+## Work with underlying toolkit objects
+
+##################################################
 ##' Generic for method to return toolkit widget from guiWidget instance
 setGeneric("getToolkitWidget",function(obj) standardGeneric("getToolkitWidget"))
 
@@ -517,4 +520,46 @@ setMethod("getToolkitWidget",signature(obj="guiWidget"),
 ##' @alias getToolkitWidget
 setGeneric(".getToolkitWidget",function(obj, toolkit)
            standardGeneric(".getToolkitWidget"))
+
+
+################## access via $ and [[ #############################
+##' Invoke a method on the underlying toolkit object
+##'
+##' @param x guiwidget
+##' @param meth_name name of method
+##' @return function that one can call, as in \code{x$method(a=1)}
+##' @export
+"$.guiWidget" <- function(x, meth_name)
+            .callToolkitMethod(x@widget, x@toolkit, meth_name)
+
+setGeneric(".callToolkitMethod",function(x, toolkit, meth_name)
+           standardGeneric(".callToolkitMethod"))
+
+##' Get an underlying property of the toolkit object
+##' @param x guiWidget
+##' @param ... first argument has property
+##' @return value
+##' @export
+##'
+"[[.guiWidget" <- function(x, ...) {
+  property <- list(...)[[1]]
+  .getToolkitProperty(x@widget, toolkit=x@toolkit, property=property)
+}
+
+setGeneric(".getToolkitProperty",function(x, toolkit, property)
+           standardGeneric(".getToolkitProperty"))
+
+##' Set underlying toolkit property
+##' @param x guiWidget
+##' @param i property to set
+##' @param j ignored
+##' @param value new value of property
+##' @export
+"[[<-.guiWidget" <- function(x, i, j, value) {
+  .setToolkitProperty(x@widget, toolkit=x@toolkit, property=i, value=value)
+  x
+}
+
+setGeneric(".setToolkitProperty",function(x, toolkit, property, value)
+           standardGeneric(".setToolkitProperty"))
 

@@ -164,6 +164,12 @@
 \alias{addSpring}
 \alias{getToolkitWidget}
 \alias{getToolkitWidget,guiWidget-method}
+\alias{$,guiWidget-method}
+\alias{[[,guiWidget-method}
+\alias{[[<-,guiWidget-method}
+\alias{$.guiWidget}
+\alias{[[.guiWidget}
+\alias{[[<-.guiWidget}
 \alias{redo,guiWidget-method}
 \alias{redo,guiComponent-method}
 \alias{redo,gWidgetANY-method}
@@ -449,6 +455,13 @@
       as far as possible to the right (or bottom).
     }
   }
+  
+  To access the underlying toolkits the \code{getToolkitWidget} will
+  return the main widget associated with a component. The \code{$}
+  method can be used to dispatch to an underlying method call in the
+  toolkit. The \code{[[} and \code{[[<-} method can be used to inspect
+  and set properties of the underlying object.
+
 }
     
 % \author{}

@@ -123,9 +123,15 @@ exportMethods(
 "dimnames<-",".dimnames<-",
 "names",".names",
 "names<-",".names<-",
-"getToolkitWidget",".getToolkitWidget"
+"getToolkitWidget",".getToolkitWidget",
+              ".callToolkitMethod",
+              ".getToolkitProperty",
+              ".setToolkitProperty"
  )
 
+export("$.guiWidget")
+export("[[.guiWidget")
+export("[[<-.guiWidget")
 ## put into toolkit only (RGtk2)
 ##export("as.gWidget")
 ##S3method("as.gWidget","default")

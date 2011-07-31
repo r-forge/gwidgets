@@ -17,7 +17,7 @@ galert = function(
   delay = 3,
   parent = NULL, 
   ..., toolkit=guiToolkit()) {
-  .galert(toolkit,message, title, 
+  .galert(toolkit,message, title, delay=delay, parent=parent,
             ...)
 }
 ##' generic for toolkit dispatch

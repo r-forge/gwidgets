@@ -909,14 +909,14 @@ editSelectDialog = function(data,widget) {
   }
   varNames = names(data)
 
-  win = gwindow("Select variables", v=TRUE)
+  win <- gwindow("Select variables", visible=TRUE)
 
-  group = ggroup(horizontal=FALSE,container=win)
-  frame = gframe("Select all the desired variables",
+  group <- ggroup(horizontal=FALSE,container=win)
+  frame <- gframe("Select all the desired variables",
     container=group, expand=TRUE)
   font(frame) <- c(weight="bold")
 
-  varList = gtable(varNames, multiple=TRUE, container =frame, expand=TRUE)
+  varList <- gtable(varNames, multiple=TRUE, container=frame, expand=TRUE)
 
 
   buttonGroup = ggroup(container=group)

@@ -271,7 +271,7 @@ showHelpAtArgument = function(argument, topic, package=NULL,
   ## the widget
   win=gwindow(Paste("Help on argument: ",topic), visible=FALSE) # set to visible if one is found
   group = ggroup(horizontal=FALSE, container=win)
-  textwindow = gtext("", cont=group, expand=TRUE)
+  textwindow = gtext("", container=group, expand=TRUE)
   size(textwindow) <- c(width,height)
 
   for(pkg in package) {
