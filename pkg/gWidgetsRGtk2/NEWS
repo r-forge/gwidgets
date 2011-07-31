@@ -4,7 +4,15 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-76
 --------------------------
+* added generics for $, [[ and [[<- to work with underlying toolkit object
+
 * use info bar for galert when parent is a gwindow.
+
+* bug fix for gdf and sorting (Thanks Stephanie)
+
+* do.buttons argument for gbasicdialog. Passed as hidden argument, or
+  formal one with newer gWidgets
+
 
 Changes for version 0.0-75
 --------------------------

@@ -1,3 +1,8 @@
+2011-07-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtkStuff.R (getWidget): Added generics to process $, [[ and
+	[[<- calls for working with undelrying RGtk2 widget.
+
 2011-07-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R (addTreeViewColumnNoEdit): took out needless call to

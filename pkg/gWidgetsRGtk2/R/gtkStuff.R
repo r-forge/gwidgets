@@ -60,9 +60,33 @@ getGtkWindow = function(widget) {
   return(widget)
 }
 
+## Method to interact with toolkit objects
 setMethod(".getToolkitWidget",
           signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
           function(obj, toolkit) getWidget(obj))
+
+setMethod(".callToolkitMethod",
+          signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+          function(x, toolkit, meth_name) {
+            widget <- getWidget(x)
+            RGtk2:::.getAutoMethodByName(widget, meth_name, parent.frame())
+          })
+
+setMethod(".getToolkitProperty",
+          signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+          function(x, toolkit, property) {
+            widget <- getWidget(x)
+            RGtk2:::gObjectGet(widget,property)
+          })
+
+setMethod(".setToolkitProperty",
+          signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+          function(x, toolkit, property, value) {
+            widget <- getWidget(x)
+            widget[property] <- value
+            x
+          })
+
 
 
 RtoGObjectConversion = function(obj) {
