@@ -1,3 +1,8 @@
+2011-07-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/qtfuns.R: added generics to implement $, [[, and [[<- for
+	accessing underlying toolkit methods and properties from gWidget
+
 2011-07-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R: added hidden argument to gbasicdialog of

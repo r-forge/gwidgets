@@ -4,6 +4,8 @@ NEWS for gWidgetsQt
 
 Changes for 0.0-2
 -------------------
+* implement $, [[, and [[<- for accessing methods and properties of
+  toolkit widget without calling getToolkitWidget
 * new editable method
 * focus method for gwindow to raise window
 * added arbitrary sortable vector to gslider. (no longer just integer).

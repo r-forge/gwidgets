@@ -62,11 +62,36 @@ getTopParent = function(obj) {
   return(ans)
 }
 
-
+##################################################
+## Methods to interact iwth underlying toolkit object
 setMethod(".getToolkitWidget",
           signature(obj="gWidgetQt", toolkit="guiWidgetsToolkitQt"),
           function(obj, toolkit) getWidget(obj))
 
+
+
+setMethod(".callToolkitMethod",
+          signature(x="gWidgetQt", toolkit="guiWidgetsToolkitQt"),
+          function(x, toolkit, meth_name) {
+            widget <- getWidget(x)
+            get(meth_name, widget)
+          })
+
+setMethod(".getToolkitProperty",
+          signature(x="gWidgetQt", toolkit="guiWidgetsToolkitQt"),
+          function(x, toolkit, property) {
+            widget <- getWidget(x)
+            get(property, widget)
+          })
+
+setMethod(".setToolkitProperty",
+          signature(x="gWidgetQt", toolkit="guiWidgetsToolkitQt"),
+          function(x, toolkit, property, value) {
+            widget <- getWidget(x)
+            if(exists(property, widget))
+              assign(property, value, widget)
+            x
+          })
 
 
 
