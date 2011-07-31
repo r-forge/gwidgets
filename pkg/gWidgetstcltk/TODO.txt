@@ -1,21 +1,21 @@
 TODO:
 ---------
-* Erich request: gbasicdialog with buttons options
-* fix size issues with gtable -- annoying!!!
-DONE * add method for adding tkwin objects (tkrplot)
 * fix radiobuttons with no selection(Richie: remove variable check, 
 ..) -- not so easy
 * optimize size<- with components
-* FIx gtree??
 * fix use.scrollwindow in ggroup
 * gspinbox: like gslider, make spin over sortable vectors.
 * gtable: select rectangle
 * gtable: mess with _, , stuff and single column
-* gree: implement svalue( index=TRUE) (give index as "a:b:c") and
+* FIx gtree??
+* gtree: implement svalue( index=TRUE) (give index as "a:b:c") and
   svalue(obj) <- index
+DONE * Erich request: gbasicdialog with buttons options
+DONE * fix size issues with gtable -- annoying!!!
+DONE * add method for adding tkwin objects (tkrplot)
 DONE * when adding to box container make fill orthogonal to pakcing
 dirction the default (HBox fill="y", VBox fill="x") (must call expand=TRUE)
- DONE * tcltk2 scrollbar -- does it work on mac??
+DONE * tcltk2 scrollbar -- does it work on mac??
 DONE * fix gexpandgroup
 DONE * use satte/instate bit for ttk widget
 DONE?* ggroup anchor/expand/fill (fill="both" default is wrong if anchor given)
@@ -33,7 +33,7 @@ FIXED * anchor or expand=TRUE fails with add. -- This needs work!
 DONE* integrate tktable into gdf
 * bindings for Return and Tab in gdf are funny
 * Fix toolbar button style in mac os x (Style? THeme?...)
-* fix widths in gtree, gtable -- they are awful. Make depend on width
+DONE * fix widths in gtree, gtable -- they are awful. Make depend on width
 of widget, put on resize handler
 DONE * block/unblock handler -- not sure this can be done?
 * gvarbrowser-- update needs writing

@@ -93,9 +93,40 @@ getTopLevel <- function(obj) {
   }
 }
 
+#######################################################
+## methods to interact with underlying toolkit object
 setMethod(".getToolkitWidget",
           signature(obj="gWidgettcltk", toolkit="guiWidgetsToolkittcltk"),
           function(obj, toolkit) getWidget(obj))
+
+
+
+setMethod(".callToolkitMethod",
+          signature(x="gWidgettcltk", toolkit="guiWidgetsToolkittcltk"),
+          function(x, toolkit, meth_name) {
+            widget <- getWidget(x)
+            f <- function(...) {
+              get(meth_name, parent.frame())(widget, ...)
+            }
+            f                           # return a function
+          })
+
+setMethod(".getToolkitProperty",
+          signature(x="gWidgettcltk", toolkit="guiWidgetsToolkittcltk"),
+          function(x, toolkit, property) {
+            widget <- getWidget(x)
+            tkcget(widget, sprintf("-%s", property))
+          })
+
+setMethod(".setToolkitProperty",
+          signature(x="gWidgettcltk", toolkit="guiWidgetsToolkittcltk"),
+          function(x, toolkit, property, value) {
+            widget <- getWidget(x)
+            l <- list(widget); l[[property]] <- value
+            do.call(tkconfigure, l) 
+
+            x
+          })
 
 
 
