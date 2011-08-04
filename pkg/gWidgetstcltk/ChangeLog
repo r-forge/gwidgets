@@ -1,3 +1,8 @@
+2011-07-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/tcltkFuns.R (getTopLevel): added generics to implement $, [[
+	and [[<- to interact with underlying object
+
 2011-07-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/zzz.R (.onLoad): changed icons for gcheckboxtable. Thanks to
