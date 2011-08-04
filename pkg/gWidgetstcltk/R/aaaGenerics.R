@@ -7,10 +7,11 @@ missingMsg = function(x) {
 
 ## toolkit class
 ## register classes here for toolkits
-setClass("guiWidgetsToolkittcltk",
-         contains="guiWidgetsToolkit",
-         prototype=prototype(new("guiWidgetsToolkit"))
-         )
+## Not needed as in gwidgets
+## setClass("guiWidgetsToolkittcltk",
+##          contains="guiWidgetsToolkit",
+##          prototype=prototype(new("guiWidgetsToolkit"))
+##          )
 
 
 

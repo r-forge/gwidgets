@@ -338,8 +338,8 @@ setRefClass("Entry",
             fields=list(
               m="tkwin",
               l="tkwin",
-              lindex = "integer",  # index of selection widget
-              no.wds = "integer",  # track number of possible wds to choose from
+              lindex = "numeric",  # index of selection widget
+              no.wds = "numeric",  # track number of possible wds to choose from
               words = "character",
               max.words = "numeric", # maximum words in a display
               init_msg = "character" # an initial message
