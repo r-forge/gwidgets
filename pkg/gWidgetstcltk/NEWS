@@ -4,6 +4,9 @@ NEWS for gWidgetstcltk
 
 Changes for 0.0-45
 -------------------
+* Fixed reference class fields to accomodate changes to upcoming
+  2.14.0
+
 * Added generics so that $, [[ and [[<- work with underlying toolkit object
 
 * added use.table option to gcheckboxgroup
