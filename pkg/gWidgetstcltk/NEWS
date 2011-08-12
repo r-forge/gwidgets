@@ -11,6 +11,8 @@ Changes for 0.0-45
 
 * added use.table option to gcheckboxgroup
 
+* focus<- for gwindow (for Erich)
+
 * added do.buttons options for gbasicdialog
 
 * improved [ method for glayout (Returns widget, list of widgets (if
