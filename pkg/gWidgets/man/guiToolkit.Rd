@@ -1,5 +1,6 @@
 \name{guiToolkit}
 \alias{guiToolkit}
+\alias{gtoolkit}
 \alias{guiWidgetsToolkit-class}
 \alias{guiWidgetsToolkitRGtk2-class}
 \alias{guiWidgetsToolkitrJava-class}
@@ -14,6 +15,8 @@
 }
 \usage{
 guiToolkit(name = NULL)
+
+gtoolkit()
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,13 +25,15 @@ guiToolkit(name = NULL)
   provided by gWidgetsRGtk2.}
 }
 \details{
-	Toolkits are named gWidgetsXXX.
+	Toolkits are named gWidgetsXXX. This function is used to get the toolkit class, or have the user select one. The \code{gtoolkit} function returns a string form of the toolkit. One way to set a toolkit is to use the \code{guiToolkit} option, as in \code{options(guiToolkit="RGtk2")}.
 }
 \value{
-	This function returns a subclass of guiWidgetsToolkit that is
+	The \code{guiToolkit} function returns a subclass of guiWidgetsToolkit that is
 	used for dispatching purposes by gWidgets. For example, the
 	method svalue dispatches on its first argument and the value
 	of the toolkit class stored in the toolkit slot of the object.
+
+	The \code{gtoolkit} function returns a character string for the toolkit.
 }
 \examples{
 	guiToolkit("RGtk2")

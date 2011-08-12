@@ -1,3 +1,8 @@
+2011-08-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/toolkitClasses.R (guiToolkit): new function toolkit to return
+	string naming toolkit (for comparison)
+
 2011-07-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/dialogs.R: forgot to pass parent along in galert

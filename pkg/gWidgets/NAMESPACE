@@ -3,7 +3,7 @@ importFrom("methods","show")
 importFrom("utils", "installed.packages")
 
 ## functions to export
-export("guiToolkit","gwCat")
+export("guiToolkit","gwCat", "gtoolkit")
 
 ## constructors
 export("glabel", "gbutton", "gcheckbox", "gradio", "gdroplist","gcombobox",
@@ -25,6 +25,7 @@ export("glabel", "gbutton", "gcheckbox", "gradio", "gdroplist","gcombobox",
 
 ## export toolkits and the basic gui-classes
 exportClasses("guiWidgetsToolkit",
+              
               "guiWidgetsToolkitRGtk2",
               "guiWidgetsToolkitrJava",
               "guiWidgetsToolkitSJava",

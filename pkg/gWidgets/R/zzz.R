@@ -39,7 +39,7 @@
                    "You must install either RGtk2 or tcltk,",
                    "then a toolkit package.",
                    sep="\n")
-      cat(msg, "\n")
+      pacakgesStartupMessage(msg, "\n")
 
       installing_gWidgets_toolkits()
     }

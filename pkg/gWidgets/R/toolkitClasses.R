@@ -107,4 +107,11 @@ guiToolkit <- function(name=NULL) {
   return(obj)
 }
 
-
+##' Which toolkit are we using?
+##'
+##' @return string of toolkit (RGtk2, tcltk, Qt, ???)
+##' @export
+gtoolkit <- function() {
+  obj <- guiToolkit()
+  obj@toolkit
+}
