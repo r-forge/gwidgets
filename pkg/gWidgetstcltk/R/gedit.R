@@ -91,11 +91,20 @@ setMethod(".svalue",
             ## val = tclvalue(tag(obj,"tclVar"))
             if(val == "<NA>")
               val <- NA
-            coercewith = obj@coercewith
-            if(!is.null(coercewith))
-              val = do.call(coercewith, list(val))
+            
+            coercewith <- obj@coercewith
+            
+            if(is.null(coercewith))
+              return(val)
 
-            return(val)
+            if(is.character(coercewith))
+              coercewith <- get(coercewith)
+            
+            if(!is.function(coercewith))
+              return(val)
+
+            
+            return(coercewith(val))
           })
 
 ## svalue<-
