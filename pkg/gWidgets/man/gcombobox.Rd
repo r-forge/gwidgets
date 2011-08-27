@@ -1,6 +1,7 @@
 \name{gcombobox}
 \alias{gcombobox}
 \alias{gdroplist}
+\alias{[<-,gCombobox-method}
 \title{Widgets to allow selection from a vector of items}
 \description{
 

@@ -1,5 +1,6 @@
 \name{glabel}
 \alias{glabel}
+\alias{svalue<-,gLabel-method}
 %%\alias{rotatelabel}
 \title{Constructors for label widget}
 \description{

@@ -1,5 +1,6 @@
 \name{gradio}
 \alias{gradio}
+\alias{[<-,gRadio-method}
 \title{Radio button group widget}
 \description{
 

@@ -9,8 +9,13 @@ setClass("gRadio",
 gradio = function(items,selected=1, horizontal=FALSE, handler=NULL,
   action=NULL, container=NULL, ...,
   toolkit=guiToolkit()) {
-  radio = .gradio(toolkit,items, selected, horizontal, handler, action, container,...)
-  obj = new("guiComponent",widget=radio, toolkit=toolkit)
+
+  ## check input
+  if(length(x <- unique(items) ) != length(items))
+    gwCat("Using unique items for selection values")
+  
+  radio = .gradio(toolkit, x, selected, horizontal, handler, action, container,...)
+  obj = new("gRadio",widget=radio, toolkit=toolkit)
   return(obj)
 }
 
@@ -21,3 +26,14 @@ setGeneric(".gradio",function(toolkit,
                               ...) standardGeneric(".gradio"))
 
 
+##' replace selections
+##'
+##' Ensure values are unique
+setReplaceMethod("[",signature(x="gRadio"),
+          function(x, i, j,...,value) {
+            ## check input
+            if(length(value) != length(value <- unique(value)))
+              gwCat("Using unique values for selection values")
+
+            callNextMethod(x, i, j, ..., value=value)
+          })

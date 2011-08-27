@@ -36,6 +36,15 @@ setClass("gCombobox",
 gcombobox =function(
   items, selected = 1, editable = FALSE, coerce.with=NULL, handler = NULL,      action = NULL, container = NULL, ... ,
   toolkit=guiToolkit()){
+
+  ## adjust items. Pass in data frame
+  if(!is.data.frame(items) && !is.matrix(items))
+    items <- data.frame(items, stringsAsFactors=FALSE)
+
+  if(!is.data.frame(items))
+    items <- as.data.frame(items)
+
+  
   widget =  .gdroplist (toolkit,
     items=items, selected=selected, editable=editable, coerce.with=coerce.with, handler=handler, action=action, container=container, ...
     )
@@ -86,3 +95,25 @@ setReplaceMethod("svalue", signature(obj="gCombobox"),
             .svalue(obj@widget, obj@toolkit, index=index, ...) <- value
             return(obj)
           })
+
+##' replacement method for combobox selection items
+##'
+##' Ensure that value is a data frame. One can pass a vector or a
+##' one-column data frame to inidicate the possible values for
+##' selection, a second column is used for an icons (if possible), a
+##' third for a tooltip (if possible).
+##' get_from_templace for guiWidget
+setReplaceMethod("[",signature(x="gCombobox"),
+          function(x,i,j,...,value) {
+            
+            ## adjust value. Pass in data frame
+            if(!is.data.frame(value) && !is.matrix(value))
+              value <- data.frame(value, stringsAsFactors=FALSE)
+            
+            if(!is.data.frame(value))
+              value <- as.data.frame(value)
+
+            callNextMethod(x, i, j, ..., value=value)
+          })
+
+  

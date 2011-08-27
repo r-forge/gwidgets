@@ -34,6 +34,14 @@ setClass("gCheckbox",
 gcheckbox =function(
   text, checked = FALSE, use.togglebutton=FALSE, handler = NULL, action = NULL, container = NULL, ... ,
   toolkit=guiToolkit()){
+
+  ## ensure text is given
+  if(missing(text))
+    text <- ""
+  text <- as.character(text)[1]
+  ## checked is logical
+  checked <- as.logical(checked)[1]
+  
   widget =  .gcheckbox (toolkit,
     text=text, checked=checked,
     use.togglebutton=use.togglebutton,
@@ -51,3 +59,20 @@ setGeneric( '.gcheckbox' , function(toolkit,
                                     container = NULL, ... ) standardGeneric( '.gcheckbox' ))
 
 
+
+##' svalue method
+##'
+##' Ensure value is logical
+setReplaceMethod("svalue",signature(obj="gCheckbox"),
+          function(obj, index=NULL,  ...,value) {
+            value <- as.logical(value)[1]
+            callNextMethod(obj, index, ..., value=value)
+          })
+
+            
+##' ensure value is character of length 1
+setReplaceMethod("[",signature(x="gCheckbox"),
+          function(x,i,j,...,value) {
+            value <- as.character(value)[1]
+            callNextMethod(x, i, j, ..., value=value)
+          })

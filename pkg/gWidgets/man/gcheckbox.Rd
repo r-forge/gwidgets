@@ -1,5 +1,6 @@
 \name{gcheckbox}
 \alias{gcheckbox}
+\alias{[<-,gCheckbox-method}
 \title{
 
 Constructor of widget to indicate whether a value is desired or not

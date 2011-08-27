@@ -70,6 +70,15 @@ gtable <- function(
                    filter.column = NULL, filter.labels = NULL, filter.FUN = NULL,
                    handler = NULL, action = NULL, container = NULL, ... ,
                    toolkit=guiToolkit()){
+
+  ## coerce items
+  if(!missing(items)) {
+    if (is.vector(items))
+      items <- data.frame(Values=items, stringsAsFactors=FALSE)
+    if(is.matrix(items))
+      items <- data.frame(items, stringsAsFactors=FALSE)
+  }
+  
   widget <- .gtable (toolkit,
                      items=items, multiple=multiple, chosencol=chosencol,
                      icon.FUN=icon.FUN,

@@ -18,6 +18,8 @@ setClassUnion("guiWidgetOrNULL",
               c("NULL","guiWidget"))
 
 ##' for ANY toolkit
+##'
+##' @export
 setClass("gWidgetANY",
          representation(
                         toolkit="guiWidgetsToolkit",
@@ -40,6 +42,10 @@ setClass("gWidgetANY",
 
 ################ show ##################################
 ##' show method for guiWidget objects
+##'
+##' @param object guiWidget object to show
+##' @return NULL, called to print summary of object
+##' @export
 setMethod("show",signature(object="guiWidget"),
           function(object) {
             cat("guiWidget of type:",
@@ -50,14 +56,51 @@ setMethod("show",signature(object="guiWidget"),
           })
 
 ################## svalue ################################
-##' define generic for selected value, svalue
+##' generic for selected value, svalue
+##'
+##' The \code{svalue} method returns the main property of a widget. This of course is context specific.
+##' @param obj guiWidget object
+##' @param index for selection widgets this is set to decide if value or index should be returned
+##' @param drop for selection widgets do we return data frame or
+##' vector (if possible). For text widgets, do we return entire text
+##' or just selected text
+##' @return main value of object
+##' @export
 setGeneric("svalue",function(obj, index=NULL, drop=NULL,...) standardGeneric("svalue"))
 
 ##' base svalue method
+##'
+##' @inheritParams svalue
+##' @export
 setMethod("svalue",signature(obj="guiWidget"),
           function(obj, index=NULL, drop=NULL, ... ) {
             toolkit = obj@toolkit
-            .svalue(obj@widget, toolkit, ...,index=index, drop=drop)
+            val <- .svalue(obj@widget, toolkit, ...,index=index, drop=drop)
+
+            ## do we have coercewith?
+            ## we check lots of ways, these should just be slots, someday...
+            coercewith <- NULL
+            if(methods:::.hasSlot(obj@widget, "coercewith"))
+              coercewith <- obj@widget@coercewith
+
+            if(is.null(coercewith))
+              coercewith <- tag(obj, "coercewith")
+
+            if(is.null(coercewith))
+              coercewith <- tag(obj, "coerce.with")
+
+            ## now return
+            if(is.null(coercewith))
+              return(val)
+
+            if(is.character(coercewith))
+              coercewith <- get(coercewith, inherits=TRUE)
+            
+            if(!is.function(coercewith))
+              return(val)
+
+            ## return coerced value
+            coercewith(val)
           })
 
 ##' svalue method for numeric variables
@@ -83,6 +126,14 @@ setGeneric(".svalue",function(obj, toolkit, index=NULL, drop=NULL,  ...)
 
 ################# svalue<- #################################
 ##' svalue<- generic
+##'
+##' Method for setting main property of a widget
+##' @param obj guiWidget object
+##' @param index For selection widgets one can set by index or by value
+##' @param ... generally ignored, but some widgets use this to pass in extra values. See toolkit documentation
+##' @param value new value for main property of widget
+##' @return called for its side effect. Whether the "change" handler is called is toolkit and widget dependent.
+##' @export
 setGeneric("svalue<-",function(obj, index=NULL, ...,value) standardGeneric("svalue<-"))
 
 ##' svalue method for any widget
@@ -99,8 +150,15 @@ setGeneric(".svalue<-",function(obj, toolkit, index=NULL, ..., value)
            standardGeneric(".svalue<-"))
 
 ############### [ ###################################
-##' [ method for guiWidget. Passes to .leftBracket
-##' 
+##' [ method for selection widgetgs in guiWidget. 
+##'
+##' Method to refer to objects to select from
+##' @param x guiWidget selection widget object
+##' @param i index of vector, or row
+##' @param j index of column, if possible
+##' @param drop logical indicating if values should be dropped, when sensible
+##' @return returns vector or data frame of values
+##' @export
 setMethod("[",
           signature(x="guiWidget"),
           function(x,i,j,...,drop=TRUE) {
@@ -113,7 +171,14 @@ setGeneric(".leftBracket",function(x, toolkit, i,j, ..., drop=TRUE)
            standardGeneric(".leftBracket"))
 
 ################ [<- ##################################
-##' base [<- method for guiWidget. Passes to .leftBracket<-
+##' base [<- method for guiWidget.
+##'
+##' For selction widgets this method allows the possible selected values to be set
+##' @param x guiWidget selection widget instance
+##' @param i index of vector or row, if appropriate
+##' @param j index of coumn, if appropriate
+##' @param ... mostly ignored, but some toolkits may implement hidden arguments
+##' @param value new value
 setReplaceMethod("[",signature(x="guiWidget"),
           function(x,i,j,...,value) {
             toolkit = x@toolkit
@@ -132,7 +197,14 @@ setGeneric(".leftBracket<-",function(x, toolkit, i,j, ..., value)
 
 
 ################## visible ################################
-##' Generic to adjust visibility of widget
+##' Generic to check visibility of widget
+##'
+##' @param obj guiWidget instance
+##' @param set logical. Should one set the value. One should use
+##' \code{visible<-} in most all cases, but for \code{gbasicdialog}
+##' this is necessary
+##' @return logical indicating if object is visible (shown)
+##' @export
 setGeneric("visible",function(obj, set=NULL, ...) standardGeneric("visible"))
 
 ##' visible method for widgets
@@ -146,7 +218,16 @@ setMethod("visible",signature(obj="guiWidget"),
 setGeneric(".visible",function(obj, toolkit, set=NULL, ...) standardGeneric(".visible"))
 
 ############### visible<- ###################################
-##' Generic to adjust visibility of widget
+##' Generic method to adjust visibility of object
+##'
+##' A widget is visible if it is drawn (shown). This method is used to toggle that state.
+##' @param obj guiWidget instance
+##' @param ... ignored
+##' @param value logical. Should object be visible or hidden
+##' @note Many widgets override this method. If that is the case and
+##' you wish to hide the widget, then place in a box container.
+##' @return Called for side effect
+##' @export
 setGeneric("visible<-",function(obj, ..., value) standardGeneric("visible<-"))
 
 ##' visible<- method for widgets
@@ -163,6 +244,11 @@ setGeneric(".visible<-",function(obj, toolkit,...,value)
 
 ############### enabled ###################################
 ##' Generic to check if widget is sensitive to user input
+##'
+##' @param obj guiWiget object
+##' @param ... ignored
+##' @return logical indicating if widget is sensitive to user input
+##' @export
 setGeneric("enabled",function(obj, ...) standardGeneric("enabled"))
 
 ##' Method to check if widget is sensitive to user input

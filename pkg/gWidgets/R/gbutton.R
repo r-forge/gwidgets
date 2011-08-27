@@ -31,6 +31,10 @@ gbutton =function(
   toolkit=guiToolkit()){
   force(toolkit)                        # load package
 
+
+  text <- paste(as.character(text), collapse="\n")
+
+  
   widget =  .gbutton (toolkit,
     text, border, handler, action, container,...)
 
@@ -60,7 +64,7 @@ setGeneric( '.gbutton' , function(toolkit,
 ##' @exports
 setMethod("svalue", signature(obj="gButton"),
           function(obj, index=NULL, drop=NULL, ... ) {
-            .svalue(obj@widget, obj@toolkit, ...,index=index, drop=drop)            
+            callNextMethod()
           })
 
 
@@ -76,8 +80,8 @@ setMethod("svalue", signature(obj="gButton"),
 ##' @exports
 setReplaceMethod("svalue", signature(obj="gButton"),
           function(obj, index=NULL, ...,value) {
-            .svalue(obj@widget, obj@toolkit, index=index, ...) <- paste(value, collapse="\n")
-            return(obj)
+            value <- paste(value, collapse="\n")
+            callNextMethod(obj, index, ..., value=value)
           })
 
 
