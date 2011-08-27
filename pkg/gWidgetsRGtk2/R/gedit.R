@@ -50,13 +50,13 @@ setMethod(".gedit",
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow()
+                container <- gwindow()
               add(container, obj,...)
             }
             
-            if (!is.null(handler)) {
-              id = addhandlerchanged(obj,handler,action)
-            }
+            if (!is.null(handler)) 
+              tag(obj, "handler.id") <- addhandlerchanged(obj,handler,action)
+
             
             invisible(obj)
             
@@ -69,19 +69,6 @@ as.gWidgetsRGtk2.GtkEntry <- function(widget, ...) {
   obj = new("gEditRGtk",block=widget, widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
- ##  ## Drag and drop
-##   dropHandler =   function(h,...) {
-##     theName = id(h$dropdata)
-##     if(is.null(theName)) theName == ""
-##     svalue(h$obj) <- ""                 # funny, why isn't this svalue(h$obj)<-theName?
-##     ## override value -- in case it is a widget
-##     tag(h$obj, "value") <- h$dropdata
-##     return(TRUE)
-##   }
-##   handler.ids = list()
-##   id = adddroptarget(obj, targetType="object",handler=dropHandler)
-##   handler.ids[['dnd']] = id
-  
 
   return(obj)
 }
@@ -114,6 +101,7 @@ setMethod("svalue", signature(obj="GtkEntry"),
           function(obj, index=NULL, drop=NULL, ...) {
             .svalue(obj,guiToolkit("RGtk2"), index, drop, ...)
           })
+
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
@@ -122,9 +110,7 @@ setMethod(".svalue",
             init_msg <- tag(obj, "init_msg")
             if(!is.null(init_msg) && val == init_msg)
               val <- ""
-            
-            if(!is.null(tag(obj,"coerce.with")))
-              val <- do.call(tag(obj,"coerce.with"), list(val))
+          
 
             return(val)
           })
@@ -132,7 +118,7 @@ setMethod(".svalue",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkEntry"),
           function(obj, toolkit, index=NULL, drop=NULL,  ...) {
-            val = obj$getText()
+            val <- obj$getText()
             return(val)
           })
 
@@ -158,6 +144,7 @@ setReplaceMethod(".svalue",
                    tag(obj, "value") <- value
                    return(obj)
           })
+
 ## want to replace "value" but can't
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkEntry"),
@@ -174,10 +161,10 @@ setMethod(".leftBracket",
           function(x, toolkit, i, j, ..., drop=TRUE) {
             obj <- x
             if(!is.null(tag(obj,"completion"))) {
-              store = obj@widget$GetCompletion()$GetModel()
-              nrows = dim(store)[1]
+              store <- obj@widget$GetCompletion()$GetModel()
+              nrows <- dim(store)[1]
               if(missing(i))
-                i = 1:nrows
+                i <- 1:nrows
               
               return(store[i , ])
             } else {
@@ -201,14 +188,14 @@ setReplaceMethod(".leftBracket",
             if(is.null(tag(obj,"completion"))) 
               .setCompletion(obj)
 
-            store = obj@widget$GetCompletion()$GetModel()
-            nrows = dim(store)[1]
-            n =length(value)
+            store <- obj@widget$GetCompletion()$GetModel()
+            nrows <- dim(store)[1]
+            n <- length(value)
             if(n > nrows)
-              values = values[1:nrows]            # truncate
+              values <- values[1:nrows]            # truncate
             if(missing(i))
-              i = 1:n
-            store[i , ]<- value
+              i <- 1:n
+            store[i , ] <- value
 
             ## all done
             return(obj)
@@ -280,8 +267,8 @@ setMethod(".adddroptarget",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            f = function(h,widget,event,...) {
-              keyval = event$GetKeyval()
+            f <- function(h,widget,event,...) {
+              keyval <- event$GetKeyval()
               if(keyval == GDK_Return) {
                 handler(h,widget,event,...)
                 return(TRUE)
@@ -289,7 +276,6 @@ setMethod(".addhandlerchanged",
                 return(FALSE)
               }
             }
-#            id = addhandler(obj,signal="key-release-event",handler=f, action=action,...)
             id <- addhandler(obj, signal="activate", handler=handler, action=action)
             return(id)
           })
@@ -313,6 +299,5 @@ setMethod(".addhandlerkeystroke",
                              data = list(obj=obj,handler=handler, action=action)
                              )
             invisible(ID)
-##            addhandler(obj,"changed",handler,action)
           })
 

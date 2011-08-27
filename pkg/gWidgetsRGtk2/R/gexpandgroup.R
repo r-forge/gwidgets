@@ -22,31 +22,22 @@ setMethod(".gexpandgroup",
 
             obj <- as.gWidgetsRGtk2(expander, horizontal=horizontal)
 
-##             group = ggroup(horizontal=horizontal, ...)
-##             expander$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
-
-##             ## we put widget=group here to get gGroup methods, but
-##             ## must be careful below to use "block" when referring to expander
-##             obj = new("gExpandgroupRGtk",block=expander,widget=getWidget(group),
-##               toolkit=toolkit)
-
-##            tag(obj,"group") <- group   # for 
 
             theArgs = list(...)
 
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE)
+            } 
 
-              if(!is.null(theArgs$expand) && theArgs$expand)
-                add(container,obj,expand=TRUE)
-              else
-                add(container,obj)
-            }
+            if(!is.null(theArgs$expand) && theArgs$expand)
+              add(container,obj,expand=TRUE)
+            else
+              add(container,obj)
             
-            if(!is.null(handler)) {
-              id = addhandlerchanged(obj, handler, action)
-            }
+            if(!is.null(handler)) 
+              tag(obj, "handler.id") <- addhandlerchanged(obj, handler, action)
+
             invisible(obj)
           })
 
