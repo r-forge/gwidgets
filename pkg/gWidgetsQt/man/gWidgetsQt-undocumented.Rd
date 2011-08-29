@@ -1,6 +1,7 @@
 \name{gWidgetsQt-undocumented}
 \alias{gWidgetsQt-undocumented}
 
+\alias{RQtObject-class}
 
 \alias{runHandlerFor}
 \alias{str2}

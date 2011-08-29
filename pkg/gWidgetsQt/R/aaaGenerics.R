@@ -36,6 +36,8 @@ setClass("guiWidgetsToolkitQt",
 ## This is *tedious* at best
 require(qtbase)
 setOldClass("RQtObject")
+
+
 .oldClass <- c("QWidget", "QObject", "QPaintDevice",
                ## containers
                "QMainWindow",
