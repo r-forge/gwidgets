@@ -11,7 +11,7 @@ setMethod(".gbutton",
                    ) {
 
             force(toolkit)
-            
+
             iconname <- getstockiconname(tolower(text))
             if(!is.na(iconname)) {
               button <- gtkButtonNewFromStock(iconname)
