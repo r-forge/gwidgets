@@ -43,6 +43,12 @@ gcheckboxgroup <- function(
                            use.table=FALSE, handler = NULL,
                            action = NULL, container = NULL, ... ,
                            toolkit=guiToolkit()){
+
+  if(missing(items))
+    items <- character(0)
+  horizontal <- as.logical(horizontal)
+  
+  
   widget <- .gcheckboxgroup (toolkit,
     items=items, checked=checked, horizontal=horizontal, use.table=use.table,
     handler=handler, action=action, container=container, ...

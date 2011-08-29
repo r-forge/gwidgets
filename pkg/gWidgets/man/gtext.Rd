@@ -27,8 +27,8 @@ gtext (text = NULL, width = NULL, height = 300, font.attr = NULL,
 	The \code{gtext} widget has the following methods.
 
 	The \code{svalue} method returns the text held in the
-	buffer. If \code{drop=TRUE}, then only the text in the buffer
-	selected by the mouse is returned.
+	buffer. If \code{drop=TRUE}, then only the text in the
+	currently selection is returned.
 
 	The \code{svalue<-} method replaces the text in the buffer
 	with the new text.

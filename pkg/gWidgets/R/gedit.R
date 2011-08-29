@@ -51,6 +51,7 @@ gedit <- function(
                   text = "", width = 25, coerce.with = NULL, initial.msg="",
                   handler = NULL, action = NULL, container = NULL, ... ,
                   toolkit=guiToolkit()){
+
   widget <- .gedit(toolkit,
                    text=text, width=width, coerce.with=coerce.with, initial.msg=initial.msg,
                    handler=handler, action=action, container=container ,...

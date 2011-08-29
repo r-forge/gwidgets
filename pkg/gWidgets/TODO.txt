@@ -1,3 +1,5 @@
+* mix C level (like RStudio) and objectSignals to get backend for
+  workspace browser. Polling?
 * error check input/ouput of main methods
 * promote do.buttons in gbasidialog to method of .gbasicdialog
 * Add length.out argument to gslider, gspinbutton
