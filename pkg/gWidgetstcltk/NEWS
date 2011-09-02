@@ -2,8 +2,14 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetstcltk
 
+Changes for 0.0-46
+-------------------
+
 Changes for 0.0-45
 -------------------
+
+* Requires gWidgets 0.0-46
+
 * Fixed reference class fields to accomodate changes to upcoming
   2.14.0
 
