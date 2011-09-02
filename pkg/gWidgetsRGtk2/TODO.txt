@@ -1,3 +1,4 @@
+* does font(entry) <- c(color="red") work? for gedit
 * implement editable (gedit, gdf)??
 * selection by rectangle in gtable 
 * defaultWidget for buttons.

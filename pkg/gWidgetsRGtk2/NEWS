@@ -2,8 +2,15 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-77
+--------------------------
+ 
+
+
 Changes for version 0.0-76
 --------------------------
+* requires gWidgets 0.0-46
+
 * added generics for $, [[ and [[<- to work with underlying toolkit object
 
 * use info bar for galert when parent is a gwindow.
