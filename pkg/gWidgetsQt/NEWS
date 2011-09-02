@@ -2,6 +2,9 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsQt
 
+Changes for 0.0-3
+-------------------
+
 Changes for 0.0-2
 -------------------
 * implement $, [[, and [[<- for accessing methods and properties of
