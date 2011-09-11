@@ -1,0 +1,5 @@
+\documentclass{article}
+%%\VignetteIndexEntry{manipulate for gWidgets}
+\begin{document}
+Vignette of manipulate to follow. For now, docs on RStudio's website should suffice.
+\end{document}

@@ -1,0 +1,22 @@
+Package: gWidgetsManipulate
+Type: Package
+Title: port of RStudio's manipulate package using gWidgets
+Version: 1.0
+Date: 2011-09-10
+Author: John Verzani, using much of the original RStudio
+    code
+Maintainer: John Verzani <jverzani@gmail.com>
+Description: Ports RStudio's manipulate command for use
+    outside of RStudio.
+Depends:
+    methods,
+    gWidgets
+License: AGPL-3
+LazyLoad: yes
+Collate:
+    'manipulate.R'
+    'controls.R'
+    'checkbox-control.R'
+    'picker-control.R'
+    'slider-control.R'
+    'text_manipulate.R'
