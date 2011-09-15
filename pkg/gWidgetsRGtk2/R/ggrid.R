@@ -438,7 +438,8 @@ setMethod(".ggrid",
             ## do we add subsetBy
             if(doSubsetBy) {
               ## now add subset by to group.cycling
-              subsetBy = gsubsetby(obj,
+              subsetByGroup = gexpandgroup("subset=", cont=group)
+              subsetBy = gsubsetby(obj, cont=subsetByGroup,
                 handler = function(h,...) {
                   visValues = h$value
                   return()
@@ -448,14 +449,12 @@ setMethod(".ggrid",
                     visible(h$action) <- visValues
                 })
               tag(obj,"subsetBy")<-subsetBy
-              subsetByGroup = gexpandgroup("subset=")
-              add(subsetByGroup, subsetBy)
+
               ## add subsetby to each view.col for a variable
               for(i in view$GetColumns()) tag(i,"subsetBy") <- subsetBy
 #              sapply(view$GetColumns(), function(view.col)
 #                     tag(view.col,"subsetBy") <- subsetBy)
               
-              add(group, subsetByGroup)
             }
 
             if(tag(obj,"editable") &&
@@ -1794,8 +1793,10 @@ setMethod("gsubsetby",
             
             vars = names(gridObj)
             group = ggroup(container = container, ...)
-            subsetVar = gdroplist(c("NA",vars), width=25*8, selected=1,container = group)
-            subsetHow = gdroplist(c(""), width=25*8, editable=TRUE, selected=1, container=group)
+            subsetVar = gdroplist(c("NA",vars),  selected=1,container = group)
+            subsetHow = gdroplist(c(""),  editable=TRUE, selected=1, container=group)
+            size(subsetVar) <- c(25*8, 30)
+            size(subsetHow) <- c(25*8, 30)
             leftArrow = gimage("larrow",dirname="stock",container = group)
             rightArrow = gimage("rarrow",dirname="stock",container = group)
 

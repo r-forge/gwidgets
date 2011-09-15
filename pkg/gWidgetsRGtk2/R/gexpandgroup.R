@@ -28,12 +28,12 @@ setMethod(".gexpandgroup",
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE)
-            } 
-
-            if(!is.null(theArgs$expand) && theArgs$expand)
-              add(container,obj,expand=TRUE)
-            else
-              add(container,obj)
+            
+              if(!is.null(theArgs$expand) && theArgs$expand)
+                add(container,obj,expand=TRUE)
+              else
+                add(container,obj)
+            }
             
             if(!is.null(handler)) 
               tag(obj, "handler.id") <- addhandlerchanged(obj, handler, action)

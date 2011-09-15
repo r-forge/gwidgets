@@ -1,3 +1,8 @@
+2011-09-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addNewColumnDialog): fixed subset feature. Broken via
+	change to gexpandgroup and height wasn't working. Thanks again to Stephanie!
+
 2011-07-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtkStuff.R (getWidget): Added generics to process $, [[ and
