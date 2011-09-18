@@ -53,7 +53,7 @@ Array <- setRefClass("Array",
                       },
                       get_id = function() {
                         "Return an id, or name, for an object"
-                        id_ctr <<- id_ctr + 1
+                        id_ctr <<- id_ctr + 1L
                         sprintf("%s", id_ctr)
                       },
                       contains = function(name) {
