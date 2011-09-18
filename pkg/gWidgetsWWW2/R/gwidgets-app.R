@@ -149,6 +149,7 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                  ## What else goes here?
                                  x <- write_error("File '%s' does not exist", the_script)
                                }
+                               assign(".debug", list(x, e), .GlobalEnv)
                                return(x)
                              },
 
