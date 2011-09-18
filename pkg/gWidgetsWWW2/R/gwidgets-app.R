@@ -90,6 +90,8 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    headers=headers,
                                                    body=paste(out, collapse=";")
                                                    )
+
+                               assign(".out", out, .GlobalEnv)
                                res$write("")
                                res$finish()
                              },
