@@ -90,9 +90,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    headers=headers,
                                                    body=paste(out, collapse=";")
                                                    )
-
                                res$write("")
                                res$finish()
+                               flush.console() # XXX Is this an issue??? On output wasn't sent.
                              },
                              get_session = function(sessionID) {
                                "Return session enviroment from id"
