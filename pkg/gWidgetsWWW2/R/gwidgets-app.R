@@ -92,7 +92,9 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    )
                                res$write("")
                                res$finish()
-                               flush.console() # XXX Is this an issue??? On output wasn't sent.
+                               assign(".out", out, .GlobalEnv) # debugging?
+                               base:::flush(stdout()) # isn't working under Linux, does this fix?
+                               ## flush.console() # XXX Is this an issue??? On output wasn't sent.
                              },
                              get_session = function(sessionID) {
                                "Return session enviroment from id"
