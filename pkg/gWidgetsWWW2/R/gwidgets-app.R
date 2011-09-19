@@ -83,6 +83,8 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                   ## Otherwise we create the GUI. Called as GET here
                                  session_id <- req$GET()$session_id
                                  out <- create_GUI(session_id)
+                               assign(".out", out, .GlobalEnv) # debugging?
+                                 
                                }
 
                                ## need to populate result
@@ -92,7 +94,6 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                                    )
                                res$write("")
                                res$finish()
-                               assign(".out", out, .GlobalEnv) # debugging?
 ##                               base:::flush(stdout()) # isn't working under Linux, does this fix?
                                 flush.console() # XXX Is this an issue??? On output wasn't sent.
                              },
