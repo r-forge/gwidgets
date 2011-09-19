@@ -81,8 +81,11 @@ GWidgetsApp <- setRefClass("GWidgetsApp",
                                   out <- toJSON(list(id=session_manager$get_id()))
                                 } else {
                                   ## Otherwise we create the GUI. Called as GET here
+                                 message("call createG\n")
+                                  
                                  session_id <- req$GET()$session_id
                                  out <- create_GUI(session_id)
+                                 message("returned", paste(out, collapse="\n"))
                                }
 
                                ## need to populate result
