@@ -111,12 +111,12 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
   obj <- new("gTextRGtk", block=block, widget=widget,
              toolkit=guiToolkit("RGtk2"))
 
-  ## add tags if not there
-  if(is.null(tag(obj,"tags"))) {
-    buffer <- widget$GetBuffer()
-    tags <- .addTags(buffer)
-    tag(obj,"tags") <- tags
-  }
+  ## ## add tags if not there
+  ## if(is.null(tag(obj,"tags"))) {
+  ##   buffer <- widget$GetBuffer()
+  ##   tags <- .addTags(buffer)
+  ##   tag(obj,"tags") <- tags
+  ## }
   
   return(obj)
 }
@@ -124,7 +124,7 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
 ## add tags to buffer
 ## return tags
 .addTags <- function(buffer) {
-  return("tags") ## XX
+
   ## weights
   fontWeights = names(PangoWeight)
   fontWeights = fontWeights[fontWeights != "normal"] # also in Styles
@@ -253,9 +253,12 @@ setMethod(".add",
 
             do.newline = ifelse(is.null(theArgs$do.newline), TRUE, as.logical(theArgs$do.newline))
             markup = theArgs$font.attr
-            if(!is.null(markup))
-              markup = markup[markup %in% unlist(tag(obj,"tags"))] # only some markup
 
+            if(!is.null(markup)) {
+              if(is.null(tag(obj, "tags")))
+                tag(obj, "tags") <- .addTags(obj@widget$getBuffer())
+              markup = markup[markup %in% unlist(tag(obj,"tags"))] # only some markup
+            }
             where <- getWithDefault(theArgs$where, "end")
 
             

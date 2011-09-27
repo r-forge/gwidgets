@@ -1,5 +1,5 @@
 .onLoad <- function(...) {
-  require(methods)
+  ## require(methods)
 }
 
 .onAttach <- function(...) {
