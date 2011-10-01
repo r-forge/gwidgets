@@ -1,3 +1,7 @@
+2011-09-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/icons.R: Remove assignInNamespace bits, replaced with environments
+
 2011-09-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (.addTags): had commented out them code for

@@ -3,9 +3,11 @@
 ## function to look up stock icons
 ## ie. ok returns "gtk-ok"
 
-stockIcons <- list(); updateStockIcons <- TRUE
-assignInNamespace("stockIcons",list(), ns = "gWidgetsRGtk2")
-assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
+##stockIcons <- list();
+stockIcons <- new.env()
+updateStockIcons <- new.env(); updateStockIcons[['value']] <- TRUE
+#assignInNamespace("stockIcons",list(), ns = "gWidgetsRGtk2")
+#assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
 
 loadGWidgetIcons = function() {
   ## add the icons
@@ -26,7 +28,8 @@ loadGWidgetIcons = function() {
 setMethod(".addStockIcons",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit, iconNames, iconFiles, ...) {
-            assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
+            updateStockIcons[['value']] <- TRUE
+#            assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
             addToGtkStockIcons(iconNames, iconFiles)
           })
 
@@ -56,17 +59,21 @@ addToGtkStockIcons = function(iconNames, iconFiles) {
 setMethod(".getStockIcons",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit) {
-           if(getFromNamespace("updateStockIcons", ns = "gWidgetsRGtk2")) {
+##           if(getFromNamespace("updateStockIcons", ns = "gWidgetsRGtk2")) {
+            if(updateStockIcons[['value']]) {
              ## create icon list
              .stockicons <- list()
              for(i in unlist(gtkStockListIds())) {
                name <- sub("[a-zA-Z0-9]*-","",i)
                .stockicons[[name]] = i
              }
-             assignInNamespace("stockIcons", .stockicons, ns = "gWidgetsRGtk2")
-             assignInNamespace("updateStockIcons",FALSE, ns = "gWidgetsRGtk2")
+             stockIcons[["value"]] <- .stockicons
+             updateStockIcons[["value"]] <- FALSE
+#             assignInNamespace("stockIcons", .stockicons, ns = "gWidgetsRGtk2")
+#             assignInNamespace("updateStockIcons",FALSE, ns = "gWidgetsRGtk2")
            }
-           return(getFromNamespace("stockIcons", ns = "gWidgetsRGtk2"))
+           stockIcons[["value"]]
+#           return(getFromNamespace("stockIcons", ns = "gWidgetsRGtk2"))
          })
                 
 

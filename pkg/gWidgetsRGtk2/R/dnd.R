@@ -34,7 +34,8 @@ gWidgetTargetTypes = list(
 
 ## Part of gross hack to allow objects to be dropped
 ## hide this list for storing drop information. This is typically a pointer to an RGtkObject
-.gWidgetDropTargetList <- list()
+## .gWidgetDropTargetList <- list()
+.gWidgetDropTargetList <- new.env()
 .gWidgetDropTargetListKey = ".gWidgetDropTargetListKey" # goes in front
 
 
@@ -75,11 +76,13 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
       if(!is.null(action)) {
         key = Paste(.gWidgetDropTargetListKey,tempfile())                  # why not?
         ##        .gWidgetDropTargetList[[key]] <<- action
-        tmplst = getFromNamespace(".gWidgetDropTargetList",
-          "gWidgetsRGtk2")
+#        tmplst = getFromNamespace(".gWidgetDropTargetList",
+#          "gWidgetsRGtk2")
+        tmplst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
         tmplst[[key]] <- action
-        assignInNamespace(".gWidgetDropTargetList", tmplst,
-                          "gWidgetsRGtk2")
+        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- tmplst
+##        assignInNamespace(".gWidgetDropTargetList", tmplst,
+##                          "gWidgetsRGtk2")
         
         selection$SetText(key)
       }
@@ -180,9 +183,11 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
         ## It is an action thing. An object was dropped, not a text value
         sourceAction = .gWidgetDropTargetList[[dropdata]]
         ##        .gWidgetDropTargetList[[dropdata]] <<- NULL
-        tmplst = getFromNamespace(".gWidgetDropTargetList", "gWidgetsRGtk2")
+##        tmplst = getFromNamespace(".gWidgetDropTargetList", "gWidgetsRGtk2")
+        tmplst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
         tmplst[[dropdata]] <- NULL
-        assignInNamespace(".gWidgetDropTargetList", tmplst, "gWidgetsRGtk2")
+##        assignInNamespace(".gWidgetDropTargetList", tmplst, "gWidgetsRGtk2")
+        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <-  tmplst 
         ## what to do with handler?
         if(!is.null(handler)) {
           h$dropdata = sourceAction; h$x = x; h$y = y
