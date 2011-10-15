@@ -165,7 +165,7 @@ setMethod(".gtree",
 
                          ## get unsorted iter from path
                          uspath = treestoreModel$ConvertPathToChildPath(path)
-                         iter = treestore$GetIter(uspath)$ite
+                         iter = treestore$GetIter(uspath)$iter
 
                          ## get children, remove
                          n = treestore$IterNChildren(iter)

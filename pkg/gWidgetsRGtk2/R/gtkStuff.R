@@ -284,3 +284,6 @@ isRightMouseClick <- function(e) {
   e$GetButton() == 3 ||
   (e$GetState() == GdkModifierType['control-mask'] && e$GetButton() == 1) 
 }
+
+
+
