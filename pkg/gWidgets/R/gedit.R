@@ -8,7 +8,7 @@ setClass("gEdit",
 
 ##' Single line text edit constructor
 ##'
-##' @exports
+##' @exportsg If not text give, and an initial message given, then this message is displayed until the widget receives the focus
 ##' @param text initial text
 ##' @param width number of characters
 ##' @param coerce.with A function or name of function to coerce value with before returning by \code{svalue}

@@ -6,17 +6,15 @@
   do.call(sprintf("%s", "require"), list(pkg))
 }
 
-
 ## needed to find methods
 .onLoad <- function(lib, pkg) {
-  require(methods)
-  require(utils)
 
+  ## Bad practice here (see ?.onAttach), but don't want to require tcltk although likely it isn't too much to ask for
   doRequire <- function(pkg) do.call("require",list(pkg))
   popup <- function() {
     ## popup install message if not presnet
     ## already checked that no gWidgetsXXX is available
-    all <- installed.packages()
+    all <- utils:::installed.packages()
     pkgs <- rownames(all)
     
     title <- "gWidgets needs a toolkit package"

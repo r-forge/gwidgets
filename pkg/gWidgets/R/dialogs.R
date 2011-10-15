@@ -55,9 +55,9 @@ gmessage = function(
 ##' @alias gmessage
 setGeneric(".gmessage",
            function(toolkit,
-                    message=message, title=title, icon=icon,
-                    parent = parent,
-                    handler=handler, action=action, ...)
+                    message="", title="", icon="",
+                    parent = NULL,
+                    handler=NULL, action=NULL, ...)
            standardGeneric(".gmessage"))
 
 ############## ginput ####################################

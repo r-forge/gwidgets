@@ -81,7 +81,7 @@ setMethod("svalue", signature(obj="gButton"),
 setReplaceMethod("svalue", signature(obj="gButton"),
           function(obj, index=NULL, ...,value) {
             value <- paste(value, collapse="\n")
-            callNextMethod(obj, index, ..., value=value)
+            callNextMethod()
           })
 
 
