@@ -111,7 +111,7 @@ setMethod(".gtoolbar",
     
     if(!is.null(tmp$separator)) {
       ## add separator
-      gseparator(horizontal=FALSE, cont=tb)
+      gseparator(horizontal=FALSE, container=tb)
     } else if(!is.null(tmp$handler)) {
       ## how to decide there are no text parts?
       b <- .addToolbarButton(tb, style, label, tmp$icon, tmp$handler, tmp$action)

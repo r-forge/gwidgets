@@ -406,19 +406,19 @@ setReplaceMethod(".names",
   transformVariable <- function(col) {
     ## obj is main object
     w <- gwindow(gettext("Transform variable"), parent=obj,width=300, height=400)
-    g <- ggroup(horizontal=FALSE, cont = w)
-    glabel("To transform a variable you define a function body.", cont = g)
-    glabel("You can use 'x' for the data frame and the column names.", cont = g)
-    glabel("", cont = g)
-    glabel("function(x) {", cont=g)
-    glabel("\twith(x, {", cont = g)
-    out <- gtext("", cont = g); size(out) <- c(300,100)
-    glabel("\t})", cont = g)
-    glabel("}", cont = g)
-##    gseparator(cont =g, expand=TRUE)
-    bg <- ggroup(cont = g)
-    cancelButton <- gbutton("cancel", cont = bg, handler = function(h,...) dispose(w))
-    okButton <- gbutton("ok", cont = bg, handler = function(h,...) {
+    g <- ggroup(horizontal=FALSE, container = w)
+    glabel("To transform a variable you define a function body.", container = g)
+    glabel("You can use 'x' for the data frame and the column names.", container = g)
+    glabel("", container = g)
+    glabel("function(x) {", container=g)
+    glabel("\twith(x, {", container = g)
+    out <- gtext("", container = g); size(out) <- c(300,100)
+    glabel("\t})", container = g)
+    glabel("}", container = g)
+##    gseparator(container =g, expand=TRUE)
+    bg <- ggroup(container = g)
+    cancelButton <- gbutton("cancel", container = bg, handler = function(h,...) dispose(w))
+    okButton <- gbutton("ok", container = bg, handler = function(h,...) {
       str <- paste("x <- obj[,]",
                    "f <- function(x) { with(x,{",
                    svalue(out),

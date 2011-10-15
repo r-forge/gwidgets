@@ -41,16 +41,16 @@ setMethod(".gexpandgroup",
             cg = oggroup(container, ...)
 #            cg = do.call("ggroup",theArgs)
 
-            labelGroup = ggroup(horizontal=TRUE, cont=cg)
+            labelGroup = ggroup(horizontal=TRUE, container=cg)
 
             rightArrow = system.file("images","1rightarrow.gif",package="gWidgets")
             downArrow = system.file("images","1downarrow.gif",package="gWidgets")
 
-            icon = gimage(downArrow,cont=labelGroup)
-            label = glabel(text, cont=labelGroup)
+            icon = gimage(downArrow,container=labelGroup)
+            label = glabel(text, container=labelGroup)
 
             ## we need this so that getBlock doesn't find cg's block
-            eg1 = ggroup(cont=cg, expand=TRUE,horizontal)
+            eg1 = ggroup(container=cg, expand=TRUE,horizontal)
 
 ##             groupArgs$container=eg1
 ##             groupArgs$expand=TRUE

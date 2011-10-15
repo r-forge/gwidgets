@@ -410,16 +410,16 @@ setMethod(".visible",
                      ans <- FALSE
 
                      if(tag(obj, "do.buttons")) {
-                       buttonGroup = ggroup(cont=g, expand=TRUE, fill="x") ## just x XXX
+                       buttonGroup = ggroup(container=g, expand=TRUE, fill="x") ## just x XXX
                        addSpring(buttonGroup)
-                       OKbutton = gbutton("OK",cont=buttonGroup,action = tt,
+                       OKbutton = gbutton("OK",container=buttonGroup,action = tt,
                          handler=function(h,...) {
                            ans <<- TRUE
                            tkgrab.release(h$action)
                            tclvalue(flag) <- "destroy"
                          })
                        addSpace(buttonGroup, 10)
-                       Cancelbutton = gbutton("Cancel",cont=buttonGroup, action=tt,
+                       Cancelbutton = gbutton("Cancel",container=buttonGroup, action=tt,
                          handler=function(h,...) {
                            ans <<- FALSE
                            tkgrab.release(h$action)
@@ -469,11 +469,11 @@ setMethod(".galert",
             force(toolkit)
             
             w <- gwindow(title, width=250, height=50, parent = parent)
-            g <- ggroup(cont = w)
-            l <- glabel("  ", cont = g)
-            label <- glabel(message, cont = g, expand=TRUE)
+            g <- ggroup(container = w)
+            l <- glabel("  ", container = g)
+            label <- glabel(message, container = g, expand=TRUE)
             font(label) <- c("weight"="bold")
-            gimage(file="dismiss",dir="stock", cont = g, handler = function(h,...) dispose(w))
+            gimage(file="dismiss",dir="stock", container = g, handler = function(h,...) dispose(w))
             
             addHandlerMouseMotion(label, handler = function(h,...) dispose(w))
             

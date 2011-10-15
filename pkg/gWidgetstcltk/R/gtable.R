@@ -659,14 +659,14 @@ setMethod(".gtableWithFilter",
 
             g = ggroup(horizontal=FALSE, container=container, ...)
 
-            fg = ggroup(cont=g)
+            fg = ggroup(container=g)
             filterByLabel = glabel("Filter by:", container=fg)
             filterPopup = gdroplist(c(""), container=fg)
             
             tbl = gtable(items,
               multiple=multiple,
               chosencol=chosencol,
-              cont=g, expand=TRUE)
+              container=g, expand=TRUE)
 
             
 

@@ -31,9 +31,9 @@ setMethod(".gcalendar",
             ##              text <- format(Sys.Date(), format)
 
 
-            g <- ggroup(cont=container, ...)
-            e <- gedit(text, cont=g, width=11, expand=TRUE)
-            b <- gbutton("date", cont=g)
+            g <- ggroup(container=container, ...)
+            e <- gedit(text, container=g, width=11, expand=TRUE)
+            b <- gbutton("date", container=g)
 
 
             obj <- new("gCalendartcltk",

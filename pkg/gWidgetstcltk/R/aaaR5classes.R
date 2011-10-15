@@ -63,7 +63,8 @@ setRefClass("TcltkWidget",
                     FUN <- i$handler
                     e <- environment(FUN)
                     for(j in names(formals(FUN))) e[[j]] <- h[[j]]
-                    e[[".self"]] <- .self
+                    if(!exists("..self", e))
+                      e[[".self"]] <- .self
                     e[["user.data"]] <- i$user.data
                     environment(FUN) <- e
                     formals(FUN) <- alist()

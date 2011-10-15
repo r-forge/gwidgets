@@ -16,7 +16,7 @@ setMethod(".gdfnotebook",
 
             force(toolkit)
 
-            return(glabel("gdfnotebook not available", cont=container)@widget)
+            return(glabel("gdfnotebook not available", container=container)@widget)
   
           })
 

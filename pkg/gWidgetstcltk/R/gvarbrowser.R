@@ -149,7 +149,7 @@ setMethod(".gvarbrowser",
                        toolkit=toolkit,ID=getNewID(), e = new.env())
             
             
-            gbutton("update", cont=group, align=c(-1,0),
+            gbutton("update", container=group, align=c(-1,0),
                     action=obj,
                     handler=function(h,...) {
                       update(h$action)
