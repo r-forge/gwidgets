@@ -2,10 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetstcltk
 
+Changes for 0.0-47
+-------------------
+
 Changes for 0.0-46
 -------------------
 
-* minor bug fix
+* minor bug fix to fix environment issue, get past check
 
 Changes for 0.0-45
 -------------------

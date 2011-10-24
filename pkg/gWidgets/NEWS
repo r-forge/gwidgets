@@ -2,9 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
-Changes for 0.0-47
+Changes for 0.0-48
 ------------------
  
+
+Changes for 0.0-47
+------------------
+* minor tweaks for getting docs past check 
 
 Changes for 0.0-46
 ------------------
