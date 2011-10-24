@@ -1,3 +1,7 @@
+2011-10-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/zzz.R (.onLoad): modfication to avoid loading methods package
+
 2011-07-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/tcltkFuns.R (getTopLevel): added generics to implement $, [[

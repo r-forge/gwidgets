@@ -5,7 +5,7 @@ NULL
 Picker <- setRefClass("Picker",
                       contains="ManipulateControls",
                       methods=list(
-                        initialize=function(..., initial=NULL, label=NULL) {
+                        initialize=function(..., initial=NULL, label="") {
 
                           
                           ## get values
@@ -87,7 +87,7 @@ MultiPicker <- setRefClass("MultiPicker",
 ##' @param multiple logical. If \code{TRUE} use combobox, \code{FALSE} use table with checkbox
 ##' @return \code{Picker} object
 ##' @export
-picker <- function(..., initial = NULL, label = NULL, multiple=FALSE) {
+picker <- function(..., initial = NULL, label = "", multiple=FALSE) {
   if(multiple)
     MultiPicker$new(..., initial=initial, label=label)
   else

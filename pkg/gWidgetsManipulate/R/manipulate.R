@@ -68,7 +68,7 @@ mapVectorToControl.numeric <- function(x) {
 
 ## checkbox
 mapVectorToControl.logical <- function(x) {
-  checkbox(initial=x[1], label=NULL)
+  checkbox(initial=x[1], label="")
 }
 
 ## picker
@@ -109,7 +109,7 @@ Manipulate <- setRefClass("Manipulate",
                                   stop("Couldn't map control")
                                 }
                                 ## default label is control name
-                                if(length(.controls[[name]]$label) == 0) 
+                                if(nchar(.controls[[name]]$label) == 0) 
                                   .controls[[name]]$label <<- name
                               }
                             },
@@ -150,7 +150,7 @@ Manipulate <- setRefClass("Manipulate",
                                 dev <<- tkrplot(getToolkitWidget(g), function() {})
                                 add(g, dev, expand=TRUE)
                               } else {
-                                ggraphics(cont=g)
+                                ggraphics(cont=g, expand=TRUE, fill=TRUE)
                               }
                               f <- gframe("Controls", cont=pg)
                               lyt <- glayout(cont=f)
@@ -160,6 +160,7 @@ Manipulate <- setRefClass("Manipulate",
                                            handler=.self$change_handler)
                               })
                               visible(w) <- TRUE
+                              svalue(pg) <- 0.75
                               change_handler()                    # initial
                             },
                             initialize=function(code=NULL, ...) {

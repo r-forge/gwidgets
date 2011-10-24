@@ -247,13 +247,13 @@ GTable <- setRefClass("GTable",
 
                           value <<- NA  # currently selected row(s) or NA
                           multiple <<- multiple
-                          chosencol <<- chosencol
+                          chosencol <<- as.integer(chosencol)
                           if(is.logical(paging)) {
                             paging <<- paging;
-                            page_size <<- 25 ## override through assignment
+                            page_size <<- 25L ## override through assignment
                           } else {
                             paging <<- TRUE
-                            page_size <<- paging
+                            page_size <<- as.integer(paging)
                           }
 
                           store <<- ExtArrayStore$new(container$toplevel)
@@ -278,9 +278,9 @@ GTable <- setRefClass("GTable",
                               'new Ext.grid.RowSelectionModel({singleSelect:true})'))
                             )
                           if(paging) {
-                            store$page_size <<- page_size
+                            store$page_size <<- as.integer(page_size)
                             paging_options <- list(
-                                                   pageSize= page_size,
+                                                   pageSize= as.integer(page_size),
                                                    store= String(store$get_id()),
                                                    displayInfo=TRUE,
                                                    displayMsg= gettext("Displaying rows {0} - {1} of {2}"),

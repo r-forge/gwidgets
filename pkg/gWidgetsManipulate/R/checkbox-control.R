@@ -8,7 +8,7 @@ Checkbox$methods(
                    if ( !is.logical(initial) )
                      stop("initial must be a logical")
                  },
-                 initialize=function(initial=FALSE, label=NULL) {
+                 initialize=function(initial=FALSE, label="") {
                    validate_inputs(initial, label)
                    checkbox <- list(type = 2)
                    callSuper(l=checkbox,  label=label, initial=initial)
@@ -24,8 +24,8 @@ Checkbox$methods(
 ##' Checkbox control constructor
 ##'
 ##' @param initial logical checked or unchecked
-##' @param label character If non-NULL, labels checkbox
+##' @param label character If non-"", labels checkbox
 ##' @export
 ##' @return Checkbox instance
-checkbox <- function(initial = FALSE, label = NULL) Checkbox$new(initial, label)                            
+checkbox <- function(initial = FALSE, label = "") Checkbox$new(initial, label)                            
 

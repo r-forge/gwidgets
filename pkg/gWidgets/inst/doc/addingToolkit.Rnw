@@ -9,13 +9,13 @@
 \usepackage{graphicx}           % for graphics files
 %%\usepackage{floatflt}           % for ``floating boxes''
 %%\usepackage{index}
-\usepackage{relsize}            % for relative size fonts
+%%\usepackage{relsize}            % for relative size fonts
 \usepackage{amsmath}            % for amslatex stuff
 \usepackage{amsfonts}           % for amsfonts
 \usepackage{url}                % for \url,
 \usepackage{color}
-\usepackage{fancyvrb}
-\usepackage{fancyhdr}
+%%\usepackage{fancyvrb}
+%%\usepackage{fancyhdr}
 %%\usepackage{jvfloatstyle}       % redefine float.sty for my style. Hack
 
 
@@ -32,18 +32,18 @@
 \setcounter{bottomnumber}{50}
 
 %% Fill these in
-\pagestyle{fancy}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\RCode{gWidgets}}
-\fancyhead[C]{}
-\fancyhead[R]{\sectionmark}
-\fancyfoot[L]{}
-\fancyfoot[C]{- page \thepage\/ -}
-\fancyfoot[R]{}
-\renewcommand{\headrulewidth}{0.1pt}
-\renewcommand{\footrulewidth}{0.0pt}
+% \pagestyle{fancy}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[L]{\RCode{gWidgets}}
+% \fancyhead[C]{}
+% \fancyhead[R]{\sectionmark}
+% \fancyfoot[L]{}
+% \fancyfoot[C]{- page \thepage\/ -}
+% \fancyfoot[R]{}
+% \renewcommand{\headrulewidth}{0.1pt}
+% \renewcommand{\footrulewidth}{0.0pt}
 
 %% My abbreviations
 \newcommand{\RCode}[1]{\texttt{#1}}

@@ -69,7 +69,7 @@ Slider <- setRefClass("Slider",
 ##' @export
 slider <- function(min, max, initial=min, 
                    step=-1, ticks=TRUE,
-                   label=NULL) {
+                   label="") {
 
   Slider$new(min, max, initial=initial, label=label, 
              step=step, ticks=ticks)
