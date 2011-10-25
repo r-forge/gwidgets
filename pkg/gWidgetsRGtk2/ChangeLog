@@ -1,3 +1,8 @@
+2011-10-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (## getObjectFrom_h): change update method to
+	include value of filter. Thanks Stephanie
+
 2011-09-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/icons.R: Remove assignInNamespace bits, replaced with environments

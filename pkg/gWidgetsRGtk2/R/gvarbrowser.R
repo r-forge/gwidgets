@@ -107,7 +107,13 @@ offspring = function(path=c(), data=NULL) {
                            hasSubTree=hasTree,
                            type=I(objType),
                            summary=I(objSummary), stringsAsFactors=FALSE)
-  return(allValues)
+  ## Thanks Stephanie
+  if(!is.null(data)) { 
+    return(allValues[allValues$type %in% data, ,drop=FALSE]) 
+  } else { 
+    return(allValues) 
+  } 
+  
   
 }
 
@@ -267,6 +273,8 @@ setMethod(".gvarbrowser",
 
             obj <- new("gVarbrowserRGtk",block=group, widget=tree, filter=filterPopup, toolkit=toolkit)
 
+            tag(obj, "filterPopup") <- filterPopup
+            
             ### In place of an idleHandler, we use a taskCallback
             ### This is a little fragile, as remove taskCallback can remove
             updateCallback <- function(x) {
@@ -276,8 +284,9 @@ setMethod(".gvarbrowser",
                 
                 if(is.call(expr)) {
                   FUN <- deparse(expr[[1]])
-                  if(FUN %in% c("=","<-", "assign", "rm"))
+                  if(FUN %in% c("=","<-", "assign", "rm")) {
                     update(x)
+                  }
                 }
                 return(TRUE)
               }
@@ -345,7 +354,10 @@ setMethod(".gvarbrowser",
 setMethod(".update",
           signature(toolkit="guiWidgetsToolkitRGtk2",object="gVarbrowserRGtk"),
           function(object, toolkit, ...) {
-            update(object@widget, ...)
+            filterPopup <- tag(object, "filterPopup")
+            key <- svalue(filterPopup)
+            offspring.data <- knownTypes[[key]]
+            update(object@widget, offspring.data)
           })
 
 setMethod(".svalue",

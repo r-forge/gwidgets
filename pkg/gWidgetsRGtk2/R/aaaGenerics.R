@@ -1,9 +1,9 @@
 ## toolkit class
 ## register classes here for toolkits
-setClass("guiWidgetsToolkitRGtk2",
-         contains="guiWidgetsToolkit",
-         prototype=prototype(new("guiWidgetsToolkit"))
-         )
+## setClass("guiWidgetsToolkitRGtk2",
+##          contains="guiWidgetsToolkit",
+##          prototype=prototype(new("guiWidgetsToolkit"))
+##          )
 
 
 
