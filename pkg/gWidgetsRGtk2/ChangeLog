@@ -2,6 +2,8 @@
 
 	* R/gvarbrowser.R (## getObjectFrom_h): change update method to
 	include value of filter. Thanks Stephanie
+	(idleHandler): reverted to idle handler -- as opposed to task
+	callback -- so that all operations cause update
 
 2011-09-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
 

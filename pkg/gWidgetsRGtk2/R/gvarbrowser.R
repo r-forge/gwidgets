@@ -275,56 +275,56 @@ setMethod(".gvarbrowser",
 
             tag(obj, "filterPopup") <- filterPopup
             
-            ### In place of an idleHandler, we use a taskCallback
-            ### This is a little fragile, as remove taskCallback can remove
-            updateCallback <- function(x) {
-              function(expr, value, ...) {
+            ## ### In place of an idleHandler, we use a taskCallback
+            ## ### This is a little fragile, as remove taskCallback can remove
+            ## updateCallback <- function(x) {
+            ##   function(expr, value, ...) {
                 
-                if(!isExtant(x)) return(FALSE)      # need widget to be available, otherwise shut off
+            ##     if(!isExtant(x)) return(FALSE)      # need widget to be available, otherwise shut off
                 
-                if(is.call(expr)) {
-                  FUN <- deparse(expr[[1]])
-                  if(FUN %in% c("=","<-", "assign", "rm")) {
-                    update(x)
-                  }
-                }
-                return(TRUE)
-              }
-            }
-            addTaskCallback(updateCallback(obj), name="gvarbrowser")
+            ##     if(is.call(expr)) {
+            ##       FUN <- deparse(expr[[1]])
+            ##       if(FUN %in% c("=","<-", "assign", "rm")) {
+            ##         update(x)
+            ##       }
+            ##     }
+            ##     return(TRUE)
+            ##   }
+            ## }
+            ## addTaskCallback(updateCallback(obj), name="gvarbrowser")
 
             
-            ## ## add an idle handler for updating tree every  second (or interval)
-            ## idleHandler <- function(h,...) {
+             ## add an idle handler for updating tree every  second (or interval)
+             idleHandler <- function(h,...) {
 
-            ##   visible(updateGroup) <- tag(h$action, "logsize") > 2 #  50 or more
+               visible(updateGroup) <- tag(h$action, "logsize") > 2 #  50 or more
 
-            ##   if(!svalue(autoUpdate))
-            ##     return()
+               if(!svalue(autoUpdate))
+                 return()
 
 
-            ##   key = svalue(filterPopup)
-            ##   offspring.data = knownTypes[[key]]
-            ##   update(h$obj, offspring.data)
+               key = svalue(filterPopup)
+               offspring.data = knownTypes[[key]]
+               update(h$obj, offspring.data)
 
-            ##   ## do we make timeframe longer bigger?
-            ##   n <- ceiling(log(1+ length(.GlobalEnv), 7)) 
-            ##   if(n != tag(h$action, "logsize")) {
-            ##     tag(h$action, "logsize") <- n
-            ##     idleid <- tag(h$action, "idleid")
-            ##     gSourceRemove(idleid)
-            ##     tag(h$action, "idleid") <-
-            ##       addhandleridle(tree, interval=2^n*1000, handler = idleHandler, action=h$action)
-            ##   }
-            ## } 
-            ## idleid <- addhandleridle(tree, interval=interval, handler = idleHandler, action=obj)
-            ## tag(obj, "idleid") <- idleid
-            ## tag(obj, "logsize") <- 1    # ceiling(log(1+ length(.GlobalEnv), 10))
-            ## addhandlerunrealize(tree, handler = function(h,...) {
-            ##   idleid <- tag(h$action, "idleid")
-            ##   gSourceRemove(idleid)
-            ## },
-            ##                     action=obj)
+               ## do we make timeframe longer bigger?
+               n <- ceiling(log(1+ length(.GlobalEnv), 7)) 
+               if(n != tag(h$action, "logsize")) {
+                 tag(h$action, "logsize") <- n
+                 idleid <- tag(h$action, "idleid")
+                 gSourceRemove(idleid)
+                 tag(h$action, "idleid") <-
+                   addhandleridle(tree, interval=2^n*1000, handler = idleHandler, action=h$action)
+               }
+             } 
+             idleid <- addhandleridle(tree, interval=interval, handler = idleHandler, action=obj)
+             tag(obj, "idleid") <- idleid
+             tag(obj, "logsize") <- 1    # ceiling(log(1+ length(.GlobalEnv), 10))
+             addhandlerunrealize(tree, handler = function(h,...) {
+               idleid <- tag(h$action, "idleid")
+               gSourceRemove(idleid)
+             },
+                                 action=obj)
 
             
             ## override how we compare items. Default is just by name, here we want
