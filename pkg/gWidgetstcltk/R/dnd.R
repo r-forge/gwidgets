@@ -2,9 +2,15 @@
 
 ## globals within NAMESPACE
 .dragging <- FALSE; .dragValue = ""; .lastWidgetID <- ""
-assignInNamespace(".dragging", FALSE,"gWidgetstcltk")
-assignInNamespace(".dragValue", "","gWidgetstcltk")
-assignInNamespace(".lastWidgetID", "","gWidgetstcltk")
+dnd.env <- new.env()
+dnd.env[['dragging']] <- NULL
+dnd.env[['dragValue']] <- ""
+dnd.env[['lastWidgetID']] <- ""
+
+
+##assignInNamespace(".dragging", FALSE,"gWidgetstcltk")
+##assignInNamespace(".dragValue", "","gWidgetstcltk")
+##assignInNamespace(".lastWidgetID", "","gWidgetstcltk")
 
 
 ##################################################
@@ -15,19 +21,22 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
 
   
   tkbind(widget,"<ButtonPress-1>",function(w,...) {
-    assignInNamespace(".dragging", TRUE,"gWidgetstcltk")
-    assignInNamespace(".lastWidgetID", widget,"gWidgetstcltk")    
+    dnd.env[['dragging']] <- TRUE
+    dnd.env[['lastWidgetID']] <- widget
+##    assignInNamespace(".dragging", TRUE,"gWidgetstcltk")
+##    assignInNamespace(".lastWidgetID", widget,"gWidgetstcltk")    
     h = list();
     h$obj = obj;
     h$action=action
     if(is.null(handler))
       handler = function(h,...) svalue(obj) # default handler
-    assignInNamespace(".dragValue", handler(h),"gWidgetstcltk")
+    dnd.env[['dragValue']] <- handler(h)
+    ## assignInNamespace(".dragValue", handler(h),"gWidgetstcltk")
   })
   
   tkbind(widget,"<Motion>",function(x,y,...) {
-    .dragging = getFromNamespace(".dragging","gWidgetstcltk")
-    .lastWidgetID = getFromNamespace(".lastWidgetID","gWidgetstcltk")
+    .dragging <- dnd.env[['dragging']] ##= getFromNamespace(".dragging","gWidgetstcltk")
+    .lastWidgetID <- dnd.env[['lastWidgetID']] ##= getFromNamespace(".lastWidgetID","gWidgetstcltk")
 
     if(!.dragging) return()
     x0 = as.integer(tkwinfo("rootx",widget))
@@ -43,7 +52,8 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
         tkevent.generate(.lastWidgetID,"<<DragLeave>>")
       }
     }
-    assignInNamespace(".lastWidgetID", "","gWidgetstcltk")    
+    dnd.env[['lastWidgetID']] <- ""
+    ##    assignInNamespace(".lastWidgetID", "","gWidgetstcltk")    
 
     if(as.logical(tkwinfo("exists",w)))
       tkevent.generate(w, "<<DragOver>>")
@@ -53,7 +63,7 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
   })
   
   tkbind(widget,"<ButtonRelease-1>",function(x,y,...) {
-    .dragging = getFromNamespace(".dragging","gWidgetstcltk")
+    .dragging <- dnd.env[['dragging']] ##= getFromNamespace(".dragging","gWidgetstcltk")
     if(!.dragging) return()
     x0 = as.integer(tkwinfo("rootx",widget))
     y0 = as.integer(tkwinfo("rooty",widget))
@@ -64,7 +74,8 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
       tkevent.generate(w,"<<DragDrop>>")
       tkconfigure(w,cursor="")
     }
-    assignInNamespace(".dragging",FALSE,"gWidgetstcltk")
+    dnd.evn[['dragging']] <- FALSE
+##    assignInNamespace(".dragging",FALSE,"gWidgetstcltk")
     tkconfigure(widget,cursor="")
   })
 }
@@ -111,13 +122,13 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
   ## bind to three events
   
   tkbind(widget,"<<DragOver>>",function(w,...) {
-    .dragging = getFromNamespace(".dragging","gWidgetstcltk")
+    .dragging <- dnd.env[['dragging']] ## getFromNamespace(".dragging","gWidgetstcltk")
     if(.dragging) {
       ##      tkconfigure(widget,relief="raised")
     }
     
     tkbind(widget,"<<DragLeave>>",function(w,...) {
-      .dragging = getFromNamespace(".dragging","gWidgetstcltk")
+      .dragging <- dnd.env[['dragging']] ##= getFromNamespace(".dragging","gWidgetstcltk")
       if(.dragging) {
         tkconfigure(widget, cursor="")
       }
@@ -126,10 +137,11 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
     tkbind(widget,"<<DragDrop>>",function(w,...) {
       h = list()
       h$obj = obj; h$action=action
-      h$dropdata = getFromNamespace(".dragValue","gWidgetstcltk")
+      h$dropdata <- dnd.env[['dragValue']] ##getFromNamespace(".dragValue","gWidgetstcltk")
       svalue(obj) <- h$dropdata
       handler(h)
-      assignInNamespace(".dragValue", "","gWidgetstcltk")
+      dnd.env[['dragValue']] <- ""
+      ##      assignInNamespace(".dragValue", "","gWidgetstcltk")
     })
   })
 }

@@ -42,10 +42,12 @@ setOldClass("try-error")                # for handling try-errors
 ## this one contains the ID for the object.
 ## this may better be done within the NAMESPACE
 
-n=0;assignInNamespace("n",0,"gWidgetstcltk")
+
+id.env <- new.env()
+id.env[['n']] <- 0L
 getNewID = function() {                 # get new one, incremented
-  n = getFromNamespace("n",ns="gWidgetstcltk")
-  assignInNamespace("n",n+1,ns="gWidgetstcltk")
+  n <- id.env[['n']]
+  id.env[['n']] <- n + 1
   return(n+1)
 }
          

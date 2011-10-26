@@ -1,3 +1,13 @@
+2011-10-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaR5classes.R (##   f): Block recursive call to <<Changed>>
+	handler when setting value of gedit object. (Thanks Pat)
+
+2011-10-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/common.R (loadGWidgetIcons): remove assignInNamespace for
+	2.14.0. Thanks Erich
+
 2011-10-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/zzz.R (.onLoad): modfication to avoid loading methods package

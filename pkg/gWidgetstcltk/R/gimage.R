@@ -155,7 +155,7 @@ setReplaceMethod(".svalue",
                      tkconfigure(getWidget(obj),image=imageID)
                    } else if(file.exists(value)) {
                     imageID <- sprintf("gWidgets::%s", digest(value))
-                    x = try(tcl("image","create","photo", imageID,file=value), silent=TRUE)
+                    x = try(tcl("image","create","photo", imageID, file=value), silent=TRUE)
                     if(inherits(x,"try-error")) {
                       message(gettext("Only gif and pnm files are possible in gWidgetstcltk\n"))
                     } else {

@@ -442,8 +442,8 @@ Timestamp = function(obj,k=1) {
 
 ## This is called on package load
 ## no chance that icons aren't yet there
-tcltkStockIcons <- list()
-assignInNamespace("tcltkStockIcons", list(), ns="gWidgetstcltk")
+tcltkStockIcons <- new.env()
+#assignInNamespace("tcltkStockIcons", list(), ns="gWidgetstcltk")
 
 ## return string for tk functions based on stock icon nmae
 ## eg: findIcon("quit") -> "::stockicon::quit.gif" else ""
@@ -460,7 +460,7 @@ findIcon <- function(stockname) {
   
 
 loadGWidgetIcons <- function() {
-  tcltkStockIcons <- getFromNamespace("tcltkStockIcons", ns="gWidgetstcltk")
+##  tcltkStockIcons <- getFromNamespace("tcltkStockIcons", ns="gWidgetstcltk")
   dir <- system.file("images", package = "gWidgets")
   x <- list.files(dir, pattern="gif$", full.names=TRUE)
   nms <- basename(x)
@@ -471,9 +471,9 @@ loadGWidgetIcons <- function() {
         iconName,
         file=x[i]), silent=TRUE)
     if(!inherits(out,"try-error"))
-      tcltkStockIcons[[nms[i]]] <<- x[i]
+      tcltkStockIcons[[nms[i]]] <- x[i]
   })
- assignInNamespace("tcltkStockIcons", tcltkStockIcons, ns="gWidgetstcltk") 
+## assignInNamespace("tcltkStockIcons", tcltkStockIcons, ns="gWidgetstcltk") 
 }
 
 allIcons = getStockIcons()
@@ -483,7 +483,8 @@ allIcons = getStockIcons()
 setMethod(".getStockIcons",
           signature(toolkit="guiWidgetsToolkittcltk"),
           function(toolkit) {
-            getFromNamespace("tcltkStockIcons", ns="gWidgetstcltk")
+            as.list(tcltkStockIcons)
+            ##getFromNamespace("tcltkStockIcons", ns="gWidgetstcltk")
           })
 
 ## add stock icons from files
@@ -507,7 +508,7 @@ setMethod(".addStockIcons",
         tcltkStockIcons[[m[i,1]]] <- m[i,2]
     }
   }
-  assignInNamespace("tcltkStockIcons", tcltkStockIcons, ns="gWidgetstcltk") 
+##  assignInNamespace("tcltkStockIcons", tcltkStockIcons, ns="gWidgetstcltk") 
 }
 
 getStockIconName = function(name) allIcons[[name,exact=TRUE]]

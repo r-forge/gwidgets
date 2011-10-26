@@ -5,6 +5,9 @@ NEWS for gWidgetstcltk
 Changes for 0.0-47
 -------------------
 
+* bug fix for svalue<- for gedit. (Thanks Pat)
+* bug fix of using wrong idiom to store data in a namespace (Thanks Erich)
+
 Changes for 0.0-46
 -------------------
 
