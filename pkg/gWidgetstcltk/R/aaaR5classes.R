@@ -454,7 +454,7 @@ setRefClass("Entry",
                   tclvalue(v)
               },
               ##' initial message code
-               get_value = function() {
+              get_value = function() {
                 "Get the text value"
                 if(!is_init_msg())
                   as.character(tclvalue(v))
