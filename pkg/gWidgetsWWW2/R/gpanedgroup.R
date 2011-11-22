@@ -56,7 +56,7 @@ gpanedgroup <- function(horizontal=TRUE, container=NULL, ...,
 GPanedGroup <- setRefClass("GPanedGroup",
                            contains="ExtContainer",
                            fields=list(
-                             child_ct = "integer",
+                             child_ct = "numeric",
                              horizontal="logical"
                              ),
                            method=list(

@@ -41,10 +41,12 @@ SessionManager <- setRefClass("SessionManager",
                                               last.access=Sys.time())
                                   sessions[[id]] <<- rec
                                 },
+                                ## Not used!!!
                                 new_session = function() {
                                   "Create new session, return the ID"
                                   id <- get_id()
                                   e <- new.env()
+                                  ## JV ??? Why isn't toplevel stored anywhere?
                                   toplevel <- GWidgetsTopLevel$new(id)
                                   store_session(id, e)
                                   return(id)
@@ -70,6 +72,7 @@ SessionManager <- setRefClass("SessionManager",
                                 },
                                 get_serialized_session = function(id) {
                                   "Get serialized session by id"
+                                  ## use filehash, ...
                                   cat("XXX imlement me")
                                 }
 

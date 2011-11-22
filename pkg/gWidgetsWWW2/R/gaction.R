@@ -51,7 +51,7 @@ gaction <- function(label, tooltip=label, icon=NULL, handler, parent, ...) {
 GAction <- setRefClass("GAction",
                        contains="ExtObject",
                        fields=list(
-                         handler_id = "character"
+                         handler_id = "list"
                          ),
                        method=list(
                          init = function(label, tooltip=label, icon=NULL, handler, parent, ...) {
