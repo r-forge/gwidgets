@@ -1,3 +1,8 @@
+2011-12-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/common.R (.addToStockIcons): bug fix, was setting in local
+	copy of tcltkStockIcons, not global. Created new class to handle icons.
+
 2011-10-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/aaaR5classes.R (##   f): Block recursive call to <<Changed>>

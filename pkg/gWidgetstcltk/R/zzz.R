@@ -11,6 +11,8 @@
          
 
        
+tcltkStockIcons <- TcltkStockIcons$new()
+
 
 .onAttach <- function(...) {
   ## version check
@@ -28,7 +30,9 @@
   tclRequire("autoscroll")
 
   ## genearte stock icons
-  loadGWidgetIcons()
+#  loadGWidgetIcons()
+  tcltkStockIcons$load_gWidgets_icons()
+
 
   ## use.table options
   ## images from http://ryanfait.com/resources/custom-checkboxes-and-radio-buttons/. Thanks
