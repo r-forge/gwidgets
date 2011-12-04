@@ -142,8 +142,10 @@ setMethod(".ggroup",
               tkconfigure(gp,borderwidth=4, relief="solid")
             }
             
-            obj = new("gGrouptcltk",block=block, widget=gp, horizontal=horizontal,
-              e = new.env())
+            obj = new("gGrouptcltk",block=block, widget=gp,
+              horizontal=horizontal,
+              e = new.env(), ID=getNewID(), toolkit=toolkit
+              )
 
             
             ## to move widget when scrolling

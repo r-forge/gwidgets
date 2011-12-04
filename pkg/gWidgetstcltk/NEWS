@@ -6,7 +6,7 @@ Changes for 0.0-48
 -------------------
  
 * fixed bug with user-defined icons (Thanks Erich)
-* 
+* fixed bug where inner frame in gwindow rendered separately (Thanks Erich, Rich and Patrick)
 
 Changes for 0.0-47
 -------------------

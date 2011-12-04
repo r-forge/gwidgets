@@ -16,7 +16,6 @@ setMethod(".gwindow",
             win <- tktoplevel()
             tktitle(win) <- title
             tkwm.state(win,"withdrawn") # was at beginneing
-            tclServiceMode(TRUE)
             
             ## enable autoresizing
             tkwm.geometry(win,"")
@@ -96,6 +95,8 @@ setMethod(".gwindow",
             if (!is.null(handler)) {
               id <- addhandlerdestroy(obj, handler=handler, action=action)
             }
+
+            tclServiceMode(TRUE)
 
             if(visible) {
               tkwm.state(win,"normal")

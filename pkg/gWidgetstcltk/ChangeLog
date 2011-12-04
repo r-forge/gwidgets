@@ -1,7 +1,13 @@
+2011-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R: fix issue with parenting of group object that
+	appeared in 2.14.0 (Thanks to Erich, Rich, and Patrick)
+
 2011-12-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/common.R (.addToStockIcons): bug fix, was setting in local
-	copy of tcltkStockIcons, not global. Created new class to handle icons.
+	copy of tcltkStockIcons, not global. Created new class to handle
+	icons. (Thanks to Erich and Rich)
 
 2011-10-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
