@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetstcltk
 
+Changes for 0.0-49
+-------------------
+
+* Bug fix for enabled<- method for gedit when initial text is
+  "". (Thanks Yves)
+
 Changes for 0.0-48
 -------------------
  

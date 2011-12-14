@@ -473,7 +473,10 @@ setRefClass("Entry",
               },
               is_init_msg=function() {
                 "Is the init text showing?"
-                as.character(tclvalue(v)) == init_msg
+                if(nchar(init_msg) == 0)
+                  FALSE
+                else
+                  as.character(tclvalue(v)) == init_msg
               },
               hide_init_msg= function() {
                 "Hide the initial text"
@@ -484,14 +487,13 @@ setRefClass("Entry",
               },
               show_init_msg=function() {
                 "Show the intial text"
-#                tkconfigure(widget, style="Gray.TEntry")
                 tkconfigure(widget, foreground="gray")
                 set_text(init_msg, hide=FALSE)
               },
               ##' Add bindings to entry box
               addBindings = function() {
                 add_handler("<KeyRelease>", function(W, K) {
-                  ## set out virtual event, as otherwise we can;t have addHandlerKeystrike
+                  ## set out virtual event, as otherwise we can;t have addHandlerKeystroke
                   tcl("event","generate", .self$widget, "<<KeyRelease>>", "data"=K) 
                   ## Main bindings
                   if(nchar(K) == 1 || K == "BackSpace") {

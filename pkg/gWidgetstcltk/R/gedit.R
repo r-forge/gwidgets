@@ -52,9 +52,10 @@ setMethod(".gedit",
                       toolkit=toolkit,ID=getNewID(), e = new.env(),
                       coercewith=coerce.with)
 
-           if(nchar(text))
+           if(nchar(text)) {
+            
              svalue(obj) <- text
-
+           }
 
            
            ## initial message

@@ -1,3 +1,9 @@
+2011-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaR5classes.R: add check in is_init_msg for Entry widget that
+	was giving issue with enabled when no initial text was
+	given. (Thanks Yves)
+
 2011-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggroup.R: fix issue with parenting of group object that
