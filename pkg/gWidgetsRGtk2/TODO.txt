@@ -1,3 +1,4 @@
+* M Heckemann: turn of rubber banding or change to hand?
 * does font(entry) <- c(color="red") work? for gedit
 * implement editable (gedit, gdf)??
 * selection by rectangle in gtable 

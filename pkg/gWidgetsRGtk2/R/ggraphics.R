@@ -2,6 +2,9 @@
 ## would like to get size from par("fin"), but this isn't so easy as it
 ## seems to pop up a new plot container
 
+## pas through ... some means to control:
+## rubber banding (do.rubber.banding=FALSE)
+## menu popup (do_popup=FALSE)
 
 setClass("gGraphicsRGtk",
          contains="gComponentRGtk",
@@ -69,6 +72,8 @@ setMethod(".ggraphics",
             ## Add rubber banding
             ## This code is borrowed from the excellent playwith package by Felix Andrews
 
+            doRubberBanding <- getFromDots("do.rubber.banding", TRUE)
+            
             ## add environment and values to da
             e <- environment()
             e$dragging <- FALSE
@@ -77,6 +82,7 @@ setMethod(".ggraphics",
 
             ## need to bind drag actions: click, motion, release
 
+            if(doRubberBanding)
             gSignalConnect(da, "button-press-event", function(w, e) {
               if(isRightMouseClick(e))
                 return(FALSE)
@@ -97,7 +103,8 @@ setMethod(".ggraphics",
               env$dragging <- TRUE
               return(FALSE)
             })
-            
+
+            if(doRubberBanding)
             gSignalConnect(da, "motion-notify-event", function(w, e) {
               env <- w$getData("env")
               ## are we dragging?
@@ -116,7 +123,8 @@ setMethod(".ggraphics",
               }
               return(FALSE)
             })
-            
+
+            if(doRubberBanding)            
             gSignalConnect(da, "button-release-event", function(w, e) {
               if(isRightMouseClick(e))
                  return(FALSE)

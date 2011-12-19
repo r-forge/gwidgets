@@ -1,3 +1,8 @@
+2011-12-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R (.setDevNo): added argument do.rubber.banding
+	through ... to suppress the rubber banding handler
+
 2011-10-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (## getObjectFrom_h): change update method to
