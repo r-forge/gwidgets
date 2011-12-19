@@ -4,7 +4,7 @@
 
 ## pas through ... some means to control:
 ## rubber banding (do.rubber.banding=FALSE)
-## menu popup (do_popup=FALSE)
+## menu popup (no_popup=TRUE)
 
 setClass("gGraphicsRGtk",
          contains="gComponentRGtk",
@@ -71,8 +71,8 @@ setMethod(".ggraphics",
 
             ## Add rubber banding
             ## This code is borrowed from the excellent playwith package by Felix Andrews
-
-            doRubberBanding <- getFromDots("do.rubber.banding", TRUE)
+            theArgs <- list(...)
+            doRubberBanding <- getWithDefault(theArgs$do.rubber.banding, TRUE)
             
             ## add environment and values to da
             e <- environment()
@@ -136,7 +136,6 @@ setMethod(".ggraphics",
             })
             
             ## Right mouse menu -- some means to prevent
-            theArgs <- list(...)
             if(is.null(theArgs$no_popup)) {
               l <- list()
               l$copyAction <- gaction("Copy", "Copy current graph to clipboard", icon="copy",
