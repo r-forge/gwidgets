@@ -1,3 +1,7 @@
+2011-12-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: uncomment multi argument. It is in gWIdgets now.
+
 2011-12-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggraphics.R (.setDevNo): added argument do.rubber.banding

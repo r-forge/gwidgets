@@ -16,7 +16,7 @@ setMethod(".gfile",
                        mime.types=c("text/plain")
                        )
                      ),
-                   ## multiple=FALSE, ## XXX uncomment at some point
+                   multi=FALSE, ## XXX uncomment at some point
                    handler = NULL,
                    action = NULL,                     # 
                    ...
@@ -37,7 +37,6 @@ setMethod(".gfile",
             
             actiontype = GtkFileChooserAction[availTypes[type]]
 
-            multi <- as.logical(getWithDefault(args$multiple, FALSE))
             
             buttonWithId = list(
               "ok"= c("gtk-ok",GtkResponseType["ok"]),
