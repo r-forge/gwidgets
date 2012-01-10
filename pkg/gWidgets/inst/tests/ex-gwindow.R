@@ -14,13 +14,13 @@ f <- function(...) print("hi")
 a <- gaction(label="action", icon = "quit", handler = f)
 
 mbl <- list(File=list(
-              save=list(icon="save",handler=f),
-              test=a))
-tbl <- list(file=list(icon="save",handler=f),
+              save=gaction("save", icon="save",handler=f),
+              test=a)
+            )
+tbl <- list(file=gaction("save",icon="save",handler=f),
             test = a,
-            quit = list(icon="stop",handler=function(...) dispose(w)),
-            quit1 = list(icon="quit",handler=f),
-            quit2 = list(icon="quit",handler=f)
+            stop = gaction("stop", icon="stop",handler=function(...) dispose(w)),
+            quit1 = gaction("quit", icon="quit",handler=f)
             )
 
 w <- gwindow("test window", visible=FALSE)

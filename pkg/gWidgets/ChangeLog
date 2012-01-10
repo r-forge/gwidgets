@@ -1,3 +1,8 @@
+2012-01-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* DESCRIPTION (Suggests): put in cairoDevice into Suggests to keep
+	out a warning in R CMD check.
+
 2011-08-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/toolkitClasses.R (guiToolkit): new function toolkit to return

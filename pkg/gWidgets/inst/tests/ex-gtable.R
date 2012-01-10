@@ -1,6 +1,7 @@
 ## example to select CRAN mirror
 m <- getCRANmirrors()[,c(1,4)]
 setCRAN <- function(URL) { ## see chooseCRANmirror
+  print(URL)
   repos = getOption("repos")
   repos["CRAN"] <- gsub("/$", "", URL)
   options(repos=repos)

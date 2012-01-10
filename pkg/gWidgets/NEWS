@@ -4,6 +4,7 @@ NEWS for gWidgets
 
 Changes for 0.0-48
 ------------------
+* Minor tweak for getting cleanly through R CMD check
  
 
 Changes for 0.0-47
