@@ -11,7 +11,7 @@ Description: An interface for creating GUIs modeled in part after the
     the model-view-controller design pattern. The interface makes basic
     dialogs quite easy to produce.
 Depends: digest, proto, gWidgets
-Suggests: RGtk2
+Suggests: RGtk2, testthat
 Extends: gWidgetsRGtk2 (>= 0.0-63), gWidgetsQt, gWidgetstcltk
 License: GPL (>=2)
 Collate: 'helpers.R' 'base.R' 'model.R' 'view.R' 'controller.R'
