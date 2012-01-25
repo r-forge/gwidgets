@@ -27,7 +27,7 @@
 x <- rnorm(1:100, 10, 10); y <- rnorm(1:100, 5,5);
 text_manipulate({
 cut_it <- function(x, n) cut(x, seq(min(x), max(x), length.out=n))
-xtabs(~ cut_it(y, m) + cut_it(x, n))
+  xtabs(~ cut_it(y, m) + cut_it(x, n))
 }, m= slider(2, 20, 2, 1), n = slider(2, 20, 2, 1))
 }
 }

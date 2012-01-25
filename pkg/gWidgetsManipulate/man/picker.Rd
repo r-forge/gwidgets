@@ -2,8 +2,7 @@
 \alias{picker}
 \title{Picker  widget}
 \usage{
-  picker(..., initial = NULL, label = NULL, multiple =
-  FALSE)
+  picker(..., initial = NULL, label = "", multiple = FALSE)
 }
 \arguments{
   \item{...}{list of values separated by comma}

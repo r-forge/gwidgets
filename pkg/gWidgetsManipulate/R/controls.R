@@ -26,7 +26,8 @@ ManipulateControls <- setRefClass("ManipulateControls",
                                       w <- widget
                                       svalue(w) <- initial
                                       addHandlerChanged(w, handler=handler)
-                                    }))
+                                    }
+                                    ))
 
 
 

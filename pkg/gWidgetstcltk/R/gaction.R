@@ -24,7 +24,6 @@ setMethod(".gaction",
                         key.accel = key.accel,
                         handler = handler,
                         action = action)
-
             e <- new.env(); e$state <- TRUE; e$buttons <- e$menuitems <- e$toolbaritems <- list()
             e$label <- label
             obj <- new("gActiontcltk", widget = lst, e =e)

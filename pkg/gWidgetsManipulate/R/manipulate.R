@@ -44,9 +44,15 @@ resolveVariableArguments <- function(args) {
 ##' @return an instance of ManipulateControls or an error
 mapVectorToControl <- function(x) UseMethod("mapVectorToControl")
 
+##' Default control is to stop
+##' 
+##' @method mapVectorToControl default
+##' @S3method mapVectorToControl default
 mapVectorToControl.default <- function(x) stop(sprintf("No control defined for object of class %s", class(x)[1]))
 
-## slider
+##' numeric to  slider
+##' @method mapVectorToControl numeric
+##' @S3method mapVectorToControl numeric
 mapVectorToControl.numeric <- function(x) {
   ## check if a sequence
   if(length(x) > 4) {
@@ -54,7 +60,7 @@ mapVectorToControl.numeric <- function(x) {
     if(!all.equal(y, rep.int(0, length(y))))
       message("Expecting an arithmatic sequence, forcing it")
     n <- length(x); x <- sort(x)
-    return(slider(x[1], x[n], diff(x)[1], x[1]))
+    return(slider(x[1], x[n], x[1], diff(x)[1]))
   } else {
     ## min, max, step=1, inital=min
     if(length(x) == 2) {
@@ -66,12 +72,18 @@ mapVectorToControl.numeric <- function(x) {
   }
 }
 
-## checkbox
+##' logical maps to checkbox
+##'
+##' @method mapVectorToControl logical
+##' @S3method mapVectorToControl logical
 mapVectorToControl.logical <- function(x) {
   checkbox(initial=x[1], label="")
 }
 
-## picker
+##' character to picker
+##'
+##' @method mapVectorToControl character
+##' @S3method mapVectorToControl character
 mapVectorToControl.character <- function(x) {
   do.call(picker, lapply(x, identity))
 }
@@ -142,7 +154,7 @@ Manipulate <- setRefClass("Manipulate",
                             },
                             execute=function() {
                               "Make the GUI"
-                              w <- gwindow("ManipulateR", visible=FALSE)
+                              w <- gwindow(gettext("ManipulateR"), visible=FALSE)
                               pg <- gpanedgroup(cont=w)
                               g <- ggroup(cont=pg, expand=TRUE)
                               if(gtoolkit()=="tcltk") {
@@ -152,7 +164,7 @@ Manipulate <- setRefClass("Manipulate",
                               } else {
                                 ggraphics(cont=g, expand=TRUE, fill=TRUE)
                               }
-                              f <- gframe("Controls", cont=pg)
+                              f <- gframe(gettext("Controls"), cont=pg)
                               lyt <- glayout(cont=f)
                               ## add controls
                               sapply(.controls, function(i) {
@@ -164,7 +176,7 @@ Manipulate <- setRefClass("Manipulate",
                               change_handler()                    # initial
                             },
                             initialize=function(code=NULL, ...) {
-                              controls <- resolveVariableArguments(list(...))
+                              controls <- gWidgetsManipulate:::resolveVariableArguments(list(...))
                               initFields(.code=code,
                                          .controls=controls)
                               validate_controls()

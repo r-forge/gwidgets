@@ -9,7 +9,7 @@ Picker <- setRefClass("Picker",
 
                           
                           ## get values
-                          values <- resolveVariableArguments(list(...))
+                          values <- gWidgetsManipulate:::resolveVariableArguments(list(...))
                           
                           ## get value names
                           valueNames <- names(values)

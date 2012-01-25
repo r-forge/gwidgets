@@ -28,12 +28,10 @@ tcltkStockIcons <- TcltkStockIcons$new()
   ## load in tcl packages
   ## from tcltk2 we have this
   tclRequire("autoscroll")
+  tclRequire("tooltip")
 
-  ## genearte stock icons
-#  loadGWidgetIcons()
+  ## Icons
   tcltkStockIcons$load_gWidgets_icons()
-
-
   ## use.table options
   ## images from http://ryanfait.com/resources/custom-checkboxes-and-radio-buttons/. Thanks
   tkimage.create("photo", "::image::off", file=system.file("images", "checkbutton-off.gif", package="gWidgetstcltk"))

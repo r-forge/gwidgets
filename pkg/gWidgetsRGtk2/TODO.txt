@@ -1,3 +1,4 @@
+* error in gdf adding rows (color NA, ...) (StackOverflow http://stackoverflow.com/questions/8992903/r-gwidgets-gdf-a-rather-strange-behaviour)
 * M Heckemann: turn of rubber banding or change to hand?
 * does font(entry) <- c(color="red") work? for gedit
 * implement editable (gedit, gdf)??
