@@ -1,3 +1,8 @@
+* I have seen an issue with gvarbrowser function. We can sort the tree
+  according to a second column but when we drag and drop an object, it
+  does not drag and drop the correct one, it returns the name of the
+  object of the tree unsorted. 
+
 * error in gdf adding rows (color NA, ...) (StackOverflow http://stackoverflow.com/questions/8992903/r-gwidgets-gdf-a-rather-strange-behaviour)
 * M Heckemann: turn of rubber banding or change to hand?
 * does font(entry) <- c(color="red") work? for gedit

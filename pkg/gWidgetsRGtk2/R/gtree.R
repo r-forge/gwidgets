@@ -451,8 +451,8 @@ setMethod(".leftBracket",
               thePath <- c()
               for(j in 1:length(indices)) {
                 npath <- paste(indices[1:j],collapse=":")
-                iter <- tag(obj,"store")$GetIterFromString(npath)
-                thePath[j] <- tag(obj,"store")$GetValue(iter$iter,0+
+                iter <- tag(obj,"SortedStore")$GetIterFromString(npath)
+                thePath[j] <- tag(obj,"SortedStore")$GetValue(iter$iter,0+
                                                         tag(obj,"iconFudge"))$value
               }
               thePath
