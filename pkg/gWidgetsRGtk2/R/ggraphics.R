@@ -83,56 +83,57 @@ setMethod(".ggraphics",
             ## need to bind drag actions: click, motion, release
 
             if(doRubberBanding)
-            gSignalConnect(da, "button-press-event", function(w, e) {
-              if(isRightMouseClick(e))
-                return(FALSE)
-              da <- w
-              daClearRectangle(da)
-              
-              da.w <- da$getAllocation()$width
-              da.h <- da$getAllocation()$height
+              gSignalConnect(da, "button-press-event", function(w, e) {
+                if(isRightMouseClick(e))
+                  return(FALSE)
+                da <- w
+                daClearRectangle(da)
 
-              ## assign("da", da, envir=.GlobalEnv)
-              ## buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
-              ##                                 dest.x=0, dest.y=0, width=da.w, height=da.h)
-              
-              ## w$setData("buf", buf)
-              env <- w$getData("env")
-              env$x0 <- env$x <- e$x
-              env$y0 <- env$y <- e$y
-              env$dragging <- TRUE
-              return(FALSE)
-            })
+                wh <- daGetWidthHeight(da)
+                da.w <- wh[1]
+                da.h <- wh[2]
+                
+                ## assign("da", da, envir=.GlobalEnv)
+                ## buf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
+                ##                                 dest.x=0, dest.y=0, width=da.w, height=da.h)
+                
+                ## w$setData("buf", buf)
+                env <- w$getData("env")
+                env$x0 <- env$x <- e$x
+                env$y0 <- env$y <- e$y
+                env$dragging <- TRUE
+                return(FALSE)
+              })
 
             if(doRubberBanding)
-            gSignalConnect(da, "motion-notify-event", function(w, e) {
-              env <- w$getData("env")
-              ## are we dragging?
-              if(env$dragging) {
-                daClearRectangle(w)
-                
-                env$x <- e$x
-                env$y <- e$y
-                
-                ## did we move enough? 10 pixels say
-                
-                if(max(abs(env$x - env$x0), abs(env$y - env$y0)) > 10)
+              gSignalConnect(da, "motion-notify-event", function(w, e) {
+                env <- w$getData("env")
+                ## are we dragging?
+                if(env$dragging) {
+                  daClearRectangle(w)
+                  
+                  env$x <- e$x
+                  env$y <- e$y
+                  
+                  ## did we move enough? 10 pixels say
+                  
+                  if(max(abs(env$x - env$x0), abs(env$y - env$y0)) > 10)
                   daDrawRectangle(w, env$x0, env$x, env$y0, env$y)
-                
-                
-              }
-              return(FALSE)
-            })
-
+                  
+                  
+                }
+                return(FALSE)
+              })
+            
             if(doRubberBanding)            
-            gSignalConnect(da, "button-release-event", function(w, e) {
-              if(isRightMouseClick(e))
-                 return(FALSE)
-              env <- w$getData("env")
-              ## remove draggin
-              env$dragging <- FALSE
-              daClearRectangle(w)       # tidy up
-              return(FALSE)
+              gSignalConnect(da, "button-release-event", function(w, e) {
+                if(isRightMouseClick(e))
+                  return(FALSE)
+                env <- w$getData("env")
+                ## remove draggin
+                env$dragging <- FALSE
+                daClearRectangle(w)       # tidy up
+                return(FALSE)
             })
             
             ## Right mouse menu -- some means to prevent
@@ -243,8 +244,9 @@ setReplaceMethod(".svalue",
                    }
 
                    da <- getWidget(obj)
-                   da.w <- da$getAllocation()$width
-                   da.h <- da$getAllocation()$height
+                   wh <- daGetWidthHeight(da)
+                   da.w <- wh[1]
+                   da.h <- wh[2]
                    pixbuf <- gdkPixbufGetFromDrawable(src=da$window, src.x=0, src.y=0,
                                                    dest.x=0, dest.y=0, width=da.w, height=da.h)
 
@@ -297,12 +299,14 @@ setMethod(".addhandlerclicked",
                 return(FALSE)
 
               ## changes to allocation storage with newer RGtk2
-              allocation = w$allocation ## GetAllocation()
               xclick = e$GetX()
               yclick = e$GetY()
-              width <- allocation$allocation$width
-              height <- allocation$allocation$height 
+              da <- getWidget(obj)
+              wh <- daGetWidthHeight(da)
+              width <- wh[1]
+              height <- wh[2]
 
+              
               x = xclick/width
               y = (height - yclick)/height
 
@@ -388,6 +392,20 @@ daDrawRectangle <- function(da,  x0, x, y0, y) {
 
 }
 
+
+##' find width and height from allocation, which surprisingly seems to change from time to time
+daGetWidthHeight <- function(da) {
+  allocation <- da$getAllocation()
+  ## now, do we have width, height?
+  if("width" %in% names(allocation)) {
+    return(c(width=allocation$width, height=allocation$height))
+  } else if("allocation" %in% names(allocation)) {
+    return(c(width=allocation$allocation$width, height=allocation$allocation$height))
+  } else {
+    stop("Can't get width.height allocation?")
+  }
+}
+
 ##' clear all rectangles that came from rubber banding
 daClearRectangle <- function(da) {
 
@@ -405,13 +423,10 @@ drawableToNDC <- function(da) {
   e <- da$getData("env")
   x.pixel <- sort(c(e$x0, e$x))
   y.pixel <- sort(c(e$y0, e$y))
-  
-  allocation = da$allocation ## GetAllocation()
-  da.w <- allocation$allocation$width
-  da.h <- allocation$allocation$height 
 
-#  da.w <- da$getAllocation()$width
-#  da.h <- da$getAllocation()$height
+  wh <- daGetWidthHeight(da)
+  da.w <- wh[1]
+  da.h <- wh[2]
 
   ndc <- list(x=x.pixel/da.w, y= 1- rev(y.pixel/da.h))
   return(ndc)
