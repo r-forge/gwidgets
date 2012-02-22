@@ -2,8 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-80
+--------------------------
+ 
+
 Changes for version 0.0-79
 --------------------------
+* fix to ggraphics.R for allocations
 
 Changes for version 0.0-78
 --------------------------
