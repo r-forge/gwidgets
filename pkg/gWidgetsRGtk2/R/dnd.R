@@ -39,6 +39,27 @@ gWidgetTargetTypes = list(
 .gWidgetDropTargetListKey = ".gWidgetDropTargetListKey" # goes in front
 
 
+DropList <- setRefClass("DropList",
+                        fields=list(
+                          l="list"
+                          ),
+                        methods=list(
+                          initialize=function(...) {
+                            initFields(l=list())
+                            callSuper(...)
+                          },
+                          set_key=function(key, value) {
+                            l[[key]] <<- value
+                          },
+                          get_key=function(key, remove=TRUE) {
+                            l[[key]]
+                            if(remove)
+                              l[[key]] <<- NULL
+                          }))
+
+                          
+
+
 ## function used by RGtkObject and gWidgetRGtk
 addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
 
@@ -79,8 +100,12 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
 #        tmplst = getFromNamespace(".gWidgetDropTargetList",
 #          "gWidgetsRGtk2")
         tmplst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
-        tmplst[[key]] <- action
-        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- tmplst
+
+        ## the tmplst is empty!!
+#        tmplst[[key]] <- action
+ #       .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- tmplst
+        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- list(key=key, action=action)
+
 ##        assignInNamespace(".gWidgetDropTargetList", tmplst,
 ##                          "gWidgetsRGtk2")
         
@@ -180,16 +205,28 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
       
       ## is this an actino thingy, or not?
       if(length(grep(Paste("^",.gWidgetDropTargetListKey), dropdata)) > 0) {
-        ## It is an action thing. An object was dropped, not a text value
-        sourceAction = .gWidgetDropTargetList[[dropdata]]
-        ##        .gWidgetDropTargetList[[dropdata]] <<- NULL
-##        tmplst = getFromNamespace(".gWidgetDropTargetList", "gWidgetsRGtk2")
-        tmplst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
-        tmplst[[dropdata]] <- NULL
-##        assignInNamespace(".gWidgetDropTargetList", tmplst, "gWidgetsRGtk2")
-        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <-  tmplst 
+        ## Dropdata is key, look up value in .gWidgetDropTargetList
+
+        
+        lst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
+        if(lst$key == dropdata)
+          sourceAction <- lst$action
+        ## clear
+        .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- list(key="", action=NULL)
+
+        ## XXXX
+##         ## It is an action thing. An object was dropped, not a text value
+##         sourceAction = .gWidgetDropTargetList[[dropdata]]
+##         ##        .gWidgetDropTargetList[[dropdata]] <<- NULL
+## ##        tmplst = getFromNamespace(".gWidgetDropTargetList", "gWidgetsRGtk2")
+##         tmplst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
+##         tmplst[[dropdata]] <- NULL
+## ##        assignInNamespace(".gWidgetDropTargetList", tmplst, "gWidgetsRGtk2")
+##         .gWidgetDropTargetList[["gWidgetsRGtk2"]] <-  tmplst 
         ## what to do with handler?
         if(!is.null(handler)) {
+
+          
           h$dropdata = sourceAction; h$x = x; h$y = y
           out = gtktry(
             handler(h, widget=widget, context=context, x=x, y=y, selection=selection,
