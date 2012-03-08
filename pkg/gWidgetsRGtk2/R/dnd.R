@@ -209,8 +209,8 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
 
         
         lst <- .gWidgetDropTargetList[["gWidgetsRGtk2"]]
-        if(lst$key == dropdata)
-          sourceAction <- lst$action
+
+        sourceAction <- lst$action
         ## clear
         .gWidgetDropTargetList[["gWidgetsRGtk2"]] <- list(key="", action=NULL)
 
