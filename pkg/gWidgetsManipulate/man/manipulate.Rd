@@ -28,26 +28,26 @@
 \dontrun{
 ## from RStudio::manipulate
 manipulate(## expression
-           plot(cars, xlim = c(x.min, x.max), type = type,
-                axes = axes, ann = label),
-           ## controls
-           x.min = slider(0,15),
-           x.max = slider(15,30, initial = 25),
-           type = picker("p", "l", "b", "c", "o", "h", "s"),
-           axes = checkbox(TRUE, label="Draw Axes"),
-           label = checkbox(FALSE, label="Draw Labels")
-           )
+plot(cars, xlim = c(x.min, x.max), type = type,
+axes = axes, ann = label),
+## controls
+x.min = slider(0,15),
+x.max = slider(15,30, initial = 25),
+type = picker("p", "l", "b", "c", "o", "h", "s"),
+axes = checkbox(TRUE, label="Draw Axes"),
+label = checkbox(FALSE, label="Draw Labels")
+)
 ## using shortcuts, ala Mathematica's manipulate
 manipulate(## expression
-           plot(cars, xlim = c(x.min, x.max), type = type,
-                axes = axes, ann = label),
-           ## controls
-           x.min = 0:15,
-           x.max = c(15,30, 1, 25), ## min, max, step=min, initial=min
-           type = c("p", "l", "b", "c", "o", "h", "s"),
-           axes = TRUE,
-           label = FALSE
-           )
+plot(cars, xlim = c(x.min, x.max), type = type,
+axes = axes, ann = label),
+## controls
+x.min = 0:15,
+x.max = c(15,30, 1, 25), ## min, max, step=min, initial=min
+type = c("p", "l", "b", "c", "o", "h", "s"),
+axes = TRUE,
+label = FALSE
+)
 }
 }
 

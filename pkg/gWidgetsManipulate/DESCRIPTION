@@ -20,3 +20,4 @@ Collate:
     'picker-control.R'
     'slider-control.R'
     'text_manipulate.R'
+    'button-control.R'

@@ -39,7 +39,7 @@ Slider <- setRefClass("Slider",
                           n <- dim(cont)[1]
                           cont[n+1,1] <- label
                           if(l$step < 0) l$step <<- 1
-                          g <- ggroup(cont=cont, horizontal=TRUE, ...)
+##                          g <- ggroup(cont=cont, horizontal=TRUE, ...)
                           cont[n+1, 2] <- (g <- ggroup(cont=cont, horizontal=TRUE, ...))
                           widget <<- gslider(from=l$min, to=l$max, by=l$step, cont=g)
                           ## toolkit adjustments

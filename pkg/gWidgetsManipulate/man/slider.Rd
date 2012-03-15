@@ -3,7 +3,7 @@
 \title{Slider interface}
 \usage{
   slider(min, max, initial = min, step = -1, ticks = TRUE,
-    label = "")
+  label = "")
 }
 \arguments{
   \item{min}{minimum value}

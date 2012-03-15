@@ -137,7 +137,7 @@ Manipulate <- setRefClass("Manipulate",
                               
                               switch(gtoolkit(),
                                      "tcltk"={
-                                       .my.tkdev(dev$hscale, dev$vscale)
+                                       tkrplot:::.my.tkdev(dev$hscale, dev$vscale)
                                        result <- withVisible(eval(.code, envir=values))
                                        if (result$visible) {
                                          eval(print(result$value))
@@ -165,14 +165,16 @@ Manipulate <- setRefClass("Manipulate",
                                 ggraphics(cont=g, expand=TRUE, fill=TRUE)
                               }
                               f <- gframe(gettext("Controls"), cont=pg)
-                              lyt <- glayout(cont=f)
-                              ## add controls
+                              lyt <- glayout(cont=f, expand=TRUE)
+                              visible(w) <- TRUE
+                              svalue(pg) <- 0.75
+
+                              ## add controls DOing so *after* window is visible, so graph will draw in GUI
                               sapply(.controls, function(i) {
                                 i$make_gui(cont=lyt, 
                                            handler=.self$change_handler)
                               })
-                              visible(w) <- TRUE
-                              svalue(pg) <- 0.75
+                              
                               change_handler()                    # initial
                             },
                             initialize=function(code=NULL, ...) {
