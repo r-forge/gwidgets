@@ -164,8 +164,8 @@ Manipulate <- setRefClass("Manipulate",
                               } else {
                                 ggraphics(cont=g, expand=TRUE, fill=TRUE)
                               }
-                              f <- gframe(gettext("Controls"), cont=pg)
-                              lyt <- glayout(cont=f, expand=TRUE)
+                              f <- gframe(gettext("Controls"), horizontal=FALSE, cont=pg)
+                              lyt <- glayout(cont=f)
                               ## add controls using make_gui interface
                               sapply(.controls, function(i) {
                                 i$make_gui(cont=lyt, 

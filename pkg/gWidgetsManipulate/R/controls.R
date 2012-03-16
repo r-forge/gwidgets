@@ -24,10 +24,8 @@ ManipulateControls <- setRefClass("ManipulateControls",
                                     make_gui=function(cont, handler) {
                                       "Create widget, then add to table"
                                       w <- widget
-                                      blockHandlers(w)
                                       svalue(w) <- initial
                                       addHandlerChanged(w, handler=handler)
-                                      unblockHandlers(w)                                      
                                     }
                                     ))
 
