@@ -166,15 +166,14 @@ Manipulate <- setRefClass("Manipulate",
                               }
                               f <- gframe(gettext("Controls"), cont=pg)
                               lyt <- glayout(cont=f, expand=TRUE)
-                              visible(w) <- TRUE
-                              svalue(pg) <- 0.75
-
-                              ## add controls DOing so *after* window is visible, so graph will draw in GUI
+                              ## add controls using make_gui interface
                               sapply(.controls, function(i) {
                                 i$make_gui(cont=lyt, 
                                            handler=.self$change_handler)
                               })
-                              
+
+                              visible(w) <- TRUE
+                              svalue(pg) <- 0.75
                               change_handler()                    # initial
                             },
                             initialize=function(code=NULL, ...) {

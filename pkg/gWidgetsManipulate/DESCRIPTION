@@ -10,7 +10,7 @@ Description: Ports RStudio's manipulate command for use
     outside of RStudio.
 Depends:
     methods,
-    gWidgets2
+    gWidgets
 License: AGPL-3
 LazyLoad: yes
 Collate:
