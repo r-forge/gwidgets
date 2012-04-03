@@ -72,9 +72,9 @@ guiToolkit <- function(name=NULL) {
   if(!is.null(name) && is.na(name)) return(NULL)          # use NA to override choice
   ## no if it is null, we have to find the possible choices
   if(is.null(name)) {
-    
-    choices <- registered_packages[sapply(registered_packages, function(i) system.file(package=i) != "")]
 
+    f <- function(x) !inherits(try(find.package(x), silent=TRUE), "try-error")
+    choices <- Filter(f, registered_packages)
     
     if(interactive()) {
       if(length(choices) == 0) {

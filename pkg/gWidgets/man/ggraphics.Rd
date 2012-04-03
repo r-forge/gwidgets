@@ -93,6 +93,21 @@ ID <- addHandlerChanged(gg, handler=function(h,...) {
     visible(tbl) <- ind
 })
 
+## Example using a notebook. The device is raised on tab change
+library(gWidgets)
+options(guiToolkit="RGtk2")
+
+w <- gwindow("notebook example")
+nb <- gnotebook(cont=w)
+
+devs <- lapply(1:5, function(i) ggraphics(cont=nb, label=as.character(i)))
+
+addHandlerChanged(nb, handler=function(h,...) {
+  ## Tricky part is svalue(h$obj) is not the new page number -- but old
+  ## so we use the pageno component here
+  gg <- h$obj[h$pageno]
+  visible(gg) <- TRUE
+})
 
 }
 }

@@ -19,7 +19,7 @@ tTest <- list(type = "ggroup",
                             type = "gedit",
                             text = "",
                             depends.on = "x",
-                            depends.FUN = function(value) nchar(value) > 0,
+                            depends.FUN = function(value) nchar(as.character(value)) > 0,
                             depends.signal = "addHandlerBlur"
                             )
                        )
@@ -44,7 +44,7 @@ tTest <- list(type = "ggroup",
                      label = "two sample test",
                      columns = 2,
                      depends.on = "y",
-                     depends.FUN = function(value) nchar(value) > 0,
+                     depends.FUN = function(value) nchar(as.character(value)) > 0,
                      depends.signal = "addHandlerBlur",                     
                      children = list(
                        list(name = "paired",

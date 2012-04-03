@@ -22,9 +22,7 @@ gtable(items, multiple = FALSE, chosencol = 1, icon.FUN = NULL, filter.column = 
   \item{filter.column}{If not \code{NULL} a filter by droplist is
   given which can be used to filter the displayed values shown using
   the values in this column.}
-  \item{filter.labels}{If filtering is desired, but by a more
-  complicated means that just a columns value, then these labels are
-  used for the drop list. These are used by \code{filter.FUN}}
+  \item{filter.labels}{If more complex filtering is desired then this argument populates the values of the combobox and the \code{filter.FUN} argument is used to specify a function to interpret these values.}
   \item{filter.FUN}{Either a function with signature \code{(obj, filter.by)}
   to specify a vector of logical values indicating which rows should
   be shown or the character "manual" in which filtering is done directly through the \code{visible} method and not through a popup box}

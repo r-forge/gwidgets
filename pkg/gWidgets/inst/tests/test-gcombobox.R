@@ -27,7 +27,7 @@ test.gcombobox <- function() {
     
     ## [<-
     widget[] <- m[,1, drop=TRUE]
-    checkEquals(widget[], as.character(m[,1,drop=TRUE]))
+    checkEquals(widget[], m[,1,drop=TRUE])
     
     
     ## data frame
