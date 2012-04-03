@@ -2,6 +2,13 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
+Changes for 0.0-51
+------------------
+
+CHanges for 0.0-49, 50
+-----------------------
+* oops, forgot to note
+
 Changes for 0.0-48
 ------------------
 * Minor tweak for getting cleanly through R CMD check
