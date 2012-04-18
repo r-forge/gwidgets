@@ -368,10 +368,14 @@ setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, set=TRUE, ...) {
             widget <- getWidget(obj)
-            if(as.logical(set))
-              widget$Show()
+            if(is.null(set))
+              widget['visible']
             else
-              widget$Hide()
+              if(as.logical(set))
+                widget$Show()
+              else
+                widget$Hide()
+
           })
 
 

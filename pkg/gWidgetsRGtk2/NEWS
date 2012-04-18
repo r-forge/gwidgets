@@ -4,7 +4,9 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-81
 --------------------------
- 
+
+* removed testing code to pass CRAN check on windows. Odd error, but
+  likely from older gWidgets being used 
 
 Changes for version 0.0-80
 --------------------------

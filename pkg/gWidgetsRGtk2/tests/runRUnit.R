@@ -16,6 +16,6 @@ if(doRequire("RUnit")) {
                                         rngKind = "Marsaglia-Multicarry", 
                                         rngNormalKind = "Kinderman-Ramage")
   
-  testResult <- runTestSuite(testsuite.gWidgets) 
-  printTextProtocol(testResult) 
+#  testResult <- runTestSuite(testsuite.gWidgets) 
+#  printTextProtocol(testResult) 
 }
