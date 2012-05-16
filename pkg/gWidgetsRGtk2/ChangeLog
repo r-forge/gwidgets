@@ -1,3 +1,8 @@
+2012-04-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix to visible method to handle case set=NULL
+	(Thanks to Volker Steiß)
+
 2012-03-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/dnd.R: attempt to fix dnd for gdf

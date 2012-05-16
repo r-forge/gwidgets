@@ -115,6 +115,7 @@ setMethod(".gfile",
             
             ## return a vector of chars for multi select - TT
             file=unlist(filechooser$GetFilenames())
+            Encoding(file) <- "UTF-8"
             
             h = list(obj=filechooser,action=action,file=file)
             if(response == GtkResponseType["cancel"]) {
