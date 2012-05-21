@@ -367,12 +367,12 @@ gprocessingjs <- function(width=400, height=400, pointsize= 12, container = NULL
   }
   ## xlim -- if not set.
   widget$getXlim <- function(.) {
-    if(!exists("xlim",env=., inherits=FALSE))
+    if(!exists("xlim",envir=., inherits=FALSE))
       .$xlim <- c(1,.$..width)
     .$xlim
   }
   widget$getYlim <- function(.) {
-    if(!exists("ylim",env=., inherits=FALSE))
+    if(!exists("ylim",envir=., inherits=FALSE))
       .$ylim <- c(1,.$..height)
     .$ylim
   }

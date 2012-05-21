@@ -91,11 +91,11 @@
   
   ## outer container
   if(!is.null(lst$label)) 
-    g <- gframe(lst$label, cont=parent, width=width, height=height,...)
+    g <- gframe(lst$label, container=parent, width=width, height=height,...)
   else
-    g <- ggroup(cont=parent,  width=width, height=height, ...)
+    g <- ggroup(container=parent,  width=width, height=height, ...)
   ## main table
-  tbl <- glayout(cont = g)
+  tbl <- glayout(container = g)
   
   ## do we enable new object
   if(!is.null(lst$depends.on)) {
@@ -162,7 +162,7 @@
     ## add to table
     col <- 1 + (i - 1) %% no.columns    #1, ..., no.columns
     row <- 1 + (i - 1) %/% no.columns   #1, ...
-    newLabel <- glabel(l$label, cont = tbl)
+    newLabel <- glabel(l$label, container = tbl)
     if(!is.null(lst$label.font))
       font(newLabel) <- lst$label.font
     if(is.null(lst$label.pos) || lst$label.pos == "left") {
@@ -184,8 +184,8 @@
 
 
 gformlayout <- function(lst, container = NULL, ...) {
-  obj <- ggroup(cont = container, ...)
-  g <- ggroup(cont = obj, expand=TRUE)
+  obj <- ggroup(container = container, ...)
+  g <- ggroup(container = obj, expand=TRUE)
 
   class(obj) <- c("gFormLayout",class(obj))
 

@@ -22,7 +22,7 @@ gseparator <- function(horizontal = TRUE, container = NULL, ...)  {
   }
     
   if(horizontal)
-    return(ghtml("<hr>",cont=container))
+    return(ghtml("<hr>",container=container))
   else
     return()
 }

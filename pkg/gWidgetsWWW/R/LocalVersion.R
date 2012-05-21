@@ -16,7 +16,9 @@
 
 
 ##' Environment to hold different sessions
-assign("..gWidgets_sessionEnv", new.env(), envir=.GlobalEnv)
+.onLoad <- function(libname, pkgname) {
+  assign("..gWidgets_sessionEnv", new.env(), envir=.GlobalEnv)
+}
 
 ##' remove session from list to free up memory
 clearSessionId <- function(ID) {

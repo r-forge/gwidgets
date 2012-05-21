@@ -27,7 +27,7 @@ gwebvis <- function(wv,
 
   unfold.webvis <- NULL                 # quiet down check
   if(!bypassRequire("webvis"))
-    return(glabel(gettext("gwebvis needs the webvis package to be installed"), cont=container))
+    return(glabel(gettext("gwebvis needs the webvis package to be installed"), container=container))
 
   
   widget <- EXTComponentNoItems$new(toplevel=container$toplevel)
