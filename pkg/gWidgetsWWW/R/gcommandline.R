@@ -27,7 +27,7 @@
 gcommandline <- function(container, width=NULL, graphic_size=c(480,480), ...)  {
   
   if(!gWidgetsWWWIsLocal()) {
-    glabel("gcommandline can only be run locally.", cont=container)
+    glabel("gcommandline can only be run locally.", container=container)
     return()
   }
   
@@ -39,11 +39,11 @@ gcommandline <- function(container, width=NULL, graphic_size=c(480,480), ...)  {
                    .$id <- n
                    .$parent <- parent
                    .$container <- container
-                   .$g <- gexpandgroup(sprintf("[%s]", n), cont=container, horizontal=FALSE)
-                   .$cmdBox <- gtext("", height=16*4, width=8*80, cont=.$g) # 8 pixels * 80 characters
-                   .$evalButton <- gbutton("Evaluate", cont=.$g)
-                   .$output <- ghtml("", cont=.$g) # output holder
-                   .$graphics <- ggroup(cont=.$g)  # graphics holder
+                   .$g <- gexpandgroup(sprintf("[%s]", n), container=container, horizontal=FALSE)
+                   .$cmdBox <- gtext("", height=16*4, width=8*80, container=.$g) # 8 pixels * 80 characters
+                   .$evalButton <- gbutton("Evaluate", container=.$g)
+                   .$output <- ghtml("", container=.$g) # output holder
+                   .$graphics <- ggroup(container=.$g)  # graphics holder
                    
                    focus(.$cmdBox) <- TRUE
                    ## handlers: keyboard, eval button, ...
@@ -134,8 +134,8 @@ gcommandline <- function(container, width=NULL, graphic_size=c(480,480), ...)  {
                      k <- list.files(pattern="Rplot*", path=curdir, full.names=TRUE)
                      if(length(k) > 0) {
                        if(!exists("ge",envir=.) || is.null(.$ge)) {
-                         .$ge <- gexpandgroup(gettext("Plot"), cont=.$graphics)
-                         .$canvas <- gsvg(cont=.$ge, label="fred", width=graphic_size[1], height=graphic_size[2])
+                         .$ge <- gexpandgroup(gettext("Plot"), container=.$graphics)
+                         .$canvas <- gsvg(container=.$ge, label="fred", width=graphic_size[1], height=graphic_size[2])
                        } 
                          
                        visible(.$ge) <- TRUE
@@ -170,7 +170,7 @@ gcommandline <- function(container, width=NULL, graphic_size=c(480,480), ...)  {
                          },
                          init=function(., container, width=width) {
                            .$container <- ggroup(container=container, width=width, expand=TRUE, spacing=0)
-                           ## b <- gbutton("New cell", cont=.$container, handler=function(h,...) {
+                           ## b <- gbutton("New cell", container=.$container, handler=function(h,...) {
                            ##   . <- h$action
                            ##   .$new_cell()
                            ## }, action=.)

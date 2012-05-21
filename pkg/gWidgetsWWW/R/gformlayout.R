@@ -18,7 +18,7 @@
 
 ## helper functions
 .makeForm <- function(., lst, parent, ...) {
-  g <- ggroup(cont = parent, expand=TRUE,...)
+  g <- ggroup(container = parent, expand=TRUE,...)
 
   ## make a local copy of lst and modify for do.call
   tmp <- lst;

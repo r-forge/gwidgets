@@ -25,7 +25,7 @@ gcanvas <- function(f, width=480, height=400,
                     container = NULL,...) {
 
   if(!bypassRequire("canvas"))
-    return(glabel(gettext("gcanvas needs the canvas package to be installed"), cont=container))
+    return(glabel(gettext("gcanvas needs the canvas package to be installed"), container=container))
 
   
   widget <- EXTComponent$new(toplevel=container$toplevel,

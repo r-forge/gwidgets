@@ -33,7 +33,7 @@ glayout <- function(homogeneous = FALSE, spacing = 5, # 10 is too big here
   tbl$setValues <- function(.,i,j,...,value) {
     ## if character make a glabel object
     if(is.character(value))
-      value <- glabel(value, cont = .)
+      value <- glabel(value, container = .)
     
     value$..tblLocationRow <- i
     value$..tblLocationCol <- j
