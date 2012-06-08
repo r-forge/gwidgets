@@ -63,7 +63,7 @@ setMethod(".gtext",
             tkgrid.rowconfigure(gp, 0, weight=1)
 
             ## from tcltk2 package, this package is installed
-            tclRequire("autoscroll")
+
             if(windowingsystem() != "aqua") {
               tcl("autoscroll::autoscroll", xscr)
               tcl("autoscroll::autoscroll", yscr)

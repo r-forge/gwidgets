@@ -539,14 +539,14 @@ setReplaceMethod(".tooltip",
           signature(toolkit="guiWidgetsToolkittcltk",obj="gWidgettcltk"),
           function(obj, toolkit, ..., value) {
             widget <- getWidget(obj)
-            tcltk2:::tk2tip(widget, paste(value, collapse="\n"))
+            tk2tip(widget, paste(value, collapse="\n"))
             return(obj)
           })
 
 setReplaceMethod("tooltip",signature(obj="tcltkObject"),
           function(obj, ..., value) {
             ## set the tip.
-            tcltk2:::tk2tip(obj, paste(value, collapse="\n"))
+            tk2tip(obj, paste(value, collapse="\n"))
             return(obj)
           })
 
