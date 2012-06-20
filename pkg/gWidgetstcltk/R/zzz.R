@@ -28,7 +28,7 @@ tcltkStockIcons <- TcltkStockIcons$new()
 
 
   ## read in tklibs (from tcltk2 pacakge)
-  addTclPath(system.file("tklibs", package="gWidgets2tcltk"))
+  addTclPath(system.file("tklibs", package="gWidgetstcltk"))
   tclRequire("tooltip")
   tclRequire("autoscroll")
 
