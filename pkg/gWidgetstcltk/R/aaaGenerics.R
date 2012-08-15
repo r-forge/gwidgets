@@ -1573,10 +1573,13 @@ setMethod(".dim",
 })
 setMethod("length", "gWidgettcltk", function(x) .length(x,x@toolkit))
 setMethod(".length",
-          signature(toolkit="guiWidgetsToolkittcltk",x="gWidgettcltk"),
+#          signature(toolkit="guiWidgetsToolkittcltk"),
+          signature(toolkit="ANY",x="ANY"),
           function(x,toolkit) {
-            gwCat(sprintf("Define length for x of class:%s\n"),class(x)[1])
-            return(NULL)            
+#            gwCat(sprintf("Define length for x of class:%s\n"),class(x)[1])
+            #return(NULL)
+#            message("calling length for class", class(x)[1])
+            return(NA)
 })
           
 setMethod("dimnames", "gWidgettcltk", function(x) .dimnames(x,x@toolkit))

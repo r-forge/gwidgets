@@ -148,7 +148,8 @@ setMethod(".gfilebrowse",
               gfile(text=text,
                     type = type,
                     handler = function(h,...) svalue(entry) <- h$file,
-                    quote = TRUE
+                    quote = TRUE,
+                    ...
                     )
             }
             addhandlerclicked(browseButton,handler=file.cb)
