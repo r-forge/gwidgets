@@ -4,6 +4,17 @@ setClass("gActiontcltk",
          prototype(widget=list(), e = new.env())
          )
 
+setMethod(".tag", signature(toolkit="guiWidgetsToolkittcltk",obj="gActiontcltk"),
+          function(obj, toolkit, i, drop=TRUE, ...) {
+            if(missing(i)) i = NULL
+            if(missing(drop)) drop <- TRUE                                    
+
+            if(is.null(i))
+              return(as.list(obj@e))
+            else
+              return(obj@e[[i]])
+            
+          })
 
 setMethod(".gaction",
           signature(toolkit="guiWidgetsToolkittcltk"),
