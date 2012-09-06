@@ -1,3 +1,5 @@
+* issue with delete method for glayout: doesn't remove object from
+  child list (APostolos poinetd out)
 * I have seen an issue with gvarbrowser function. We can sort the tree
   according to a second column but when we drag and drop an object, it
   does not drag and drop the correct one, it returns the name of the

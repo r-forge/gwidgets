@@ -160,7 +160,7 @@ setMethod(".add",
 
             value <- paste(value, collapse="\n")
             if(do.newline)
-              value = paste(value,"\n",sep="")
+              value <- paste(value,"\n",sep="")
 
             ## add text, set selecdtion, adjust font, unselect
             tc <- w$textCursor()

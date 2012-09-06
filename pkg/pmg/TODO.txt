@@ -1,5 +1,6 @@
 * Need to rework this, but not until we find the time ;(
 -----------------
+* BR: remove installed.packages in check -- use something else
 * plot.new hook -- see cacher
 * Add in global variable ANS via
  makeActiveBinding("ans", function() .Last.value, .GlobalEnv) (GG)

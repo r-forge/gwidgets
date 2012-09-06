@@ -15,16 +15,16 @@
 
 ##' 
 .onLoad <- function(libname,pkgname,...) {
-  require(methods)
-  require(qtbase)
-
-  ## load icons?
-  addgWidgetsIcons()
 }
          
 
        
 
 .onAttach <- function(...) {
+#  require(methods)
+#  require(qtbase)
+
+  ## load icons?
+  addgWidgetsIcons()
 
 }

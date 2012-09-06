@@ -35,10 +35,10 @@ setMethod(".gtoolbar",
 
             style = match.arg(style)
             QtToolButtonStyle <-
-              c("both"=3L,
-                "icons"=0L,
-                "text"=1L,
-                "both-horiz"=2L)
+              c("both"=Qt$Qt$ToolButtonTextUnderIcon,
+                "icons"=Qt$Qt$ToolButtonIconOnly,
+                "text"=Qt$Qt$ToolButtonTextOnly,
+                "both-horiz"=Qt$Qt$ToolButtonTextBesideIcon)
 
 
             

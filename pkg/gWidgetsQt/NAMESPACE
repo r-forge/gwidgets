@@ -1,7 +1,6 @@
-#import(qtbase)
+import(qtbase)
 import(gWidgets)
-
-exportClasses("RQtObject")
+importClassesFrom(qtbase) 
 
 exportMethods(
 "[", 

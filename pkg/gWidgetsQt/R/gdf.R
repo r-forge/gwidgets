@@ -251,16 +251,16 @@ setClass("gDfWithSubsetQt",
 .gdfWithSubset <- function(toolkit, items, name, container, ...) {
 
   ## add widget to a ggroup container
-  g <- ggroup(horizontal=FALSE, cont=container, ...)
+  g <- ggroup(horizontal=FALSE, container=container, ...)
   tbl <- .gdf(toolkit, items, name=name, container=g, expand=TRUE)
-  pg <- gexpandgroup("subset == ", cont=g, horizontal=TRUE)
+  pg <- gexpandgroup("subset == ", container=g, horizontal=TRUE)
   visible(pg) <- FALSE
 
-  varSelector <- gcombobox(c("", names(tbl)), cont=pg)
-  glabel("==", cont=pg)
-  valSelector <- gcombobox(c(""), cont=pg)
-  lbutton <- gbutton("<", cont=pg)
-  rbutton <- gbutton(">", cont=pg)
+  varSelector <- gcombobox(c("", names(tbl)), container=pg)
+  glabel("==", container=pg)
+  valSelector <- gcombobox(c(""), container=pg)
+  lbutton <- gbutton("<", container=pg)
+  rbutton <- gbutton(">", container=pg)
 
   filterValues <- function() {
     var <- svalue(varSelector)

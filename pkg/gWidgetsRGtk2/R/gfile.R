@@ -101,7 +101,7 @@ setMethod(".gfile",
             ## initialize
             if(!is.null(initialfilename)) {
               if(type == "open") {
-                filechooser$SetFilename(Paste(getwd(),"/",initialfilename))
+                filechooser$SetFilename(Paste(getwd(),.Platform$file.sep,initialfilename))
               } else if(type == "save") {
                 filechooser$setCurrentFolder(getwd())
                 filechooser$setCurrentName(initialfilename)

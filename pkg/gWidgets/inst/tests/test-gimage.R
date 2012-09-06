@@ -1,7 +1,6 @@
 
 test.gimage <- function() {
   require(RUnit)
-  library(gWidgets)
   
   w <- gwindow()
   g <- ggroup(cont = w, horizontal=FALSE)

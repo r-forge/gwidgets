@@ -37,7 +37,7 @@ setMethod(".gdfnotebook",
             ## put notebook into a group
             mainGroup = ggroup(horizontal=FALSE, container=container, ...)
             buttonGroup = ggroup(spacing = 6, container = mainGroup)
-            nb = gnotebook(cont=mainGroup, expand=TRUE)
+            nb = gnotebook(container=mainGroup, expand=TRUE)
 
 
             
@@ -189,7 +189,7 @@ openPageDfNotebookDialog <- function(nb, ...) {
   }
 
   w <- gwindow("Select an available data set, or use New for a blank one")
-  g <- ggroup(cont=w, horizontal=FALSE)
+  g <- ggroup(container=w, horizontal=FALSE)
   widget <- gtable(items=dataframelike, container=g)
   addDataFrameHandler <- function(h,...) {
     dataname = svalue(widget)
@@ -199,10 +199,10 @@ openPageDfNotebookDialog <- function(nb, ...) {
   }
   addHandlerChanged(widget, handler=addDataFrameHandler)
 
-  bg <- ggroup(cont=g)                  # button group
-  addButton <- gbutton("add", cont=bg)
-##  newButton <- gbutton("new", cont=bg)
-  cancelButton <- gbutton("cancel", cont=bg)
+  bg <- ggroup(container=g)                  # button group
+  addButton <- gbutton("add", container=bg)
+##  newButton <- gbutton("new", container=bg)
+  cancelButton <- gbutton("cancel", container=bg)
 
   addHandlerClicked(addButton,  handler=addDataFrameHandler)
   ## addHandlerClicked(newButton, handler=function(h,...) {
@@ -217,66 +217,6 @@ openPageDfNotebookDialog <- function(nb, ...) {
 }
 
   
-old.openPageDfNotebookDialog = function(nb, ...) {
-  ## dialog for selecting variable to open
-  tmp = ls(envir=.GlobalEnv)
-  if(length(tmp) == 0) {
-    dataframelike = data.frame(Avail.DataSets = "", stringsAsFactors=FALSE)
-  } else {
-    dataFrameInds = sapply(tmp, function(x) is.dataframelike(svalue(x)))
-    if(any(dataFrameInds)) {
-      dataframelike = tmp[dataFrameInds]
-      dataframelike = data.frame(Avail.DataSets = dataframelike, stringsAsFactors=FALSE)
-    } else {
-      dataframelike = data.frame(Avail.DataSets = "", stringsAsFactors=FALSE)
-    }
-  }
-     
-
-  theTitle = "Double click a data set to select"
-  win = gwindow(theTitle, visible=TRUE, parent=nb)
-  group = ggroup(horizontal=FALSE, container=win)
-  ## define lgroup and lgroup. Later we add to panedgroup
-  lgroup = ggroup(horizontal=FALSE)
-  glabel(theTitle, container = lgroup)
-  widget = gtable(items=dataframelike, handler = function(h,...) {
-    dataname = svalue(h$obj)
-    add(nb, svalue(dataname), label=dataname)
-    svalue(nb) <- length(nb)            # focus on new one
-    dispose(win)
-  })
-  add(lgroup, widget, expand=TRUE)
-  
-  rgroup = ggroup(horizontal=FALSE)
-  glabel("Or fill in the following to add a new sheet", container=rgroup)
-  tbl = glayout(); add(rgroup, tbl, expand=TRUE)
-
-  theType <- gcombobox("numeric","character","factor") 
-  theNoCols = gspinbutton(from=1,to=100,by=1,value=1)
-  tbl[1,1] <- gettext("First variable name:");
-  tbl[1,2] <- (theName <- gedit("X1", cont=tbl))
-  tbl[2,1] <- gettext("Its type:");
-  tbl[2,2] <- (theType <- gcombobox(c("numeric","character","factor"), cont=tbl))
-  tbl[3,1] <- gettext("No. rows:");
-  tbl[3,2] <- (theNoCols <- gspinbutton(from=1,to=100,by=1,value=1, cont=tbl))
-
-  buttonGroup=ggroup(container=rgroup); addSpring(buttonGroup)
-  gbutton("add",container=buttonGroup, handler= function(h,...) {
-    tmp <- cbind(do.call(paste("as.",svalue(theType),sep=""),
-      list(rep(NA, length=svalue(theNoCols)))))
-    colnames(tmp)[1] = svalue(theName)
-    add(nb, tmp, label=.getScratchName(nb))
-    dispose(win)
-  })
-  
-
-  gpanedgroup(lgroup,rgroup,container=group)
-  gseparator(container=group)
-  buttonGroup = ggroup(container=group)
-  addSpring(buttonGroup)
-  gbutton("cancel",container=buttonGroup,handler = function(h,...) dispose(win))
-  
-}
 ### what popup on the buttons do you want
 addPopupToPage = function(obj, nb) {    # obj is gdf instance
   ## nb is gdfnotebook instance for adding to...

@@ -20,13 +20,12 @@ missingMsg <- function(x) {
 }
 
 
-## toolkit class
-## register classes here for toolkits
-setClass("guiWidgetsToolkitQt",
-         contains="guiWidgetsToolkit",
-         prototype=prototype(new("guiWidgetsToolkit"))
-         )
-
+## ## toolkit class
+## ## register classes here for toolkits
+## setClass("guiWidgetsToolkitQt",
+##          contains="guiWidgetsToolkit",
+##          prototype=prototype(new("guiWidgetsToolkit"))
+##          )
 
 
 
@@ -74,10 +73,14 @@ setOldClass("RQtObject")
                "Qanviz::PlotView",
                "QGraphicsView"          # cranvas
                )
-lapply(.oldClass, function(i) setOldClass(i))
-lapply(.oldClass, function(i) setIs(i, "RQtObject"))
-lapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
-lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
+#lapply(.oldClass, function(i) setOldClass(i))
+#lapply(.oldClass, function(i) setIs(i, "RQtObject"))
+lapply(.oldClass, function(i) setOldClass(c(i, "RQtObject")))
+#lapply(.oldClass, function(i) setIs(i, "RQtObject"))
+#lapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
+#lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
+lapply(.oldClass, function(i) setOldClass(c(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject")))
+#lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
 
 .ourClasses <- c("R::gWidgetsQt::WSBrowser",
                  "R::gWidgetsQt::ExpandContainer",
@@ -86,8 +89,9 @@ lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject
                  )
 
 lapply(.ourClasses, function(i) {
-       setOldClass(i)
-       setIs(i, "RQtObject")
+  setOldClass(c(i, "RQtObject"))
+#       setOldClass(i)
+#       setIs(i, "RQtObject")
      })
        
 
@@ -123,8 +127,123 @@ setClass("gWidgetQt",
          prototype(ID=getNewID(), e= new.env())
          )
 
+#setClassUnion("guiWidgetORgWidgetQtORQtObject",
+#              c("guiWidget","gWidgetQt","RQtObject"))
+
 setClassUnion("guiWidgetORgWidgetQtORQtObject",
-              c("guiWidget","gWidgetQt","RQtObject"))
+              c("guiWidget","gWidgetQt"))
+setIs("RQtObject","guiWidgetORgWidgetQtORQtObject" )
+       
+
+
+## ## a base class which is virtual
+
+
+## ## This bit with classes is tedious but needed to bring in the S3 objects to work with
+## ## S4 dispatch. 
+
+
+
+## ##################################################
+## ## put S3 classes from Qt into S4 classes
+## ## got these from apropos("New") -> try(class(do.call(i,list())))
+## ## This is *tedious* at best
+
+
+
+## .oldClass <- c("QWidget", "QObject", "QPaintDevice",
+##                ## containers
+##                "QMainWindow",
+##                "QGroupBox", "QButtonGroup",
+##                "QFrame",
+##                "QTabWidget",
+##                "QSplitter",
+##                "QDialog",
+##                ## widgets
+##                "QLabel", 
+##                "QVBoxLayout", "QHBoxLayout", "QLayout", "QLayoutItem",
+##                "QGridLayout",
+##                "QPushButton", "QAbstractButton",
+##                "QRadioButton",
+##                "QIcon",
+##                "QLineEdit",
+##                "QCheckBox",
+##                "QDoubleSpinBox", "QSpinBox", "QAbstractSpinBox",
+##                "QSlider", "QAbstractSlider",
+##                "QStatusBar",
+##                "QPixmap",
+##                "QScrollArea", "QAbstractScrollArea",
+##                "QComboBox",
+##                "QTextEdit",
+##                "QToolButton",
+##                "QCalendarWidget",
+##                "QAction",
+##                "QTableWidget", "QTableWidgetSelectionRange", "QTableView",
+##                "QTreeWidget", "QTreeView",
+##                "QAbstractItemView", "QAbstractScrollArea",
+##                "QMenu", "QMenuBar", "QMenuPopupQt", 
+##                "QToolBar",
+##                "QSvgWidget",
+##                "Qanviz::PlotView",
+##                "QGraphicsView"          # cranvas
+##                )
+
+## setOldClass("RQtObject")
+
+## ##lapply(.oldClass, function(i) setOldClass(i, "RQtObject"))
+## ##lapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
+## lapply(.oldClass, function(i) setOldClass(i))
+## lapply(.oldClass, function(i) setIs(i, "RQtObject"))
+## lapply(.oldClass, function(i) setOldClass(sprintf("R::gWidgetsQt::gw%s",i)))
+## lapply(.oldClass, function(i) setIs(sprintf("R::gWidgetsQt::gw%s",i), "RQtObject"))
+
+## .ourClasses <- c("R::gWidgetsQt::WSBrowser",
+##                  "R::gWidgetsQt::ExpandContainer",
+##                  "R::gWidgetsQt::OurTreeWidget",
+##                  "R::gWidgetsQt::QtDevice"
+##                  )
+
+## lapply(.ourClasses, function(i) {
+##        setOldClass(i, "RQtObject")
+## #       setOldClass(i)  
+## #       setIs(i, "RQtObject")
+##      })
+       
+
+
+## ##################################################
+## ## A virtual class to hold either Qt or these guys
+
+## ## A virtual class for our newly defined objects
+## ## this one contains the ID for the object.
+## ## this may better be done within the NAMESPACE
+
+## n <- 0;assignInNamespace("n",0,"gWidgetsQt")
+## getNewID <- function() {                 # get new one, incremented
+##   n = getFromNamespace("n",ns="gWidgetsQt")
+##   assignInNamespace("n",n+1,ns="gWidgetsQt")
+##   return(n+1)
+## }
+         
+
+
+## setClass("gWidgetQt",
+##          representation(
+##                         ID="numeric",
+##                         e="environment"
+##                         ),
+##          prototype(ID=getNewID(), e= new.env())
+##          )
+
+## setClassUnion("guiWidgetORgWidgetQtORQtObject",
+##               c("guiWidget","gWidgetQt", "RQtObject"))
+## #setIs("RQtObject", "guiWidgetORgWidgetQtORQtObject")
+
+
+## ## make S3 class an S4 class XXX This failed. Add to class Union above
+## ## setOldClass("RQtObject", "guiWidgetORgWidgetQtORQtObject")
+
+## setOldClass("try-error")                # for handling try-errors
 
 
 ## subclasses

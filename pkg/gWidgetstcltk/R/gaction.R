@@ -16,6 +16,16 @@ setMethod(".tag", signature(toolkit="guiWidgetsToolkittcltk",obj="gActiontcltk")
             
           })
 
+setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkittcltk",obj="gActiontcltk"),
+          function(obj, toolkit, i, replace=TRUE, ..., value) {
+            if(missing(i)) i = NULL
+            
+
+            obj@e[[i]] <- value
+            return(obj)
+
+          })
+
 setMethod(".gaction",
           signature(toolkit="guiWidgetsToolkittcltk"),
           function(toolkit,
