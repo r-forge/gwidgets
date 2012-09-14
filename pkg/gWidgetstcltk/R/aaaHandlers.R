@@ -16,7 +16,7 @@ runHandlers <- function(obj, signal, h, ...) {
 
   if(enabled) {
     l <- tag(obj, "..handlers")
-    signalList <- l[[signal]]
+    signalList <- l[[signal]]      # first run last?
     lapply(signalList, function(i) {
       if(!i$blocked) {
         i$handler(h, ...)
