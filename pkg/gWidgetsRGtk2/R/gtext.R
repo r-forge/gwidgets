@@ -380,6 +380,22 @@ setReplaceMethod(".font",
                        buffer$createTag(family, family=family)
                      buffer$ApplyTagByName(family, start, end)
                    }
+
+                   ## size
+                   ## Pango Scale for converting between name and numeric value
+                   
+                   if(!is.null(size <- tags$size)) {
+                     if(is.character(size)) 
+                       size <- fontSizes[size]
+                     else
+                       size <- size/12
+                     if(is.null(tagtbl$lookup(size)))
+                       buffer$createTag(size, scale=size)
+                     buffer$ApplyTagByName(size, start, end)
+                   }
+                   
+
+                   
                    
                    ## color
                    if(!is.null(color <- tags$color) && color %in% colors()) {
