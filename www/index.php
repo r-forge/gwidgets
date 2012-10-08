@@ -90,7 +90,7 @@ addHandlerClicked(b, handler=function(h,...) {  # add interactivity through a ha
 
 <p>
 The text <em>Programming Graphical User Interfaces in R</em> has a part on gWidgets
-
+     
 
 
 
