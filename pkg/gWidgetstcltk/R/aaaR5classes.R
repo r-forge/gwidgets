@@ -710,7 +710,7 @@ setRefClass("RadioButton",
               },
               get_index = function() {
                 "Get selected value by index"
-                which(get_items() %in% as.character(get_value()))
+                as.integer(which(get_items() %in% as.character(get_value())))
               },
               set_index = function(i) {
                 "Set selected value by index"

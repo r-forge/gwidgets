@@ -26,11 +26,25 @@ tcltkStockIcons <- TcltkStockIcons$new()
   ## some configuration
   .Tcl("option add *tearOff 0")         # disable tearoff menus
 
-
+  
   ## read in tklibs (from tcltk2 pacakge)
-  addTclPath(system.file("tklibs", package="gWidgetstcltk"))
+  addTclPath(system.file("tklibs", "tablelist5.6", package="gWidgetstcltk"))
+  tclRequire("tablelist")
+  sapply(c("tablelistConfig.tcl", "tablelistBind.tcl", "tablelistBind.tcl",
+           "tablelistUtil.tcl", "tablelistEdit.tcl"), function(i) {
+             tcl("source", system.file("tklibs", "tablelist5.6", "scripts", i, package="gWidgets2tcltk"))
+          })
+
+  addTclPath(system.file("tklibs", "tooltip1.4", package="gWidgetstcltk"))
   tclRequire("tooltip")
-  tclRequire("autoscroll")
+  tcl("source", system.file("tklibs", "autoscroll.tcl", package="gWidgetstcltk"))
+  
+
+
+  ## ## read in tklibs (from tcltk2 pacakge)
+  ## addTclPath(system.file("tklibs", package="gWidgetstcltk"))
+  ## tclRequire("tooltip")
+  ## tclRequire("autoscroll")
 
 
   ## Icons

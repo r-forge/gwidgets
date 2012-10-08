@@ -6,6 +6,10 @@ Changes for 0.0-53
 -------------------
 
 * add tag method for gaction.
+* fix dnd table to gedit. (prompted by stackoverflow answer). (Still a
+  little off, as you need to select first, then drag)
+* replace gdf with tablelist, not tktable widget. Seems better and
+  requires no external installation, as it is pure Tcl.
 
 Changes for 0.0-50
 -------------------

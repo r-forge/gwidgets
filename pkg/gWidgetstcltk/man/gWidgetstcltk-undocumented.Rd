@@ -741,6 +741,7 @@
 \alias{.tag-methods}
 \alias{.tag,guiWidget,guiWidgetsToolkittcltk-method}
 \alias{.tag,gWidgettcltk,guiWidgetsToolkittcltk-method}
+\alias{.tag,gActiontcltk,guiWidgetsToolkittcltk-method}
 \alias{.tag,tcltkObject,guiWidgetsToolkittcltk-method} 
 %%
 %% --  tag<- --
@@ -755,6 +756,7 @@
 \alias{.tag<--methods}
 \alias{.tag<-,guiWidget,guiWidgetsToolkittcltk-method}
 \alias{.tag<-,gWidgettcltk,guiWidgetsToolkittcltk-method}
+\alias{.tag<-,gActiontcltk,guiWidgetsToolkittcltk-method}
 \alias{.tag<-,tcltkObject,guiWidgetsToolkittcltk-method} 
 %%
 %% --  id --
@@ -1163,6 +1165,7 @@
 %% --  .length --
 %%
 \alias{.length-methods}
+\alias{.length,ANY,ANY-method}
 \alias{.length,gWidgettcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gComponentR5tcltk,guiWidgetsToolkittcltk-method}
 \alias{.length,gDroplisttcltk,guiWidgetsToolkittcltk-method} 
