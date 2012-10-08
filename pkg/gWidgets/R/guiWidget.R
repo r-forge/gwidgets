@@ -77,6 +77,9 @@ setMethod("svalue",signature(obj="guiWidget"),
             toolkit = obj@toolkit
             val <- .svalue(obj@widget, toolkit, ...,index=index, drop=drop)
 
+            if(is.logical(index) && index)
+              return(as.integer(val))
+            
             ## do we have coercewith?
             ## we check lots of ways, these should just be slots, someday...
             coercewith <- NULL

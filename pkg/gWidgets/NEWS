@@ -4,6 +4,8 @@ NEWS for gWidgets
 
 Changes for 0.0-51
 ------------------
+* fix to svalue method when index=TRUE (don't use coercewith here)
+Thanks Fabio
 
 CHanges for 0.0-49, 50
 -----------------------
