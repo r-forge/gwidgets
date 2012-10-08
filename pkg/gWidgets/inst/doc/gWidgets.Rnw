@@ -809,9 +809,9 @@ add(tmp,bandwidthAdjust, expand=TRUE)
 @
 
 Now to add a graphics device.
-\begin{Soutput}
-> add(BigGroup, ggraphics())
-\end{Soutput}
+<<add, eval=FALSE>>=
+add(BigGroup, ggraphics())
+@ 
 [Again, if using \RFunc{gWidgetsrJava} this wouldn't place the device
 inside the \code{BigGroup} container.]
 
@@ -1196,7 +1196,7 @@ doPlot <-  function() {
 }
 @
 %%$
-<<>>=
+<<eval=FALSE>>=
  doPlot()
 @ 
 
@@ -1316,7 +1316,7 @@ plotWidget <- function(widget) {
 Now show the two widgets, the \RFunc{gdf} function constructs the data
 frame editor widget.
 
-<<>>=
+<<dontshow, eval=FALSE>>=
 gdf(mtcars, container=TRUE)
 makeDynamicWidget()
 @ 
@@ -1635,7 +1635,8 @@ tTest <- list(type = "ggroup",
                 )
               )
 @ 
-<<eval=FALSE>>=
+
+<<dontshow,eval=FALSE>>=
 ## Code to call the layout
 w <- gwindow("t.test")
 g <- ggroup(horizontal = FALSE, cont = w)
