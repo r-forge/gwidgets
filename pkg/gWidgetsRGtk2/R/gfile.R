@@ -82,6 +82,14 @@ setMethod(".gfile",
             
             ## add a filter
             if(!is.null(filter) && type %in% c("open","save")) {
+              if(is.character(filter)) {
+                ## make alist
+                filter <- sapply(names(filter), function(nm) {
+                  list(patterns=paste("*.", filter[nm], sep=""))
+                }, simplify=FALSE)
+                filter[[gettext("All files")]]$patterns <- "*.*"
+              }
+
               for(i in names(filter)) {
                 filefilter = gtkFileFilterNew()
                 filefilter$SetName(i)
