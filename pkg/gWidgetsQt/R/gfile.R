@@ -51,16 +51,29 @@ setMethod(".gfile",
 
               filters <- c()
               if(!is.null(filter)) {
-                for(i in names(filter)) {
-                  if(!is.null(filters[[i]]$pattern)) {
-                    filters <- c(filters, paste(i, " (", paste(filters[[i]]$patterns, collapse=" "),
-                                                ")", sep=""))
-                  }
-                  ## no mime.types
+
+                if(is.character(filter)) {
+                  filter <- sapply(names(filter), function(nm) {
+                    list(patterns=paste("*.", filter[nm], sep=""))
+                  }, simplify=FALSE)
+                  filter[['All files']]$patterns = "*"
                 }
-                out <- sapply(filters, function(i) is.null(i$mime.types))
-                if(any(out))
-                  XXX("No filtering of mime types, only patterns")
+                
+                filter <- Filter(function(i) !is.null(i$patterns), filter)
+                filters <- paste(mapply(function(nm, pattern) {
+                  sprintf("%s (%s)", nm, pattern)
+                }, names(filter), filter), sep="")
+                
+                ## for(i in names(filter)) {
+                ##   if(!is.null(filters[[i]]$pattern)) {
+                ##     filters <- c(filters, paste(i, " (", paste(filters[[i]]$patterns, collapse=" "),
+                ##                                 ")", sep=""))
+                ##   }
+                ##   ## no mime.types
+                ## }
+                ## out <- sapply(filters, function(i) is.null(i$mime.types))
+                ## if(any(out))
+                ##   XXX("No filtering of mime types, only patterns")
               }
 
               if(length(filters) == 0)

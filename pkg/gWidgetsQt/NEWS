@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsQt
 
+Changes for 0.0-4
+-------------------
+ 
+* added character argument to gfile mirroring gWidgets2
+
 Changes for 0.0-3
 -------------------
 * minor fixes. Major work is in gWidgets2Qt. This is maintenance only
