@@ -99,7 +99,7 @@ setReplaceMethod(".leftBracket",
           function(x, toolkit, i, j, ..., value) {
             ## check that all is good
             if(is.character(value)) {
-              value <- glabel(value, cont = x)
+              value <- glabel(value, container = x)
             }
 
             spacing <- tag(x,"spacing")

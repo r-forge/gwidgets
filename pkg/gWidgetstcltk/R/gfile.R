@@ -44,6 +44,15 @@ setMethod(".gfile",
               
               theFilter = ""
               if(!is.null(filter)) {
+
+                ## turn named character vector into list of patterns
+                if(is.character(filter)) {
+                  filter <- sapply(names(filter), function(nm) {
+                    list(patterns=paste(".", filter[nm], sep=""))
+                  }, simplify=FALSE)
+                  filter[['All files']]$patterns = "*"
+                } 
+                
                 for(i in names(filter)) {
                   pats = filter[[i]]$patterns
                   if(!is.null(pats)) {

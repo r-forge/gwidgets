@@ -28,16 +28,23 @@ tcltkStockIcons <- TcltkStockIcons$new()
 
   
   ## read in tklibs (from tcltk2 pacakge)
-  addTclPath(system.file("tklibs", "tablelist5.6", package="gWidgetstcltk"))
+  f <- system.file("tklibs", "tablelist5.6", package="gWidgetstcltk")
+  if(file.exists(f)) addTclPath(f)
   tclRequire("tablelist")
   sapply(c("tablelistConfig.tcl", "tablelistBind.tcl", "tablelistBind.tcl",
            "tablelistUtil.tcl", "tablelistEdit.tcl"), function(i) {
-             tcl("source", system.file("tklibs", "tablelist5.6", "scripts", i, package="gWidgets2tcltk"))
+             f <-  system.file("tklibs", "tablelist5.6", "scripts", i, package="gWidgets2tcltk")
+             if(file.exists(f))
+               tcl("source", f)
           })
 
-  addTclPath(system.file("tklibs", "tooltip1.4", package="gWidgetstcltk"))
-  tclRequire("tooltip")
-  tcl("source", system.file("tklibs", "autoscroll.tcl", package="gWidgetstcltk"))
+  f <- system.file("tklibs", "tooltip1.4", package="gWidgetstcltk")
+  if(file.exists(f))
+    addTclPath(f)
+  try(tclRequire("tooltip"), silent=TRUE)
+  f <- system.file("tklibs", "autoscroll.tcl", package="gWidgetstcltk")
+  if(file.exists(f))
+    tcl("source", f)
   
 
 
@@ -51,6 +58,10 @@ tcltkStockIcons <- TcltkStockIcons$new()
   tcltkStockIcons$load_gWidgets_icons()
   ## use.table options
   ## images from http://ryanfait.com/resources/custom-checkboxes-and-radio-buttons/. Thanks
-  tkimage.create("photo", "::image::off", file=system.file("images", "checkbutton-off.gif", package="gWidgetstcltk"))
-  tkimage.create("photo", "::image::on",  file=system.file("images", "checkbutton-on.gif",  package="gWidgetstcltk"))
+  f <- system.file("images", "checkbutton-off.gif", package="gWidgetstcltk")
+  if(file.exists(f))
+    tkimage.create("photo", "::image::off", file=f)
+  f <- system.file("images", "checkbutton-on.gif",  package="gWidgetstcltk")
+  if(file.exists(f))
+    tkimage.create("photo", "::image::on",  file=f)
 }

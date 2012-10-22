@@ -197,7 +197,7 @@ setMethod(".dimnames",
             toVector <- function(i) sapply(i, function(j) paste(j, collapse=" "))
             
             d <- dim(x)
-            dimnames <- list(rownames=make.row.names(toVector(sapply(1:d[1], function(i) tktable.get(tktable, i, 0)))),
+            dimnames <- list(rownames=NULL,
                              colnames=names(x))
             dimnames
           })

@@ -333,7 +333,7 @@ setMethod(".gbasicdialognoparent",
             dlg <- gwindow(title, parent=parent, visible=FALSE)
             tt <- dlg@widget@widget
             
-            g <- ggroup(cont = dlg, horizontal=FALSE, expand=TRUE)
+            g <- ggroup(container = dlg, horizontal=FALSE, expand=TRUE)
             
             obj <- new("gBasicDialogNoParenttcltk",
                        block=dlg, widget=g, toolkit=guiToolkit("tcltk"))
@@ -473,7 +473,7 @@ setMethod(".galert",
             l <- glabel("  ", container = g)
             label <- glabel(message, container = g, expand=TRUE)
             font(label) <- c("weight"="bold")
-            gimage(file="dismiss",dir="stock", container = g, handler = function(h,...) dispose(w))
+            gimage(filename="dismiss",dirname="stock", container = g, handler = function(h,...) dispose(w))
             
             addHandlerMouseMotion(label, handler = function(h,...) dispose(w))
             
