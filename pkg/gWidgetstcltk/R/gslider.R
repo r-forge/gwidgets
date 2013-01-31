@@ -92,11 +92,11 @@ setReplaceMethod(".svalue",
                  function(obj, toolkit, index=NULL, ..., value) {
                    ## can set by index or match
                    if(is.null(index) || index==FALSE) {
-                     value <- as.character(match(value, tag(obj, "..byIndexValues")))
+                     value <- match(value, tag(obj, "..byIndexValues"))
                    } else {
-                     value <- as.character(value)
+                     value <- value
                    }
-
+                                         
                    n <- length(tag(obj, "..byIndexValues"))
                    if(!is.na(value) &&
                       value >= 1 &&

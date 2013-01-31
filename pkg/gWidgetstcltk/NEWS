@@ -6,6 +6,7 @@ Changes for 0.0-54
 -------------------
 
 * gfile has character value for filter argument to simplify specification
+* fix svalue<- method of gslider
 
 Changes for 0.0-53
 -------------------
