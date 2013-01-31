@@ -477,7 +477,7 @@ setMethod(".visible",
                        return(TRUE)              # was widget, but TRUE now
                      } else if(response == GtkResponseType["delete-event"]) {
                        ## window manager close
-                       return(invisible(FAKSE))
+                       return(invisible(FALSE))
                      } else if(response == GtkResponseType["none"]) {
                        ## dispose() call
                        return(invisible(FALSE))
@@ -518,7 +518,7 @@ setMethod(".galert",
 
               ## add to ibg
               ibg <- tag(parent, "infobargroup")
-              ourgroup <- ggroup(cont=ibg, expand=TRUE, horizontal=FALSE)
+              ourgroup <- ggroup(container=ibg, expand=TRUE, horizontal=FALSE)
               add(ourgroup, ib, expand=TRUE)
               visible(ibg) <- TRUE
               ib$show()
@@ -538,7 +538,7 @@ setMethod(".galert",
               getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
               label <- glabel(message, container =g, expand=TRUE)
               font(label) <- c("weight"="bold")
-              gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
+              gimage(filename="close",dirname="stock", container =g, handler = function(h,...) dispose(w))
               
               addHandlerIdle(w, handler = function(h,...) dispose(w),
                              interval = as.numeric(delay)*1000)

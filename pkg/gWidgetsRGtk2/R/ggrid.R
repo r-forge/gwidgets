@@ -438,8 +438,8 @@ setMethod(".ggrid",
             ## do we add subsetBy
             if(doSubsetBy) {
               ## now add subset by to group.cycling
-              subsetByGroup = gexpandgroup("subset=", cont=group)
-              subsetBy = gsubsetby(obj, cont=subsetByGroup,
+              subsetByGroup = gexpandgroup("subset=", container=group)
+              subsetBy = gsubsetby(obj, container=subsetByGroup,
                 handler = function(h,...) {
                   visValues = h$value
                   return()

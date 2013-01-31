@@ -1187,16 +1187,16 @@ setMethod(".addHandler",
 
 ## removew handler
 ## this hack is to change id
-gtkObjectDisconnectCallbackHack = function (obj, id) {
-  checkPtrType(obj, "GObject")
-  checkPtrType(id, "CallbackID")
-  ID = gtktry(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
-        PACKAGE = "RGtk2"), silent=TRUE)
-  if(inherits(ID,"try-error"))
-    return(FALSE)
-  else
-    return(TRUE)
-}
+## gtkObjectDisconnectCallbackHack = function (obj, id) {
+##   checkPtrType(obj, "GObject")
+##   checkPtrType(id, "CallbackID")
+##   ID = gtktry(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
+##         PACKAGE = "RGtk2"), silent=TRUE)
+##   if(inherits(ID,"try-error"))
+##     return(FALSE)
+##   else
+##     return(TRUE)
+## }
 
   ## removehandler
 setMethod("removehandler", signature("gWidgetRGtk"),
@@ -1277,7 +1277,7 @@ setMethod(".removehandler",
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
                 isCallbackID = gtktry(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
-                  retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
+                  retval[i] = widget$disconnectCallback(callbackIDs[[i]]) #gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
                 } else {
                   gwCat("DEBUG: ID not of callbackID\n")
                   retval[i] = FALSE
