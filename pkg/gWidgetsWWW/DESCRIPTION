@@ -1,11 +1,11 @@
 Package: gWidgetsWWW
-Version: 0.0-23
+Version: 0.0-24
 Title: Toolkit implementation of the gWidgets API for use with web pages
 Author: John Verzani
 Maintainer: John Verzani <jverzani@gmail.com>
 Depends: R (>= 2.11.0), methods, proto, filehash, digest, rjson
 Suggests: 
-Extends: canvas, RSVGTipsDevice, SVGAnnotation, webvis
+Enhances: canvas, RSVGTipsDevice, SVGAnnotation, webvis
 Description: Port of the gWidgets API to program dynamic websites.
              Can be used with R's dynamic help web server to serve local files. This provides
              a convenient means to make local GUIs for users without concern for external GUI toolkits.
