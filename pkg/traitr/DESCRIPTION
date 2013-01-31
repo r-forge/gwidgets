@@ -12,7 +12,7 @@ Description: An interface for creating GUIs modeled in part after the
     dialogs quite easy to produce.
 Depends: digest, proto, gWidgets
 Suggests: RGtk2, testthat
-Extends: gWidgetsRGtk2 (>= 0.0-63), gWidgetsQt, gWidgetstcltk
+Enhances: gWidgetsRGtk2 (>= 0.0-63), gWidgetsQt, gWidgetstcltk
 License: GPL (>=2)
 Collate: 'helpers.R' 'base.R' 'model.R' 'view.R' 'controller.R'
     'container.R' 'editor.R' 'itemgroup.R' 'dialog.R' 'items.R'
