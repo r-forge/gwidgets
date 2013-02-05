@@ -1606,7 +1606,7 @@ setMethod(".addhandlerrightclick",
                               signal = "button-press-event",
                               f = function(h, w, eventButton,...) {
                                 if(isRightMouseClick(eventButton)) {
-                                  h$handler(h,...)
+                                  h$handler(h,w, eventButton, ...)
                                 }
                                 return(FALSE)         # stop propagation
                               },
