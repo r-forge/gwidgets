@@ -171,6 +171,7 @@ setReplaceMethod(".svalue",
                    theArgs = list(...)
 
                    widget <- getWidget(obj)
+                   tclVar <- tag(obj, "tclVar")
                    
                    n <- length(obj)
                    if(n < 1) return(obj)
@@ -187,7 +188,8 @@ setReplaceMethod(".svalue",
                      if(value > 0 && value <= n)
                        tcl(widget,"current", as.numeric(value) - 1)
                      else               # set to no state
-                       tcl(widget,"set", "") # aka -1 for get
+                       tclvalue(tclVar) = ""
+                     ##tcl(widget,"set", "") # aka -1 for get
                    } else {
                      if(!is.null(editable) && editable) {
                        ## editable
