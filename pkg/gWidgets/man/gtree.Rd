@@ -126,7 +126,7 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
 \examples{
 \dontrun{
  ## function to find offspring
- offspring <- function(path, user.data=NULL) {
+ offspring <- function(path, offspring.data=NULL) {
          if(length(path) > 0) 
            directory <- paste(getwd(), .Platform$file.sep,
                               paste(path,collapse=.Platform$file.sep),
@@ -142,10 +142,10 @@ handler = NULL, action = NULL, container = NULL, ..., toolkit = guiToolkit())
                              stringsAsFactors=FALSE)
          return(files)
  }
- hasOffspring <- function(children,user.data=NULL, ...) {
+ hasOffspring <- function(children,offspring.data=NULL, ...) {
    return(children$isdir)
  }
- icon.FUN <- function(children,user.data=NULL, ...) {
+ icon.FUN <- function(children,offspring.data=NULL, ...) {
    x <- rep("file", length=nrow(children))
    x[children$isdir] <- "directory"
    return(x)

@@ -78,7 +78,7 @@ setMethod(".ggenericwidget",
                 lst = rpel(autogenerategeneric(lst), environment())
               } else {
                 gwCat(paste("Can not create genericwidget from", lst,"\n",sep=" "))
-                return(glabel("", cont = container))
+                return(glabel("", container = container))
               }
             }
       
@@ -96,7 +96,7 @@ setMethod(".ggenericwidget",
             ## error check
             if(!is.list(lst)) {
               warning("ggenericwidget needs to be called with a list, a function name or a function to work\n")
-              return(glabel("", cont = container))
+              return(glabel("", container = container))
             }
 
             
@@ -143,7 +143,7 @@ setMethod(".ggenericwidget",
             ## arguments
             if(!is.null(lst$arguments)) {
               frame = gframe(text="Arguments",
-                horizontal=FALSE, cont=mainGroup,
+                horizontal=FALSE, container=mainGroup,
                 anchor=c(-1,0), expand=TRUE, fill="x")
               font(frame) <- c(weight="bold", size="small")
 
@@ -159,10 +159,10 @@ setMethod(".ggenericwidget",
                   if(name != "arguments") {
                     ## add some indication that this is a seperate group. Not in a frame
                     ## but this might end up looking better if in a frame
-                    label = glabel(name, cont=table)
+                    label = glabel(name, container=table)
                     font(label) <- c(style="italic", weight="bold")
                     table[trow,1] <<- label
-                    table[trow,2:4] <<- gseparator(horizontal=TRUE, cont=table)
+                    table[trow,2:4] <<- gseparator(horizontal=TRUE, container=table)
                     trow <<- trow+1; tcol <<- 1
                   }
                   for(i in names(lstele)) {
@@ -174,7 +174,7 @@ setMethod(".ggenericwidget",
                 } else {
                   ## the listelement use the argument names so do.call just works.
                   if(!is.list(lstele$type) && lstele$type == "ilabel") {
-                    table[trow,2:4] <<- glabel(lstele$text, cont=table)
+                    table[trow,2:4] <<- glabel(lstele$text, container=table)
                     trow <<- trow+1; tcol <<- 1
                     ##        glabel(lstele$text, container=group)
                   } else {
@@ -183,7 +183,7 @@ setMethod(".ggenericwidget",
                                                 handler = function(h,...) {
                                                   showHelpAtArgument(name, lst$help)
                                                 },
-                                                cont=table) 
+                                                container=table) 
 
                     lstele$container <- table # need this for tcltk
                     vals[[name]] <<- do.call(lstele$type, lstele[-1])
@@ -207,7 +207,7 @@ setMethod(".ggenericwidget",
             ## do we assignto?
             assignto = NULL                       # initialize
             if(!is.null(lst$assignto)) {
-              frame = gframe("Assign output to:",cont=mainGroup, anchor=c(-1,0), expand=TRUE, fill="x")
+              frame = gframe("Assign output to:",container=mainGroup, anchor=c(-1,0), expand=TRUE, fill="x")
               font(frame) <- c(weight="bold")
               
               assignto = gedit("",container=frame)
@@ -265,14 +265,14 @@ setMethod(".ggenericwidget",
             
             help.cb = function(h,...) {
               helppage = h$action
-              win = gwindow(Paste("Help on ", helppage), v=T)
+              win = gwindow(Paste("Help on ", helppage), visible=TRUE)
               size(win) <- c(600, 400)
               group = ggroup(horizontal = FALSE, container=win)
-              ghelp(topic=helppage, cont=group, expand=TRUE)
+              ghelp(topic=helppage, container=group, expand=TRUE)
               closeGroup = ggroup(container=group)
               addSpring(closeGroup)
               gbutton("cancel", handler = function(h,...) dispose(win),
-                      cont=closeGroup)
+                      container=closeGroup)
             }
             
             buttongroup = ggroup(container=mainGroup)

@@ -44,9 +44,9 @@ gpanedgroup(widget1=NULL, widget2=NULL, horizontal = TRUE, container = NULL, ...
 \examples{
 \dontrun{
   w <- gwindow("gpanedgroup example")
-  pg <- gpanedgroup(cont=w)
-  gvarbrowser(cont = pg) ## first is left/top
-  gtext(cont = pg)
+  pg <- gpanedgroup(container=w)
+  gvarbrowser(container = pg) ## first is left/top
+  gtext(container = pg)
   svalue(pg) <- 0.25
 }
 }

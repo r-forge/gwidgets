@@ -46,12 +46,12 @@ ghelpbrowser(title = "Help browser", maxTerms=100, width=1000, height=600, ..., 
 \examples{
 \dontrun{
   w <- gwindow("Help browser", visible=FALSE)
-  g <- ggroup(horizontal=FALSE, cont=w)
-  g1 <- ggroup(cont=g)
+  g <- ggroup(horizontal=FALSE, container=w)
+  g1 <- ggroup(container=g)
   addSpring(g1)
-  glabel("Help on:", cont=g1)
-  e <- gedit("", cont=g1)
-  helpWidget <- ghelp(cont = g, expand=TRUE)
+  glabel("Help on:", container=g1)
+  e <- gedit("", container=g1)
+  helpWidget <- ghelp(container = g, expand=TRUE)
   addHandlerChanged(e, handler=function(h,...) {
      add(helpWidget, svalue(h$obj))
   })

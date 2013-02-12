@@ -34,9 +34,9 @@ gstatusbar(text = "", container = NULL, ..., toolkit = guiToolkit())
   w <- gwindow("status bar example")
   tbl <- list(quit=list(icon="quit",
     handler = function(...) dispose(w)))
-  tb <- gtoolbar(tbl, cont=w)
-  sb <- gstatusbar("", cont=w)
-  txt <- gtext("type here", cont=w)
+  tb <- gtoolbar(tbl, container=w)
+  sb <- gstatusbar("", container=w)
+  txt <- gtext("type here", container=w)
   addHandlerChanged(txt, handler=function(h,...)
     svalue(sb) <- paste("You typed",svalue(txt),"in the  box",collapse=" "))
 

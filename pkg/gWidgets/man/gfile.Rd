@@ -26,7 +26,7 @@ gcalendar(text = "", format = "\%Y-\%m-\%d", handler=NULL, action=NULL, containe
   \item{type}{When selecting a file it can be selected for opening,
   for saving or you may want to select a directory.}
 \item{initialfilename}{Suggested name for file save}
-  \item{filter}{Filter for files shown during selection }
+  \item{filter}{Filter for files shown during selection. Can be nested list, as in example or a named character vector with the names a description and value a file extension (no dots) of files endings to match. }
   \item{multi}{Logical. Allow selection of multiple files?}
   \item{quote}{Is result quoted}
   \item{format}{Format of date, default is year-month-day}
@@ -74,8 +74,8 @@ gcalendar(text = "", format = "\%Y-\%m-\%d", handler=NULL, action=NULL, containe
 sourceFile <- function() gfile("Select a file",type="open", handler =
 function(h,...) source(h$file))
 
-## source a file using fact that dialog is modal
-source(gfile())
+## source an R file using fact that dialog is modal
+source(gfile(filter=c("R files"="R")))
 
 ## apply a generic action to the file
 countLines <- function(filename) print(length(readLines(filename)))

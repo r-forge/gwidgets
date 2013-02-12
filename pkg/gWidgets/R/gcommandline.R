@@ -102,18 +102,18 @@ setMethod(".gcommandline",
           ##
             if(useGUI == TRUE) {
               
-              pg <- gpanedgroup(cont=container, horizontal=FALSE, expand=TRUE)
-              g <- ggroup(horizontal=FALSE, expand=FALSE, cont=pg)
-              bg <- ggroup(cont=g, horizontal=TRUE)
+              pg <- gpanedgroup(container=container, horizontal=FALSE, expand=TRUE)
+              g <- ggroup(horizontal=FALSE, expand=FALSE, container=pg)
+              bg <- ggroup(container=g, horizontal=TRUE)
               addSpring(bg)
-              history <- gcheckbox("history", use.togglebutton=TRUE, cont=bg)
-              clear <- gbutton("clear", cont=bg)
-              evalCmd <- gbutton("evaluate", cont=bg)
+              history <- gcheckbox("history", use.togglebutton=TRUE, container=bg)
+              clear <- gbutton("clear", container=bg)
+              evalCmd <- gbutton("evaluate", container=bg)
               
-              commandBox <- gtext("## Type commands here:\n", cont=g, expand=TRUE)
+              commandBox <- gtext("## Type commands here:\n", container=g, expand=TRUE)
               size(commandBox) <- c(width, floor(height/3))
               
-              outputBox <- gtext("", cont=pg, expand=TRUE, fill="both")
+              outputBox <- gtext("", container=pg, expand=TRUE, fill="both")
               svalue(pg) <- 0.33
               
               ## History
@@ -122,12 +122,12 @@ setMethod(".gcommandline",
                 showHistory(FALSE)
                 FALSE                                 # don't close just hide
               })
-              histg <- ggroup(horizontal=FALSE, cont=histWindow)
-              glabel("History of recent commands", cont=histg)
-              histList <- gtable(data.frame(commands=character(0), stringsAsFactors=FALSE), cont=histg, expand=TRUE)
-              histbg <- ggroup(cont=histg)
+              histg <- ggroup(horizontal=FALSE, container=histWindow)
+              glabel("History of recent commands", container=histg)
+              histList <- gtable(data.frame(commands=character(0), stringsAsFactors=FALSE), container=histg, expand=TRUE)
+              histbg <- ggroup(container=histg)
               addSpring(histbg)
-              gbutton("cancel", cont=histbg, handler=function(h,...) {
+              gbutton("cancel", container=histbg, handler=function(h,...) {
                 svalue(history) <- FALSE
                 visible(histWindow) <- FALSE # for tcltk
                 focus(commandBox) <- TRUE

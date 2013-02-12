@@ -114,7 +114,7 @@ galert(message, title = "message", delay=3, parent=NULL, ..., toolkit=guiToolkit
    ## gbasicdialog
    w <- gbasicdialog(title="Select a state", handler = function(h,...) 
       print(svalue(tbl)))
-   tbl <- gtable(data.frame(states = rownames(state.x77)), expand=TRUE, cont = w)
+   tbl <- gtable(data.frame(states = rownames(state.x77)), expand=TRUE, container = w)
    visible(w, set=TRUE) ## show dialog
 
 }

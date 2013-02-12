@@ -75,7 +75,7 @@ placing dialogs near the parent window.}
     handler=function(h,...) {
      print("See ya")
   })
-  gbutton("cancel", cont=win,
+  gbutton("cancel", container=win,
     handler = function(h,...) dispose(win))
 
   ## block closing of window
@@ -94,7 +94,7 @@ placing dialogs near the parent window.}
   pwin <- gwindow("Parent window")
   cwin <- gwindow("Child window", parent = pwin)
   ## clicking button close parent causing child to close too
-  gbutton("close both", cont=cwin,
+  gbutton("close both", container=cwin,
     handler = function(h,...) dispose(pwin))
 }
 }

@@ -76,8 +76,8 @@ gnotebook(tab.pos = 3, closebuttons = FALSE, dontCloseThese = NULL, container = 
 \dontrun{
   w <- gwindow("gnotebook example")
   nb <- gnotebook(container=w)
-  glabel("Widget 1", cont=nb, label="page 1")   ## "add" called by constructor
-  glabel("Widget 2", cont=nb, label="page 2")   ## label argument passed by constructor to add method
+  glabel("Widget 1", container=nb, label="page 1")   ## "add" called by constructor
+  glabel("Widget 2", container=nb, label="page 2")   ## label argument passed by constructor to add method
 
   length(nb)
   names(nb)

@@ -171,9 +171,9 @@ gexpandgroup(text = "", markup = FALSE, horizontal=TRUE, handler = NULL, action 
 
   ## delete and add
   w <- gwindow("Delete and add", visible=FALSE)
-  g <- ggroup(cont=w)
-  b <- gcheckbox("hide", checked=FALSE, cont=g)
-  l <- gedit("click checkbox to hide me", cont=g)
+  g <- ggroup(container=w)
+  b <- gcheckbox("hide", checked=FALSE, container=g)
+  l <- gedit("click checkbox to hide me", container=g)
   addHandlerClicked(b, handler=function(h,...) {
      if(svalue(b))
        delete(g, l)

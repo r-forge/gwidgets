@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgets
 
+Changes for 0.0-52
+------------------
+ 
+* fix typos, cont= to get past R CMD check
+
 Changes for 0.0-51
 ------------------
 * fix to svalue method when index=TRUE (don't use coercewith here)

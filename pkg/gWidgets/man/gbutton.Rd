@@ -69,12 +69,12 @@ gbutton(text = "", border=TRUE, handler = NULL, action = NULL, container = NULL,
 \dontrun{
   ## button group example
   w <- gwindow("Button examples")
-  g <- ggroup(cont = w)
+  g <- ggroup(container = w)
   addSpring(g)   ## push to right of widget
-  gbutton("help", cont = g)
+  gbutton("help", container = g)
   addSpace(g, 20) ## some breathing room
-  gbutton("cancel", cont = g)
-  gbutton("ok", cont = g, handler = function(h, ...) cat("do it\n"))
+  gbutton("cancel", container = g)
+  gbutton("ok", container = g, handler = function(h, ...) cat("do it\n"))
 }
 }
 \keyword{ interface }% at least one, from doc/KEYWORDS

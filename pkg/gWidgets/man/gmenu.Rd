@@ -168,11 +168,11 @@ tl <- list(
 
 ## set up main window
 w <- gwindow()
-gmenu(ml, cont = w)
-gtoolbar(tl, cont = w)
+gmenu(ml, container = w)
+gtoolbar(tl, container = w)
 
 ## Now add a widget
-gbutton(action = aQuit, cont = w)
+gbutton(action = aQuit, container = w)
 
 ## disable a group of action
 sapply(editActionsGroup, function(i) enabled(i) <- FALSE)

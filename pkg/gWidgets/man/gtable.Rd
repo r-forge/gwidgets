@@ -116,12 +116,12 @@ gtable(items, multiple = FALSE, chosencol = 1, icon.FUN = NULL, filter.column = 
     options(repos=repos)
   }
   w <- gwindow("gtable example",width=400)
-  gp <- ggroup(horizontal=FALSE, cont=w)
-  tab <- gtable(m, chosencol = 2, cont=gp, expand=TRUE,
+  gp <- ggroup(horizontal=FALSE, container=w)
+  tab <- gtable(m, chosencol = 2, container=gp, expand=TRUE,
        handler = function(h,...) setCRAN(svalue(h$obj)))
-  bg <- ggroup(cont=gp)
+  bg <- ggroup(container=gp)
   addSpring(bg)
-  gbutton("dismiss", cont=bg, handler = function(h,...) dispose(w))
+  gbutton("dismiss", container=bg, handler = function(h,...) dispose(w))
 
 
   ## an example with icons.
@@ -148,11 +148,11 @@ gtable(items, multiple = FALSE, chosencol = 1, icon.FUN = NULL, filter.column = 
   }
   ## set up GUI
   w <- gwindow("Select variables",width=250)
-  g <- ggroup(horizontal=FALSE, cont=w)
-  l <- glabel("Data frame", cont=g)
-  cb <- gcombobox(lsDF(), cont=g)
+  g <- ggroup(horizontal=FALSE, container=w)
+  l <- glabel("Data frame", container=g)
+  cb <- gcombobox(lsDF(), container=g)
   blankDF = data.frame(variables=character(0), stringsAsFactors=FALSE)
-  tbl <- gtable(blankDF, icon.FUN=icon.FUN, cont=g, expand=TRUE)
+  tbl <- gtable(blankDF, icon.FUN=icon.FUN, container=g, expand=TRUE)
   ## add handlers
   addHandlerChanged(cb, handler <- function(h,...) {
     dfName <- svalue(h$obj)

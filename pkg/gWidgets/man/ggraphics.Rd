@@ -69,10 +69,10 @@ library(gWidgets)
 options(guiToolkit="RGtk2") ## "Qt"
 
 w <- gwindow("brush example", visible=FALSE)
-g <- ggroup(cont=w)
-tbl <- gtable(mtcars, cont=g, filter.FUN="manual")
+g <- ggroup(container=w)
+tbl <- gtable(mtcars, container=g, filter.FUN="manual")
 size(tbl) <- c(300, 500)
-gg <- ggraphics(cont=g)
+gg <- ggraphics(container=g)
 visible(w) <- TRUE
 
 makePlot <- function(ind) {
@@ -98,9 +98,9 @@ library(gWidgets)
 options(guiToolkit="RGtk2")
 
 w <- gwindow("notebook example")
-nb <- gnotebook(cont=w)
+nb <- gnotebook(container=w)
 
-devs <- lapply(1:5, function(i) ggraphics(cont=nb, label=as.character(i)))
+devs <- lapply(1:5, function(i) ggraphics(container=nb, label=as.character(i)))
 
 addHandlerChanged(nb, handler=function(h,...) {
   ## Tricky part is svalue(h$obj) is not the new page number -- but old

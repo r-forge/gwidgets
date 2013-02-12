@@ -99,8 +99,8 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
 
   w <- gwindow("combobox example")
   gp <- ggroup(container=w)
-  glabel("Favorite flavor:", cont=gp)
-  cb <- gcombobox(flavors, editable=TRUE, cont=gp, handler=f)
+  glabel("Favorite flavor:", container=gp)
+  cb <- gcombobox(flavors, editable=TRUE, container=gp, handler=f)
 
   svalue(cb) <- "vanilla"
   svalue(cb)

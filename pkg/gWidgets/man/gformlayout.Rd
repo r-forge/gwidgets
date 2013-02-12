@@ -179,11 +179,11 @@ tTest <- list(type = "ggroup",
               )
 
 w <- gwindow("t.test")
-g <- ggroup(horizontal = FALSE, cont = w)
-fl <- gformlayout(tTest, cont = g, expand=TRUE)
-bg <- ggroup(cont = g)
+g <- ggroup(horizontal = FALSE, container = w)
+fl <- gformlayout(tTest, container = g, expand=TRUE)
+bg <- ggroup(container = g)
 addSpring(bg)
-b <- gbutton("run t.test", cont = bg)
+b <- gbutton("run t.test", container = bg)
 addHandlerChanged(b, function(h,...) {
   out <- svalue(fl)
   out$x <- svalue(out$x) # turn text string into numbers via get()

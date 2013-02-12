@@ -24,9 +24,9 @@ setClass("gLabel",
 ##' @export
 ##' @examples
 ##' w <- gwindow()
-##' g <- ggroup(cont=w, horizontal=FALSE)
-##' l1 <- glabel("Some label", cont=g)
-##' l2 <- glabel(c("pasted with", "new lines"), cont=g)
+##' g <- ggroup(container=w, horizontal=FALSE)
+##' l1 <- glabel("Some label", container=g)
+##' l2 <- glabel(c("pasted with", "new lines"), container=g)
 ##' svalue(l1) <- "New text for some label")
 ##' svalue(l1)
 glabel = function(

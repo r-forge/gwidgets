@@ -248,7 +248,7 @@ unblockHandler(obj, ID=NULL, ...)
 
 	## lazy evaluation is not used here
 	obj = 4
-	gbutton("click",cont=TRUE, handler=function(h,...)
+	gbutton("click",container=TRUE, handler=function(h,...)
 	print(h$action), action=obj)
 	obj = 2
 	## now click button and value of 4 will be printed, not 2
@@ -256,13 +256,13 @@ unblockHandler(obj, ID=NULL, ...)
 	## Whereas, if one uses a gWidget we get the same as lazy
        ## loading
        obj = gedit("4")		 
-	gbutton("click",cont=TRUE, handler=function(h,...)
+	gbutton("click",container=TRUE, handler=function(h,...)
 		print(svalue(h$action)), action=obj)
 	svalue(obj) <- "2"
 	## Now click and "2" is printed.
 
       ## remove handler, block handler, unblockhandler (latter two may not be implemented)
-      b <- gbutton("click", cont=gwindow())
+      b <- gbutton("click", container=gwindow())
       id <- addHandlerClicked(b, handler=function(h,...) print("ouch"))
       ## click --> "ouch"
       blockHandler(b, id) ## now click -- nothing

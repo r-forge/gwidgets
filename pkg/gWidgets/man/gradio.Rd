@@ -66,8 +66,8 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
 
   w <- gwindow("Radio example", visible=FALSE)
   gp <- ggroup(container=w)
-  glabel("Favorite flavor:",cont=gp, anchor=c(0,1))
-  rb <- gradio(flavors, cont=gp)
+  glabel("Favorite flavor:",container=gp, anchor=c(0,1))
+  rb <- gradio(flavors, container=gp)
   addHandlerClicked(rb, handler=function(h,..) {
    cat(sprintf("You picked \%s\n", svalue(h$obj)))
   })

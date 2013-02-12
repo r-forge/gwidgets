@@ -58,7 +58,7 @@ setMethod(".ghelp",
             }
 
 
-            nb <- gnotebook(cont=container, closebuttons=TRUE, ...)
+            nb <- gnotebook(container=container, closebuttons=TRUE, ...)
             
             obj <- new("gHelpANY", block=nb, widget=nb,
               toolkit=toolkit)
@@ -130,7 +130,7 @@ setMethod(".add",
 
               ## good to go
               nb <- obj@widget
-              t <- gtext(cont=nb, label=topic, expand=TRUE)
+              t <- gtext(container=nb, label=topic, expand=TRUE)
               tag(t, "topic") <- topic
               tag(t, "pacakge") <- package
               svalue(nb) <- length(nb)
@@ -391,14 +391,14 @@ setMethod(".ghelpbrowser",
 
             ##' layout for help search (apropos, pattern)
             helpSearch <- function(container, ...) {
-              g <- ggroup(horizontal=FALSE, expand=TRUE, cont=container, ...)
-              sg <- ggroup(cont=g, horizontal=TRUE, fill="x", ...)
-              cb <- gcombobox(c("Apropos", "Pattern"), cont=sg)
-              e <- gedit("", cont=sg, expand=TRUE, fill="x")
+              g <- ggroup(horizontal=FALSE, expand=TRUE, container=container, ...)
+              sg <- ggroup(container=g, horizontal=TRUE, fill="x", ...)
+              cb <- gcombobox(c("Apropos", "Pattern"), container=sg)
+              e <- gedit("", container=sg, expand=TRUE, fill="x")
               
               sr <- gtable(data.frame("Function"=character(0), Package=character(0),
                                       Title=character(0), stringsAsFactors=FALSE),
-                           cont=g, expand=TRUE, fill="both")
+                           container=g, expand=TRUE, fill="both")
               addHandlerClicked(sr, handler=function(h,...) {
                 sel <- svalue(h$obj, drop=FALSE)
                 if(!is.null(sel)) {
@@ -461,13 +461,13 @@ setMethod(".ghelpbrowser",
                                     Keywords=character(0),
                                     Description=character(0), stringsAsFactors=FALSE)
               
-              allPackages <- .packages(all=TRUE)
+              allPackages <- .packages(all.available=TRUE)
               curPackage <- NULL
               
-              g <- ggroup(cont=container, horizontal=FALSE, expand=TRUE, ...)
-              g1 <- ggroup(cont=g)
-              glabel("Package:", cont=g1, anchor=c(1,0))
-              e <- gedit("", cont=g1, anchor=c(-1,0),
+              g <- ggroup(container=container, horizontal=FALSE, expand=TRUE, ...)
+              g1 <- ggroup(container=g)
+              glabel("Package:", container=g1, anchor=c(1,0))
+              e <- gedit("", container=g1, anchor=c(-1,0),
                          handler=function(h,...) {
                            val <- svalue(h$obj)
                            if(val %in% allPackages) {
@@ -482,7 +482,7 @@ setMethod(".ghelpbrowser",
               e[] <- allPackages
               
               fnList <- gtable(emptyDf,
-                               cont=g,
+                               container=g,
                                expand=TRUE)
               addHandlerClicked(fnList, handler=function(h,...) {
                 topic <- svalue(h$obj)
@@ -495,18 +495,18 @@ setMethod(".ghelpbrowser",
             ##' layout the search pane area
             layoutSearch <- function(container) {
               layoutNb <- gnotebook(container=container, expand=TRUE)
-              helpSearch(cont=layoutNb, label="Help search")
-              browsePackages(cont=layoutNb, label="Browse packages")
+              helpSearch(container=layoutNb, label="Help search")
+              browsePackages(container=layoutNb, label="Browse packages")
               svalue(layoutNb) <- 1     # first tab
             }
             
             
             ##' layout the help pane area
             layoutHelp <- function(container) {
-              tb <- ggroup(cont=container, horizontal=TRUE, fill="x")
+              tb <- ggroup(container=container, horizontal=TRUE, fill="x")
 
-              glabel("Help for:", cont=tb, anchor=c(1,0))
-              gedit("", cont=tb, anchor=c(-1, 0),  handler=function(h,...) {
+              glabel("Help for:", container=tb, anchor=c(1,0))
+              gedit("", container=tb, anchor=c(-1, 0),  handler=function(h,...) {
                 val <- svalue(h$obj)
                 add(helpWidget, val)
               })
@@ -514,39 +514,39 @@ setMethod(".ghelpbrowser",
               
               if(toolkitType == "tcltk") {
                 ## dispose if tcltk, otherweise close buttons work
-                gseparator(horizontal=FALSE, cont=tb)
-                d <- gbutton("dispose", cont=tb, handler=function(h,...) {
+                gseparator(horizontal=FALSE, container=tb)
+                d <- gbutton("dispose", container=tb, handler=function(h,...) {
                   dispose(helpWidget)
                 })
               }
               
               if(!toolkitType == "Qt") {
                 ## had errors with running withi handler
-                gbutton("Example", cont=tb, handler=function(h,...) {
+                gbutton("Example", container=tb, handler=function(h,...) {
                   page <- helpWidget[svalue(helpWidget)]
                   do.call("example", list(topic=tag(page, "topic"), package=tag(page, "package")))
                 })
               }
               addSpring(tb)
 
-              searchCb <<- gcheckbox("Search box", cont=tb, handler=function(h,...) {
+              searchCb <<- gcheckbox("Search box", container=tb, handler=function(h,...) {
                 visible(obj) <- svalue(h$obj)
               })
               
-              helpWidget <<- ghelp(cont=container, expand=TRUE, fill="both")
+              helpWidget <<- ghelp(container=container, expand=TRUE, fill="both")
               
             }
             
             
             ## widgets
-            pg <- gpanedgroup(cont=helpBrowser, horizontal=TRUE)
+            pg <- gpanedgroup(container=helpBrowser, horizontal=TRUE)
 
             if(toolkitType == "RGtk2") {
-              searchPane <- ggroup(horizontal=FALSE, cont=pg)
-              helpPane <- ggroup(horizontal=FALSE, cont=pg)
+              searchPane <- ggroup(horizontal=FALSE, container=pg)
+              helpPane <- ggroup(horizontal=FALSE, container=pg)
             } else {
-              helpPane <- ggroup(horizontal=FALSE, cont=pg)
-              searchPane <- ggroup(horizontal=FALSE, cont=pg)
+              helpPane <- ggroup(horizontal=FALSE, container=pg)
+              searchPane <- ggroup(horizontal=FALSE, container=pg)
             }
             
             helpWidget <- NULL # defined in layoutHelp

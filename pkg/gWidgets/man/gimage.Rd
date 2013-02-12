@@ -48,7 +48,7 @@ gimage(filename = "", dirname = "",  size = "",
 \examples{
 \dontrun{
    w <- gwindow("Stock icon example")
-   gimage("ok",dirname="stock", cont = w)
+   gimage("ok",dirname="stock", container = w)
 
    ## example contributed by Richard Cotton
 

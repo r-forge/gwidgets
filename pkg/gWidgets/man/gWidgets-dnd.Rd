@@ -82,8 +82,8 @@ adddropmotion(ed,handler=function(h,...) print("bombs away"))
 ## in the editable data frame.
 ## By using svalue() and id(), the dropped value can also be a
 ## character string referring to a variable in the workspace.
-adf = gdf(mtcars, cont = TRUE)
-gd = ggraphics(cont = TRUE)
+adf = gdf(mtcars, container = gwindow())
+gd = ggraphics(container = gwindow())
 plotData = function() {
   dropvalue = tag(gd,"value")
   theValues = svalue(dropvalue)

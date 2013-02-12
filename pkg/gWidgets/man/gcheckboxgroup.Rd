@@ -85,8 +85,8 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
 
   w <- gwindow("checkbox example")
   gp <- ggroup(container=w)
-  glabel("Favorite flavors:",cont=gp)
-  cbg <- gcheckboxgroup(flavors, cont=gp, handler=f)
+  glabel("Favorite flavors:",container=gp)
+  cbg <- gcheckboxgroup(flavors, container=gp, handler=f)
 
   svalue(cbg) <- c(TRUE, FALSE, TRUE)
   svalue(cbg)
@@ -95,7 +95,7 @@ Event Handlers are detailed in \code{\link{gWidgets-handlers}}.
   cbg[3] <- "raspberry"
 
   ## use a table to display (toolkit specific) so that scrollars can be used
-  cbg <- gcheckboxgroup(letters, cont=gwindow(), use.table=TRUE)
+  cbg <- gcheckboxgroup(letters, container=gwindow(), use.table=TRUE)
 
 }
 

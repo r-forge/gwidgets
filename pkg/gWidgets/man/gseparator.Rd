@@ -24,9 +24,9 @@ gseparator(horizontal = TRUE, container = NULL, ..., toolkit = guiToolkit())
 \dontrun{
   w <- gwindow("separator example")
   gp <- ggroup(container=w)
-  glabel("left widget", cont=gp)
-  gseparator(horizontal=FALSE, cont=gp, expand=TRUE)
-  glabel("right widget", cont=gp)
+  glabel("left widget", container=gp)
+  gseparator(horizontal=FALSE, container=gp, expand=TRUE)
+  glabel("right widget", container=gp)
 }
 }
 \keyword{interface}% at least one, from doc/KEYWORDS

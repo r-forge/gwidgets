@@ -84,13 +84,13 @@ gspinbutton (from = 0, to = 10, by = 1, length.out=NULL, along.with=NULL, value 
    
 
   w <- gwindow("Slider and spinbox example")
-  tbl = glayout(cont=w)
+  tbl = glayout(container=w)
   tbl[1,1] <- "Slide value to adjust shade"
   tbl[1,2] <- (sb <- gspinbutton(from=0,to=1,by=0.05,value=.5, container=tbl,
     handler=plotHist))
   tbl[2,1] <- "No. breaks"
   tbl[2,2, expand=TRUE] <- (sl <- gslider(from = 1, to= 100, by=1, value = 10,
-    cont = tbl, handler = plotHist))
+    container = tbl, handler = plotHist))
 
 ## update slider using [<-
   sl[] <- seq(2,50, by=2)
@@ -98,7 +98,7 @@ gspinbutton (from = 0, to = 10, by = 1, length.out=NULL, along.with=NULL, value 
 
   ## other sequence:
   w <- gwindow("Slider with sequence")
-  sl <- gslider(letters, cont=w)
+  sl <- gslider(letters, container=w)
   svalue(sl, index=TRUE)
   svalue(sl) <- "m"
   sl[] <- LETTERS ## can be sorted via sort(unique(LETTERS))
