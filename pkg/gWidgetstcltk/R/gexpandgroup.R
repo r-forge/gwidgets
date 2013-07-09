@@ -205,6 +205,14 @@ setReplaceMethod(".names",
                  })
 
 
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkittcltk",x="gExpandgrouptcltk"),
+                 function(x, toolkit, value) {
+                   font(tag(x, "label")) <- value
+                   return(x)
+                 })
+
+
 ## handlers
 ## putonto expander button
 setMethod(".addhandlerchanged",
