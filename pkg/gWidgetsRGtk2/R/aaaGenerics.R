@@ -1136,7 +1136,7 @@ setMethod(".addHandler",
 
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
-          function(obj, toolkit, signal, handler, action=NULL, ...) {
+          function(obj, toolkit, signal, handler, action=NULL, ..., after=FALSE) {
 
             theArgs = list(...)
 
@@ -1167,7 +1167,7 @@ setMethod(".addHandler",
                                             f=modifyHandler,
                                             data=h,
                                             user.data.first = TRUE,
-                                            after = FALSE),
+                                            after = after),
                                  silent=TRUE)
             ## can't' stuff in handler IDS
             if(inherits(callbackID,"try-error")) {
@@ -1184,19 +1184,6 @@ setMethod(".addHandler",
               invisible(callbackID)
             }
           })
-
-## removew handler
-## this hack is to change id
-## gtkObjectDisconnectCallbackHack = function (obj, id) {
-##   checkPtrType(obj, "GObject")
-##   checkPtrType(id, "CallbackID")
-##   ID = gtktry(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
-##         PACKAGE = "RGtk2"), silent=TRUE)
-##   if(inherits(ID,"try-error"))
-##     return(FALSE)
-##   else
-##     return(TRUE)
-## }
 
   ## removehandler
 setMethod("removehandler", signature("gWidgetRGtk"),
@@ -1583,7 +1570,7 @@ setMethod(".addhandlerrightclick",
 #          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit,
-                   handler, action=NULL, ...) {
+                   handler, action=NULL, ..., after=FALSE) {
             theArgs = list(...)
 
             ## fix value passed into gWidgets handlers
@@ -1612,7 +1599,7 @@ setMethod(".addhandlerrightclick",
                               },
                               data = h,
                               user.data.first = TRUE,
-                              after = FALSE
+                              after = after
                               ),
                 silent=TRUE)
           })

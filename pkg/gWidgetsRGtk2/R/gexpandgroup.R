@@ -138,6 +138,15 @@ setReplaceMethod(".names",
                    return(x)
                  })
 
+## set font
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x="gExpandgroupRGtk"),
+                 function(x, toolkit, value) {
+                   label <- x@block[[2]]
+                   label <- gWidgetsRGtk2:::as.gWidgetsRGtk2(label)
+                   font(label) <- value
+                   return(x)
+                 })
 
 
 ## handlers
