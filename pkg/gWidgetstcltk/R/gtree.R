@@ -145,7 +145,7 @@ setMethod(".gtree",
                  ## add in children
                  path <- .treeGetPath(W)
                  
-                 os <- offspring(path)
+                 os <- offspring(path, tag(obj, "offspring.data"))
 
                  ## icons
                  icons <- rep("", nrow(os))
@@ -197,11 +197,10 @@ setMethod(".gtree",
   if(parent == "" && n > 1) {
     ## column headings
     tcl(tr,"heading","#0", text="")
-
     lapply(2:n, function(j) {
       width <- max(nchar(c(nms[j],os[,j,drop=TRUE]))) * 8 + 15
-      tcl(tr,"column",j-2, "-width",width)
-      tcl(tr,"heading",j - 2,text=nms[j])
+      tcl(tr,"column",j, "-width",width) # was -2??
+      tcl(tr,"heading",j,text=nms[j])
     })
   } else if(parent == "" && n == 1) {
     tcl(tr,"heading","#0", text=nms[1])

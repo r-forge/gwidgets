@@ -442,6 +442,9 @@ setRefClass("Entry",
                   tktag.configure(l, "selectedWord", font="bold")
                 }
               },
+              no_items = function() {
+                length(no.wds)
+              },
               ## get current word. From lineindex if applicable, or from entry widget itself
               getCurrentWord = function() {
                 if(no.wds > 0)
