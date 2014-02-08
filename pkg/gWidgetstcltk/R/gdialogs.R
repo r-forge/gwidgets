@@ -123,8 +123,11 @@ tcltkDialog = function(
     tkpack(Cancel.but,side="left")
   tkpack(OK.but,side="left")
   
-  
-  tkfocus(OK.but)
+  if(type == "input")
+    tkfocus(textEntryWidget)            # set focus
+  else
+    tkfocus(OK.but)
+
   tkbind(dlg, "<Destroy>", function() {
     tkgrab.release(dlg)
   })
