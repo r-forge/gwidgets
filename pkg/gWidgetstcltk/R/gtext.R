@@ -199,9 +199,14 @@ setMethod(".add",
             do.newline <- ifelse(is.null(theArgs$do.newline), TRUE, as.logical(theArgs$do.newline))
 
 
+
             
-            where <- ifelse(is.null(theArgs$where), "end",theArgs$where)
-            if(where != "end") where = "0.0" ## the beginning
+            where <- ifelse(is.null(theArgs$where), "end", theArgs$where)
+            where <- switch(where,
+                            "at.cursor"="insert",
+                            "beginning"="0.0",
+                            "end")
+                           
 
             txt <- getWidget(obj)
             
@@ -223,36 +228,9 @@ setMethod(".add",
               tkinsert(txt, where, value)
               tktag.add(txt, fname, "left","right")
               tktag.configure(txt, fname, font=fname)
+
               if("color" %in% names(markup))
                 tktag.configure(txt, fname, foreground=markup['color'])
-              ## Color!!
-              
-##               ##              if(!is.null(markup$color))
-##               ##               argList$foreground = markup$color
-              
-##               add(obj,"")
-##               tktag.add(txt, "buffer", "0.0", "end")              
-
-
-
-##               ## old
-##               ## set up tag for handling markup
-##               argList <- list(txt,"foo")
-
-##               fontList <- fontlistFromMarkup(markup)
-
-##               if(length(fontList) > 0)
-##                 argList$font = fontList
-
-##               if(!is.null(markup$color))
-##                 argList$foreground = markup$color
-
-##               ## now configure a tag
-##               do.call("tktag.configure",argList)
-
-##               tkinsert(txt, where,value,"foo")
-
-              
             } else {
               ## no markup
               tkinsert(getWidget(obj),where,value)
