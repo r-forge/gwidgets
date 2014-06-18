@@ -378,6 +378,8 @@ setRefClass("Entry",
               },
               set_value = function(value) {
                 old_value <- tclvalue(v)
+                if(old_value == init_msg)
+                    tkconfigure(widget, foreground="black")
                 v_local <- v
                 tclvalue(v_local) <- value
                 lindex <<- 0

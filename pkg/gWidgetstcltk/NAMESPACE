@@ -1,5 +1,8 @@
+import(methods)
+import(digest)
 import(tcltk)
 import(gWidgets)
+
 ## importFrom(gWidgets,
 ##            "gwCat",
 ## "glabel", "gbutton", "gcheckbox", "gradio", "gdroplist",

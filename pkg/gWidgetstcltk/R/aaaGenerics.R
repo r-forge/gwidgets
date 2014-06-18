@@ -1,3 +1,8 @@
+require(methods)
+require(digest)
+require(tcltk)
+
+
 MSG = function(...) message("DEBUG: ",...,"\n")
 missingMsg = function(x) {
   if(missing(x)) x = "XXX"
@@ -20,7 +25,7 @@ missingMsg = function(x) {
 ## put S3 classes from tcltk into S4 classes
 ## got these from apropos("New") -> try(class(do.call(i,list())))
 
-require(tcltk)
+
 oldClasses =c("tkwin", "tclVar", "tclObj")
 setClass("tcltkObject")
 lapply(oldClasses, function(i) {
@@ -654,7 +659,7 @@ setReplaceMethod(".font",
                    ret <- try(tkconfigure(getWidget(obj), font=fname), silent=TRUE)
                    ## colors are different
                    if("color" %in% names(value))
-                       try(tkconfigure(getWidget(obj), foreground=value['color']), silent=TRUE)
+                       try(tkconfigure(getWidget(obj), foreground=value['color']), silent=TRUE) 
                    ## all done
                    return(obj)
                    
