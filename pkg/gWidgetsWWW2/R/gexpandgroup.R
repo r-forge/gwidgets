@@ -13,23 +13,24 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ggroup.R
+##' @include gframe.R
 NA
 
-##' gexpandgroup is a group with trigger icon and label
+##' gexpandgroup A box container which can disclose or hide its
+##' children through a trigger icon.
 ##'
 ##' Use \code{svalue<-} to adjust the title. The \code{visible<-}
-##' method is used to programatically change display
+##' method is used to programatically change whether the child
+##' components are displayed.
 ##' @param text label text
-##' @param horizontal logical. Indicates direction children are added
-##' @param spacing between component spacing
 ##' @param handler  Called when expanded or closed
 ##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of parent
-##' @param width width in pixels
-##' @param height height in pixels
-##' @param ext.args passed to constructor
+##' @param horizontal Boolean. Set to \code{TRUE} to pack children horizontally.
+##' @param spacing Integer. Between child spacing.
+##' @param use.scrollwindow Boolean. Set to \code{TRUE} to add a
+##' scrollwindow to manage space given to child widgets. Containers
+##' with scrollwindows often have their size fixed.
+##' @inheritParams gwidget
 ##' @seealso \code{\link{ggroup}}, \code{\link{gframe}}
 ##' @export
 ##' @examples
@@ -39,18 +40,21 @@ NA
 ##' gbutton("some button", cont=g)
 ##' visible(g) <- FALSE ## to close
 gexpandgroup <- function(text = "", horizontal = TRUE,
-                         spacing=5,
+                         spacing=2,
+                         use.scrollwindow=FALSE,
+                         container=NULL,
                          handler = NULL, action=NULL,
-                         container=NULL, ...,
+                         ...,
                          width=NULL,
                          height=NULL,
                          ext.args=NULL
                          ) {
 
-  eg <- GExpandgroup$new(container$toplevel)
-  eg$init(horizontal=horizontal,
+  eg <- GExpandgroup$new(container, ...)
+  eg$init(text=text,
+          horizontal=horizontal,
           spacing=spacing,
-          use.scrollwindow = FALSE,
+          use.scrollwindow=FALSE,
           container,
           ...,
           width=width,
@@ -58,33 +62,28 @@ gexpandgroup <- function(text = "", horizontal = TRUE,
           ext.args=merge.list(list(title=text,collapsible=TRUE),
             ext.args)
           )
-
+  
   if(!is.null(handler)) {
-    eg$add_R_callback("collapse", handler, action)
-    eg$add_R_callback("expand", handler, action)
+    eg$add_handler("collapse", handler, action)
+    eg$add_handler("expand", handler, action)
   }
   
   eg
 }
 
-##' base class for gexpandgroup
-##' @name gexpandgroup-class
 GExpandgroup <- setRefClass("GExpandgroup",
-                            contains="GGroup",
+                            contains="GFrame",
                             fields=list(
                               value="ANY",
                               visible="logical"
                               ),
                             methods=list(
-                              set_value = function(value, ...) {
-                                value <<- value
-                                call_Ext("setTitle", value)
-                              },
                               set_visible = function(value, ...) {
                                 "Show or collapse"
                                 if(value)
                                   call_Ext("expand")
                                 else
                                   call_Ext("collapse")
+                                ..visible <<- as.logical(value)
                               }
                               ))

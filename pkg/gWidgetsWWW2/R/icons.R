@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
+##' @include gwidget.R
 NA
 
 ##' Mark a character as an Icon
@@ -34,9 +34,8 @@ asIcon <- function(x) {
 isIcon <- function(x) is(x,"Icon")
 
 
-##' basename without extension
-##' @param x file to extract basename from
-##' @nord
+## basename without extension
+## @param x file to extract basename from
 .our_basename <- function(x) {
   b <- basename(x)
   if(grepl("\\.", b)) {
@@ -46,11 +45,10 @@ isIcon <- function(x) is(x,"Icon")
   b
 }
 
-##' make an icon class helper
-##' @param f file
-##' @param url of icon
-##' @param prefix prefix of icon class name
-##' @nord
+## make an icon class helper
+## @param f file
+## @param url of icon
+## @param prefix prefix of icon class name
 .make_icon_class <- function(f, url=f, prefix="x-gw-icon") {
 ## f is filename, url is url of file
   b <- .our_basename(f)
@@ -60,8 +58,7 @@ isIcon <- function(x) is(x,"Icon")
        )
 }
 
-##' internal array of stock icons
-##' @nord
+## internal array of stock icons
 .gWidgets_stock_icons <- Array$new()         # list of stock icons classes and urls
 
 ## populate stock icons array. Return icons for inclusion into style sheet
@@ -69,10 +66,13 @@ isIcon <- function(x) is(x,"Icon")
 ##'
 ##' @export
 make_stock_icons <- function() {
-  fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full=TRUE)
+  fs <- list.files(system.file("base/images", package="gWidgetsWWW2"), full.names=TRUE)
   bs <- basename(fs)
   bs_noexts <- sapply(fs, .our_basename)
-  urls <- sprintf("/custom/gWidgetsWWW2/images/%s", bs)
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))
+    urls <- sprintf("/cgi-bin/R/gWidgetsWWW2?name=images/%s", bs)
+  else
+    urls <- sprintf("/custom/gWidgetsWWW2/images/%s", bs)
   css <- Array$new(mapply(.make_icon_class, fs, urls, SIMPLIFY=FALSE))
 
   css$each(function(i, key, value) {
@@ -93,7 +93,7 @@ make_stock_icons <- function() {
 ##' @export
 getStockIcons <- function() {
   if(.gWidgets_stock_icons$len() == 0)
-    gWidgetsWWW2:::make_stock_icons()
+    make_stock_icons()
   
   .gWidgets_stock_icons$core()
 }
@@ -109,11 +109,11 @@ getStockIcons <- function() {
 ##' getStockIconByName("Not there") ## NULL
 getStockIconByName <- function(icon_name, css=TRUE) {
   if(missing(icon_name) || is.null(icon_name))
-    return(NA)
+    return(NULL)
   l <- getStockIcons()
   i <- l[[as.character(icon_name), exact=TRUE]]
   if(is.null(i))
-    return(NA)
+    return(NULL)
   
   asIcon(ifelse(css, i$id, i$url))
 }
@@ -150,3 +150,6 @@ addStockIcons <- function(iconNames, iconFiles, ..., parent) {
                  ourQuote(paste(css_txt, collapse=" ")))
   parent$add_js_queue(cmd)
 }
+
+
+

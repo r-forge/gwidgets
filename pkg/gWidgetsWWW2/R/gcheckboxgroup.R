@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
+##' @include gwidget.R
 NA
 
 ##' checkbox widget
@@ -21,19 +21,15 @@ NA
 ##' @param text character. text label for checkbox. 
 ##' @param checked logical. initial state (Set later with \code{svalue<-})
 ##' @param use.togglebutton logical. XXX not implemented If TRUE, represent with a togglebutton, else use check box 
-##' @param handler handler called when state is toggled. Check value
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container.
-##' @param width width of widget. May be necessary, otherwise may take all horizontal real estate
-##' @param height height of widget (px)
-##' @param ext.args list of optional argument for ExtJS constructor
+##' @inheritParams gwidget
 ##' @export
 ##' @note No method to set label
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) if(svalue(h$obj)) galert("checked", parent=w))
+##' cb <- gcheckbox("Check me?", cont=w, handler=function(h,...) {
+##'   if(svalue(h$obj)) galert("checked", parent=w)
+##' })
 gcheckbox = function(text="", checked = FALSE, use.togglebutton=FALSE,
   handler = NULL, action = NULL,  container = NULL,...,
   width=NULL, height=NULL, ext.args=NULL) {
@@ -53,14 +49,8 @@ gcheckbox = function(text="", checked = FALSE, use.togglebutton=FALSE,
 ##' @param use.table Needs implementing. If TRUE, uses a grid widget with checkboxes to
 ##' display. If TRUE, horizontal is ignored, and items may be a data
 ##' frame.
-##' @param handler handler called when state changes
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to add method of container
-##' @param width width of widget. May be necessary, otherwise may take all the horizontal real estate
-##' @param height height of widget (px)
-##' @param ext.args list of optional argument for ExtJS constructor
-##' @return An ExtWidget instance
+##' @inheritParams gwidget
+##' @return A \code{GCheckboxGroup} reference class instance
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -71,7 +61,7 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
   container = NULL, ...,
   width=NULL, height=NULL, ext.args=NULL) {
   
-  cb <- GCheckboxGroup$new(container$toplevel)
+  cb <- GCheckboxGroup$new(container, ...)
   cb$init(items, checked, horizontal, use.table, handler, action, container, ...,
                      width=width, height=height, ext.args=ext.args)
   return(cb)
@@ -79,11 +69,10 @@ gcheckboxgroup = function (items, checked = FALSE, horizontal = FALSE, use.table
 
 
 
-##' Base class for checkbox group
-##' @note TODO share code with gradio -- one should be a subclass Gradio - GCheckboxGroup - GCheckbox
-##' @name gcheckboxgroup-class
+## Base class for checkbox group
+## @note TODO share code with gradio -- one should be a subclass Gradio - GCheckboxGroup - GCheckbox
 GCheckboxGroup <- setRefClass("GCheckboxGroup",
-                         contains="ExtWidget",
+                         contains="GWidget",
                          fields=list(
                            items="ANY"
                          ),
@@ -98,61 +87,82 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                            
                            constructor <<- "Ext.form.CheckboxGroup"
                            transport_signal <<- "change"
+                           change_signal <<- "change"
                            
                            arg_list <- list(items=String(items_as_array()),
-                                            autoWidth=FALSE,
                                             width = width,
                                             height = height,
-                                            columns=columns, vertical=!horizontal
+                                            columns=columns,
+                                            vertical=!horizontal,
+                                            fieldLabel=list(...)$label
                                             )
                            add_args(arg_list)
 
                            setup(container, handler, action, ext.args, ...)
                            
-                           set_value(as.logical(rep(checked, len=length(items))), index=FALSE)
+                           set_value(checked)
                            .self
                          },
                          ## main property. We store the index in value, not the label
-                         get_value = function(index=FALSE) {
-                           "Return index"
-                           if(index)
-                             value
-                           else
-                             items[value]
+                         get_value = function(...) {
+                           "Return label"
+                           items[value]
                          },
-                         set_value = function(value, index=TRUE) {
+                         set_value = function(value, ...) {
                            "Set value. Value may be index, logical, or labels"
-                           if(index)
-                             value <<- value
-                           else if(is.logical(value))
-                             value <<- which(value)
-                           else
-                             value <<- match(value, items)
-
-                           value <<- value[!is.na(.self$value)]
-                           
-                           tmp <- rep(FALSE, len=length(items))
-                           if(length(value))
-                             tmp[value] <- TRUE
-                           call_Ext("setValue", String(toJSArray(tmp)))
+                           if(is.logical(value)) {
+                             val <- rep(value, len=length(items))
+                             set_index(which(val))
+                           } else {
+                             out <- Filter(function(x) !is.na(x), match(value, items))
+                             if(length(out))
+                               set_index(out)
+                           }
                          },
-                         get_items = function(...) {
-                           items
+                         get_index=function(...) {
+                           value
+                         },
+                         set_index=function(value, ...) {
+                           value <<- value
+                           l <- list()
+                           l[[get_id()]] <- String(toJSArray(value))
+                           call_Ext("setValue", l)
+                         },
+                         get_items = function(i, ...) {
+                           items[i]
                          },
                          set_items = function(items, ...) {
                            "Set items, update GUI"
-                           items <<- items
+                           warning(gettext("No method to set items"))
+                           ## XXX How to update radio buttons?
+                           ## items <<- items
                            ## XXX update radio buttons??? TODO
                          },
+                         ## cost-free aliases
+                         get_names=function(...) get_items(...),
+                         set_names = function(...) set_items(...),
                          ## transport, brings back index as string
                          transport_fun = function() {
-                           paste("var x = []; Ext.each(this.getValue(), function(val) {x.push(val.getRawValue())});",
-                                 "param =  {value: x};", sep="")
+                           tpl <- "
+var x = [];
+Ext.each(this.getChecked(), function(val) {
+  x.push(val.inputValue);
+});
+var param = {value: x};
+"
+                           tpl
                          },
                          process_transport = function(value) {
-                           ## coerce to numeric, that's about it
-                           ind <- as.numeric(value)
-                           value <<- ind
+                           ## value is a list
+                           value <<- as.numeric(unlist(value))
+                         },
+                         param_defn=function(signal) {
+                           if(signal == "change") {
+                             transport_fun()
+
+                          } else {
+                             ""
+                           }
                          },
                          ##
                          items_as_array = function() {
@@ -172,21 +182,15 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                            return(out)
                            
                          },
-                         ##
-                         add_handler_changed = function(...) {
-                           "Change handler is when radio button changes, perhaps through a click"
-                           add_handler_clicked(...)
-                         },
                          add_handler_clicked = function(...) {
                            "Click here is change -- perhaps through some method call, not just a moust event"
-                           add_handler_change(...)
+                           add_handler_changed(...)
                          }
                          )
                        )
                        
                          
-##' Base class for gcheckbox
-##' @name gcheckbox-class
+## Base class for gcheckbox
 GCheckbox <- setRefClass("GCheckbox",
                          contains="GCheckboxGroup",
                          method=list(
@@ -200,11 +204,12 @@ GCheckbox <- setRefClass("GCheckbox",
                            
                              constructor <<- "Ext.form.CheckboxGroup"
                              transport_signal <<- "change"
+                             change_signal <<- "change"
 
                              arg_list <- list(items=String(items_as_array()),
-                                              autoWidth=FALSE,
                                               width = width,
-                                              height = height
+                                              height = height,
+                                              fieldLabel=list(...)$label
                                               )
                              add_args(arg_list)
 
@@ -214,18 +219,22 @@ GCheckbox <- setRefClass("GCheckbox",
                              .self
                              
                            },
-                           get_value = function(index=TRUE) {
-                             "Return a logical value (if checked). Can get label if index=FALSE"
-                             if(index) {
-                               return(1 %in% value) # return logical
-                             } else {
-                               items[1] # the label
-                             }
+                           get_value = function(...) {
+                             "Return logical, label via []"
+                             get_index(...)
                            },
                            set_value = function(value, ...) {
                              "Set value. Value is logical TRUE or FALSE"
+                             set_index(value)
+                           },
+                           get_index=function(...) {
+                             return(1 %in% value)
+                           },
+                           set_index=function(value, ...) {
                              if(as.logical(value)) {
-                               callSuper(value=1, index=TRUE)
+                               callSuper(value=1)
+                             } else {
+                               callSuper(value=numeric(0))
                              }
                            }
                            ))

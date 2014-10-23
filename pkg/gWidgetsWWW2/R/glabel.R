@@ -13,65 +13,62 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
+##' @include gwidget.R
+NULL
 
 ##' A label widget
 ##' 
 ##' @param text text for label. Main property. Use \code{svalue<-} to change. 
-##' @param markup logical. Ignored, but see example for \code{ext.args} usage
+##' @param markup logical. Ignored, but see example for
+##' \code{ext.args} usage or use \code{ghtml} widget and
+##' HTML-formatted text
 ##' @param editable logical. Ignored
-##' @param handler ignored
-##' @param action ingnored
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width ignored
-##' @param height ignored
-##' @param ext.args additional options passed to Ext constructor.
+##' @inheritParams gwidget
 ##' @return an ExtWidget object
 ##' @export
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' glabel("A label widget", cont=w)
-##' glabel("A red label", cont=w,  ext.args=list(style=list("color"="red")))
+##' g <- ggroup(cont=w)
+##' glabel("A label widget", cont=g)
+##' glabel("A red label", cont=g,  ext.args=list(style=list("color"="red")))
+##' glabel("A <font color='blue'>blue</font> label", cont=g)
 glabel <- function(text = "", markup = FALSE, editable = FALSE,
                    handler = NULL, action = NULL, container = NULL,...,
                    width=NULL, height=NULL, ext.args=NULL
                    ) {
 
-  l <- GLabel$new(container$toplevel)
+  l <- GLabel$new(container, ...)
   l$init(text, markup, editable, handler, action, container, ...,
          width=width, height=height, ext.args=ext.args)
   l
 }
 
-##' base class for glabel
-##' @name glabel-class
+
 GLabel <- setRefClass("GLabel",
-                      contains="ExtWidget",
-                      fields=list(
-                        "stub"="ANY"
-                        ),
+                      contains="GWidget",
                       method=list(
                         init = function(text = "", markup = FALSE, editable = FALSE,
                           handler = NULL, action = NULL, container = NULL,...,
                           width=NULL, height=NULL, ext.args=NULL) {
 
+
+                          text <- as.character(text)
                           value <<- text
-                          constructor <<- "Ext.ux.labelBox"
+                          constructor <<- "Ext.form.Label"
                           arg_list <- list(
-                                           value = text
-                                            )
-                           
+                                           html=text
+                                           )
+                          
                            add_args(arg_list)
 
                           setup(container, handler, action, ext.args, ...)
-
                            .self
                         },
                         set_value = function(value, ...) {
                           value <<- value
-                          call_Ext("setValue", value)
+                          call_Ext("setText", value)
+                          parent$do_layout()
                         }
                         ))
+

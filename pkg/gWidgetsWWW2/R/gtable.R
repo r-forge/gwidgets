@@ -13,12 +13,10 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
-##' @include ext-widget-proxy.R
-NA
+##' @include gwidget.R
+##' @include gwidget-proxy.R
 ##' @include icons.R
-NA
+NULL
 
 ##' A table widget
 ##'
@@ -27,13 +25,11 @@ NA
 ##' rows. For large data sets, the data can be "paged", that is given
 ##' to the browser in bite-sized chunks so the lag is lacking.  The
 ##' change handler is for a single click, also used for selection. Use
-##' \code{addHandlerDoublecclick} to specify a callback for the double
+##' \code{addHandlerDoubleclick} to specify a callback for the double
 ##' click event on a cell.
 ##' 
 ##' The column names are inherited from the
-##' columnnames of the data frame. Names with spaces will render, but
-##' are not sortable. Use some punctuation, such as an underscore to
-##' get sortability.
+##' columnnames of the data frame. 
 ##' 
 ##' A column of class "Icon" (see
 ##' \code{\link{asIcon}}) will render a css class as an icon. See the
@@ -53,31 +49,26 @@ NA
 ##' @param filter.labels Ignored 
 ##' @param filter.FUN Ignored. 
 ##' @param handler single click handlers
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width in pixels
-##' @param height height in pixels,  should be set, otherwise get only 1 row
 ##' @param ext.args additional configuration values to pass to constructor
-##' @param paging. Logical. If \code{TRUE}, then data will be loaded
-##' in chunks -- not all at once. The default page size is 25. This
-##' can be adjusted by setting \code{gtable_object$page_size <- 50},
-##' say.
 ##' @param paging Either a logical variable or integer. If \code{TRUE}
 ##' then paging will be used which allows only chunks of the data to
-##' be sent to the browser at a time (default size = 25 rows). If
+##' be sent to the browser at a time (default size = 200 rows). If
 ##' \code{integer} then paging is turned on and this value overrides
 ##' the default page size.
 ##' @param col.widths width of each column. Also see \code{size<-}
 ##' with a list where \code{columnWidths} is specified.
+##' @inheritParams gwidget
 ##' @return An ExtWidget instance
 ##' @note With \code{width} and/or \code{height} set to \code{NULL},
-##' the default size will likely be unsatisfying. These values are
-##' best set by the programmer. They can be readjusted through the
-##' \code{size<-} method. For \pkg{gWidgetsWWW}, the \code{filter}
-##' functions are not implemented. Rather the \code{filter} method may
-##' be used to filter a named column by a regular expression. See the
-##' example.
+##' the default size will likely be unsatisfying. (And can consume any
+##' space in a box, so items packed in after will not be shown.) As
+##' such, these values are often best set by the programmer. They can
+##' be readjusted through the \code{size<-} method. The \code{size<-}
+##' method can also be used to adjust the columns widths, by passing a
+##' list with a component named \code{columnWidths} containing the
+##' desired widths in pixels.
+##'
+##' The \code{visible<-} method may be used for filtering.
 ##' @export
 ##' @examples
 ##' w <- gwindow("Filtering and table example")
@@ -105,21 +96,21 @@ gtable <- function(items, multiple = FALSE, chosencol = 1,
                    filter.column = NULL, filter.labels = NULL,
                    filter.FUN = NULL, handler = NULL, action = NULL,
                    container = NULL, ...,
-                   width=200, height=200, ext.args=NULL,
+                   width=NULL, height=NULL, ext.args=NULL,
                    paging = FALSE, 
                    col.widths = rep(20, ncol(as.data.frame(items)))
                    ) {
 
-  tbl <- GTable$new(container$toplevel)
+  tbl <- GTable$new(container, ...)
   tbl$init(items, multiple, chosencol, icon.FUN, handler, action, container,
-           width=width, height=height, ext.args=ext.args, paging=paging, col.widths=col.widths)
+           width=width, height=height, ext.args=ext.args, paging=paging, col.widths=col.widths, ...)
   tbl
 }
 
 
-##' A class inherited by GTable and GDF
+## A class inherited by GTable and GDf
 GWidgetGrid <- setRefClass("GWidgetGrid",
-                           contains="ExtWidget",
+                           contains="GWidget",
                            fields=list(
                              store="ANY",
                              nms = "character" ## column name
@@ -128,7 +119,7 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                              ## put common methods here
                              ## set__items is in subclass
                              get_items = function(i, j, ..., drop=TRUE) {
-                               items <- store$proxy$get_data()
+                               items <- store$proxy$get_data(drop_visible=FALSE)
                                items[i,j, ..., drop=drop]
                              },
                              set_items = function(value, i, j, ...) {
@@ -142,24 +133,27 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                                nms <<- names(store$proxy$value)
                                store$load_data()
                              },
-                             set_size = function(value, ...) {
+                             set_size = function(val, ...) {
                                "Set size of table (width,height) or columnWidths"
                                width <- height <- colWidths <- NULL
-                               if(is.list(value)) {
-                                 width <- value$width
-                                 height <- value$height
-                                 colWidths <- value$columnWidths
-                               } else {
-                                 width <- value[1]
-                                 if(base:::length(value) >= 2) # need base!
-                                   height <- value[2]
+                               val <- as.list(val)
+                               if(is.list(val)) {
+                                 width <- val$width
+                                 height <- val$height
+                                 colWidths <- val$columnWidths
+                                 if(!is.null(colWidths))
+                                   set_column_widths(colWidths)
                                }
-                               call_Ext("setWidth", width)
-                               if(!is.null(height)) call_Ext("setHeight", height)
-                               if(!is.null(colWidths))
-                                 set_column_widths(colWidths)
+                               if(is.null(width) && is.null(height))
+                                 return()
+                               else if(is.null(height))
+                                 call_Ext("setWidth", width)
+                               else if(is.null(width))
+                                 call_Ext("setHeight", height)
+                               else
+                                 callSuper(c(width, height))
                              },
-                             dim = function() {
+                             get_dim = function() {
                                base:::dim(get_items())
                              },
                              len = function(x) {
@@ -170,216 +164,313 @@ GWidgetGrid <- setRefClass("GWidgetGrid",
                                  base:::length(x)
                              },
                              ## Some column methods
-                             call_column_method = function(meth, ...) {
+                             call_column_method = function(meth, ind, ...) {
                                "Call a method of the column model, like call_Ext"
                                l <- list(...)
                                out <- sapply(l, coerceToJSString)
-                               cmd <- sprintf("%s.colModel.%s(%s);",
+                               cmd <- sprintf("%s.columns[%s].%s(%s);",
                                               get_id(),
+                                              ind - 1,
                                               meth,
                                               paste(out, collapse=","))
-                               cmd
                                add_js_queue(cmd)
                              },
-                             set_column_name = function(value, column) {
-                               call_column_method("setColumnHeader", column - 1, value)
+                             set_column_name = function(column, value) {
+                               call_column_method("setText", column, value)
                              },
                              get_names = function() {
                                nms
                              },
                              set_names = function(value) {
                                nms <<- value
-                               sapply(seq_along(value), function(i) {
-                                 set_column_name(value[i], i)
-                               })
+                               mapply(.self$set_column_name,seq_along(value), value)
                              },
-                             set_column_width = function(value, column) {
-                               call_column_method("setColumnWidth", column - 1, value)
+                             set_column_width = function(column, value) {
+                               call_column_method("setWidth", column, value)
                              },
                              set_column_widths = function(value) {
-                               sapply(seq_along(value), function(i) {
-                                 set_column_width(value[i], i)
-                               })
+                               mapply(.self$set_column_width, seq_along(value), value)
                              },
-                             set_column_tooltip = function(value, column) {
-                               "Set tooltop for specified column"
-                               call_column_method("setColumnTooltip", column - 1, value)
+                             ## Not there in ExtJS 4.1?
+                             ## set_column_tooltip = function(value, column) {
+                             ##   "Set tooltop for specified column"
+                             ##   call_column_method("setColumnTooltip", column - 1, value)
+                             ## },
+                             ## set_column_tooltips = function(value) {
+                             ##   "Set tooltips for entire set of header columns"
+                             ##   sapply(seq_along(value), function(i) {
+                             ##     set_column_tooltip(value[i], i)
+                             ##   })
+                             ## },
+                             ## ## handlers
+                             add_handler_selection_changed=function(...) {
+                               add_handler("selectionchange", ...)
                              },
-                             set_column_tooltips = function(value) {
-                               "Set tooltips for entire set of header columns"
-                               sapply(seq_along(value), function(i) {
-                                 set_column_tooltip(value[i], i)
-                               })
-                             },
-                             ## handlers
                              add_handler_clicked = function(...) {
-                               add_R_callback("cellclick", ...)
+                               add_handler("cellclick", ...)
                              },
                              add_handler_double_click = function(...) {
-                               add_R_callback("celldblclick", ...)
+                               add_handler("celldblclick", ...)
                              },
                              add_handler_column_clicked = function(...) {
-                               add_R_callback("headerclick", ...)
+                               add_handler("headerclick", ...)
                              },
                              add_handler_column_double_click = function(...) {
-                              add_R_callback("headerdblclick", ...)
+                              add_handler("headerdblclick", ...)
                              } 
 
                              ))
 
-##' base class for gtable
-##' @name gtable-class
+##' \code{GTable} is the base class for gtable
+##'
+##' The table widget is implemented using a proxy. That is, the data
+##' is loaded in a separate AJAX call. This makes things relatively
+##' responsive, but if there is too much data one can turn on paging.
+##'
+##' The widget can filter through the visible method. This basically
+##' passes back the filtered data from the server each time it is
+##' called. To avoid the data transfer, one can use the \code{filter}
+##' reference method, which filters browser side by a regular
+##' expression.
+##' @rdname gtable
 GTable <- setRefClass("GTable",
                       contains="GWidgetGrid",
                       fields=list(
-                        "store"="ANY",
                         "multiple"="logical",
                         "chosencol"="integer",
                         "paging" = "logical",
                         "page_size" = "integer"
                         ),
                       methods=list(
+                        ##' @param col.widths vector with column widths
                         init=function(items, multiple, chosencol, icon.FUN, handler, action, container,...,
-                          width=NULL, height=NULL, ext.args=NULL, paging=FALSE, col.widths) {
+                          width=NULL, height=NULL, ext.args=NULL, paging=nrow(items) > 200,
+                          col.widths
+                          ) {
 
+                          ## coerceitems
                           if(!is.data.frame(items))
                             items <- as.data.frame(items, stringsAsFactors=FALSE)
-
+                          
                           value <<- NA  # currently selected row(s) or NA
                           multiple <<- multiple
                           chosencol <<- as.integer(chosencol)
+
+                          ## Paging is used when the store has many rows. ideally
+                          ## we would like to use the infinite scrolling feature,
+                          ## but this isn't working for us.
+                          ## The issue below is when paging is FALSE. We can't
+                          ## set the page size dynamically, so we just crank up
+                          ## a big one.
+                          ## This is only an issue if items is initially small but
+                          ## will be swapped out with something big.
+                          def_page_size <- 200L
                           if(is.logical(paging)) {
                             paging <<- paging;
-                            page_size <<- 25L ## override through assignment
+                            if(paging) {
+                              page_size <<- def_page_size ## override through assignment paging=2000
+                            } else {
+                              page_size <<- 2000L
+                            }
                           } else {
-                            paging <<- TRUE
                             page_size <<- as.integer(paging)
+                            paging <<- TRUE
                           }
 
-                          store <<- ExtArrayStore$new(container$toplevel)
-                          store$init(items)
-                          store$paging <<- paging
-                          nms <<-names(items)
-                            
-                          constructor <<- "Ext.grid.GridPanel"
-                          transport_signal <<- "cellclick"
+
+
+                          ## Hack alert
+                          ## set default height/width if missing and needed
+                          if(is(container, "GGroup")) {
+                            expand <- getFromDots("expand", ..., NULL)
+                            if(is.null(expand) || !as.logical(expand)) {
+                              if(container$horizontal)
+                                width <- getWithDefault(width, 300L)
+                              else
+                                height <- getWithDefault(height, 200L)
+                            }
+                          }
+
+                          initFields(
+                                     store=GWidgetArrayStore$new(container),
+                                     nms=names(items),
+                                     constructor="Ext.grid.Panel",
+                                     transport_signal="selectionchange",
+                                     change_signal="selectionchange"
+                                     )
+                          store$init(items, page.size=page_size)
+                          store$paging <<- .self$paging
+                          store$page_size <<- page_size
                           
                           arg_list = list(
                             store=String(store$get_id()),
                             columns = String(store$proxy$make_column_model()),
                             stripeRows = TRUE,
-                            enableRowBody = TRUE,
+                            ## selType="rowmodel",
                             frame = FALSE,
                             autoExpandColumn=tail(names(items), n=1),
                             width=width,
                             height=height,
-                            sm = String(ifelse(multiple,
-                              'new Ext.grid.RowSelectionModel({singleSelect:false})',
-                              'new Ext.grid.RowSelectionModel({singleSelect:true})'))
+                            sortableColumns=TRUE
                             )
-                          if(paging) {
+                          if(multiple)
+                            arg_list$multiSelect <- TRUE
+                          
+                          if(!paging) {
+                            arg_list <- merge.list(arg_list, list(autoLoad=FALSE
+                                                                  ,verticalScroller=list(
+                                                                    trailingBufferZone=200,
+                                                                    leadingBufferZone=500
+                                                                    )
+                                                                  ))
+                          } else if(paging) {
                             store$page_size <<- as.integer(page_size)
                             paging_options <- list(
                                                    pageSize= as.integer(page_size),
-                                                   store= String(store$get_id()),
                                                    displayInfo=TRUE,
                                                    displayMsg= gettext("Displaying rows {0} - {1} of {2}"),
                                                    emptyMsg= gettext("No rows to display")
                                                    )
                             cmd <- sprintf("new Ext.PagingToolbar(%s)", toJSObject(paging_options))
-                            arg_list[['bbar']] = String(cmd)
-                          }
-                          add_args(arg_list)
 
+                            arg_list$dockedItems=String(sprintf("[{xtype:'pagingtoolbar', store:%s,dock:'bottom',displayInfo:true}]", store$get_id()))
+##                            arg_list[['bbar']] = String(cmd)
+                          }
+
+                          ## hacks!
+                          ## issue with height=NULL
+
+                          
+                          add_args(arg_list)
                           setup(container, handler, action, ext.args, ...)
 
 
+                          
                           ## set up paging
                           if(paging) { ## adjust size
                             cmd <- sprintf("%s.getTotalCount = function() {return %s};",
                                            store$get_id(), nrow(store$get_data()))
                             add_js_queue(cmd)
                           }
-
+                          
                           ## load data
                           store$load_data()
-
                         },
 
                         transport_fun = function() {
                           ## transport back row. Fine for multiple or not. Use id here, as sorting can
                           ## otherwise mess up relationship between index and data in R data frame
-                          "var param={value: Ext.pluck(this.getSelectionModel().getSelections(),'id')}"
+##                          "var param={value: Ext.pluck(this.getSelectionModel().getSelection(),'id')}"
+                          "var param={value: selected.map(function(rec) {return(rec.get('row_id'))})}"
+                          
                         },
                         process_transport = function(value, ...) {
-                          value <<- sort(value)
+                          if(is.list(value))
+                            value <<- sort(unlist(value))
+                          else
+                            value <<- sort(value)
                         },
+                        param_defn=function(signal) {
+                          if(signal == change_signal) {
+                            transport_fun()
+                          } else if(signal == "cellclick" ||
+                                    signal == "celldblclick") {
+                            "param={row_index:rec.get('row_id'), column_index:cellIndex + 1};"
+                          } else if(signal == "headerclick" ||
+                                    signal == "headerdblclick") {
+                            "param = {column_index:columnIndex + 1};"
+                          } else if(signal == "itemclick" ||
+                                    signal == "itemdblclick") {
+                            "param = {value:rec.get('row_id')};"
+                          }
+                          else {
+                            "param=null;"
+                          }
+                        },
+                        
                         get_value = function(index=FALSE, drop=TRUE, ...) {
                           "Return selected value(s)"
 
                           if(length(value) ==1 && is.na(value))
                             return(NA)
 
-                          
                           items <- store$get_data()
-
-                          if(index)
-                            return(value)
+                          drop <- getWithDefault(drop, TRUE)
                           if(drop)
-                            return(items[value, chosencol, drop=TRUE])
+                            items[value, chosencol, drop=TRUE]
                           else
-                            return(items[value, ,drop=FALSE])
+                            items[value, , drop=FALSE]
+                        },
+                        get_index=function(...) {
+                          if(length(value) ==1 && is.na(value))
+                            return(NA)
+                          else
+                            return(value)
                         },
                         set_value = function(value, index=TRUE, ...) {
                           ## Value is index if numeric and index is TRUE
                           ## value is logical if index is trye and logical
                           ## value is matched against names
-                          if(index) {
-                            if(is.logical(value))
-                              value <<- which(value)
-                            else
-                              value <<- value
+                          if(is.logical(value)) {
+                            value <<- which(value)
                           } else {
                             value <<- match(value, get_items(j=chosencol))
                           }
-
+                          set_index(value)
+                        },
+                        clear_selection=function() {
+                          cmd <- sprintf("%s.getSelectionModel().deselectAll()", get_id())
+                          add_js_queue(cmd)
+                        },
+                        set_index=function(value, ...) {
                           "Set value where value is row index to select"
+                          if(is.logical(value)) {
+                            value <<- which(value)
+                          } else {
+                            value <<- value
+                          }
+                          clear_selection()
                           if(base:::length(value) == 0 ||
                              (base:::length(value) == 1 && is.na(value)) ||
                              value[1] <= 0) {
-                                        # clear out
-                            cmd <- paste(sprintf("var sm = %s.getSelectionModel();", get_id()),
-                                         "sm.clearSelections();",
-                                         sep="")
+                            ## nothing
                           } else {
-                            cmd <- paste(sprintf("var sm = %s.getSelectionModel();", get_id()),
-                                         sprintf("sm.selectRows(%s);", toJSArray(value -1)),
-                                         sep="")
+                            tpl <- "
+{{id}}.getSelectionModel().selectRange({{start}},{{end}}, true);
+"
+                            f <- function(start, end) {
+                               cmd <- whisker.render(tpl, list(id=get_id(),
+                                                          start=start-1, end=end-1))
+                               add_js_queue(cmd)
+                            }
+                            ## should figure out runs to shorten this
+                            sapply(value, function(i) f(i,i))
                           }
-                          add_js_queue(cmd)
                         },
-                      
                         
                         set_items = function(value, i, j, ...) {
                           callSuper(value, i, j, ...)
+
+                            cmd <- paste(sprintf("%s.getTotalCount = function() {return %s}",
+                                                 store$get_id(), nrow(store$get_data())),
+                                         sep="")
+                            add_js_queue(cmd)
                           
                           if(paging) {
                             ## need to notify grid that the total
                             ## count has increased or decreased. This
                             ## is done thorugh the getTotalCount JS
                             ## function
-                            cmd <- paste(sprintf("%s.getTotalCount = function() {return %s}",
-                                                 store$get_id(), nrow(store$get_data())),
-                                         sep="")
-                          add_js_queue(cmd)
                           } else {
-#                            cmd <- sprintf("%s.getUpdater().update(%s)",
-#                                           get_id(),
-#                                           toJSObject(store$proxy$get_url_list())
+                            ## cmd <- sprintf("%s.getUpdater().update(%s)",
+                            ##                get_id(),
+                            ##                toJSObject(store$proxy$get_url_list())
+                            ##                )
                             ## cmd <- sprintf("%s.doRequest(%s_);",
                             ##                store$get_id(),
                             ##                toJSObject(store$proxy$get_url_list()))
-                            ## 
+                            ## add_js_queue(cmd)
+                            
                           }
 
                         },
@@ -393,12 +484,15 @@ GTable <- setRefClass("GTable",
                           } else {
                             cmd <- sprintf("%s.filter(%s, RegExp('%s'));",
                                            store$get_id(),
-                                           ourQuote(colname),
+                                           escapeSingleQuote(colname),
                                            regex)
                           }
                           add_js_queue(cmd)
                         },
-                        add_handler_changed = function(...) {
-                          add_handler_clicked(...)                          
+                        get_visible=function(...) {
+                          store$get_visible(...)
+                        },
+                        set_visible=function(value, ...) {
+                          store$set_visible(value, ...)
                         }
                         ))

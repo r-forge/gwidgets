@@ -13,36 +13,34 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-container.R
-NA
+##' @include gcontainer.R
+NULL
 
 ##' Notebook container
 ##'
 ##' @param tab.pos where to place tabs. A value of 1 is the bottom, else the top.
 ##' @param close.buttons Logical. Are there close buttons on the tabs
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width width in pixels, if specified
-##' @param height height in pixels, if specified
-##' @param ext.args extra arguments to pass to Ext constructor
-##' @return an ExtContainer object
+##' @inheritParams gwidget
+##' @return a \code{GNotebook} reference class object.
+##' @seealso The \code{\link{gstackwidget}} container is similar, but
+##' has no tabs.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
 ##' nb <- gnotebook(cont=w)
 ##' gbutton("hello", container=nb, label="My label") ## pass in label argument through ... to \code{add}
+##' gbutton("page 2", container=nb, label="page 2")
+##' svalue(nb) <- 1
 gnotebook <- function(tab.pos = 3, close.buttons = FALSE, container, ...,
                       width=NULL, height=NULL, ext.args=NULL
                       ) {
-  nb <- GNotebook$new(container$toplevel)
+  nb <- GNotebook$new(container,...)
   nb$init(tab.pos, close.buttons, container, ..., width=width, height=height, ext.args=ext.args)
   nb
 }
 
-##' base class for gnotebook
-##' @name gnotebook-class
 GNotebook <- setRefClass("GNotebook",
-                         contains="ExtContainer",
+                         contains="GContainer",
                          fields=list(
                            "notebook_children"="list",
                            "closable"="logical"
@@ -52,7 +50,7 @@ GNotebook <- setRefClass("GNotebook",
                              width=NULL, height=NULL, ext.args=NULL) {
 
                              notebook_children <<- list()
-                             constructor <<- "Ext.TabPanel"
+                             constructor <<- "Ext.tab.Panel"
                              value <<- 1 ## track through
                              closable <<- close.buttons
                              
@@ -66,13 +64,7 @@ GNotebook <- setRefClass("GNotebook",
                                               width=width,
                                               height=height
                                               )
-                             add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             container$add_dots(.self, ...)                           
-
+                             add_args(arg_list, ext.args)
                              write_constructor()
                              write_transport()
 
@@ -81,12 +73,9 @@ GNotebook <- setRefClass("GNotebook",
 #                             }, param_defn ="{value:this.items.indexOf(c) + 1}")
                              
                              container$add(.self, ...)
-                             
-                             .self
-                             
                            },
                            transport_fun = function() {
-                             "param={value: this.items.indexOf(tab) + 1}" # id, not index
+                             "param={value: this.items.indexOf(tab) + 1};" # id, not index
                            },
                            process_transport = function(value) {
                              value <<- value
@@ -104,9 +93,10 @@ GNotebook <- setRefClass("GNotebook",
                              
                              call_Ext("add", list(title=label,
                                                   closable=closable,
-                                                  tabTip = tooltip,
-                                                  items=String(sprintf("['%s']", child$id))
+                                                  tooltip = tooltip,
+                                                  items=String(sprintf("[%s]", child$get_id()))
                                                   ))
+                             value <<- length(notebook_children)
                              call_Ext("setActiveTab", value - 1)
                              call_Ext("doLayout")
                              
@@ -115,7 +105,7 @@ GNotebook <- setRefClass("GNotebook",
                            dispose = function(index) {
                              "For deleting. Index can be numeric or character"
                              if(missing(index))
-                               index <- length() - 1L# last one
+                               index <- len() - 1L# last one
 
                              if(is.character(index))
                                index <- match(index, names(notebook_children))
@@ -130,10 +120,10 @@ GNotebook <- setRefClass("GNotebook",
                              "Number of tabs"
                              base:::length(notebook_children)
                            },
-                           get_value = function() {
+                           get_value = function(...) {
                              value
                            },
-                           set_value = function(value) {
+                           set_value = function(value, ...) {
                              "make tab value visible"
                              value <<- value
                              call_Ext("setActiveTab", value - 1)
@@ -148,7 +138,7 @@ GNotebook <- setRefClass("GNotebook",
                                child <- notebook_children[[i]]
                                child$set_attr("label",value[i])
                                cmd <- paste(sprintf("var tab = %s.getComponent(%s);", get_id(), i-1),
-                                            sprintf("tab.setTitle(%s);", ourQuote(value[i])),
+                                            sprintf("tab.setTitle(%s);", escapeSingleQuote(value[i])),
                                             sep="")
                                add_js_queue(cmd)
                              })

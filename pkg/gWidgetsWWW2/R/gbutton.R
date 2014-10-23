@@ -13,8 +13,8 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
+##' @include gwidget.R
+NULL
 
 
 ##' Basic button widget
@@ -22,15 +22,8 @@ NA
 ##' A button responds to mouse clicks by calling its handler
 ##'
 ##' @param text button text
-##' @param border ignored
-##' @param handler callback to call when button is clicked
+##' @inheritParams gwidget
 ##' @param action passed to callback as \code{h$action}
-##' @param container parent container
-##' @param ... passed to parent container's \code{add} method
-##' @param width width of button, if desired
-##' @param height height of button, if desired
-##' @param ext.args optional list of configuration options for ext
-##' widgets. For example \code{style=list(padding='20px')}.
 ##' @return a \code{GButton} instance
 ##' @export
 ##' @examples
@@ -42,7 +35,7 @@ NA
 ##' })
 ##' ## has an icon
 ##' b <- gbutton("up", cont=g)
-##' ## just an icon
+##' ## just an icon using ext override to remove text but leave icon
 ##' b <- gbutton("help", cont=g); b$call_Ext("setText")
 ##' ## an action
 ##' a <- gaction("help", parent=w, handler=function(h,...) {
@@ -50,58 +43,51 @@ NA
 ##' })
 ##' b <- gbutton(action=a, cont=g)
 gbutton <- function(text="",
-                    border=TRUE,
                     handler=NULL,
                     action=NULL,
-                    container, ...,
+                    container=NULL, ...,
                     width=NULL,
                     height=NULL,
                     ext.args=NULL
                     ) {
-  b <- GButton$new(toplevel=container$toplevel)
-  b$init(text, border, handler, action, container, ..., width=width, height=height, ext.args=ext.args)
+  if(!is.null(action) && is(action,"GAction")) {
+    ## with an action
+    b <- GButtonWithAction$new(container, ...)
+    b$init(action, container, ...,  width=width, height=height, ext.args=ext.args)
+  }  else {
+    ## regular button
+    b <- GButton$new(container, ...)
+    b$init(text,  handler, action, container, ..., width=width, height=height, ext.args=ext.args)
+  }
   return(b)
 }
 
-##' class for gbutton
-##' @name gbutton-class
 GButton <- setRefClass("GButton",
-                       contains="ExtWidget",
-                       fields=list(
-                         stub="ANY"
-                         ),
+                       contains="GWidget",
                        methods=list(
-                         init = function(text="", border=TRUE,
+                         init = function(
+                           text="",
                            handler=NULL, action=NULL, container, ...,
                            width=NULL, height=NULL, ext.args=NULL
                            ) {
 
-                           if(!is.null(action) && is(action,"GAction"))
-                             return(init_action(action, container,..))
-                           
-                           value <<- text
-                           
-                           constructor <<- "Ext.Button"
+                           initFields(value=text,
+                                      constructor="Ext.Button",
+                                      change_signal="click")
+
                            arg_list <- list(
-                                            tooltip = getFromDots("tooltip", ...),
                                             width = width,
                                             height = height
                                             )
-                           
                            add_args(arg_list)
                            
                            setup(container, handler, action, ext.args, ...)
 
                            set_value(text)
                          },
-                         init_action = function(action, container, ...) {
-                           "Initialize widget if it is an action item"
-                           cmd <- sprintf("var %s = new Ext.Button(%s)", get_id(), action$get_id())
-                           add_js_queue(cmd)
-                           container$add(.self, ...)
-                         },
+                        
                          ## main property
-                         get_value = function() {
+                         get_value = function(...) {
                            "Return label"
                            value
                          },
@@ -111,7 +97,7 @@ GButton <- setRefClass("GButton",
                            value <<- text
                            call_Ext("setText", text)
                            u <- getStockIconByName(text)
-                           call_Ext("setIconClass", getWithDefault(u, ""))
+                           call_Ext("setIconCls", getWithDefault(u, ""))
                          },
                          
                          ##
@@ -122,12 +108,22 @@ GButton <- setRefClass("GButton",
                          set_tooltip = function(tip) {
                            call_Ext("setTooltip", tip)
                          },
-                         ##
-                         add_handler_changed = function(...) {
-                           "Change handler is button click"
-                           add_handler_clicked(...)
+                         add_handler_clicked=function(handler, action=NULL, ...) {
+                           add_handler_changed(handler, action, ...)
                          }
+                        
                          )
                        )
                        
-                         
+
+GButtonWithAction <- setRefClass("GButtonWithAction",
+                                 contains="GButton",
+                                 methods=list(
+                                   init=function(action, container,  ...,  width, height, ext.args) {
+                                     "Initialize widget if it is an action item"
+                                     ## XXX steal ext.args .. from setup
+                                     cmd <- sprintf("var %s = new Ext.Button(%s)", get_id(), action$get_id())
+                                     add_js_queue(cmd)
+                                     container$add(.self, ...)
+                                   }
+                                   ))

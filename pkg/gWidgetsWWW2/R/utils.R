@@ -14,7 +14,26 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include array.R
-NA
+##' @include gwidgets-session.R
+NULL
+
+##' download extjs files and unzips into location to be found
+##'
+##' Useful if installing from a package which doesn't bundle. The
+##' extjs files are quite large (nearly 70Mb download), so rather than
+##' bundle in an R package, one can download as needed.
+##' @return Nothing. Installs files if successful
+##' @export
+download_extjs <- function() {
+    to <- paste(system.file("base", "javascript", package="gWidgetsWWW2"), "ext-4-2.1", sep=.Platform$file.sep)
+
+    if (!file.exists(to)) {
+        f <- "cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip"
+        tmp <- tempfile(fileext=".zip")
+        download.file(f, tmp)
+        unzip(tmp, exdir=to, junkpaths=TRUE)
+    }
+}
 
 
 ##' String class -- does not get escaped in object literals
@@ -28,6 +47,13 @@ String <- function(x) {
   x
 }
 
+##' Internal function to call whisker.render and compose with String
+##' @param tpl template
+##' @param l data
+##' @return a character containing filled in template
+String_render <- function(tpl, l) {
+  String(whisker.render(tpl, l))
+}
 
 ## map R objects into object literals
 
@@ -37,44 +63,47 @@ String <- function(x) {
 ##' @param x object to coerce
 ##' @return returns object sometimes quoted
 ##' @export
-##' @rdname gWidgetsWWW2-generics
 coerceToJSString <- function(x) UseMethod("coerceToJSString")
 
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" default
-##' @S3method "coerceToJSString" default
-##' @nord
+##' @method coerceToJSString default
+##' @S3method coerceToJSString default
+##' @rdname coerceToJSString
 coerceToJSString.default <- function(x) x # no quote
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" character
-##' @S3method "coerceToJSString" character
-##' @nord
-coerceToJSString.character <- function(x) ourQuote(x)
+##' 
+##' @method coerceToJSString character
+##' @S3method coerceToJSString character
+##' @rdname coerceToJSString
+coerceToJSString.character <- function(x) sprintf("'%s'", escapeSingleQuote(x))
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" factor
-##' @S3method "coerceToJSString" factor
-##' @nord
-coerceToJSString.factor <- function(x) ourQuote(as.character(x))
+##'
+##' @method coerceToJSString factor
+##' @S3method coerceToJSString factor
+##' @rdname coerceToJSString
+coerceToJSString.factor <- function(x) coerceToJSString(as.character(x))
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" logical
-##' @S3method "coerceToJSString" logical
-##' @nord
+##' 
+##' @method coerceToJSString logical
+##' @S3method coerceToJSString logical
+##' @rdname coerceToJSString
 coerceToJSString.logical <- function(x) tolower(as.character(x))
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" String
-##' @S3method "coerceToJSString" String
-##' @nord
+##' 
+##' @method coerceToJSString String
+##' @S3method coerceToJSString String
+##' @rdname coerceToJSString
 coerceToJSString.String <- function(x) x # to avoid quoting
+
 ##' S3 method for coerceToString
-##' @param x object to coerce
-##' @method "coerceToJSString" list
-##' @S3method "coerceToJSString" list
-##' @nord
+##' 
+##' @method coerceToJSString list
+##' @S3method coerceToJSString list
+##' @rdname coerceToJSString
 coerceToJSString.list <- function(x) toJSObject(x)
 
 ##' map an R list object into a string containing javascript code representation of an object
@@ -101,12 +130,13 @@ toJSObject <- function(x) {
     } else if(is.list(val)) {
       out[i] <- toJSObject(val)
     } else {
+      ## print(list("toJSObject", length1=coerceToJSString(val)))
       out[i] <- coerceToJSString(val)
     }
   }
   nms <- names(out); ind <- grepl("-", nms) # a-b-c -> "a-b-c"
   nms[ind] <- sprintf('"%s"', nms[ind])
-  sprintf("{%s}", paste(nms, out, sep=":", collapse=","))
+  sprintf("{%s}", paste(paste("'",nms,"'", sep=""), out, sep=":", collapse=","))
 }
 
 ## ## coerce a single value to javascript with quotes
@@ -134,19 +164,17 @@ emptyJSArray <- function(doBrackets=TRUE)  ifelse(doBrackets, "[]", "")
 toJSArray <- function(x, doBrackets=TRUE) UseMethod("toJSArray")
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" default
-##' @S3method "toJSArray" default
-##' @nord
+##' 
+##' @method toJSArray default
+##' @S3method toJSArray default
+##' @rdname toJSArray
 toJSArray.default <- function(x, doBrackets=TRUE) stop("no default method")
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" numeric
-##' @S3method "toJSArray" numeric
-##' @nord
+##' 
+##' @method toJSArray numeric
+##' @S3method toJSArray numeric
+##' @rdname toJSArray
 toJSArray.numeric <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
   x <- as.character(x)
@@ -158,12 +186,10 @@ toJSArray.numeric <- function(x, doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput
-##' 
-##' @method "toJSArray" String
-##' @S3method "toJSArray" String
-##' @nord
+##'  
+##' @method toJSArray String
+##' @S3method toJSArray String
+##' @rdname toJSArray
 toJSArray.String <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
   x <- gsub("\\n", " ", x)              # \n messes up JS parsing
@@ -173,11 +199,10 @@ toJSArray.String <- function(x, doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" logical
-##' @S3method "toJSArray" logical
-##' @nord
+##' 
+##' @method toJSArray logical
+##' @S3method toJSArray logical
+##' @rdname toJSArray
 toJSArray.logical <- function(x,doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))
   x <- tolower(as.character(x))
@@ -186,31 +211,38 @@ toJSArray.logical <- function(x,doBrackets=TRUE) {
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" character
-##' @S3method "toJSArray" character
-##' @nord
+##' 
+##' @method toJSArray character
+##' @S3method toJSArray character
+##' @rdname toJSArray
 toJSArray.character <- function(x, doBrackets=TRUE) {
   if(!length(x)) return(emptyJSArray(doBrackets))  
-  x <- sprintf("%s", ourQuote(x))
+  x <- sprintf("'%s'", escapeSingleQuote(x))
   toJSArray.String(x, doBrackets)
 }
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" factor
-##' @S3method "toJSArray" factor
-##' @nord
+##' 
+##' @method toJSArray factor
+##' @S3method toJSArray factor
+##' @rdname toJSArray
 toJSArray.factor <- toJSArray.character
 
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" matrix
-##' @S3method "toJSArray" matrix
-##' @nord
+##' 
+##' @method toJSArray Date
+##' @S3method toJSArray Date
+##' @rdname toJSArray
+toJSArray.Date <- function(x, doBrackets=TRUE) {
+  ## SHould make format an option. Here it needs to match \code{column_xtype.Date}.
+  toJSArray.String(ourQuote(format(x, "%Y/%m/%d")), doBrackets)
+}
+
+##' ToJSArray method
+##' 
+##' @method toJSArray matrix
+##' @S3method toJSArray matrix
+##' @rdname toJSArray
 toJSArray.matrix <- function(x, doBrackets=TRUE) {
   out <- paste(apply(x,1,toJSArray), collapse=",")
   if(doBrackets) out <- paste("[", out, "]", sep="")
@@ -219,22 +251,20 @@ toJSArray.matrix <- function(x, doBrackets=TRUE) {
 
 
 ##' ToJSArray method  
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" list
-##' @S3method "toJSArray" list
-##' @nord
+##' 
+##' @method toJSArray list
+##' @S3method toJSArray list
+##' @rdname toJSArray
 toJSArray.list <- function(x, doBrackets=TRUE) {
   sapply(x, function(i) toJSArray(i,doBrackets))
 }
        
 ## This needs work
 ##' ToJSArray method
-##' @param x R object to make into an array
-##' @param doBrackets logical Use brackets in ouput []
-##' @method "toJSArray" data.frame
-##' @S3method "toJSArray" data.frame
-##' @nord
+##' 
+##' @method toJSArray data.frame
+##' @S3method toJSArray data.frame
+##' @rdname toJSArray
 toJSArray.data.frame <- function(x,doBrackets=TRUE) {
   if(nrow(x) == 0) {
     n <- ncol(x)
@@ -259,7 +289,16 @@ toJSArray.data.frame <- function(x,doBrackets=TRUE) {
 }
 
 
-
+escape_html <- function(string) Rook::Utils$escape_html(string)
+unescape_html <- function(string) {
+  if (is.null(string)) base::stop("Need a character vector argument")
+  string <- gsub('&amp;','&',string)
+  string <- gsub('&lt;','<',string)
+  string <- gsub('&gt;','>',string)
+  string <- gsub('&#39;',"'",string)
+  string <- gsub('&quot;','"',string)
+  string
+}
 
 
 
@@ -270,7 +309,6 @@ toJSArray.data.frame <- function(x,doBrackets=TRUE) {
 ##' this one.
 ##' @param x character
 ##' @return character has single quotes escaped
-##' @nord
 shQuoteEsc <- function(x) {
   out <- gsub("\'","\\\\'",x)
   out <- paste("'",out,"'",sep="")
@@ -282,7 +320,6 @@ shQuoteEsc <- function(x) {
 ##' We pass in strings as 'string contents' so we replace all ' quotes with " ones, then wrap in ''
 ##' @param x a string to replace ' with
 ##' @return a string with quotes escaped and placed within ''
-##' @nord
 ourQuote <- function(x) {
   x <- gsub("'",'"',x)
   x <- gsub("\n", "\\\\n", x)           # \n's are issue
@@ -296,8 +333,16 @@ ourQuote <- function(x) {
 ##' @param x string to escape
 ##' @return string with "'" replaced by "\'"
 escapeSingleQuote <- function(x) {
+  ## This coudl be *much* improved if only I knew regular expressions better
+  esc_q <- "[\\][']"
+  stupid_match <- "THISWOULDNEVERHAPPEN"
+  x <- gsub(esc_q, stupid_match,x)
+  x <- gsub("'", "\\\\'", x)
+  x <- gsub(stupid_match, "\\\\'", x)
+  x <- gsub("\n", "\\\\n", x) 
   ## gsub("'", '"', x)  ## could replace, but escaping seems safer
-  gsub("\\'", "\\\\'", x)
+  #gsub("\\'", "\\\\'", x)
+  return(x)
 }
 
 
@@ -305,23 +350,9 @@ escapeSingleQuote <- function(x) {
 ##' @param key key to lookip
 ##' @param ... passed from function
 ##' @param default default value if NULL
-##' @nord
 getFromDots <- function(key, ..., default=NULL) {
   val <- list(...)[[key]]
   if(is.null(val) && !is.null(default))
-    default
-  else
-    val
-}
-
-##' Get an object using default if otherwise not defined
-##'
-##' if val is null etc, return default, else val
-##' @param val value to get
-##' @param default default to use if null, NA or 0 length
-##' @nord
-getWithDefault <- function(val, default) {
-  if(is.null(val) || is.na(val) || length(val) == 0)
     default
   else
     val
@@ -332,12 +363,11 @@ getWithDefault <- function(val, default) {
 ##' @param x a list
 ##' @param y a list
 ##' @param overwrite logical should we overright values in x
-##' @nord
 merge.list <- function(x, y, overwrite=TRUE) {
   if(missing(y) || is.null(y))
     return(x)
   for(i in names(y))
-    if(overwrite || !(i %in% names(x)))
+    if((is.logical(overwrite) && overwrite) || !(i %in% names(x)))
       x[[i]] <- y[[i]]
   x
 }
@@ -383,9 +413,15 @@ asURL <- function(x) {
 ##' f <- get_tempfile(ext=".svg")
 ##' get_tempfile_url(f)
 get_tempfile <- function(ext=".txt") {
-  dir.create(sprintf("%s%s%s",tempdir(), .Platform$file.sep, "tmp"), showWarnings=FALSE)
   f <- tempfile(pattern="gWidgetsWWW", tmpdir="", fileext=ext)
-  f <- sprintf("%s/tmp%s", tempdir(), f)
+
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb"))) {
+    f <- tempfile(pattern="gWidgetsWWW", tmpdir="/var/FastRWeb/tmp/", fileext=ext)
+#    f <- sprintf("/var/FastRWeb/tmp/%s", f)
+  } else {
+    dir.create(sprintf("%s%s%s",tempdir(), .Platform$file.sep, "tmp"), showWarnings=FALSE)
+    f <- sprintf("%s/tmp%s", tempdir(), f)
+  }
   class(f) <- c("StaticTempFile", class(f))
   f
 }
@@ -401,113 +437,74 @@ get_tempfile <- function(ext=".txt") {
 get_tempfile_url <- function(f) {
   if(!is(f, "StaticTempFile"))
     return(f)
-  
-  sprintf("/custom/tmp/tmp/%s", basename(f))
+  ## This should be configurable! (The first tmp anyways)
+  if(!is.null(getOption("gWidgetsWWW2:FastRWeb")))
+    asURL(sprintf("/cgi-bin/R/tmp?file=%s", basename(f)))
+  else
+    asURL(sprintf("/custom/tmp/tmp/%s", basename(f)))
 }
 
-
-
-##' load a web app defined by a gWidgetsWWW2 script
+DEBUG <- function(...) print(list(...))
+logger <- function(..., fname="/tmp/log.txt") cat(..., "\n", file=fname, append=TRUE)
+  
+##' Is the process running locally?
 ##'
-##' @param script_name path to gWidgetssWWW2 script
-##' @param app_name base name for script, unique per project
-##' @param brew_template The script may render to the entire page, or
-##' parts of the page specified by an ID. The allows one to specify a
-##' brew template to hold these place holders and other HTML code.
-##' @param use.googlemap If using \code{ggooglemaps} include this so that the JavaScript files are downloaded.
-##' @param show.log If TRUE, logged information is written to the console
-##' @param ... passed to \code{brew} call of \code{brew_template}
 ##' @export
-##' @examples
-##' ## open an app that takes the entire page
-##' gw_script <-  system.file("examples/hello-world.R", package="gWidgetsWWW2")
-##' load_app(gw_script, "HelloApp",  use.google=FALSE)
-##' ## open an app using googlemaps
-##' load_app(system.file("examples/ggooglemaps.R", package="gWidgetsWWW2"),  "GoogleMapApp", use.google=TRUE)
-##' ## open an app embedded in another page
-##' gw_script <- system.file("examples/multiple.R", package="gWidgetsWWW2")
-##' brew_template <- system.file("framework/brew/custom.rhtml", package="gWidgetsWWW2")
-##' load_app(gw_script, "MultipleApp",  brew_template)
-load_app <- function(script_name,
-                     app_name="test",
-                     brew_template = "",
-                     use.googlemap = FALSE,
-##                     use.googleVis=TRUE,
-                     show.log=FALSE,
-                     ...
-                         ) {
-
-  options("Rhttpd_debug"=as.logical(show.log))
-  
-  
-  R <- Rhttpd$new()
-  try(R$start(), silent=TRUE)
-
-  ## extra html code googlemaps, ace?, ...
-  extra_html_code <- character(0)
-  if(use.googlemap)
-    extra_html_code <- c(extra_html_code,
-                         '<script type="text/javascript" ',
-                         'src="http://www.google.com/jsapi?autoload={\'modules\':[{name:\'maps\',version:3,other_params:\'sensor=false\'}]}">',
-                         '</script>',
-                         '<script type="text/javascript" src="/custom/gWidgetsWWW2/javascript/ext.ux.GMapPanel3.js"></script>'
-                         )
-
-  ## XXX Set up for using google visualization through googleVis. First attempt didn't work.
-  ## if(use.googleVis)
-  ##   extra_html_code <- c(extra_html_code,
-  ##                        '<script type="text/javascript" src="http://www.google.com/jsapi"></script>'
-  ##                        )
-                         
-
-  
-  ## gWidgetsWWW, static files
-  gWidgetsWWW <- Rook::Static$new(
-                                  urls = c("/images", "/javascript", "/css"),
-                                  root = system.file("base", package="gWidgetsWWW2")
-                                  )
-  R$add(RhttpdApp$new(gWidgetsWWW, name="gWidgetsWWW2"))
-  
-  ## tmpdir
-  tmpApp <- Rook::Static$new(
-                             urls=c("/tmp"),
-                             root=tempdir()
-                             )
-  R$add(RhttpdApp$new(tmpApp, name="tmp"))
-  
-  ## brew index
-  brewery <- Rook:::Brewery$new(url="/",
-                                root=system.file("framework/brew", package="gWidgetsWWW2"),
-                                app_name = app_name,
-                                brew_template=brew_template,
-                                extra_html_code = paste(extra_html_code, collapse="\n"),
-                                ...
-                                )
-                                        #  R$add(RhttpdApp$new(brewery, name="gwbrew"))
-  
-  ## an application
-  app <- Rook::Builder$new(
-                           ## app specific static files
-                           Rook:::Static$new(
-                                             urls = c('/css','/images','/javascript'), 
-                                             root = '.'
-                                             ),
-                           ## brew files
-                           brewery,
-                           ## Rook:::Brewery$new(
-                           ##                    url=sprintf("%s/brew", app_name),
-                           ##                    root='.'
-                           ##                    ),
-                           ## why do I need this?
-                           tmpApp,
-                           gWidgetsWWW2:::GWidgetsApp$new(url="/gwapp", script=script_name),
-                           ## why does this fail?
-                           Rook:::Redirect$new(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
-                           )
-  
-  R$add(RhttpdApp$new(app, name=app_name))
-  
-  browseURL(sprintf("http://127.0.0.1:%s/custom/%s/indexgw.rhtml", tools:::httpdPort, app_name))
-  
+##' @return logical value, \code{TRUE} if local, \code{FALSE} if not.
+is_running_local <- function() {
+  is.null(getOption("gWidgetsWWW2:FastRWeb"))
 }
 
+##' Make a template for the rapache configuration files
+##'
+##' To use rapache a few locations need to be defined so that ajax
+##' calls and calls to get local files are recognized. This happens in
+##' a configuration file and this function makes a template that will
+##' work, yet allows ucustomization.
+##' @param file passed to \code{cat} function to control what happens to output
+##' @note The resulting file must be placed into the apached directory (/etc/apache2?)
+##' and integrated into the configuration system.
+##' @export
+make_rapache_files <- function(file="") {
+  tpl <- system.file("rapache", "apache.conf", package="gWidgetsWWW2")
+  gWidgetsWWW2_home <- system.file("rapache", package="gWidgetsWWW2")
+  cat(whisker.render(paste(readLines(tpl), collapse="\n"),
+                     list(gWidgetsWWW2_home=gWidgetsWWW2_home)), file=file)
+}
+
+##' Make an apache configuration for a given app
+##'
+##' An rapache gWidgetsWWW2 app needs to integrate within the Rook
+##' system. The template produced by \code{make_rapache_files} shows
+##' how to configure the apache server for an app, but needs to call a
+##' script \code{loadapp.R}. This function produces such a script.
+##' @param file  passed to \code{cat} function to control what happens to output
+##' @note this file is placed into a directory specified in the rapache configuration
+##' @export
+make_rapache_loadapp <- function(file="") {
+  tpl <- system.file("rapache", "loadapp.R", package="gWidgetsWWW2")
+  cat(whisker.render(paste(readLines(tpl), collapse="\n")),
+       file=file)
+}
+
+
+
+## Singleton pattern
+Singleton <- setRefClass("Singleton",
+                             fields=list(
+                               Class="ANY",
+                               instance="ANY"
+                               ),
+                            methods=list(
+                              initialize=function(...) {
+                                "Override this by defining Class"
+                                instance <<- NULL
+                                 callSuper(...)
+                               },
+                               get_instance=function(...) {
+                                 "Get a unique instance of the class defined in the subclasses initialize method"
+                                 if(is.null(instance)) 
+                                   instance <<- Class$new(...)
+                                 instance
+                               }
+                               ))

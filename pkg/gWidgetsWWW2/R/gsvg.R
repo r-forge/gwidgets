@@ -13,8 +13,8 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
+##' @include gwidget.R
+NULL
 
 ##' widget to display svg files
 ##'
@@ -42,7 +42,7 @@ NA
 ##' require(RSVGTipsDevice)
 ##' 
 ##' f <- get_tempfile(ext=".svg") ## use this extension
-##' devSVGTips(f)
+##' svg(f)
 ##' hist(rnorm(100))
 ##' dev.off()
 ##' 
@@ -52,13 +52,12 @@ NA
 ##' 
 ##' b <- gbutton("click", cont=g, handler=function(h,...) {
 ##'   f <- get_tempfile(ext=".svg")
-##'   devSVGTips(f)
+##'   svg(f)
 ##'   hist(rnorm(100))
 ##'   dev.off()
 ##'   svalue(i) <- f
 ##' })
 ##' }
-##' @note The package has similar widgets: \code{\link{gimage}} and \code{\link{gcanvas}}.
 gsvg <- function(f, width=480, height=400,
                  container = NULL,..., ext.args=NULL) {
 
@@ -70,7 +69,7 @@ gsvg <- function(f, width=480, height=400,
 ##' base class for gsvg
 ##' @name gsvg-class
 GSvg <- setRefClass("GSvg",
-                    contains="ExtWidget",
+                    contains="GWidget",
                     fields=list(
                       width="numeric",
                       height="numeric"

@@ -2,10 +2,35 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 NEWS for gWidgetsWWW2
 
-Changes for 0.2
--------------------
- 
 
+Changes for 0.4-1
+-------------------
+
+
+
+Changes for 0.3
+-------------------
+
+* make extjs load through a cdn. No longer include code
+
+* add in comments about gWidgetsWWW2.rapache, deprecate other deployments
+  of gWidgetsWWW2 beyond Rook.
+
+Changes for 0.3
+-------------------
+
+
+* now use Ext-4.1-beta-2. 
+
+* We use Ext-4.1-beta so that certain layouts work. A **major
+  drawback** is the fact that it doesn't work with IE! Oh well, try
+  chrome for now. When 4.1 is out of beta it should be back to normal
+
+* New widgets: gstackwidget, gpanel, gborderlayout, gcodemirror
+
+* Major changes to integrate in Ext-4.0.
+
+* move to GitHub for development
 
 Changes for 0.1
 -------------------

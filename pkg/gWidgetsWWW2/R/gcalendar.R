@@ -13,23 +13,20 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
+##' @include gwidget.R
+NULL
 
 ##' calendar widget
 ##'
 ##' Basic text box with button to open calendar picker dialog. The
-##' svalue method refers to the date, which depends on the value of format.xf
+##' svalue method refers to the date, which depends on the value of
+##' \code{format}.
 ##' @param text optional inital date as text.
 ##' @param format format of date. Default of Y-m-d.
-##' @param handler handler called when date changed
-##' @param action action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width of widget in pixels
-##' @param height height of widget in pixels
-##' @param ext.args extra arguments passed to Ext constructor
-##' @return a \code{ExtWidget} instance
+##' @inheritParams gwidget
+##' @return a \code{GCalendar} instance
+##' @note the \code{svalue} method returns an instance of \code{Date}
+##' class by conversion through \code{as.Date}.
 ##' @export
 ##' @examples
 ##' w <- gwindow("Calendar")
@@ -40,16 +37,15 @@ gcalendar <- function(text = "", format = NULL,
                       width=NULL, height=NULL, ext.args=NULL
                       ) {
 
-  cal <- GCalendar$new(container$toplevel)
+  cal <- GCalendar$new(container, ...)
   cal$init(text, format, handler, action, container, ...,
            width=width, height=height, ext.arg=ext.args)
   cal
 }
 
-##' class for gcalendar
-##' @name gcalendar-class
+## Calendar class
 GCalendar <- setRefClass("GCalendar",
-                         contains="ExtWidget",
+                         contains="GWidget",
                          fields=list(
                            date_format="character"
                            ),
@@ -59,18 +55,21 @@ GCalendar <- setRefClass("GCalendar",
                              width=NULL, height=NULL, ext.args=NULL) {
                              
                              date_format <<- getWithDefault(format, "%Y-%m-%d")
+                             ext_format <- gsub("%","", date_format)
 
+                             
                              ## Ext format has no %
                              fmt <- if(!is.null(format) && nchar(format) > 0) {
                                gsub("%","",format)
                              } else {
                                NULL
                              }
-                             constructor <<- "Ext.form.DateField"
+                             constructor <<- "Ext.form.field.Date"
                              transport_signal <<- "change"
                              arg_list <- list(editable=TRUE,
                                               width=width,
-                                              height=height
+                                              height=height,
+                                              format=ext_format
                                               )
                              add_args(arg_list)
 
@@ -78,7 +77,8 @@ GCalendar <- setRefClass("GCalendar",
 
                              if(nchar(text))
                                set_value(text)
-                             
+                             else
+                               set_value(NA)
                              .self
                            },
                            get_value = function(...) {
@@ -86,8 +86,8 @@ GCalendar <- setRefClass("GCalendar",
                            },
                            set_value = function(value, ...) {
                              value <<- value
-                             if(!is.null(date.format) && nchar(date.format))
-                               call_Ext("setValue", as.Date(value, date.format)) # right format?
+                             if(!is.null(date_format) && nchar(date_format))
+                               call_Ext("setValue", as.character(as.Date(value, date_format))) # right format?
                              else
                                call_Ext("setValue", value)
                            },

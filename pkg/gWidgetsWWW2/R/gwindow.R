@@ -13,8 +13,8 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-container.R
-NA
+##' @include gcontainer.R
+NULL
 
 ##' Main window constructor
 ##'
@@ -69,14 +69,17 @@ gwindow <- function(title="",
     if(exists(".gWidgets_toplevel", inherits=TRUE)) {
       toplevel <- get(".gWidgets_toplevel", inherits=TRUE)
     } else {
-      cat("DEBUG only\n")
+      message("DEBUG only\n")
       toplevel <- GWidgetsTopLevel$new()
     }
-  } else {
-    toplevel <- parent$toplevel
+    w <- GWindow$new(toplevel=toplevel)
+   } else {
+     if(!is.null(renderTo))
+       w <- GWindow$new(parent=parent)
+     else
+       w <- GSubWindow$new(parent=parent)
   }
-
-  w <- GWindow$new(toplevel=toplevel)
+ 
   w$init(title, parent, handler, action, ...,
          renderTo=renderTo,
          width=width, height=height, ext.args=ext.args)
@@ -84,14 +87,37 @@ gwindow <- function(title="",
 }
 
 ##' base class for top-level windows and subwindows
-##' @name gwindow-class
+##'
+##' The \code{GWindow} class is used for windows and
+##' subwindows. Windows in \pkg{gWidgetsWWW2} are rendered to parts of
+##' the web page. In the simplest case, they are rendered to the
+##' document body and are the only thing the user sees. However, one
+##' can render to parts of a window as well. This is why we have a
+##' \code{renderTo} argument in the constructor.
+##'
+##' One of the instances on a page contains the "toplevel" object,
+##' which routes handler requests and gives web page responses.
+##'
+##' Subwindows are floating windows that appear on top of the web
+##' page, like a dialog box.
+##'
+##' 
+##' The method \code{start_comet} will launch a long-poll process,
+##' whereby the browser repeatedly queries the server for any
+##' changes. This can be useful if one expects to launch a
+##' long-running process and the handler that initiates this will time
+##' out before the process is done. One needs only to add the
+##' javascript commands to the queue.
+##' @rdname gwindow
 GWindow <- setRefClass("GWindow",
-                       contains="ExtContainer",
+                       contains="GContainer",
                        fields=list(
-                         stub="ANY" ## value is title
+                         fullscreen="logical", # using a viewport?
+                         loadmask_created ="logical"
                          ),
                        methods=list(
-                         init = function(title="",
+                         init = function(
+                           title="",
                            parent=NULL,
                            handler=NULL,
                            action=NULL,
@@ -102,9 +128,7 @@ GWindow <- setRefClass("GWindow",
                            ext.args = NULL
                            ) {
 
-                           constructor <<- "Ext.Panel"
-                           
-
+                        
                            ## we have two arguments: parent and renderTo
                            ## parent: if NULL, grab toplevel from environment. This is set once per page.
                            ## otherwise this is grabbed from the toplevel property of the parent object
@@ -113,75 +137,83 @@ GWindow <- setRefClass("GWindow",
                            ## in which case the window will render within that tag. This allows one to work within
                            ## a web template, rather than old gWidgetsWW which was on script, one page
 
-                           if(is.null(parent) || !is.null(renderTo)) {
-                             ## what to do with main windows
-                             renderTo <- getWithDefault(renderTo, String("Ext.getBody()"))
 
-                             arg_list <- list(renderTo=renderTo,
-                                              border = TRUE,
-                                              hideBorders = FALSE,
-                                              autoScroll = TRUE,
-                                              tbar = String("new Ext.Toolbar()"),
-                                              bbar = String("new Ext.ux.StatusBar()")
+
+                           if(is.null(renderTo)) {
+                             ## render to a ext.getBody and use a Viewport containing a panel
+                             fullscreen <<- TRUE
+                                                          
+                             ## Hence this gets a little tricky
+                             constructor <<- "Ext.container.Viewport"
+                             arg_list <- list(
+                                              layout="fit", ## fit
+                                              renderTo=String("Ext.getBody()"),
+                                              items=String(sprintf("[%s]",
+                                                toJSObject(list(
+                                                                xtype="panel",
+                                                                id=get_id(),
+                                                                layout="fit"
+                                                                )
+                                                           ))),
+                                              ## items=String(paste("[{xtype:'panel',",,
+                                              ##   sprintf("id:'%s'}]", get_id()),
+                                              ##   sep="")),
+                                              defaults=list(
+                                                autoScroll=TRUE,
+                                                autoHeight=TRUE,
+                                                autoWidth=TRUE
+                                                )
                                               )
-                             add_args(arg_list)
-                             
-                             if(!is.null(ext.args))
-                               args$extend(ext.args)
-                             
-                             write_constructor()
-                             
-                             if(!is.null(handler))
-                               add_handler_changed(handler, action)
-                             
-                             ## write title
-                             if(nchar(title))
-                               set_value(title)
-                             
-                             .self$toplevel$do_layout_cmd = sprintf("%s.doLayout()", get_id())
-
-                           } else {
-                             ## do a subwindow
-                             init_subwindow(title, parent, handler, action, ..., width=width, height=height)
+                           } else if(!is.null(renderTo)) {
+                             DEBUG("render to", renderTo)
+                             constructor <<- "Ext.Panel"
+                             fullscreen <<- FALSE
+                             arg_list <- list(
+                                              layout="fit",
+                                              renderTo=renderTo,
+                                              border=TRUE
+                                              )
                            }
                            
-                           .self
-                         },
-                         ##
-                         init_subwindow = function(title, parent, handler, action, ..., width=NULL, height=NULL) {
-                           ## initialize a subwindow
-                           width <- getWithDefault(width, 200)
-                           height <- getWithDefault(height, 200)
-
-                           constructor <<- "Ext.Window"
-                           arg_list <- list(renderTo=String("Ext.getBody()"),
-                                             title=title,
-                                             layout="auto",
-                                             width=width,
-                                             height=height,
-                                             closeAction="hide",
-                                             autoScroll=TRUE,
-                                             plain=TRUE,
-                                             button=String(sprintf('[{text: "Close", handler: function(){%s.hide()}}]',
-                                               get_id()))
-                                             )
-                           add_args(arg_list)
+                           add_args(arg_list, ext.args)
                            write_constructor()
                            
+                           ## now steal object IDs if fullscreen
+                           if(fullscreen) {
+                             add_js_queue(sprintf("var %s_toplevel=%s;", get_id(), get_id()))
+                             add_js_queue(sprintf("var %s=%s.child(0);", get_id(), get_id()))
+                           }
+                           
+                             
                            if(!is.null(handler))
                              add_handler_changed(handler, action)
-
-                           call_Ext("render")
-                           call_Ext("show")
                            
+                           ## write title
+                           if(nchar(title))
+                             set_value(title)
+                           
+                           loadmask_created <<- FALSE
+                           
+                           .self$toplevel$do_layout_cmd = sprintf("%s.doLayout()", get_id())
+                           
+                           callSuper(toplevel=.self)
+                         },
+                         ##
+                         
+                         add = function (child, expand, anchor, fill, ...) {
+                           ## We override the sizing here
+                           if(is(child, "GGroup") && getWithDefault(expand, TRUE)) {
+                              cmd <- paste(child$get_id(),".setSize({width:'100%', height:'100%'});",sep="")
+#                              add_js_queue(cmd)
+                           }
+                           callSuper(child, expand, anchor, fill, ...)
                          },
                          set_visible = function(bool) {
                            "For gwindow, call doLayout if TRUE"
-                           if(as.logical(bool))
-                             call_Ext("doLayout")
+                            do_layout()
                          },
                          ##
-                         get_value = function() {
+                         get_value = function(...) {
                            "Return title text"
                            value
                          },
@@ -193,21 +225,64 @@ GWindow <- setRefClass("GWindow",
                          dispose = function() {
                            call_Ext("hide")
                          },
+                        
+                         ##
+                         do_layout=function() {
+                           add_js_queue(sprintf("%s_toplevel.doLayout()", get_id()))
+                         },
+                         ##
+                         cookies=function() {
+                           toplevel$req$cookies()
+                         },
+                         ##
+                         start_comet=function() {
+                         "Turn on long-poll process for passing in commands from server"
+                           add_js_queue("listen()")
+                         },
+                         ##
+                         ## debugging
+                         ##
                          dump = function() {
                            "Display js_queue for debugging"
                            toplevel$js_queue$core()
                          },
-                         ##
-                         add_handler_changed = function(handler, action=NULL) {
-                           add_R_handler("onunload", handler, action)
-                         },
                          add_handler_destroy = function(handler, action=NULL) {
                            "When window is destroyed, this is called"
-                           cbid <- toplevel$add_R_handler(.self, handler, action=action)
-                           cmd <- sprintf("window.onunload = function() {callRhandler(%s)};",
-                                          cbid)
-                           add_js_queue(cmd)
-                           cbid
+                           add_handler("destroy", handler, action)
                          }
-                         )
-                       )
+                         ))
+                       
+
+
+GSubWindow <- setRefClass("GSubWindow",
+contains="GWindow",
+methods=list(
+init = function(title, parent, handler, action, ..., renderTo=NULL,width=NULL, height=NULL, ext.args=list()) {
+                           ## initialize a subwindow
+                           width <- getWithDefault(width, 200)
+                           height <- getWithDefault(height, 200)
+
+                           constructor <<- "Ext.window.Window"
+                           arg_list <- list(renderTo=String("Ext.getBody()"),
+                                             title=title,
+                                             layout="fit",
+                                             width=width,
+                                             height=height,
+                                             closeAction="hide",
+#                                             autoScroll=TRUE,
+                                             plain=TRUE,
+                                             button=String(sprintf('[{text: "Close", handler: function(){%s.hide()}}]',
+                                               get_id()))
+                                             )
+                           add_args(arg_list, ext.args)
+
+                           write_constructor()
+                           
+                           if(!is.null(handler))
+                             add_handler_changed(handler, action)
+
+#                           call_Ext("render")
+                           call_Ext("show")
+                           
+                         }
+))

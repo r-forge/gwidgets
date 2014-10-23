@@ -13,51 +13,91 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
-##' @include ext-widget-proxy.R
-NA
+##' @include gwidget-proxy.R
 ##' @include icons.R
-NA
+NULL
 
 ##' combobox implementation
 ##'
 ##' The \code{svalue<-} method is used to specify value by name or by
-##' index. The \code{[<-} method can be used to update the data to
-##' select from.
-##' @param items a vector of items to choose from. (Not supported, but
-##' should be: Or a data frame with 1 column (items), two columns
-##' (items, icons), or three columns (items, icons, tooltip))
+##' index.  
+##' 
+##' The default change handler differs depending whether the field is
+##' editable. If not, then the handler is called before the selection
+##' is finalized. Otherwise, the handler is called on the "change"
+##' event, which is to track "user-initiated change is detected in the
+##' value of the field." This does not always fire on selection by an
+##' item. To force that, use the \code{add_handler_select} method.
+##' @param items a vector or data frame of items to choose
+##' from. Coerced to character class. Use \code{coerce.with} to get a
+##' numeric value, say. If a data frame then one can add an icon,
+##' tooltip, and possibly extra information: with 1 column (items),
+##' two columns (items, icons), or three columns (items, icons,
+##' tooltip)). If 4 or more, then extra columns can be incorporated by
+##' specifying a template. The icon is a url, not a stock name. For
+##' stock icons, convert with \code{getStockIconByName} with
+##' \code{css=FALSE} specified.
 ##' @param selected initially selected item, by index. Use \code{0L} for none.
-##' @param editable logical. Does combobox allow editing. A bug (of
-##' package writer's limiations) in extjs do not allow one to set the
-##' value if it is a potential index. Go figure. Use 4.0, not 5 ...
+##' @param editable logical. Does combobox allow editing. A bug (or
+##' package writer's limitations) in extjs do not allow one to set the
+##' value if it is a potential index (when \code{items} is
+##' integer). Go figure. Use 4.0, not 5 if you want numeric values ...
 ##' @param coerce.with Function. If given, called on value before returning
-##' @param handler handler
-##' @param action action
-##' @param container parent container
-##' @param ... passed to \code{add} method of parent
-##' @param width width
-##' @param height height
-##' @param ext.args extra arguments to pass to constructor
-##' @param tpl a template for the item (Not working!)
+##' @inheritParams gwidget
+##' @param autocomplete If \code{TRUE}, will hide the trigger and make
+##' editable. When the user types the matching values are
+##' presented. (This is also the default behaviour, but if the object
+##' is not editable, only valid values are stored.)
+##' @param initial.msg If \code{selected=0}, then one can assign an initial message here
+##' @param tpl a template for the item. This is an HTML snippet, where
+##' the column names, when wrapped in braces, will be substituted for
+##' the values. The first three columns have their names normalized to
+##' \code{name}, \code{icon}, \code{tooltip}.
 ##' @return an ExtWidget instance
-##' @note The \code{tpl} argument is not working as we'd like.
+##' @note The \code{[<-} method is note working. The \code{tpl}
+##' argument is not working as we'd like.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
 ##' sb <- gstatusbar("Powered by gWidgetsWWW and Rook", cont=w)
-##' cb <- gcombobox(state.name, cont=w)
+##' g <- ggroup(cont=w, horizontal=FALSE)
+##' cb <- gcombobox(state.name, cont=g)
 ##' addHandlerChanged(cb, handler=function(h,...) {
 ##' galert(paste("You selected ", svalue(h$obj), sep=""), parent=w)
 ##' })
-##' ## type ahead style
-##' cb$hide_trigger(TRUE)
+##' ## initial message
+##' gcombobox(state.name, cont=g, selected=0, initial.msg="Choose a state...")
+##' ## autocomplete
+##'  cb <- gcombobox(state.name, cont=g, autocomplete=TRUE)
+##' ## template
+##' w <- gwindow()
+##' g <- gvbox(container=w)
+##' tmp <- "http://upload.wikimedia.org/wikipedia/commons/thumb/"
+##' icons = paste(tmp, c("5/5c/Flag_of_Alabama.svg/22px-Flag_of_Alabama.svg.png",
+##'                      "e/e6/Flag_of_Alaska.svg/22px-Flag_of_Alaska.svg.png",
+##'                      "9/9d/Flag_of_Arizona.svg/22px-Flag_of_Arizona.svg.png"), sep="")
+##' d <- data.frame(name=c("Alabama", "Alaska","Arizona"),
+##'                 icon=icons,
+##'                 tooltip=c("Audemus jura nostra defendere",
+##'                   "North to the future",
+##'                   "Ditat Deus"
+##'                   ),                  
+##'                 extra=c(
+##'                   "Montgomery",
+##'                   "Juneau",
+##'                   "Phoenix"),
+##'                 stringsAsFactors=FALSE)
+##' cb <- gcombobox(d,
+##'                 tpl="<img src=\"{icon}\"></img><span data-qtip=\"{tooltip}\"> {name},
+##'                       Capital is <em>{extra}</em></span>",
+##'                 cont=g)
 gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
            handler = NULL, action = NULL, container=NULL,...,
                       width=NULL,
                       height=NULL,
                       ext.args=NULL,
+                      autocomplete=FALSE,
+                      initial.msg="",
                       tpl=NULL
                       ) {
 
@@ -66,6 +106,8 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
                 width=width,
                 height=height,
                 ext.args=ext.args,
+          autocomplete=autocomplete,
+          initial.msg=initial.msg,
                 tpl=tpl)
   return(cb)
 }
@@ -73,111 +115,119 @@ gcombobox <- function(items, selected=1, editable=FALSE, coerce.with=NULL,
 ##' Alternative name for gcomobox
 ##'
 ##' The name gdroplist is an alternative (not encouraged) for gcomobbox
-##' @name gcombobox
+##' @rdname gcombobox
 gdroplist <- gcombobox
 
 ## Not working: templates; tooltips, icons; 
 
-##' Base class for gcombobox
-##' @name gcombobox-class
+##Base class for gcombobox
 GCombobox <- setRefClass("GCombobox",
-                         contains="ExtWidget",
+                         contains="GWidget",
                          fields=list(
-                           store="ExtArrayStore",
+                           store="GWidgetArrayStore",
                            editable="logical"
                            ) ,
                          methods=list(
                            init=function(items, selected=1, editable=FALSE, coerce.with=NULL,
                              handler = NULL, action = NULL, container=NULL,...,
-                             width=NULL, height=NULL, ext.args=NULL, tpl=NULL) {
+                             width=NULL, height=NULL, ext.args=NULL, autocomplete=NULL, initial.msg="", tpl=NULL) {
 
-                             ## We store the value not the index
-                             if(as.integer(selected) > 0)
-                               selected <- items[selected]
-                             else
-                               selected <- NA
-
-                             editable <<- editable
-                             coerce.with <<- coerce.with
                              
+                             editable <<- editable
+                             coerce_with <<- coerce.with
+
                              if(is.null(tpl)) 
                                items <- .normalize(items) # give standard names
-                             store <<- ExtArrayStore$new(container$toplevel)
+
+
+                             store <<- GWidgetArrayStore$new(container, object_data=TRUE)
                              store$init(items)
                              
-                             constructor <<- "Ext.form.ComboBox"
-
-                             if(editable)
-                               transport_signal <<- "change"
-                             else
-                               transport_signal <<- "beforeselect"
+                             initFields(
+                                        constructor="Ext.form.field.ComboBox",
+                                        change_signal=ifelse(editable, "change", "select"),
+                                        transport_signal=if(editable) c("change","select") else "select"
+                                        )
                              
+                             ## cf., http://skirtlesden.com/articles/extjs-comboboxes-part-1
                              if(is.null(tpl))
                                tpl <- .make_tpl(items)
+                             tpl <- sprintf("Ext.create('Ext.XTemplate','<tpl for=\".\"><div class=\"x-boundlist-item\">%s</div></tpl>')", tpl)
                              
                              arg_list <- list(store=String(store$get_id()),
-                                              mode= "remote", #"local",
-                                              triggerAction="all",
-                                              lastQuery='',
-                                              ## Want to use templates here, but can't get to work
-                                              ## instead use valueField and displayField defaults
-                                              ## tpl=tpl,
-                                              valueField="id",
                                               displayField="name",
-                                              ##
+                                              tpl=String(tpl),
+##                                              triggerAction='query',
+##                                              queryMode='local',
+                                              minChars=1,
+                                              editable=TRUE,
+                                              #selectOnFocus=TRUE,
+                                              forceSelection=!editable,
+                                              growToLongestValue=TRUE,
+                                              typeAhead=TRUE,
                                               width=width,
                                               height=height,
-                                              editable=editable,
-                                              loadingText="Loading...",
-                                              typeAhead=TRUE
+                                              fieldLabel=list(...)$label
                                               )
-                             ##callSuper(arg_list, toplevel=container$toplevel)
+                             
+                             
+                             
+                             if(autocomplete) {
+                               arg_list[['hideTrigger']] <- TRUE
+                               arg_list[['editable']] <- TRUE
+                               selected <- 0
+                             }
+                             if(selected == 0)
+                               arg_list[['emptyText']] <- initial.msg
+                             
                              add_args(arg_list)
 
                              setup(container, handler, action, ext.args, ...)
                              
                              ## load data
-                             .self$store$load_data()
+                             block_handlers()
+                             .self$store$load_data(sprintf("%s.focus(true)", get_id()))
+
+                             set_index(selected)
+                             unblock_handlers()
                              ## set value -- should be set_value, but isn't dispatching to right one
-                             if(!is.na(selected)) {
-                               value <<- selected
-                               call_Ext("setValue", selected)
-                             } else {
-                               value <<- NA
-                             }
+                             ## if(!is.na(selected)) {
+                             ##   value <<- selected
+                             ##   call_Ext("setValue", selected)
+                             ## } else {
+                             ##   value <<- NA
+                             ## }
                              
                            },
                            transport_fun = function() {
                              "param = {value:this.getRawValue()};"
                            },
-                           get_value = function(index=FALSE, ...) {
-                             "Return stored value"
-                             if(index) {
-                               match(value, get_items())
-                             } else {
-                               value
-                             }
+                           process_transport=function(value, ...) {
+                             callSuper(value)
                            },
-                           set_value = function(val, index=FALSE, ...) {
+                           get_index=function(...) {
+                             match(value, get_items())
+                           },
+                           set_value = function(value, ...) {
                              "Set stored value. We store value, not index"
-                             if(index && !editable) {
-                               value <<- get_items()[val]
-                             } else {
-                               value <<- val
-                             }
+                             value <<- value
+
                              if(!is.na(value) && length(value) && nchar(value))
                                call_Ext("setValue", value)
                              else
                                call_Ext("setValue", "")
                            },
+                           set_index=function(value, ...) {
+                             set_value(get_items()[value],  ...)
+                           },
                            process_transport = function(...) {
                              value <<- ..1
                            },
-                           get_items = function(...) {
+                           get_items = function(i,...) {
                              "Get items from store as vector, not data frame"
                              items <- store$get_data(...)
                              if(is.data.frame(items))
-                               items[,1, drop=TRUE]
+                               items[i,1, drop=TRUE]
                              else
                                items
                            },
@@ -185,33 +235,37 @@ GCombobox <- setRefClass("GCombobox",
                              "Set store items"
                              items <- .normalize(items)
                              store$set_data(items, ...)
-                             store$load_data()
+                             store$load_data(sprintf("%s.focus(true)", get_id()))
                            },
+                           set_focus=function(value) {
+                             if(as.logical(value)) {
+                               call_Ext("focus", TRUE)
+
+                             }
+                           },
+                           len=function(...) base::length(get_items()),
                            .normalize=function(items) {
                              "put on standard names to match template"
-                             nms <- c("name", "icon", "tooltip")
                              if(!is.data.frame(items))
                                items <- data.frame(items, stringsAsFactors=FALSE)
-                             names(items) <- nms[1:ncol(items)]
+                             items[[1]] <- as.character(items[[1]]) # name is character
+                             ## standardize first three names
+                             nms <- c("name", "icon", "tooltip")
+                             nc <- ncol(items)
+                             mnc <- min(3, nc)
+                             names(items)[1:mnc] <- nms[1:mnc]
+
+                             
                              items
                            },
-                           ## XXX This isn't working. Fix it later
                            .make_tpl=function(items) {
-                             "Make template to match standard names"
-                             just_name <- "<tpl for '.'><div class='x-combo-list-item'>{id} == {name}</div></tpl>"
-                             just_name <- "<h3>{name}</h3>"
-#                             paste('<tpl for="."><div class="search-item">',
-#                                                '<h3><span>{name}</span></h3>',
-#                                                '</div></tpl>',
-#                                                sep="")
-                             name_icon <- just_name
-                             name_icon_tooltip <- name_icon # XXX fix
+                             "Make template to match standard names: name, icon, tooltip"
                              if(ncol(items) ==1)
-                               just_name
+                               '{name}'
                              else if(ncol(items) ==2)
-                               name_icon
+                               '<img src="{icon}"></img>{name}'
                              else
-                               name_icon_tooltip
+                               '<img src="{icon}"></img><span data-qtip="{tooltip}">{name}</span>'
                            },
                            ## hide trigger, if want to be like gedit
                            hide_trigger = function(value) {
@@ -219,17 +273,14 @@ GCombobox <- setRefClass("GCombobox",
                              call_Ext("setHideTrigger", as.logical(value))
                            },
                            ## Handlers
-                           add_handler_changed = function(handler, action=NULL) {
-                             add_handler_select(handler, action)
-                           },
                            add_handler_blur = function(handler, action=NULL) {
-                             add_R_callback("blur", handler, action)
+                             add_handler("blur", handler, action)
                            },
                            add_handler_select = function(handler, action=NULL) {
-                             add_R_callback("select", handler, action)
+                             add_handler("beforeselect", handler, action)
                            },
                            add_handler_change = function(handler, action=NULL) {
-                             add_R_callback("change", handler, action)
+                             add_handler("change", handler, action)
                            }
 
                            ))

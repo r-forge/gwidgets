@@ -14,14 +14,16 @@
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##' @include gwidgets-package.R
-NA
+NULL
 
-## An array class.
-##
-## Like a list, but has some methods. Completely superflous, but makes copying some code algorithms easier
-##
-
-##' An array class
+##' An array class.
+##'
+##' Like a list, but has some methods. Completely superflous, but
+##' makes copying some code algorithms easier. We implement methods
+##' such as \code{append}, \code{push}, \code{pop} and \code{each} for
+##' iteration. As well, there are some lookup methods.
+##' @exportClass Array
+##' @name Array-class
 Array <- setRefClass("Array",
                     fields=list(
                       "l"="list",
@@ -59,6 +61,9 @@ Array <- setRefClass("Array",
                       contains = function(name) {
                         "TRUE if name is key in array"
                         !is.null(get_by_name(name))
+                      },
+                      contains_item = function(item) {
+                        length(Filter(function(x) identical(x, item), l)) > 0
                       },
                       get_by_name = function(name) {
                         "get item under name"

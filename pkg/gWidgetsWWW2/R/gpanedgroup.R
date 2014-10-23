@@ -13,21 +13,18 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-container.R
-NA
+##' @include gcontainer.R
+NULL
 
 ##' A paned group container
 ##'
 ##' This container has two children and a vertical/horizontal sash to
 ##' allocate space between them. Simply use as a parent container
 ##' twice. Unlike other gWidgets implementations, \code{svalue<-} is not implemented.
+##' If in horizontal mode, the second widget added will be to the left.
 ##' @param horizontal logical. Side by side (or top/bottom) layout
-##' @param container parent container
-##' @param ... passed to parent container's add method
-##' @param width width of container in pixels
-##' @param height height of container in pixels
-##' @param ext.args list. Passed to Ext constructor
-##' @param collapsible logical. If TRUE, one child wil have a button so that it can be collapsed
+##' @inheritParams gwidget
+##' @param collapsible logical. If TRUE, one child will have a button so that it can be collapsed
 ##' @param default.size Integer pixel size of right or bottom
 ##' container when drawn. Defaults to half of height or width, or 200
 ##' if those are NULL. There is no \code{svalue<-} method to adjust the size
@@ -50,17 +47,15 @@ gpanedgroup <- function(horizontal=TRUE, container=NULL, ...,
   pg
 }
 
-
-##' base class for gpanedgroup
-##' @name gpanedgroup-class
 GPanedGroup <- setRefClass("GPanedGroup",
-                           contains="ExtContainer",
+                           contains="GContainer",
                            fields=list(
                              child_ct = "numeric",
                              horizontal="logical"
                              ),
                            method=list(
-                             init=function(horizontal, container, width=NULL, height=NULL, ext.args=NULL,...,
+                             init=function(horizontal, container, ...,
+                               width=NULL, height=NULL, ext.args=NULL,
                                collapsible=FALSE, default.size=NULL
                                ) {
                                child_ct <<- 0
@@ -70,7 +65,7 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                constructor <<- "Ext.Panel"
                                width_or_height <- ifelse(horizontal, "width", "height")
                                and_the_opposite <- ifelse(!horizontal, "width", "height")
-                               east_or_south <- ifelse(horizontal, "east", "south")
+                               west_or_south <- ifelse(horizontal, "west", "south")
 
 
                                default.size <- getWithDefault(default.size,
@@ -80,11 +75,11 @@ GPanedGroup <- setRefClass("GPanedGroup",
 
                                ## This needs to be tidied up XXX
                                items <- paste("[{",
-                                              sprintf("region:'%s',", east_or_south),
+                                              sprintf("region:'%s',", west_or_south),
                                               sprintf("%s:%s,", width_or_height, default.size),
                                               if(!is.null(get(and_the_opposite)))
                                                 sprintf("%s:%s,", and_the_opposite, get(and_the_opposite)),
-                                              sprintf("id:'%s_%s',", get_id(), east_or_south),
+                                              sprintf("id:'%s_%s',", get_id(), west_or_south),
                                               sprintf("collapsible: %s,", coerceToJSString(collapsible)),
                                               "split: true,",
                                               "layout: 'fit'",
@@ -103,23 +98,18 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                                 items=String(items)
                                                 )
 
-                               args$extend(arg_list)
-                               if(!is.null(ext.args))
-                                 args$extend(ext.args)
-
-                               container$add_dots(.self, ...)                           
-
+                               args$extend(arg_list, ext.args)
                                write_constructor()
 
                                container$add(.self, ...)
                              },
-                             add = function(child, where=NULL) {
+                             add = function(child, where=NULL, ...) {
                                ## where can be compass point. First child is in "center"
                                if(is.null(where)) {
                                  if(child_ct == 0)
                                    where <- "center"
                                  else if(child_ct == 1)
-                                   where <- ifelse(horizontal, "east", "south")
+                                   where <- ifelse(horizontal, "west", "south")
                                  else
                                    return()
                                }
@@ -137,4 +127,5 @@ GPanedGroup <- setRefClass("GPanedGroup",
                                "Set sash position, if possible"
                                cat("XXX not implemented")
                              }
+                             
                              ))

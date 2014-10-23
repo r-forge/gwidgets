@@ -13,8 +13,26 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget-proxy.R
-NA
+##' @include gwidget-proxy.R
+NULL
+
+## These crash roxygen2, not sure why
+## ## using a source
+## email <- "ruser@gmail.com"
+## u <- sprintf("http://www.gravatar.com/avatar/%s",digest(tolower(email)))
+## ghtml(sprintf("<img src='%s' />", u), cont=g)
+## ## using markdown package
+## if(require(markdown)) {
+## x <- "
+## Header
+## ======
+##
+## * item 1
+## * item 2
+##
+## "
+## ghtml(markdownToHTML(x), cont=g)
+## }
 
 ##' widget to render HTML text pages
 ##'
@@ -29,20 +47,19 @@ NA
 ##' @export
 ##' @examples
 ##' w <- gwindow()
-##' h <- ghtml("<b>this is bold</b>", cont=w)
+##' g <- ggroup(cont=w, horizontal=FALSE)
+##' h <- ghtml("<b>this is bold</b>", cont=g)
 ghtml <- function(x, container = NULL,  ...,
                   width=NULL, height=NULL, ext.args=NULL
                   ) {
-  h <- GHtml$new(container$toplevel)
+  h <- GHtml$new(container, ...)
   h$init(x, container, ...,
          width=width, height=height, ext.args=ext.args)
   h
 }
 
-##' base class for ghtml
-##' @name ghtml-class
 GHtml <- setRefClass("GHtml",
-                     contains="ExtWidget",
+                     contains="GWidget",
                      fields=list(
                        proxy = "ANY",
                        update_url = "list"
@@ -55,7 +72,7 @@ GHtml <- setRefClass("GHtml",
                            x <- paste(readLines(x), collapse="")
                          }
                          
-                         proxy <<- ExtHTMLProxy$new(toplevel=container$toplevel)
+                         proxy <<- GWidgetHTMLProxy$new(container, ...)
                          proxy$init(x)
                          update_url <<- list(
                                              url=String("html_proxy_url"),
@@ -78,17 +95,26 @@ GHtml <- setRefClass("GHtml",
                          setup(container, NULL, NULL, ext.args, ...)
                          
                        },
+                       get_value = function(...) {
+                         proxy$get_value()
+                       },
                        set_value = function(value, ...) {
                          x <- value
-                         if(isURL(x)) {
-                           x <- paste(readLines(x), collapse="")
+                         if(isURL(x) ||
+                            is(x[1], "StaticTempFile") ||
+                            file.exists(x[1])) {
+                           x <- readLines(x)
                          }
-                         proxy$set_value(x)
+                         proxy$set_value(paste(x, collapse="\n"))
 
                          ## notify panel to update
-
-                         cmd <- sprintf("%s.getUpdater().update(%s)", get_id(), toJSObject(update_url))
+#                         cmd <- sprintf("%s.update('%s', %s)", get_id(), x, toJSObject(update_url))
+                         cmd <- sprintf("%s.getLoader().load();", get_id())
                          add_js_queue(cmd)
+#                         parent$do_layout()
+                       },
+                       set_index=function(value, ...) {
+                         set_value(value)
                        }
                        ))
 

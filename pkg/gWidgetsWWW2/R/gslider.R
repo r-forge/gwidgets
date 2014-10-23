@@ -13,7 +13,7 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
+##' @include gwidget.R
 NA
 
 ##' slider widget
@@ -27,16 +27,9 @@ NA
 ##' @param by step size. Must be larger than 1 and even then will round to integer value
 ##' @param value initial value
 ##' @param horizontal orientation
-##' @param handler called when slider moved
-##' @param action passed to handler
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width
-##' @param height height
-##' @param ext.args list. Can pass in other configuration arguments to Ext widget
-##' @param tpl Template for tooltip. Should have "\code{{0}}" but can have more formatting
-##' @return an ExtWidget object
-##' @note not sure why, but the icons capping the end of the slider display are off.
+##' @inheritParams gwidget
+##' @param tpl Template for tooltip. Should have "\code{{0}}" to replace the value, but can have more formatting
+##' @return a \code{GSlider} reference class object
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -52,16 +45,22 @@ gslider <- function(from = 0, to = 100, by = 1, value = from,
                     tpl = "{0}"
                     ) {
 
-  sl <- GSlider$new(container$toplevel)
+  sl <- GSlider$new(container, ...)
   sl$init(from, to, by, value, horizontal, handler, action, container, ...,
           width=width, height=height, ext.args=ext.args, tpl=tpl)
   sl
 }
 
-##' base class for gslider
-##' @name gslider-class
+##' \code{GSlider} is the base class for gslider
+##'
+##' The \code{GSlider} implementation allows one to adjust the
+##' formating of the tooltip that indicates the current value of the
+##' widget. The \code{tpl} command uses an HTML snippet where the
+##' value \code{{0}}
+##' does the substitution.
+##' @rdname gslider
 GSlider <- setRefClass("GSlider", 
-                       contains="ExtWidget",
+                       contains="GWidget",
                        fields=list(
                          stub = "ANY"
                          ),
@@ -71,10 +70,10 @@ GSlider <- setRefClass("GSlider",
                            width=NULL, height=NULL, ext.args=NULL, tpl="{0}") {
                            value <<- value
 
-                           constructor <<- "Ext.Slider"
+                           constructor <<- "Ext.slider.Single"
                            transport_signal <<- "change"
-
-                           coerce.with <<- coerce.with
+                           change_signal <<- "change"
+                           coerce_with <<- coerce.with
 
                            ## template for slider
                            template <- paste("new Ext.slider.Tip({",
@@ -82,16 +81,21 @@ GSlider <- setRefClass("GSlider",
                                              sprintf("return String.format('%s', thumb.value)", escapeSingleQuote(tpl)),
                                              "}})",
                                              sep="")
+
+                           tipText <- sprintf("function(thumb) {return Ext.String.format('%s', thumb.value);}",
+                                              tpl)
                            
                            arg_list <- list(value=value,
                                             minValue=from,
                                             maxValue=to,
                                             increment=by,
                                             vertical=!horizontal,
+                                            useTips=TRUE,
+                                            tipText=String(tipText),
                                             enableKeyEvents=TRUE,
-                                            plugins = String(template),
                                             width = width,
-                                            height = height
+                                            height = height,
+                                            fieldLabel=list(...)$label
                                             )
                            
                            add_args(arg_list)
@@ -110,11 +114,6 @@ GSlider <- setRefClass("GSlider",
                          },
                          process_transport = function(value) {
                            value <<- value
-                         },
-                         ##
-                         add_handler_changed = function(...) {
-                           "Change handler when slider moves"
-                           add_handler_change(...)
-                         }
+                         }                        
                          )
                        )

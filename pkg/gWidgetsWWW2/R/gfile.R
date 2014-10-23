@@ -13,23 +13,23 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include ext-widget.R
-NA
+##' @include gwidget.R
+NULL
 
-##' File selection function
+##' File selection form
 ##'
+##' This renders a file selection form within a small panel
+##' widget. There are two steps needed to transfer a file: a) select a
+##' file through a dialog, b) save the file to the server by clicking
+##' the upload button.
 ##' @param text Instructional text. 
 ##' @param type only "open" implemented
 ##' @param filter ignored
-##' @param handler Ignored. called when file is selected
-##' @param action Ignored. passed to handler
-##' @param container parent container
-##' @param ... passed to add method of parent container
-##' @param width width in pixels
-##' @param height ignored
-##' @param ext.args extra args to pass to constructor
-##' @return an ExtWidget
-##' @note the \code{svalue} method returns the temporary filename of the uploaded file, or a value of \code{NA}.
+##' @inheritParams gwidget
+##' @return a \code{GFile} instance
+##' @note the \code{svalue} method returns the temporary filename of
+##' the uploaded file, or a value of \code{NA}. The property
+##' \code{filename} holds the original filename.
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -49,23 +49,17 @@ gfile <- function(text="Choose a file",
   f
 }
 
-##' base class for gfile
-##' @name gfile-class
+## base class for gfile
 GFile <- setRefClass("GFile",
-                     contains="ExtWidget",
+                     contains="GWidget",
                      fields=list(
-                       stub="ANY"
+                       filename="character" # value is place, this is name
                        ),
                      method=list(
                        init=function(text, type, filter, handler, action, container, ...,
                          width=width, height=height, ext.args=ext.args) {
 
-                         if(!missing(handler))
-                           cbid <- toplevel$add_R_handler(.self, handler, action=action)
-                         else
-                           cbid <- NULL
-
-                         
+                         ## XXX handler?
                          constructor <<- "Ext.form.FormPanel"
                          arg_list <- list(
                                           width=width,
@@ -73,54 +67,67 @@ GFile <- setRefClass("GFile",
                                           frame=TRUE,
                                           fileUpload=TRUE,
                                           bodyPadding="2 2 0",
-                                          url= String("file_url"),
                                           method="POST",
                                           defaults = list(
                                             anchor="100%",
                                             allowBlank=FALSE
                                             ),
                                           items=String(sprintf("[%s]",
-                                            toJSObject(list(xtype="fileuploadfield",
+                                            toJSObject(list(xtype="filefield",
                                                             id=sprintf("%s_upload", get_id()),
                                                             emptyText =text,
                                                             hideLabel = TRUE,
-                                                            buttonText="Browse...",
-                                                            buttonConfig=list(iconClass="update-icon")
+                                                            buttonText=gettext("Browse..."),
+                                                            buttonConfig=list(iconClass="upload-icon")
                                                             )))),
                                           buttons = String(sprintf("[%s]",
-                                            toJSObject(list(text="Save",
-                                                            handler= String(paste("function () {",
-                                                              sprintf("var form = %s.getForm();",get_id()),
-                                                              "if(form.isValid()){",
-                                                              "form.submit(",
-                                                              toJSObject(list(
-                                                                              waitMsg="Uploading...",
-                                                                              success=if(!is.null(cbid)) {
-                                                                                String(sprintf("function(fp,o) {callRhandler('%s')}", cbid)) } else {
-                                                                                  NULL},
-                                                                              failure=String("function(fp,o) {alert('Failed')}"),
-                                                                              params=list(
-                                                                                id=get_id(),
-                                                                                session_id=String("session_id")
-                                                                                )
-                                                                              )),
-                                                              ")}}",
-                                                              sep=" "))))
-                                                                                
-                                                                      
-                                            ))
+                                            toJSObject(list(text=sprintf("%s",gettext("Upload")),
+                                                            handler=String(whisker.render("
+function() {
+  var form = {{id}}.getForm();
+  if(form.isValid()) {
+    form.submit({
+      url:{{url}},
+      waitMsg:'{{wait_message}}',
+      success:function(fp, o) {
+        callRhandler('{{id}}', 'fileuploaded', null);
+      },
+      failure:function(fp, o) {
+        alert('{{fail_message}}');
+      },
+      params:{
+       id:'{{id}}',
+       session_id:session_id
+      }
+    })
+  }
+}
+",
+                                                              list(id=get_id(),
+                                                                   url= "base_url + 'fileUploadProxy'",
+                                                                   wait_message=gettext("Uploading..."),
+                                                                   fail_message=gettext("Upload failed")
+                                                                   )
+                                                              ))
+                                                            )))
+                                            )
                                           )
-                
                          add_args(arg_list)
 
                          setup(container, NULL, NULL, ext.args, ...)
+                         add_handler("fileuploaded", handler, action)
 
+                         
                          set_value(NA)
                        },
                        set_value = function(value) {
                          "Set local file name. NA if not"
                          value <<- value
-                       }
+                       },
+                       set_filename=function(fname) {
+                         filename <<- fname
+                       },
+                       add_R_callback=function(...) {}
 
                        ))
                          

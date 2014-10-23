@@ -13,8 +13,8 @@
 ##      You should have received a copy of the GNU General Public License
 ##      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-##' @include gslider.R
-NA
+##' @include gwidget.R
+NULL
 
 ##' Basic spinbutton
 ##'
@@ -22,15 +22,8 @@ NA
 ##' @param to to
 ##' @param by by. From to by are same as seq() usage
 ##' @param value initial value
-##' @param handler handler for when change is made
-##' @param action passed to the handler, if given
-##' @param container parent container
-##' @param ... passed to \code{add} method of container
-##' @param width width, ignored
-##' @param height height, ignored
-##' @param ext.args list. Can pass in other configuration arguments to Ext widget
-##' @return an ExtWidget instance
-##' @note Buggy! For some reason both trigger icons don't show! Just the down arrow!
+##' @inheritParams gwidget
+##' @return an GSpinbutton reference class instance
 ##' @export
 ##' @examples
 ##' w <- gwindow()
@@ -41,16 +34,15 @@ gspinbutton <- function(from = 0, to = 100, by = 1, value = from,
                         width=NULL, height=NULL, ext.args=NULL
                         ) {
 
-  sp <- GSpinbutton$new(container$toplevel)
+  sp <- GSpinbutton$new(container, ...)
   sp$init(from, to, by, value,  handler, action, container, ...,
           width=width, height=height, ext.args=ext.args)
   sp
 }
 
-##' base class for gspinbutton
-##' @name gspinbutton-class
+## base class for gspinbutton
 GSpinbutton <- setRefClass("GSpinbutton", 
-                       contains="GSlider",
+                       contains="GWidget",
                        fields=list(
                          stub="ANY"
                          ),
@@ -58,27 +50,31 @@ GSpinbutton <- setRefClass("GSpinbutton",
                          init=function(from, to, by, value,  handler, action, container, ...,
                            coerce.with=as.numeric,
                            width, height, ext.args) {
-                           value <<- value
 
-                            
-                           constructor <<- "Ext.ux.form.SpinnerField"
-                           transport_signal <<- "change"
+
+                           initFields(
+#                                      value=value,
+                                      constructor="Ext.ux.CustomSpinner",
+                                      transport_signal="change",
+                                      change_signal="change"
+                                      )
 
                            arg_list =list(
                              minValue=from,
                              maxValue=to,
-                             incrementValue=by,
+                             step=by,
                              value=value,
-                             accelerate=TRUE
+                             accelerate=TRUE,
+                             fieldLabel=list(...)$label
                              )
                            add_args(arg_list)
 
                            setup(container, handler, action, ext.args, ...)
-                           
+
+                           set_value(value)
                            .self
 
                          },
-                         get_value = function(...) value,
                          set_value = function(value, ...) {
                            value <<- value                           
 
@@ -94,11 +90,6 @@ GSpinbutton <- setRefClass("GSpinbutton",
                          },
                          process_transport = function(value) {
                            value <<- as.numeric(value)
-                         },
-                         ##
-                         add_handler_changed = function(...) {
-                           "Change handler when slider moves"
-                           add_handler_change(...)
                          }
                          )
                        )
