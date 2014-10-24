@@ -331,7 +331,7 @@ to the different widgets for graphics described below, there is:
 \item[\code{ghtml}] A widget for displaying HTML either specified as a
   string or as a URL.
 \item[\code{ggooglemaps}] A widget for displaying google maps,
-  described below.
+  described below (removed as it depended on code without license terms).
 \end{description}
 
 
@@ -378,11 +378,11 @@ package-provided \code{get\_tempfile}, as with
 %% illustration.
 
 
-\subsection{ggooglemaps}
-\label{sec:ggooglemaps}
-
-The \code{ggooglemaps} widget provides access to a sliver of the
-google maps API. See the help page for an illustration.
+%%\subsection{ggooglemaps}
+%%\label{sec:ggooglemaps}
+%%
+%%The \code{ggooglemaps} widget provides access to a sliver of the
+%%google maps API. See the help page for an illustration.
 
 
 

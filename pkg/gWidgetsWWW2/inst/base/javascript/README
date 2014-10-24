@@ -1,20 +1,3 @@
-## Google maps from:
-
-https://raw.github.com/VinylFox/ExtJS.ux.GMapPanel/master/src/GMapPanel3.js
-
-[License status is unclear:
-
- 
-/**
- * @author Shea Frederick - http://www.vinylfox.com
- * @class Ext.ux.panel.GMapPanel
- * @extends Ext.Panel ...
-
-
-**/
-
-Any request for removal of the GMapPanel code by the copyright owner will be respected.
-
 ## CodeMirror from codemirror.net
 
 Copyright (C) 2014 by Marijn Haverbeke <marijnh@gmail.com> and others

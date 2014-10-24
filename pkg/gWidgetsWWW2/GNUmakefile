@@ -76,6 +76,9 @@ vignettes/gWidgetsWWW2.pdf: vignettes/gWidgetsWWW2.Rnw
 
 vignettes: vignettes/gWidgetsWWW2.pdf
 
+roxygen: 
+	"$(RBIN)/Rscript" -e "devtools::document()"
+
 r-forge:
 	git archive master > $(HOME)/gWidgetsWWW2.tar;\
 	cd $(RFDIR) && rm -r `ls` && tar -xf $(HOME)/gWidgetsWWW2.tar;\
