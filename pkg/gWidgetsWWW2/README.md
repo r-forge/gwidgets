@@ -14,10 +14,10 @@ environment for `JavaScript`. Of course, the `R` user need not know any
 `JavaScript`, or even any web technologies -- not even HTML. Basically,
 most simple gWidgets scripts will just work.
 
-If installed from github, the extjs files will be downloaded. If
-installed as a R package, the commmand `download_extjs` must be issued
-to download the extjs files (67Mb) and isntall them within the package
-directory.
+If installed from github or r-forge, the extjs files will be included. If
+in the future the package will be available on CRAN, likely the commmand
+`download_extjs` will have to be issued to download the extjs files (67Mb) and
+isntall them within the package directory.
 
 
 Example
@@ -29,24 +29,23 @@ callback is created in a script `hello.R` and contains:
 
 
 ```{r}
-    w <- gwindow("Hello world example")
-    g <- ggroup(cont=w, width=300, height=300)
-    b <- gbutton("click me", cont=g, handler=function(h,...) {
-      galert("Hello World", parent=w)
-    })
+w <- gwindow("Hello world example")
+g <- ggroup(cont=w, width=300, height=300)
+b <- gbutton("click me", cont=g, handler=function(h,...) {
+  galert("Hello World", parent=w)
+})
 ```
     
 This script is turned into a web page through the `load_app` function:
     
 ```{r}
-    require(gWidgetsWWW2)
-    load_app("hello.R", app_name="hello")
+require(gWidgetsWWW2)
+load_app("hello.R", app_name="hello")
 ```    
 
 The app is then mapped to the url
 
->     http://127.0.0.1:PORT/custom/hello/indexgw.rhtml
-
+`http://127.0.0.1:PORT/custom/hello/indexgw.rhtml`
 
 The "PORT" will be that for R's internal help server. The `port`
 argument can pass in a value if that has not yet been started, with a
@@ -63,14 +62,15 @@ Installation
 You can install the package from RForge:
 
 ```{r}
-    install.packages("gWidgetsWWW2", repos = c("http://r-forge.r-project.org", getOption("repos")))
+install.packages("gWidgetsWWW2", 
+                 repos = c("http://r-forge.r-project.org", getOption("repos")))
 ```    
 
 Alternatively you can install from github, if the `devtools` package of H. Wickham is installed:
 
 ```{r}
-    library(devtools)
-    install_github("jverzani/gWidgetsWWW2")
+library(devtools)
+install_github("jverzani/gWidgetsWWW2")
 ```    
 
 Otherwise, a) install git, b) clone the project c) use +R CMD
