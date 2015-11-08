@@ -15,7 +15,7 @@ environment for `JavaScript`. Of course, the `R` user need not know any
 most simple gWidgets scripts will just work.
 
 If installed from github or r-forge, the extjs files will be included. If
-in the future the package will be available on CRAN, likely the commmand
+in the future the package should be available on CRAN, likely the commmand
 `download_extjs` will have to be issued to download the extjs files (67Mb) and
 install them within the package directory.
 
